@@ -16,10 +16,15 @@ captured as a written `design.md` spec plus its CSS. One shared `--rb-*` token /
 
 ## Themes
 
+Two app design languages, each shipped as a light/dark pair — one `--rb-*` /
+`rb-*` contract, so any two swap with a single `data-rb-style` flip.
+
 | Theme | Scheme | Source | Description |
 | --- | --- | --- | --- |
 | `arcane-obsidian` | dark | artifact-console | Deep obsidian console, sole arcane-violet accent, one rationed violet→gold gradient, luminance-first depth, mono display voice + tabular numerals. |
+| `arcane-parchment` | light | artifact-console | The AA-tuned light counterpart of arcane-obsidian — same console language on a cool parchment ground. |
 | `rackbops-studio` | light | rackbops.com | Cool-paper editorial studio, vermillion over navy ink, heavy 800 headlines, mono eyebrows, the rack-equaliser panel + Boppy mascot, soft-shadow depth. |
+| `rackbops-noir` | dark | rackbops.com | The dark counterpart of rackbops-studio — the mode rackbops.com toggles into, deep slate with brighter vermillion. |
 
 Each theme ships a `design.md` — a written spec of the aesthetic (palette,
 typography, shape rules, component inventory). Read it before designing new

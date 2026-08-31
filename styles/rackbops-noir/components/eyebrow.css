@@ -1,0 +1,21 @@
+/* rackbops-noir — eyebrow (section kicker)
+ * The studio's signature label: a mono, uppercase, wide-tracked accent tag with
+ * a short leading rule. Sits above every section headline. */
+:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--rb-font-mono);
+  font-size: 12.5px;
+  font-weight: var(--rb-font-weight-medium);
+  letter-spacing: var(--rb-label-tracking);
+  text-transform: uppercase;
+  color: var(--rb-accent);
+}
+:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-eyebrow::before {
+  content: "";
+  width: 22px;
+  height: 1.5px;
+  background: var(--rb-accent);
+  display: inline-block;
+}

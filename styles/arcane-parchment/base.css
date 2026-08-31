@@ -1,0 +1,46 @@
+/* arcane-parchment — base styles
+ * Scoped defaults. Requires tokens.css. Fonts are system stacks (system-ui +
+ * ui-monospace) — nothing to load; the console renders offline.
+ *
+ * The element carrying data-rb-style is the theme's canvas: it gets the
+ * background, text color, and body font — whether that is <html> for a page
+ * or a mount container for an embedded island. Page-only rules (body margin,
+ * viewport height) apply only when the attribute sits on <html>.
+ */
+:where([data-rb-style="arcane-parchment"]) {
+  background-color: var(--rb-bg);
+  color: var(--rb-text);
+  font-family: var(--rb-font-body);
+  font-weight: var(--rb-font-weight);
+  font-variant-numeric: tabular-nums; /* counts/ages/sizes align in a column */
+}
+
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *),
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *)::before,
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *)::after {
+  box-sizing: border-box;
+}
+
+:where(html[data-rb-style="arcane-parchment"]) body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--rb-bg);
+  color: var(--rb-text);
+  font-family: var(--rb-font-body);
+  font-weight: var(--rb-font-weight);
+  font-variant-numeric: tabular-nums;
+}
+
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *):where(a) {
+  color: var(--rb-accent);
+}
+
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *):where(:focus-visible) {
+  outline: 2px solid var(--rb-accent);
+  outline-offset: 2px;
+}
+
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *)::selection {
+  background: var(--rb-accent);
+  color: var(--rb-accent-fg);
+}

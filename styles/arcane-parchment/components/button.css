@@ -1,0 +1,75 @@
+/* arcane-parchment — button
+ * Ghost by default; --primary is the one solid accent fill (--accent-fg text).
+ * Flat depth: no glow, no drop shadow on resting UI. */
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--rb-space-2);
+  padding: var(--rb-space-2) var(--rb-space-4);
+  background: var(--rb-surface-2);
+  border: 1px solid var(--rb-border);
+  border-radius: var(--rb-radius);
+  color: var(--rb-text);
+  font-family: var(--rb-font-body);
+  font-weight: var(--rb-font-weight-medium);
+  font-size: var(--rb-text-sm);
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    border-color var(--rb-transition),
+    background var(--rb-transition),
+    color var(--rb-transition);
+}
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-btn:hover,
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-btn:focus-visible {
+  border-color: var(--rb-accent);
+  outline: none;
+}
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-btn--primary {
+  background: var(--rb-accent);
+  border-color: var(--rb-accent);
+  color: var(--rb-accent-fg);
+}
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-btn--primary:hover,
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-btn--primary:focus-visible {
+  /* Darken the fill on a light ground (mix toward --rb-text) so the white label
+     stays AA — lightening it, as the dark sibling does, would drop it to 4.37:1. */
+  background: color-mix(in srgb, var(--rb-accent), var(--rb-text) 12%);
+  border-color: color-mix(in srgb, var(--rb-accent), var(--rb-text) 12%);
+}
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-btn--accent {
+  background: var(--rb-accent-wash);
+  border-color: color-mix(in srgb, var(--rb-accent) 40%, var(--rb-border));
+  color: var(--rb-accent);
+}
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-btn--danger {
+  background: transparent;
+  border-color: color-mix(in srgb, var(--rb-danger) 40%, var(--rb-border));
+  color: var(--rb-danger);
+}
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-btn--danger:hover,
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-btn--danger:focus-visible {
+  border-color: var(--rb-danger);
+}
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-btn--ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--rb-text-soft);
+}
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-btn--ghost:hover,
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-btn--ghost:focus-visible {
+  background: var(--rb-surface-2);
+  border-color: var(--rb-border);
+  color: var(--rb-text);
+}
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-btn {
+    transition: none;
+  }
+}

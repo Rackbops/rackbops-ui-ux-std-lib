@@ -1,0 +1,79 @@
+/* rackbops-noir — button
+ * Primary is a light high-contrast fill that warms to vermillion on hover; ghost
+ * is a bordered outline. A press dips the button; an optional arrow slides on hover. */
+:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--rb-space-2);
+  padding: 13px 22px;
+  border: 1px solid transparent;
+  border-radius: var(--rb-radius);
+  font-weight: var(--rb-font-weight-medium);
+  font-size: 16px;
+  text-decoration: none;
+  cursor: pointer;
+  color: var(--rb-text);
+  background: transparent;
+  transition:
+    transform 0.12s ease,
+    background var(--rb-transition) ease,
+    border-color var(--rb-transition) ease,
+    color var(--rb-transition) ease;
+}
+:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-btn:active {
+  transform: translateY(1px);
+}
+:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-btn--primary {
+  background: var(--rb-text); /* light in this theme — a bright neutral fill */
+  color: var(--rb-bg); /* dark ink on the light fill */
+}
+:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-btn--primary:hover,
+:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-btn--primary:focus-visible {
+  background: var(--rb-accent);
+  color: var(--rb-accent-fg);
+}
+:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-btn--accent {
+  background: var(--rb-accent);
+  color: var(--rb-accent-fg);
+}
+:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-btn--accent:hover,
+:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-btn--accent:focus-visible {
+  /* mix toward the text colour: lightens in a dark theme, darkens in a light one */
+  background: color-mix(in srgb, var(--rb-accent), var(--rb-text) 15%);
+}
+:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-btn--ghost {
+  background: transparent;
+  color: var(--rb-text);
+  border-color: var(--rb-border-strong);
+}
+:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-btn--ghost:hover,
+:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-btn--ghost:focus-visible {
+  border-color: var(--rb-text);
+  background: var(--rb-surface-2);
+}
+:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-btn--danger {
+  background: transparent;
+  color: var(--rb-danger);
+  border-color: color-mix(in srgb, var(--rb-danger) 45%, var(--rb-border));
+}
+:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-btn--danger:hover,
+:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-btn--danger:focus-visible {
+  border-color: var(--rb-danger);
+}
+:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-btn__arrow {
+  transition: transform var(--rb-transition) ease;
+}
+:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-btn:hover .rb-btn__arrow {
+  transform: translateX(3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-btn,
+  :where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-btn__arrow {
+    transition: none;
+  }
+}

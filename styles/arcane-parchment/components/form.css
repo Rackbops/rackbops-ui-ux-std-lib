@@ -1,0 +1,70 @@
+/* arcane-parchment — form controls
+ * Sunken fields on the surface; focus swaps the border for the accent
+ * plus a faint accent ring. checked/accent states use the accent, not glow. */
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rb-space-1);
+}
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-label {
+  font-size: var(--rb-text-sm);
+  font-weight: var(--rb-font-weight-medium);
+  color: var(--rb-text-soft);
+}
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-input,
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-textarea,
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-select {
+  width: 100%;
+  padding: var(--rb-space-2) var(--rb-space-3);
+  background: var(--rb-surface-sunken);
+  border: 1px solid var(--rb-border);
+  border-radius: var(--rb-radius);
+  color: var(--rb-text);
+  font-family: var(--rb-font-body);
+  font-size: var(--rb-text-sm);
+  transition:
+    border-color var(--rb-transition),
+    box-shadow var(--rb-transition);
+}
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-textarea {
+  min-height: 5rem;
+  resize: vertical;
+}
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-input:focus-visible,
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-textarea:focus-visible,
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-select:focus-visible {
+  outline: none;
+  border-color: var(--rb-accent);
+  box-shadow: 0 0 0 3px var(--rb-accent-wash);
+}
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-input::placeholder,
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-textarea::placeholder {
+  color: var(--rb-text-faint);
+}
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-choice {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--rb-space-2);
+  font-size: var(--rb-text-sm);
+  color: var(--rb-text);
+  cursor: pointer;
+}
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-checkbox,
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-radio,
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-switch {
+  accent-color: var(--rb-accent);
+  width: 1rem;
+  height: 1rem;
+  cursor: pointer;
+}
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-switch {
+  width: 2rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-input,
+  :where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-textarea,
+  :where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-select {
+    transition: none;
+  }
+}

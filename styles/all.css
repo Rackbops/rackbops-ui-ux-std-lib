@@ -6,4 +6,6 @@
  * import just their theme's index.css.
  */
 @import "./arcane-obsidian/index.css";
+@import "./arcane-parchment/index.css";
 @import "./rackbops-studio/index.css";
+@import "./rackbops-noir/index.css";
