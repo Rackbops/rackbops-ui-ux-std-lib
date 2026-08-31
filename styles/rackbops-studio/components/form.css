@@ -1,0 +1,70 @@
+/* rackbops-studio — form controls
+ * White fields on the paper ground; focus is a vermillion border + soft wash.
+ * Comfortable, roomy sizing to match the editorial body. */
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rb-space-1);
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-label {
+  font-size: var(--rb-text-sm);
+  font-weight: var(--rb-font-weight-medium);
+  color: var(--rb-text-soft);
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-input,
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-textarea,
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-select {
+  width: 100%;
+  padding: 12px 14px;
+  background: var(--rb-surface);
+  border: 1px solid var(--rb-border-strong);
+  border-radius: var(--rb-radius);
+  color: var(--rb-text);
+  font-family: var(--rb-font-body);
+  font-size: 16px;
+  transition:
+    border-color var(--rb-transition),
+    box-shadow var(--rb-transition);
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-textarea {
+  min-height: 6rem;
+  resize: vertical;
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-input:focus-visible,
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-textarea:focus-visible,
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-select:focus-visible {
+  outline: none;
+  border-color: var(--rb-accent);
+  box-shadow: 0 0 0 3px var(--rb-accent-wash);
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-input::placeholder,
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-textarea::placeholder {
+  color: var(--rb-text-faint);
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-choice {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--rb-space-1);
+  font-size: 16px;
+  color: var(--rb-text);
+  cursor: pointer;
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-checkbox,
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-radio,
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-switch {
+  accent-color: var(--rb-accent);
+  width: 1.1rem;
+  height: 1.1rem;
+  cursor: pointer;
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-switch {
+  width: 2.2rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-input,
+  :where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-textarea,
+  :where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-select {
+    transition: none;
+  }
+}

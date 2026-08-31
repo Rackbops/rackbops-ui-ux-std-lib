@@ -1,0 +1,31 @@
+/* rackbops-studio — table
+ * A clean editorial table: a strong header rule, generous row padding, a quiet
+ * hover wash. */
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-table th {
+  text-align: left;
+  padding: var(--rb-space-2) var(--rb-space-3);
+  border-bottom: 2px solid var(--rb-border-strong);
+  color: var(--rb-text-soft); /* text-faint is below AA on white at header size */
+  font-family: var(--rb-font-mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: var(--rb-font-weight-medium);
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-table td {
+  padding: var(--rb-space-2) var(--rb-space-3);
+  border-bottom: 1px solid var(--rb-border);
+  color: var(--rb-text);
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-table tbody tr:hover td {
+  background: var(--rb-surface-2);
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-table .rb-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}

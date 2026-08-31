@@ -1,0 +1,78 @@
+/* rackbops-studio — button
+ * Primary is an ink fill that warms to vermillion on hover; ghost is a bordered
+ * outline. A press dips the button; an optional arrow slides on hover. */
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--rb-space-2);
+  padding: 13px 22px;
+  border: 1px solid transparent;
+  border-radius: var(--rb-radius);
+  font-weight: var(--rb-font-weight-medium);
+  font-size: 16px;
+  text-decoration: none;
+  cursor: pointer;
+  color: var(--rb-text);
+  background: transparent;
+  transition:
+    transform 0.12s ease,
+    background var(--rb-transition) ease,
+    border-color var(--rb-transition) ease,
+    color var(--rb-transition) ease;
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn:active {
+  transform: translateY(1px);
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn--primary {
+  background: var(--rb-text);
+  color: #f4f7f9;
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn--primary:hover,
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn--primary:focus-visible {
+  background: var(--rb-accent);
+  color: var(--rb-accent-fg);
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn--accent {
+  background: var(--rb-accent);
+  color: var(--rb-accent-fg);
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn--accent:hover,
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn--accent:focus-visible {
+  background: #c93c1c;
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn--ghost {
+  background: transparent;
+  color: var(--rb-text);
+  border-color: var(--rb-border-strong);
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn--ghost:hover,
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn--ghost:focus-visible {
+  border-color: var(--rb-text);
+  background: var(--rb-surface-2);
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn--danger {
+  background: transparent;
+  color: var(--rb-danger);
+  border-color: color-mix(in srgb, var(--rb-danger) 45%, var(--rb-border));
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn--danger:hover,
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn--danger:focus-visible {
+  border-color: var(--rb-danger);
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn__arrow {
+  transition: transform var(--rb-transition) ease;
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn:hover .rb-btn__arrow {
+  transform: translateX(3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn,
+  :where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn__arrow {
+    transition: none;
+  }
+}

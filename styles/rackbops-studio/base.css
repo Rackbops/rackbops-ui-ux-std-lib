@@ -1,0 +1,53 @@
+/* rackbops-studio — base styles
+ * Scoped defaults. Requires tokens.css. Fonts are system stacks — nothing to
+ * load. The element carrying data-rb-style is the theme's canvas (page <html>
+ * or an embedded island container).
+ */
+:where([data-rb-style="rackbops-studio"]) {
+  background-color: var(--rb-bg);
+  color: var(--rb-text);
+  font-family: var(--rb-font-body);
+  font-weight: var(--rb-font-weight);
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *),
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *)::before,
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *)::after {
+  box-sizing: border-box;
+}
+
+:where(html[data-rb-style="rackbops-studio"]) body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--rb-bg);
+  color: var(--rb-text);
+  font-family: var(--rb-font-body);
+  font-weight: var(--rb-font-weight);
+}
+
+/* Heavy, balanced headlines with tight tracking — the studio's editorial voice. */
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *):where(h1, h2, h3) {
+  margin: 0;
+  font-family: var(--rb-font-display);
+  font-weight: var(--rb-font-weight-bold);
+  letter-spacing: var(--rb-heading-tracking);
+  line-height: 1.08;
+  text-wrap: balance;
+}
+
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *):where(a) {
+  color: inherit;
+}
+
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *):where(:focus-visible) {
+  outline: 2.5px solid var(--rb-accent);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *)::selection {
+  background: var(--rb-accent);
+  color: #fff;
+}

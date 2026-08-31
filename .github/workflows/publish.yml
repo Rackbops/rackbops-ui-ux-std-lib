@@ -1,0 +1,33 @@
+name: publish
+
+on:
+  push:
+    tags:
+      - "v*"
+
+# GitHub Packages (private) — the token needs packages:write.
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://npm.pkg.github.com
+          scope: "@roshne"
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: npm publish
+        working-directory: styles
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - run: npm publish
+        working-directory: components/react
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

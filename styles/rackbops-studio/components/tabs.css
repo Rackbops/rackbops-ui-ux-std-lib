@@ -1,0 +1,45 @@
+/* rackbops-studio — tabs
+ * Understated editorial tabs: soft-ink labels, the active one goes ink and
+ * grows a solid vermillion underbar. */
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-tabs {
+  display: flex;
+  gap: var(--rb-space-4);
+  border-bottom: 1px solid var(--rb-border);
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-tab {
+  position: relative;
+  padding: var(--rb-space-2) 0;
+  background: transparent;
+  border: 0;
+  color: var(--rb-text-soft);
+  font-family: var(--rb-font-body);
+  font-weight: var(--rb-font-weight-medium);
+  font-size: 15px;
+  cursor: pointer;
+  transition: color var(--rb-transition);
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-tab:hover {
+  color: var(--rb-text);
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-tab.rb-tab--active {
+  color: var(--rb-text);
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-tab.rb-tab--active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  border-radius: 2px 2px 0 0;
+  background: var(--rb-accent);
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-tabpanel {
+  padding: var(--rb-space-4) 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-tab {
+    transition: none;
+  }
+}

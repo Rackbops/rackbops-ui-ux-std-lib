@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en" data-rb-style="arcane-obsidian">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>rackbops ui/ux std-lib — showcase</title>
+    <link rel="stylesheet" href="../styles/all.css" />
+    <style>
+      /* Showcase chrome only — styled with the theme tokens so it adapts to the
+         selected theme. The components below are the real library output. */
+      body { margin: 0; }
+      .sc-head {
+        position: sticky; top: 0; z-index: 5;
+        display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+        padding: 1rem 1.5rem;
+        background: color-mix(in srgb, var(--rb-bg) 82%, transparent);
+        backdrop-filter: saturate(140%) blur(var(--rb-blur));
+        border-bottom: 1px solid var(--rb-border);
+      }
+      .sc-head strong { font-family: var(--rb-font-display); letter-spacing: var(--rb-heading-tracking); }
+      .sc-head select {
+        padding: 0.4rem 0.6rem; border-radius: var(--rb-radius);
+        border: 1px solid var(--rb-border-strong);
+        background: var(--rb-surface); color: var(--rb-text); font: inherit;
+      }
+      main { max-width: 1000px; margin: 0 auto; padding: 2rem 1.5rem 5rem; }
+      section { padding: 1.75rem 0; border-top: 1px solid var(--rb-border); }
+      section:first-of-type { border-top: 0; }
+      h2.sc-title {
+        margin: 0 0 1rem; font-family: var(--rb-font-mono); font-size: 12px;
+        text-transform: uppercase; letter-spacing: 0.1em; color: var(--rb-text-faint);
+      }
+      .row { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; }
+      .stack { display: flex; flex-direction: column; gap: 0.75rem; max-width: 30rem; }
+      .grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+      /* Snap (don't animate) during a theme flip: var()-driven transitions can
+         otherwise stick at the old theme's values mid-switch. Real apps set the
+         theme once on load and never hit this. */
+      .sc-switching, .sc-switching * { transition: none !important; }
+    </style>
+  </head>
+  <body>
+    <div class="sc-head">
+      <strong>rackbops ui/ux std-lib</strong>
+      <label>theme &nbsp;<select id="theme" aria-label="Select theme"></select></label>
+    </div>
+
+    <main>
+      <section>
+        <h2 class="sc-title">Wordmark / Eyebrow</h2>
+        <div class="stack">
+          <h1 class="rb-wordmark"><span class="rb-wordmark__spark">&#9670;</span>rackbops console</h1>
+          <span class="rb-eyebrow">Design standards</span>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="sc-title">Buttons</h2>
+        <div class="row">
+          <button class="rb-btn">Default</button>
+          <button class="rb-btn rb-btn--primary">Primary</button>
+          <button class="rb-btn rb-btn--accent">Accent</button>
+          <button class="rb-btn rb-btn--ghost">Ghost</button>
+          <button class="rb-btn rb-btn--danger">Danger</button>
+          <button class="rb-btn" disabled>Disabled</button>
+          <button class="rb-btn rb-btn--primary">Next <span class="rb-btn__arrow">&rarr;</span></button>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="sc-title">Cards</h2>
+        <div class="grid3">
+          <div class="rb-card">
+            <div class="rb-card__tag"><span>Design</span><span>01</span></div>
+            <h3>Product &amp; interface</h3>
+            <p>Flows, interfaces, and the small details that make software feel effortless.</p>
+          </div>
+          <div class="rb-card">
+            <div class="rb-card__tag"><span>Build</span><span>02</span></div>
+            <h3>Software engineering</h3>
+            <p>Typed, tested, documented — built to last, not shipped once and abandoned.</p>
+          </div>
+          <div class="rb-card rb-card--raised">
+            <div class="rb-card__tag"><span>Run</span><span>03</span></div>
+            <h3>Infrastructure &amp; ops</h3>
+            <p>Deployment, hosting, and the quiet plumbing that keeps it running.</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="sc-title">Nav links / Tabstrip</h2>
+        <div class="row" style="gap: 2rem">
+          <nav class="stack" style="max-width: 220px">
+            <a class="rb-link rb-link--active">Overview</a>
+            <a class="rb-link">Artifacts</a>
+            <a class="rb-link">Issues</a>
+            <a class="rb-link">Admin</a>
+          </nav>
+          <div class="rb-tabstrip">
+            <button class="rb-tabstrip__tab rb-tabstrip__tab--active">Overview</button>
+            <button class="rb-tabstrip__tab">Artifacts</button>
+            <button class="rb-tabstrip__tab">Issues</button>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="sc-title">Tabs</h2>
+        <div>
+          <div class="rb-tabs" role="tablist">
+            <button class="rb-tab rb-tab--active">First</button>
+            <button class="rb-tab">Second</button>
+            <button class="rb-tab">Third</button>
+          </div>
+          <div class="rb-tabpanel">The first panel's content sits here.</div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="sc-title">Form</h2>
+        <div class="stack">
+          <div class="rb-field">
+            <label class="rb-label">Project name</label>
+            <input class="rb-input" placeholder="artifact-console" />
+          </div>
+          <div class="rb-field">
+            <label class="rb-label">Notes</label>
+            <textarea class="rb-textarea" placeholder="What are we building?"></textarea>
+          </div>
+          <div class="rb-field">
+            <label class="rb-label">Tier</label>
+            <select class="rb-select"><option>Service</option><option>User app</option></select>
+          </div>
+          <label class="rb-choice"><input type="checkbox" class="rb-checkbox" checked /> Ship it</label>
+          <label class="rb-choice"><input type="radio" class="rb-radio" name="r" checked /> Option A</label>
+          <label class="rb-choice"><input type="checkbox" role="switch" class="rb-switch" checked /> Live</label>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="sc-title">Badges</h2>
+        <div class="row">
+          <span class="rb-badge">Default</span>
+          <span class="rb-badge rb-badge--info">Info</span>
+          <span class="rb-badge rb-badge--success">Live</span>
+          <span class="rb-badge rb-badge--warning">Caution</span>
+          <span class="rb-badge rb-badge--danger">Error</span>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="sc-title">Alerts</h2>
+        <div class="stack">
+          <div class="rb-alert rb-alert--info"><div class="rb-alert__title">Heads up</div>An informational note.</div>
+          <div class="rb-alert rb-alert--success"><div class="rb-alert__title">Deployed</div>The build is live.</div>
+          <div class="rb-alert rb-alert--danger"><div class="rb-alert__title">Failed</div>Something broke.</div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="sc-title">Table</h2>
+        <table class="rb-table">
+          <thead><tr><th>Repo</th><th>Status</th><th class="rb-num">PRs</th></tr></thead>
+          <tbody>
+            <tr><td>artifact-console</td><td><span class="rb-badge rb-badge--success">green</span></td><td class="rb-num">12</td></tr>
+            <tr><td>rackbops</td><td><span class="rb-badge rb-badge--info">idle</span></td><td class="rb-num">3</td></tr>
+            <tr><td>Tooling</td><td><span class="rb-badge rb-badge--warning">review</span></td><td class="rb-num">276</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2 class="sc-title">Progress / Spinner</h2>
+        <div class="row">
+          <progress class="rb-progress" value="0.62"></progress>
+          <span class="rb-spinner"></span>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="sc-title">Dialog</h2>
+        <button class="rb-btn rb-btn--primary" id="open-dialog">Open dialog</button>
+        <dialog class="rb-dialog" id="demo-dialog">
+          <div class="rb-dialog__body">
+            <h2 class="rb-dialog__title">Confirm</h2>
+            <p>This is a native dialog styled by the current theme.</p>
+          </div>
+          <div class="rb-dialog__actions">
+            <button class="rb-btn rb-btn--ghost" id="close-dialog">Cancel</button>
+            <button class="rb-btn rb-btn--primary" id="ok-dialog">Confirm</button>
+          </div>
+        </dialog>
+      </section>
+
+      <section>
+        <h2 class="sc-title">Theme extras — rack / principles / tags (rackbops-studio)</h2>
+        <div class="grid3" style="align-items: start">
+          <aside class="rb-rack">
+            <div class="rb-rack__top"><span>rackbops / unit 01</span><span class="rb-rack__live">Live</span></div>
+            <div class="rb-rack__bars"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="rb-rack__foot"><span>the <b>rack</b></span><span>the <b>bops</b></span></div>
+          </aside>
+          <div class="rb-principles">
+            <div class="rb-principle"><div class="rb-principle__n">/01</div><div class="rb-principle__body"><h3>Design and engineering, together</h3><p>The people drawing the screens write the code.</p></div></div>
+            <div class="rb-principle"><div class="rb-principle__n">/02</div><div class="rb-principle__body"><h3>Built to be handed over</h3><p>Typed, tested, documented. You own it.</p></div></div>
+          </div>
+          <ul class="rb-tags">
+            <li class="rb-tag">UX &amp; flows</li>
+            <li class="rb-tag">UI design</li>
+            <li class="rb-tag">prototypes</li>
+            <li class="rb-tag">design systems</li>
+          </ul>
+        </div>
+      </section>
+    </main>
+
+    <script type="module">
+      const root = document.documentElement;
+      const select = document.getElementById("theme");
+      const KEY = "rb-showcase-theme";
+
+      function setTheme(value) {
+        // Suppress transitions for the flip so themed values snap to the new
+        // theme instead of animating (and possibly sticking) between palettes.
+        root.classList.add("sc-switching");
+        root.setAttribute("data-rb-style", value);
+        void root.offsetHeight; // commit the new styles with no transition
+        requestAnimationFrame(() => root.classList.remove("sc-switching"));
+      }
+
+      async function loadThemes() {
+        let themes = ["arcane-obsidian", "rackbops-studio"];
+        try {
+          const res = await fetch("../styles/manifest.json");
+          if (res.ok) themes = Object.keys((await res.json()).themes);
+        } catch {}
+        select.innerHTML = "";
+        for (const t of themes) {
+          const opt = document.createElement("option");
+          opt.value = t;
+          opt.textContent = t;
+          select.appendChild(opt);
+        }
+        let saved = null;
+        try { saved = localStorage.getItem(KEY); } catch {}
+        const initial = themes.includes(saved) ? saved : themes[0];
+        select.value = initial;
+        setTheme(initial);
+      }
+
+      select.addEventListener("change", () => {
+        setTheme(select.value);
+        try { localStorage.setItem(KEY, select.value); } catch {}
+      });
+
+      const dlg = document.getElementById("demo-dialog");
+      document.getElementById("open-dialog").addEventListener("click", () => dlg.showModal());
+      document.getElementById("close-dialog").addEventListener("click", () => dlg.close());
+      document.getElementById("ok-dialog").addEventListener("click", () => dlg.close());
+
+      loadThemes();
+    </script>
+  </body>
+</html>

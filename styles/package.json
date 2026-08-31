@@ -1,0 +1,35 @@
+{
+  "name": "@roshne/styles",
+  "version": "0.1.0",
+  "description": "Rackbops design-system styles: tokens, base styles, and component classes per theme.",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/roshne/rackbops-ui-ux-std-lib.git",
+    "directory": "styles"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "scripts": {
+    "test": "node --test"
+  },
+  "files": [
+    "arcane-obsidian",
+    "rackbops-studio",
+    "all.css",
+    "manifest.json"
+  ],
+  "exports": {
+    "./all": "./all.css",
+    "./manifest": "./manifest.json",
+    "./arcane-obsidian": "./arcane-obsidian/index.css",
+    "./arcane-obsidian/tokens": "./arcane-obsidian/tokens.css",
+    "./arcane-obsidian/base": "./arcane-obsidian/base.css",
+    "./arcane-obsidian/components/*": "./arcane-obsidian/components/*.css",
+    "./rackbops-studio": "./rackbops-studio/index.css",
+    "./rackbops-studio/tokens": "./rackbops-studio/tokens.css",
+    "./rackbops-studio/base": "./rackbops-studio/base.css",
+    "./rackbops-studio/components/*": "./rackbops-studio/components/*.css"
+  }
+}

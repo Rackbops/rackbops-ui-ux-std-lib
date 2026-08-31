@@ -1,0 +1,12 @@
+/* arcane-obsidian — eyebrow (section / kicker label)
+ * Small mono uppercase label in the accent, wide-tracked. Subtler than the
+ * studio eyebrow: no leading rule, this is a data console. */
+:where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-eyebrow {
+  display: inline-block;
+  font-family: var(--rb-font-mono);
+  font-size: 11px;
+  font-weight: var(--rb-font-weight-medium);
+  letter-spacing: var(--rb-label-tracking);
+  text-transform: uppercase;
+  color: var(--rb-accent);
+}

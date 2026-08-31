@@ -1,0 +1,30 @@
+/* rackbops-studio — alert
+ * A white surface card with a soft resting shadow and a 4px left bar in the
+ * semantic colour. */
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-alert {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rb-space-1);
+  padding: var(--rb-space-3) var(--rb-space-4);
+  background: var(--rb-surface);
+  border: 1px solid var(--rb-border);
+  border-left: 4px solid var(--rb-accent);
+  border-radius: var(--rb-radius);
+  box-shadow: var(--rb-shadow-sm);
+  color: var(--rb-text);
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-alert__title {
+  font-weight: var(--rb-font-weight-medium);
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-alert--info {
+  border-left-color: var(--rb-info);
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-alert--success {
+  border-left-color: var(--rb-success);
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-alert--warning {
+  border-left-color: var(--rb-warning);
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-alert--danger {
+  border-left-color: var(--rb-danger);
+}

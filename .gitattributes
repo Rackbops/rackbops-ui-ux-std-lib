@@ -1,0 +1,5 @@
+# Normalize everything to LF in-repo; keep line endings deterministic across machines.
+* text=auto eol=lf
+*.sh text eol=lf
+*.bat text eol=crlf
+*.png binary

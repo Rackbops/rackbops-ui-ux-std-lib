@@ -1,0 +1,35 @@
+{
+  "name": "@roshne/ui-react",
+  "version": "0.1.0",
+  "description": "React components styled by @roshne/styles rackbops themes.",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/roshne/rackbops-ui-ux-std-lib.git",
+    "directory": "components/react"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "react": "^19.0.0",
+    "typescript": "^5.7.0"
+  }
+}

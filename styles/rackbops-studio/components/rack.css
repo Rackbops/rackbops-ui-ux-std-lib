@@ -1,0 +1,94 @@
+/* rackbops-studio — rack panel (theme extra)
+ * The studio's visual pun: a dark navy "rack" unit sitting on the light page,
+ * with an animated vermillion equaliser (the "bops" — signal) and a pulsing
+ * live dot. The inverted panel palette is this theme's own; it is intentionally
+ * a fixed dark block regardless of the light canvas.
+ */
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-rack {
+  --rb-rack-panel: #101a24;
+  --rb-rack-ink: #e7eef4;
+  --rb-rack-faint: #7d90a2;
+  --rb-rack-line: #26333f;
+  background: var(--rb-rack-panel);
+  border: 1px solid var(--rb-rack-line);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: var(--rb-shadow-lg);
+  color: var(--rb-rack-ink);
+  overflow: hidden;
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-rack__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--rb-font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--rb-rack-faint);
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-rack__live {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--rb-rack-ink);
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-rack__live::before {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--rb-accent);
+  animation: rb-studio-pulse 1.8s ease-in-out infinite;
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-rack__bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 7px;
+  height: 132px;
+  margin: 22px 2px 16px;
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-rack__bars > i {
+  flex: 1;
+  background: var(--rb-accent-grad);
+  border-radius: 4px 4px 2px 2px;
+  transform-origin: bottom;
+  animation: rb-studio-bop 1.4s ease-in-out infinite;
+  opacity: 0.92;
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-rack__bars > i:nth-child(1) { height: 52%; animation-delay: -0.2s; }
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-rack__bars > i:nth-child(2) { height: 88%; animation-delay: -1.1s; }
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-rack__bars > i:nth-child(3) { height: 34%; animation-delay: -0.6s; }
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-rack__bars > i:nth-child(4) { height: 70%; animation-delay: -0.9s; }
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-rack__bars > i:nth-child(5) { height: 100%; animation-delay: -0.35s; }
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-rack__bars > i:nth-child(6) { height: 46%; animation-delay: -1.3s; }
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-rack__foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  border-top: 1px solid var(--rb-rack-line);
+  padding-top: 14px;
+  font-family: var(--rb-font-mono);
+  font-size: 11.5px;
+  color: var(--rb-rack-faint);
+  letter-spacing: 0.04em;
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-rack__foot b {
+  color: var(--rb-rack-ink);
+  font-weight: var(--rb-font-weight-medium);
+}
+@keyframes rb-studio-bop {
+  0%, 100% { transform: scaleY(0.5); }
+  50% { transform: scaleY(1); }
+}
+@keyframes rb-studio-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-rack__bars > i,
+  :where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-rack__live::before {
+    animation: none;
+  }
+}

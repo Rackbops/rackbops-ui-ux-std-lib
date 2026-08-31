@@ -1,0 +1,28 @@
+/* arcane-obsidian — alert
+ * A surface panel with a 3px left bar carrying the semantic colour. */
+:where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-alert {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rb-space-1);
+  padding: var(--rb-space-3) var(--rb-space-4);
+  background: var(--rb-surface);
+  border: 1px solid var(--rb-border);
+  border-left: 3px solid var(--rb-accent);
+  border-radius: var(--rb-radius);
+  color: var(--rb-text);
+}
+:where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-alert__title {
+  font-weight: var(--rb-font-weight-medium);
+}
+:where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-alert--info {
+  border-left-color: var(--rb-info);
+}
+:where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-alert--success {
+  border-left-color: var(--rb-success);
+}
+:where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-alert--warning {
+  border-left-color: var(--rb-warning);
+}
+:where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-alert--danger {
+  border-left-color: var(--rb-danger);
+}

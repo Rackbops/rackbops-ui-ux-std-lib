@@ -1,0 +1,13 @@
+{
+  "contract": 1,
+  "themes": {
+    "arcane-obsidian": {
+      "scheme": "dark",
+      "fonts": []
+    },
+    "rackbops-studio": {
+      "scheme": "light",
+      "fonts": []
+    }
+  }
+}

@@ -1,0 +1,46 @@
+/* arcane-obsidian — nav link (tree/sidebar row)
+ * A list row; hover fills to surface-2 and lights a 2px accent bar on the left
+ * edge; active carries a faint accent wash. Mirrors the console's tree rows. */
+:where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--rb-space-2);
+  padding: var(--rb-space-2) var(--rb-space-3);
+  border-radius: var(--rb-radius);
+  color: var(--rb-text);
+  font-size: var(--rb-text-sm);
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background var(--rb-transition),
+    color var(--rb-transition);
+}
+:where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-link:hover {
+  background: var(--rb-surface-2);
+}
+:where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-link::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 6px;
+  bottom: 6px;
+  width: 2px;
+  border-radius: 2px;
+  background: transparent;
+  transition: background var(--rb-transition);
+}
+:where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-link:hover::before,
+:where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-link.rb-link--active::before {
+  background: var(--rb-accent);
+}
+:where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-link.rb-link--active {
+  background: var(--rb-accent-wash);
+  color: var(--rb-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-link {
+    transition: none;
+  }
+}

@@ -1,0 +1,31 @@
+/* rackbops-studio — nav link
+ * The header's quiet mono nav: soft ink that fills to a surface pill on hover;
+ * accent on the active route. */
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--rb-space-1);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-family: var(--rb-font-mono);
+  font-size: var(--rb-text-sm);
+  color: var(--rb-text-soft);
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    color var(--rb-transition),
+    background var(--rb-transition);
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-link:hover {
+  color: var(--rb-text);
+  background: var(--rb-surface-2);
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-link.rb-link--active {
+  color: var(--rb-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-link {
+    transition: none;
+  }
+}

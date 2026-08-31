@@ -1,0 +1,27 @@
+/* arcane-obsidian — table
+ * Dense data table: a header rule, tabular numerals, row hover to surface-2. */
+:where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--rb-text-sm);
+  font-variant-numeric: tabular-nums;
+}
+:where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-table th {
+  text-align: left;
+  padding: var(--rb-space-2) var(--rb-space-3);
+  border-bottom: 1px solid var(--rb-border-strong);
+  color: var(--rb-text-faint);
+  font-weight: var(--rb-font-weight-medium);
+}
+:where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-table td {
+  padding: var(--rb-space-2) var(--rb-space-3);
+  border-bottom: 1px solid var(--rb-border);
+  color: var(--rb-text);
+}
+:where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-table tbody tr:hover td {
+  background: var(--rb-surface-2);
+}
+:where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-table .rb-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}

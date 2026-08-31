@@ -1,0 +1,20 @@
+/* rackbops-studio — capability tag (theme extra)
+ * The small mono pill used in flex-wrap lists inside service cards — a quieter,
+ * borderless-feel counterpart to the semantic .rb-badge. */
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-tag {
+  font-family: var(--rb-font-mono);
+  font-size: 11.5px;
+  color: var(--rb-text-soft);
+  border: 1px solid var(--rb-border);
+  border-radius: var(--rb-radius-pill);
+  padding: 4px 10px;
+  letter-spacing: 0.02em;
+}

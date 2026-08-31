@@ -1,0 +1,81 @@
+/* arcane-obsidian — design tokens
+ * Reverse-documented from artifact-console's "Arcane Obsidian" theme
+ * (artifact-console/static/style.css + report_theme.py). Consume via:
+ *   @import "@roshne/styles/arcane-obsidian/tokens";
+ * or pull the whole theme with ./index.css.
+ *
+ * Nothing applies until an element carries data-rb-style="arcane-obsidian"
+ * — set it on <html> for a page, or on any container for an embedded island.
+ * The :where() keeps specificity at zero, so any consumer rule overrides.
+ *
+ * Every theme declares the same baseline token set (styles/test enforces
+ * parity); names marked (extra) are additions beyond it that only this
+ * theme's own component CSS may rely on. This theme ships its dark, primary
+ * look ("Obsidian"); its AA-tuned light counterpart ("Parchment") is
+ * documented in design.md and can become its own theme later.
+ */
+:where([data-rb-style="arcane-obsidian"]) {
+  color-scheme: dark;
+
+  /* color — deep obsidian foundation, tonal indigo surfaces */
+  --rb-bg: #0c0f14;
+  --rb-surface: #141922;
+  --rb-surface-2: #1c2331;
+  --rb-surface-sunken: #080b10; /* inset fields, log wells */
+  --rb-text: #eceff4;
+  --rb-text-soft: #a6b0c0;
+  --rb-text-faint: #8290a6;
+  --rb-border: #232c39;
+  --rb-border-strong: #33404f;
+
+  /* accent — arcane-violet is the sole brand voice */
+  --rb-accent: #8b7cf6;
+  --rb-accent-fg: #0c0f14; /* dark ink on the light-violet solid fill (AA) */
+  --rb-accent-wash: rgba(139, 124, 246, 0.16);
+
+  /* the ONE gradient — rationed to wordmark + active tab only */
+  --rb-accent-grad: linear-gradient(120deg, #8b7cf6, #c48bff 46%, #f5c15a);
+
+  /* semantic — colour beyond the accent is earned: severity/status only */
+  --rb-info: #4c9df0;
+  --rb-success: #43c97e;
+  --rb-warning: #f2a93b;
+  --rb-danger: #f0616d;
+
+  /* code syntax (extra) — palette-derived; only this theme renders code */
+  --rb-code-keyword: #8b7cf6;
+  --rb-code-string: #43c97e;
+  --rb-code-number: #f5c15a;
+  --rb-code-comment: #6b7688;
+  --rb-code-function: #4c9df0;
+  --rb-code-variable: #f0879b;
+  --rb-code-type: #c48bff;
+  --rb-code-meta: #8290a6;
+
+  /* typography — monospace display voice over a system-ui body; tabular numerals */
+  --rb-font-display: ui-monospace, "Cascadia Code", "Cascadia Mono", "Segoe UI Mono", Consolas, Menlo, monospace;
+  --rb-font-body: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --rb-font-mono: ui-monospace, "Cascadia Code", "Cascadia Mono", "Segoe UI Mono", Consolas, Menlo, monospace;
+  --rb-font-weight: 400;
+  --rb-font-weight-medium: 600;
+  --rb-font-weight-bold: 700;
+  --rb-heading-tracking: -0.01em;
+  --rb-label-tracking: 0.06em;
+  --rb-text-sm: 13px;
+
+  /* shape & effects — luminance-first depth, compact console radii */
+  --rb-radius: 0.4375rem; /* 7px — buttons, inputs, rows */
+  --rb-radius-lg: 0.75rem; /* 12px — cards, dialogs */
+  --rb-radius-pill: 999px;
+  --rb-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35);
+  --rb-shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.5);
+  --rb-blur: 12px; /* glass is reserved for the interactive shell */
+  --rb-transition: 0.15s;
+
+  /* spacing — 4px rhythm */
+  --rb-space-1: 0.25rem;
+  --rb-space-2: 0.5rem;
+  --rb-space-3: 0.75rem;
+  --rb-space-4: 1rem;
+  --rb-space-5: 1.5rem;
+}

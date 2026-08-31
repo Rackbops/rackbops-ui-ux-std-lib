@@ -1,0 +1,31 @@
+/* rackbops-studio — principle (theme extra)
+ * The studio's numbered "how we work" list: a mono /0N marker in the accent
+ * beside a heading + paragraph, rows divided by hairlines. */
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-principles {
+  display: flex;
+  flex-direction: column;
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-principle {
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 18px;
+  padding: 22px 0;
+  border-top: 1px solid var(--rb-border);
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-principles > .rb-principle:first-child {
+  border-top: 0;
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-principle__n {
+  font-family: var(--rb-font-mono);
+  font-size: 13px;
+  font-weight: var(--rb-font-weight-medium);
+  color: var(--rb-accent);
+  padding-top: 3px;
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-principle__body h3 {
+  font-size: 1.16rem;
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-principle__body p {
+  margin: 7px 0 0;
+  color: var(--rb-text-soft);
+}

@@ -1,0 +1,77 @@
+/* rackbops-studio — design tokens
+ * Reverse-documented from rackbops.com (rackbops/site/index.html). Consume via:
+ *   @import "@roshne/styles/rackbops-studio/tokens";
+ * or pull the whole theme with ./index.css.
+ *
+ * Nothing applies until an element carries data-rb-style="rackbops-studio"
+ * — set it on <html> for a page, or on any container for an embedded island.
+ * The :where() keeps specificity at zero, so any consumer rule overrides.
+ *
+ * This theme ships its canonical, primary look (light); the dark counterpart
+ * that rackbops.com toggles into is documented in design.md and can become its
+ * own theme later. Every theme declares the same baseline token set (styles/test
+ * enforces parity); names marked (extra) are additions this theme's own
+ * component CSS may rely on.
+ */
+:where([data-rb-style="rackbops-studio"]) {
+  color-scheme: light;
+
+  /* color — cool paper canvas, white raised surfaces, navy ink */
+  --rb-bg: #eaeef1;
+  --rb-surface: #ffffff;
+  --rb-surface-2: #f3f6f8;
+  --rb-surface-sunken: #e4e9ed;
+  --rb-text: #131e29; /* navy ink */
+  --rb-text-soft: #4c5b6b;
+  --rb-text-faint: #8091a1;
+  --rb-border: #d8e0e6;
+  --rb-border-strong: #c3ced7;
+
+  /* accent — vermillion, the studio's single warm voice */
+  --rb-accent: #ef4d28;
+  --rb-accent-fg: #ffffff; /* white text on the vermillion fill */
+  --rb-accent-wash: rgba(239, 77, 40, 0.09);
+
+  /* the signature gradient — a vertical vermillion ramp (the rack equaliser) */
+  --rb-accent-grad: linear-gradient(180deg, #ef4d28, #c93c1c);
+
+  /* semantic — the marketing site is accent-only; these serve the shared
+     badge/alert/status components. As a thin border (alert) they clear the 3:1
+     graphical bar; the studio badge renders them as a tint + ink text so its
+     label stays AA. Used directly as small text on white they are below 4.5:1
+     — see design.md's Accessibility note. */
+  --rb-info: #1e6fd0;
+  --rb-success: #1f9d57;
+  --rb-warning: #c07d12;
+  --rb-danger: #d64550;
+
+  /* typography — bold editorial sans headlines over a system-ui body; mono for
+     eyebrows, nav, tags, and meta */
+  --rb-font-display: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --rb-font-body: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --rb-font-mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Menlo, Consolas, monospace;
+  --rb-font-weight: 400;
+  --rb-font-weight-medium: 600;
+  --rb-font-weight-bold: 800; /* headlines are heavy — the studio signature */
+  --rb-heading-tracking: -0.02em;
+  --rb-label-tracking: 0.18em; /* the mono eyebrow's wide tracking */
+  --rb-text-sm: 13.5px;
+
+  /* shape & effects — soft two-step shadow depth, roomy editorial radii */
+  --rb-radius: 0.6875rem; /* 11px — buttons, inputs */
+  --rb-radius-lg: 0.9375rem; /* 15px — cards */
+  --rb-radius-pill: 99px;
+  --rb-shadow-sm: 0 1px 2px rgba(19, 30, 41, 0.06);
+  --rb-shadow-lg: 0 2px 6px rgba(19, 30, 41, 0.05), 0 22px 48px -24px rgba(19, 30, 41, 0.28);
+  --rb-blur: 10px; /* backdrop blur for overlay surfaces (dialog); the source
+                      site also uses it on its sticky header, which this library
+                      does not ship as a component */
+  --rb-transition: 0.15s;
+
+  /* spacing — generous, editorial rhythm */
+  --rb-space-1: 0.5rem;
+  --rb-space-2: 0.75rem;
+  --rb-space-3: 1rem;
+  --rb-space-4: 1.5rem;
+  --rb-space-5: 2.25rem;
+}

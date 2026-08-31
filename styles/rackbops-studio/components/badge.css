@@ -1,0 +1,39 @@
+/* rackbops-studio — badge
+ * A bordered mono pill, like the studio's capability tags. Default is an
+ * outline chip; semantic modifiers tint to their hue. */
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--rb-space-1);
+  padding: 4px 10px;
+  border: 1px solid var(--rb-border);
+  border-radius: var(--rb-radius-pill);
+  font-family: var(--rb-font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.02em;
+  color: var(--rb-text-soft);
+  background: var(--rb-surface);
+}
+/* Semantic variants: a tint fill + tinted border carry the hue, while the label
+ * stays ink so it clears WCAG AA on the light ground (the raw semantic colors as
+ * small text on white are ~3.4-4.4:1). */
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-badge--info {
+  background: color-mix(in srgb, var(--rb-info) 14%, var(--rb-surface));
+  border-color: color-mix(in srgb, var(--rb-info) 45%, var(--rb-border));
+  color: var(--rb-text);
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-badge--success {
+  background: color-mix(in srgb, var(--rb-success) 14%, var(--rb-surface));
+  border-color: color-mix(in srgb, var(--rb-success) 45%, var(--rb-border));
+  color: var(--rb-text);
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-badge--warning {
+  background: color-mix(in srgb, var(--rb-warning) 16%, var(--rb-surface));
+  border-color: color-mix(in srgb, var(--rb-warning) 45%, var(--rb-border));
+  color: var(--rb-text);
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-badge--danger {
+  background: color-mix(in srgb, var(--rb-danger) 14%, var(--rb-surface));
+  border-color: color-mix(in srgb, var(--rb-danger) 45%, var(--rb-border));
+  color: var(--rb-text);
+}
