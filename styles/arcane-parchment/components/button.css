@@ -33,8 +33,10 @@
 }
 :where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-btn--primary:hover,
 :where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-btn--primary:focus-visible {
-  background: color-mix(in srgb, var(--rb-accent) 88%, #fff);
-  border-color: color-mix(in srgb, var(--rb-accent) 88%, #fff);
+  /* Darken the fill on a light ground (mix toward --rb-text) so the white label
+     stays AA — lightening it, as the dark sibling does, would drop it to 4.37:1. */
+  background: color-mix(in srgb, var(--rb-accent), var(--rb-text) 12%);
+  border-color: color-mix(in srgb, var(--rb-accent), var(--rb-text) 12%);
 }
 :where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-btn--accent {
   background: var(--rb-accent-wash);

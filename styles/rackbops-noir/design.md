@@ -22,7 +22,7 @@ accent labels are AA.
 | Surface sunken | `#0f1720` | Progress troughs, insets |
 | Text | `#e9eff4` | Headlines and body |
 | Text soft | `#a4b4c3` | Lead paragraphs, secondary text |
-| Text faint | `#697a8c` | Meta, footnotes, table headers |
+| Text faint | `#697a8c` | Meta, footnotes, placeholders (below AA as normal text — secondary use only; the shared table header uses `--rb-text-soft`) |
 | Border | `#243140` | Hairline dividers |
 | Border strong | `#31404f` | Field borders, ghost-button outline |
 | Accent | `#ff5d3d` (vermillion) | The single warm voice: emphasis, CTAs, the equaliser (~5.5:1 as text) |
@@ -67,8 +67,8 @@ eyebrow is mono, uppercase, tracked `0.18em`, accent-coloured, with a leading ru
 Class prefix `rb-`; the full rackbops-studio inventory, styled identically from
 tokens — `.rb-btn`, `.rb-card` (+ `__tag`), `.rb-link`, the form set, `.rb-badge`,
 `.rb-alert`, `.rb-dialog`, `.rb-tabs`, `.rb-table`, `.rb-progress`/`.rb-spinner`,
-`.rb-eyebrow` — plus the studio extras `.rb-rack` (equaliser panel; its fixed dark
-panel palette reads as a lifted block on the dark canvas too), `.rb-principles`/
+`.rb-eyebrow` — plus the studio extras `.rb-rack` (equaliser panel; its panel palette
+matches rackbops.com's dark-mode rack — a near-canvas block set off by its border), `.rb-principles`/
 `.rb-principle`, and `.rb-tags`/`.rb-tag`. See rackbops-studio's `design.md` for
 the per-component notes. The Boppy mascot asset ships with rackbops-studio
 (`styles/rackbops-studio/assets/boppy.svg`) and is shared.

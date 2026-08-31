@@ -1,14 +1,13 @@
 /* rackbops-noir — rack panel (theme extra)
- * The studio's visual pun: a dark "rack" unit with a fixed dark panel palette that reads as a distinct block on either canvas,
- * with an animated vermillion equaliser (the "bops" — signal) and a pulsing
- * live dot. The inverted panel palette is this theme's own; it is intentionally
- * a fixed dark block on either canvas.
- */
+ * The studio's visual pun: a dark "rack" unit with an animated vermillion
+ * equaliser (the "bops" — signal) and a pulsing live dot. The panel palette
+ * matches rackbops.com's *dark*-mode rack — a near-canvas block set off by its
+ * border (vs. the studio theme, which uses the site's light-mode rack). */
 :where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-rack {
-  --rb-rack-panel: #101a24;
+  --rb-rack-panel: #0a121a;
   --rb-rack-ink: #e7eef4;
   --rb-rack-faint: #7d90a2;
-  --rb-rack-line: #26333f;
+  --rb-rack-line: #1e2b37;
   background: var(--rb-rack-panel);
   border: 1px solid var(--rb-rack-line);
   border-radius: 16px;

@@ -11,8 +11,11 @@ as arcane-obsidian — the components are token-driven, so only the palette diff
 ## Color
 
 Palette values match artifact-console's light scheme. Unlike the studio themes,
-the arcane accent (a darker violet) stays **above WCAG AA as text on white**, so
-this theme is AA throughout.
+the arcane accent (a darker violet) stays **above WCAG AA as text on white**
+(~5.5:1), so accent labels, body text, and the muted ramp all clear AA. The one
+exception — inherited from artifact-console itself — is the semantic chip colours
+(`--rb-success/--rb-warning/...`) used as small text on their faint tint, which
+sit below 4.5:1; treat those as status accents, not body copy.
 
 | Role | Value | Usage |
 | --- | --- | --- |
