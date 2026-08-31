@@ -5,8 +5,16 @@
       "scheme": "dark",
       "fonts": []
     },
+    "arcane-parchment": {
+      "scheme": "light",
+      "fonts": []
+    },
     "rackbops-studio": {
       "scheme": "light",
+      "fonts": []
+    },
+    "rackbops-noir": {
+      "scheme": "dark",
       "fonts": []
     }
   }

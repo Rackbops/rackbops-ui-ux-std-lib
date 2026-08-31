@@ -1,0 +1,66 @@
+/* rackbops-noir — design tokens
+ * The dark counterpart of rackbops-studio: the mode rackbops.com toggles into.
+ * Same structure, class contract, and component CSS as rackbops-studio
+ * (token-driven) — only the palette differs, plus a dark-appropriate accent-fg
+ * and a lighter accent ramp. Consume via:
+ *   @import "@roshne/styles/rackbops-noir/tokens";
+ * or pull the whole theme with ./index.css.
+ *
+ * Nothing applies until an element carries data-rb-style="rackbops-noir".
+ * Palette values match rackbops.com's dark scheme.
+ */
+:where([data-rb-style="rackbops-noir"]) {
+  color-scheme: dark;
+
+  /* color — deep slate canvas, tonal navy surfaces */
+  --rb-bg: #0d141d;
+  --rb-surface: #141f2a;
+  --rb-surface-2: #19242f;
+  --rb-surface-sunken: #0f1720; /* progress troughs, insets */
+  --rb-text: #e9eff4;
+  --rb-text-soft: #a4b4c3;
+  --rb-text-faint: #697a8c;
+  --rb-border: #243140;
+  --rb-border-strong: #31404f;
+
+  /* accent — vermillion, brighter on the dark ground */
+  --rb-accent: #ff5d3d;
+  --rb-accent-fg: #0d141d; /* dark ink on the vermillion fill keeps it AA */
+  --rb-accent-wash: rgba(255, 93, 61, 0.13);
+
+  /* the signature gradient — a vertical vermillion ramp (the rack equaliser) */
+  --rb-accent-grad: linear-gradient(180deg, #ff5d3d, #ff7a5f);
+
+  /* semantic — brightened for AA on the dark ground */
+  --rb-info: #4c9df0;
+  --rb-success: #43c97e;
+  --rb-warning: #f2a93b;
+  --rb-danger: #f0616d;
+
+  /* typography — bold editorial sans headlines; mono for eyebrows/nav/tags */
+  --rb-font-display: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --rb-font-body: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --rb-font-mono: ui-monospace, "SF Mono", "Cascadia Code", "JetBrains Mono", Menlo, Consolas, monospace;
+  --rb-font-weight: 400;
+  --rb-font-weight-medium: 600;
+  --rb-font-weight-bold: 800; /* heavy headlines — the studio signature */
+  --rb-heading-tracking: -0.02em;
+  --rb-label-tracking: 0.18em;
+  --rb-text-sm: 13.5px;
+
+  /* shape & effects — soft two-step shadow depth (deeper on dark), roomy radii */
+  --rb-radius: 0.6875rem; /* 11px */
+  --rb-radius-lg: 0.9375rem; /* 15px */
+  --rb-radius-pill: 99px;
+  --rb-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --rb-shadow-lg: 0 2px 6px rgba(0, 0, 0, 0.4), 0 24px 50px -24px rgba(0, 0, 0, 0.7);
+  --rb-blur: 10px;
+  --rb-transition: 0.15s;
+
+  /* spacing — generous, editorial rhythm */
+  --rb-space-1: 0.5rem;
+  --rb-space-2: 0.75rem;
+  --rb-space-3: 1rem;
+  --rb-space-4: 1.5rem;
+  --rb-space-5: 2.25rem;
+}

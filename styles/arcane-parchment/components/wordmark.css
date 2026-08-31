@@ -1,0 +1,23 @@
+/* arcane-parchment — wordmark (theme extra)
+ * The brand voice: a mono display h1 with the ONE gradient clipped into the
+ * text, and a solid-accent spark mark that stays un-clipped. This and the
+ * active tab underline are the only two places the gradient is spent. */
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-wordmark {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4em;
+  margin: 0;
+  font-family: var(--rb-font-display);
+  font-weight: var(--rb-font-weight-medium);
+  font-size: 15px;
+  letter-spacing: var(--rb-heading-tracking);
+  background-image: var(--rb-accent-grad);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-wordmark__spark {
+  color: var(--rb-accent);
+  -webkit-text-fill-color: var(--rb-accent);
+}

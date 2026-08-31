@@ -1,0 +1,33 @@
+/* arcane-parchment — badge / status chip
+ * A pill: a faint tint of its hue behind full-strength text. Severity and
+ * status are the one place colour beyond the accent is earned. */
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--rb-space-1);
+  padding: 2px var(--rb-space-2);
+  border-radius: var(--rb-radius-pill);
+  font-family: var(--rb-font-mono);
+  font-size: 11px;
+  font-weight: var(--rb-font-weight-medium);
+  letter-spacing: var(--rb-label-tracking);
+  text-transform: uppercase;
+  background: var(--rb-accent-wash);
+  color: var(--rb-accent);
+}
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-badge--info {
+  background: color-mix(in srgb, var(--rb-info) 16%, transparent);
+  color: var(--rb-info);
+}
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-badge--success {
+  background: color-mix(in srgb, var(--rb-success) 16%, transparent);
+  color: var(--rb-success);
+}
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-badge--warning {
+  background: color-mix(in srgb, var(--rb-warning) 16%, transparent);
+  color: var(--rb-warning);
+}
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-badge--danger {
+  background: color-mix(in srgb, var(--rb-danger) 16%, transparent);
+  color: var(--rb-danger);
+}

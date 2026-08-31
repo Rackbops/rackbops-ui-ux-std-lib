@@ -16,7 +16,9 @@
   },
   "files": [
     "arcane-obsidian",
+    "arcane-parchment",
     "rackbops-studio",
+    "rackbops-noir",
     "all.css",
     "manifest.json"
   ],
@@ -27,9 +29,17 @@
     "./arcane-obsidian/tokens": "./arcane-obsidian/tokens.css",
     "./arcane-obsidian/base": "./arcane-obsidian/base.css",
     "./arcane-obsidian/components/*": "./arcane-obsidian/components/*.css",
+    "./arcane-parchment": "./arcane-parchment/index.css",
+    "./arcane-parchment/tokens": "./arcane-parchment/tokens.css",
+    "./arcane-parchment/base": "./arcane-parchment/base.css",
+    "./arcane-parchment/components/*": "./arcane-parchment/components/*.css",
     "./rackbops-studio": "./rackbops-studio/index.css",
     "./rackbops-studio/tokens": "./rackbops-studio/tokens.css",
     "./rackbops-studio/base": "./rackbops-studio/base.css",
-    "./rackbops-studio/components/*": "./rackbops-studio/components/*.css"
+    "./rackbops-studio/components/*": "./rackbops-studio/components/*.css",
+    "./rackbops-noir": "./rackbops-noir/index.css",
+    "./rackbops-noir/tokens": "./rackbops-noir/tokens.css",
+    "./rackbops-noir/base": "./rackbops-noir/base.css",
+    "./rackbops-noir/components/*": "./rackbops-noir/components/*.css"
   }
 }

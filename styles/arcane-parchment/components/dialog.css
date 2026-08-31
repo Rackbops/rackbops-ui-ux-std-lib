@@ -1,0 +1,31 @@
+/* arcane-parchment — dialog
+ * Native <dialog>: a raised surface pane over a blurred backdrop. */
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-dialog {
+  padding: 0;
+  border: 1px solid var(--rb-border-strong);
+  border-radius: var(--rb-radius-lg);
+  background: var(--rb-surface);
+  color: var(--rb-text);
+  box-shadow: var(--rb-shadow-lg);
+  max-width: min(92vw, 34rem);
+}
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-dialog::backdrop {
+  background: rgba(8, 11, 16, 0.6);
+  backdrop-filter: blur(var(--rb-blur));
+}
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-dialog__body {
+  padding: var(--rb-space-5);
+}
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-dialog__title {
+  margin: 0 0 var(--rb-space-3);
+  font-family: var(--rb-font-display);
+  font-weight: var(--rb-font-weight-medium);
+  letter-spacing: var(--rb-heading-tracking);
+}
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--rb-space-2);
+  padding: var(--rb-space-3) var(--rb-space-5);
+  border-top: 1px solid var(--rb-border);
+}

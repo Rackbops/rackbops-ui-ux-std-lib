@@ -1,0 +1,78 @@
+/* arcane-parchment — design tokens
+ * The light, AA-tuned counterpart of arcane-obsidian: artifact-console's
+ * "Parchment" scheme. Same structure, class contract, and component CSS as
+ * arcane-obsidian (token-driven) — only the palette and code colours differ.
+ * Consume via:
+ *   @import "@roshne/styles/arcane-parchment/tokens";
+ * or pull the whole theme with ./index.css.
+ *
+ * Nothing applies until an element carries data-rb-style="arcane-parchment".
+ * Every theme declares the same baseline token set (styles/test enforces
+ * parity); names marked (extra) are additions this theme's own component CSS
+ * may rely on. Palette values match artifact-console's light scheme.
+ */
+:where([data-rb-style="arcane-parchment"]) {
+  color-scheme: light;
+
+  /* color — cool off-white parchment, white raised surfaces */
+  --rb-bg: #f6f7f9;
+  --rb-surface: #ffffff;
+  --rb-surface-2: #f1f3f7;
+  --rb-surface-sunken: #edeff3; /* inset fields, log wells */
+  --rb-text: #191d26;
+  --rb-text-soft: #4a5261;
+  --rb-text-faint: #5f6b7d; /* tuned darker than report's #7c8598 so muted-on-surface clears AA */
+  --rb-border: #e2e6ec;
+  --rb-border-strong: #cbd2dc;
+
+  /* accent — arcane-violet, the sole brand voice (darker on light for AA) */
+  --rb-accent: #6a4fe0;
+  --rb-accent-fg: #ffffff; /* white on the solid violet fill */
+  --rb-accent-wash: rgba(106, 79, 224, 0.12);
+
+  /* the ONE gradient — rationed to wordmark + active tab only */
+  --rb-accent-grad: linear-gradient(120deg, #6a4fe0, #a25be0 46%, #d99a2a);
+
+  /* semantic — earned: severity/status only */
+  --rb-info: #1e6fd0;
+  --rb-success: #1f9d57;
+  --rb-warning: #c07d12;
+  --rb-danger: #d64550;
+
+  /* code syntax (extra) — light-tuned; only this theme renders code */
+  --rb-code-keyword: #6a4fe0;
+  --rb-code-string: #0f7a3d;
+  --rb-code-number: #9a6400;
+  --rb-code-comment: #7c8598;
+  --rb-code-function: #1e6fd0;
+  --rb-code-variable: #c2255c;
+  --rb-code-type: #7a3ecc;
+  --rb-code-meta: #5f6b7d;
+
+  /* typography — monospace display voice over a system-ui body; tabular numerals */
+  --rb-font-display: ui-monospace, "Cascadia Code", "Cascadia Mono", "Segoe UI Mono", Consolas, Menlo, monospace;
+  --rb-font-body: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --rb-font-mono: ui-monospace, "Cascadia Code", "Cascadia Mono", "Segoe UI Mono", Consolas, Menlo, monospace;
+  --rb-font-weight: 400;
+  --rb-font-weight-medium: 600;
+  --rb-font-weight-bold: 700;
+  --rb-heading-tracking: -0.01em;
+  --rb-label-tracking: 0.06em;
+  --rb-text-sm: 13px;
+
+  /* shape & effects — flat, compact console radii; soft light shadows */
+  --rb-radius: 0.4375rem; /* 7px */
+  --rb-radius-lg: 0.75rem; /* 12px */
+  --rb-radius-pill: 999px;
+  --rb-shadow-sm: 0 1px 2px rgba(20, 25, 40, 0.06);
+  --rb-shadow-lg: 0 6px 24px rgba(20, 25, 40, 0.1);
+  --rb-blur: 12px;
+  --rb-transition: 0.15s;
+
+  /* spacing — 4px rhythm */
+  --rb-space-1: 0.25rem;
+  --rb-space-2: 0.5rem;
+  --rb-space-3: 0.75rem;
+  --rb-space-4: 1rem;
+  --rb-space-5: 1.5rem;
+}

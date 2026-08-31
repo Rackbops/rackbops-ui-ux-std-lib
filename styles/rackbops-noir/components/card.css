@@ -1,0 +1,37 @@
+/* rackbops-noir — card
+ * A surface panel with a soft resting shadow; hovers lift and deepen — the studio's
+ * service-card motion. A mono kicker tag can sit at the top. */
+:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--rb-surface);
+  border: 1px solid var(--rb-border);
+  border-radius: var(--rb-radius-lg);
+  padding: 26px 24px 28px;
+  box-shadow: var(--rb-shadow-sm);
+  transition:
+    transform 0.16s ease,
+    border-color 0.16s ease,
+    box-shadow 0.16s ease;
+}
+:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--rb-border-strong);
+  box-shadow: var(--rb-shadow-lg);
+}
+:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-card__tag {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--rb-font-mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--rb-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-card {
+    transition: none;
+  }
+}

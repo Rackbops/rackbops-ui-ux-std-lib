@@ -31,10 +31,11 @@ mount container to theme one subtree (embed-safe: the CSS is inert everywhere
 else, and the `:where()` guards are zero-specificity so any consumer rule
 overrides). Several themes can load together; swapping is an attribute flip.
 
-Themes: `arcane-obsidian` (dark developer console) and `rackbops-studio` (light
-editorial studio). Both declare the same `--rb-*` baseline and the same `rb-*`
-classes, so changing the attribute restyles the app without touching markup.
-Fonts are system stacks — nothing to load.
+Themes come as light/dark pairs: `arcane-obsidian` (dark) / `arcane-parchment`
+(light) — the artifact-console developer console; and `rackbops-studio` (light) /
+`rackbops-noir` (dark) — the rackbops editorial studio. All declare the same
+`--rb-*` baseline and the same `rb-*` classes, so changing the attribute restyles
+the app without touching markup. Fonts are system stacks — nothing to load.
 
 The packages publish to **GitHub Packages** (private). Add a one-line `.npmrc`:
 

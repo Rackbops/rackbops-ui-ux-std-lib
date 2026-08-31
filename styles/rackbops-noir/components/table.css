@@ -1,0 +1,31 @@
+/* rackbops-noir — table
+ * A clean editorial table: a strong header rule, generous row padding, a quiet
+ * hover wash. */
+:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 15px;
+}
+:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-table th {
+  text-align: left;
+  padding: var(--rb-space-2) var(--rb-space-3);
+  border-bottom: 2px solid var(--rb-border-strong);
+  color: var(--rb-text-soft); /* text-faint is below AA at header size */
+  font-family: var(--rb-font-mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: var(--rb-font-weight-medium);
+}
+:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-table td {
+  padding: var(--rb-space-2) var(--rb-space-3);
+  border-bottom: 1px solid var(--rb-border);
+  color: var(--rb-text);
+}
+:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-table tbody tr:hover td {
+  background: var(--rb-surface-2);
+}
+:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-table .rb-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}

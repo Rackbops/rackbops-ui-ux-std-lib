@@ -1,0 +1,33 @@
+/* rackbops-noir — dialog
+ * Native <dialog>: a surface pane with the studio's deep lift shadow over a
+ * softly dimmed, blurred backdrop; a heavy editorial title. */
+:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-dialog {
+  padding: 0;
+  border: 1px solid var(--rb-border);
+  border-radius: var(--rb-radius-lg);
+  background: var(--rb-surface);
+  color: var(--rb-text);
+  box-shadow: var(--rb-shadow-lg);
+  max-width: min(92vw, 34rem);
+}
+:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-dialog::backdrop {
+  background: rgba(19, 30, 41, 0.4);
+  backdrop-filter: blur(var(--rb-blur));
+}
+:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-dialog__body {
+  padding: var(--rb-space-5);
+}
+:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-dialog__title {
+  margin: 0 0 var(--rb-space-3);
+  font-family: var(--rb-font-display);
+  font-weight: var(--rb-font-weight-bold);
+  letter-spacing: var(--rb-heading-tracking);
+  font-size: 1.4rem;
+}
+:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--rb-space-2);
+  padding: var(--rb-space-3) var(--rb-space-5);
+  border-top: 1px solid var(--rb-border);
+}

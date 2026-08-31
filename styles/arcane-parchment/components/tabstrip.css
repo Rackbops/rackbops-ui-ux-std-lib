@@ -1,0 +1,35 @@
+/* arcane-parchment — tabstrip (theme extra)
+ * The console's top-level view nav: natural-width bordered pill buttons.
+ * The active button gets accent text + a faint wash and an accent-tinted
+ * border; distinct from the text-underline .rb-tabs used inside a panel. */
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-tabstrip {
+  display: flex;
+  gap: var(--rb-space-2);
+  padding: var(--rb-space-2) 0;
+}
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-tabstrip__tab {
+  position: relative;
+  padding: var(--rb-space-2) var(--rb-space-4);
+  background: var(--rb-surface-2);
+  border: 1px solid var(--rb-border);
+  border-radius: var(--rb-radius);
+  color: var(--rb-text);
+  font-size: var(--rb-text-sm);
+  font-weight: var(--rb-font-weight-medium);
+  cursor: pointer;
+  transition: border-color var(--rb-transition);
+}
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-tabstrip__tab:hover {
+  border-color: var(--rb-accent);
+}
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-tabstrip__tab.rb-tabstrip__tab--active {
+  color: var(--rb-accent);
+  border-color: color-mix(in srgb, var(--rb-accent) 40%, var(--rb-border));
+  background: var(--rb-accent-wash);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-tabstrip__tab {
+    transition: none;
+  }
+}
