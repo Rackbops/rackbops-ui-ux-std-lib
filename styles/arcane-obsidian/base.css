@@ -31,6 +31,26 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* Monospace IS the display voice here — same "Display / wordmark" treatment
+ * design.md documents, wired to bare headings too. */
+:where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *):where(h1, h2, h3, h4, h5, h6) {
+  margin: 0 0 var(--rb-space-3);
+  font-family: var(--rb-font-display);
+  font-weight: var(--rb-font-weight-medium);
+  letter-spacing: var(--rb-heading-tracking);
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+:where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *):where(p) {
+  margin: 0 0 var(--rb-space-3);
+}
+
+:where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *):where(ul, ol) {
+  margin: 0 0 var(--rb-space-3);
+  padding-inline-start: var(--rb-space-4);
+}
+
 :where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *):where(a) {
   color: var(--rb-accent);
 }

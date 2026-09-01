@@ -52,6 +52,10 @@ component). The marketing site itself uses no colour beyond the accent.
   the rack readouts.
 - **Eyebrow:** mono, uppercase, wide-tracked (`0.18em`), accent-coloured, with a
   short leading rule — the kicker above every section headline.
+- **Bare tags:** unclassed `h1`-`h6` carry the same headline treatment above
+  with no `.rb-*` class needed, plus `--rb-space-3` margin below. Bare `p`
+  gets that same margin; bare `ul`/`ol` add it too, with `--rb-space-4`
+  marker indent (real disc/decimal markers, not stripped).
 
 ## Shape & effects
 

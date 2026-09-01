@@ -41,11 +41,23 @@
   background-attachment: fixed;
 }
 
-:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *):where(h1, h2, h3, h4) {
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *):where(h1, h2, h3, h4, h5, h6) {
+  margin: 0 0 var(--rb-space-3);
   font-family: var(--rb-font-display);
   font-weight: var(--rb-font-weight-bold);
   letter-spacing: var(--rb-heading-tracking);
+  line-height: 1.15;
+  text-wrap: balance;
   color: var(--rb-text);
+}
+
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *):where(p) {
+  margin: 0 0 var(--rb-space-3);
+}
+
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *):where(ul, ol) {
+  margin: 0 0 var(--rb-space-3);
+  padding-inline-start: var(--rb-space-4);
 }
 
 :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *):where(a) {
