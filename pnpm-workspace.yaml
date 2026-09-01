@@ -1,3 +1,7 @@
 packages:
   - styles
   - components/*
+allowBuilds:
+  # esbuild (via the tsx devDep, for the ui-react test) resolves its prebuilt platform binary at
+  # runtime without its postinstall, so its build script is not needed here.
+  esbuild: false

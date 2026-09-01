@@ -28,4 +28,11 @@ export {
 } from "./feedback.js";
 export { Dialog, type DialogProps } from "./Dialog.js";
 export { Tabs, type TabsProps, type TabItem } from "./Tabs.js";
+export {
+  LinksIndex,
+  type LinksIndexProps,
+  type LinkItem,
+  type LinkCategory,
+  type LinkUrl,
+} from "./LinksIndex.js";
 export { cx } from "./cx.js";

@@ -22,3 +22,5 @@ jobs:
       - run: pnpm --filter @roshne/styles test
       # Typecheck/build the React package (tsc, strict).
       - run: pnpm --filter @roshne/ui-react build
+      # React component render tests (node:test + tsx + react-dom/server).
+      - run: pnpm --filter @roshne/ui-react test
