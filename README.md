@@ -113,13 +113,25 @@ every manifest-reading consumer.
 
 Merging package changes to `main` runs the `release` workflow: it bumps both
 package versions (patch by default; a `type!:` subject or `BREAKING CHANGE:`
-footer bumps the minor while the major is 0), tags, creates the GitHub release,
-and the tag triggers `publish.yml`, which publishes both packages to GitHub
-Packages.
+footer bumps the minor while the major is 0), tags, and creates the GitHub
+release. Pushing a `v*` tag triggers `publish.yml`, which runs
+`npm publish --access public` for both packages against the public npm
+registry (`registry.npmjs.org`).
 
-> The publish workflow ships wired but is **inert until a `RELEASE_TOKEN` secret
-> is added** (a PAT that can push past branch protection). Until then, cut
-> releases locally with `.github/scripts/release.sh`.
+The two steps are gated by separate secrets:
+
+- **`release`** needs a `RELEASE_TOKEN` (a PAT that can push past branch
+  protection) to create the bump commit and tag. That secret is **not
+  currently configured**, so the workflow runs on every merge to `main` and
+  no-ops (`RELEASE_TOKEN not set — release/publish is inert. Skipping.`).
+  Cut a release by running `.github/scripts/release.sh` locally and pushing
+  the resulting commit and tag yourself.
+- **`publish`** needs an `NPM_TOKEN` (a granular token scoped to `@rackbops`)
+  to authenticate to npm. That secret **is configured and live** — pushing a
+  `v*` tag publishes both packages to public npm. The `v0.1.0` tag that
+  shipped [#9](https://github.com/roshne/rackbops-ui-ux-std-lib/pull/9) was
+  pushed this way, and both packages are published under the `@rackbops`
+  scope.
 
 ## Agent skill
 
