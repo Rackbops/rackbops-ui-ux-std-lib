@@ -83,7 +83,8 @@ Class prefix `rb-`; shared token/class contract with the other themes. No
 - **Button** `.rb-btn` — soft surface-2 ghost by default, sans (not serif);
   `--primary` is the one solid clay fill with a soft shadow-lift on hover (no
   hard transform), `--accent` a clay-wash chip, `--danger` a rose-tinted ghost,
-  `--ghost` chromeless.
+  `--ghost` chromeless. `--sm` is a snugger size for inline and table-row
+  actions — tighter padding, a hair smaller type.
 - **Card** `.rb-card` (+ `--raised`) — solid panel, hairline border, warm
   diffused shadow; any `h1`-`h3` inside goes serif and bold.
 - **NavLink** `.rb-link` — sidebar row; hover fills to surface-2 and lights a

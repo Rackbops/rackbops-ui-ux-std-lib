@@ -93,7 +93,8 @@ the baseline ten — no theme extras.
 - **Button** `.rb-btn` — plain bordered ghost on white by default;
   `--primary` is the one solid accent fill (barely-there shadow lift on
   hover, no transform, no lift); `--accent` an accent-wash chip; `--danger` a
-  danger-colored ghost; `--ghost` chromeless.
+  danger-colored ghost; `--ghost` chromeless. `--sm` is a compact size for
+  inline and table-row actions.
 - **Card** `.rb-card` (+ `--raised`) — white panel; the hairline border does
   most of the definition work since surface equals bg.
 - **NavLink** `.rb-link` — sidebar/tree row; hover fills to surface-2 (the

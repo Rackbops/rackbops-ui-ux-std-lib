@@ -25,6 +25,11 @@
     border-color var(--rb-transition),
     color var(--rb-transition);
 }
+/* --sm: compact size for inline/table-row actions (composes with any variant) */
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-btn--sm {
+  padding: var(--rb-space-1) var(--rb-space-3);
+  font-size: calc(var(--rb-text-sm) - 1px);
+}
 :where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-btn:hover,
 :where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-btn:focus-visible {
   border-color: var(--rb-accent);

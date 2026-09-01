@@ -118,7 +118,8 @@ theme-agnostic). Variants use BEM-ish modifiers (`rb-btn--primary`).
 - **NavLink** `.rb-link` — pill, sky-tint wash, `→` slides 4px on hover;
   `--active` / `[aria-current=page]` becomes the violet underline rule.
 - **Button** `.rb-btn` — glass by default; `--primary` (solid violet CTA, one
-  per view), `--accent` (sky-edged glass), `--ghost`, `--danger`.
+  per view), `--accent` (sky-edged glass), `--ghost`, `--danger`. `--sm` is a
+  compact size for inline and table-row actions — the pill shape is kept.
 - **Form** `.rb-input`, `.rb-textarea`, `.rb-select`, `.rb-label`, `.rb-field`,
   `.rb-checkbox`, `.rb-radio`, `.rb-switch`, `.rb-choice` — sunken fields, no
   resting border, sky-blue ring on focus. The switch is the oversized

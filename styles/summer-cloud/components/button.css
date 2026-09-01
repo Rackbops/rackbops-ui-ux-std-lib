@@ -20,6 +20,12 @@
     box-shadow 0.2s ease,
     transform 0.2s var(--rb-ease-bounce);
 }
+/* --sm: compact size for inline/table-row actions (composes with any variant);
+ * keeps the pill radius inherited from .rb-btn. */
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn--sm {
+  padding: var(--rb-space-1) var(--rb-space-3);
+  font-size: calc(var(--rb-text-sm) - 1px);
+}
 :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn:hover,
 :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn:focus-visible {
   background: rgba(255, 255, 255, 0.6);

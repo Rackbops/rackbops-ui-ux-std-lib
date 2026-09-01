@@ -197,6 +197,21 @@ for (const theme of themeDirs) {
   });
 }
 
+test("every theme's button.css declares a guarded .rb-btn--sm compact variant", () => {
+  // The compact size is part of the button contract: every theme must carry it
+  // so a screen keeps its inline/table-row actions when it swaps data-rb-style.
+  for (const theme of themeDirs) {
+    const file = join(ROOT, theme, "components", "button.css");
+    const { selectors } = parseCss(readFileSync(file, "utf-8"));
+    const guard = `[data-rb-style="${theme}"]`;
+    const sm = selectors.filter((s) => /\.rb-btn--sm(?![\w-])/.test(s));
+    assert.ok(sm.length > 0, `${theme}: button.css is missing a .rb-btn--sm rule`);
+    for (const sel of sm) {
+      assert.ok(sel.includes(guard), `${theme}: unguarded .rb-btn--sm selector: ${sel}`);
+    }
+  }
+});
+
 test("keyframe names are rb-prefixed and unique across all themes", () => {
   const seen = new Map();
   for (const theme of themeDirs) {
