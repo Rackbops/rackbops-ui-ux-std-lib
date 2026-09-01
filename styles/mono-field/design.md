@@ -57,6 +57,11 @@ and the accent itself is spent sparingly — never for decoration.
   but consistent with this one's no-shouting rule.
 - **Size & tracking:** small and tight — `--rb-text-sm` is 13px,
   `--rb-heading-tracking` is `-0.005em`, `--rb-label-tracking` is `0.02em`.
+- **Bare tags:** unclassed `h1`-`h6` pick up the same system-ui voice as the
+  body (weight 600, tracking `-0.005em`, `--rb-space-3` margin below,
+  relaxed `line-height: 1.3` — quiet, not tight). Bare `p` shares that
+  margin; bare `ul`/`ol` add it too, with `--rb-space-4` marker indent (real
+  disc/decimal markers, not stripped).
 
 ## Shape & effects
 

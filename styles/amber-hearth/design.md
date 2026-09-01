@@ -55,6 +55,10 @@ progress fill and every other surface stay solid.
   nearby goes serif.
 - **Labels:** normal-case, weight 600 (`--rb-font-weight-medium`), tracked
   `0.04em`. No uppercase-shouty labels anywhere in this theme.
+- **Bare tags:** unclassed `h1`-`h6` pick up the serif display voice directly
+  — weight 700, tracking `-0.01em`, `--rb-space-3` margin below,
+  `line-height: 1.2`. Bare `p` shares that margin; bare `ul`/`ol` add it too,
+  with `--rb-space-4` marker indent (real disc/decimal markers, not stripped).
 
 ## Shape & effects
 

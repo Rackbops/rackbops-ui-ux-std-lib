@@ -31,6 +31,24 @@
   -webkit-font-smoothing: antialiased;
 }
 
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *):where(h1, h2, h3, h4, h5, h6) {
+  margin: 0 0 var(--rb-space-3);
+  font-family: var(--rb-font-display);
+  font-weight: var(--rb-font-weight-bold);
+  letter-spacing: var(--rb-heading-tracking);
+  line-height: 1.3;
+  text-wrap: balance;
+}
+
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *):where(p) {
+  margin: 0 0 var(--rb-space-3);
+}
+
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *):where(ul, ol) {
+  margin: 0 0 var(--rb-space-3);
+  padding-inline-start: var(--rb-space-4);
+}
+
 :where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *):where(a) {
   color: var(--rb-accent);
 }

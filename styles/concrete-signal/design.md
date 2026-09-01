@@ -53,6 +53,10 @@ gradient has no soft midpoint.
   and sizes align in a column.
 - **Mono:** `ui-monospace` stack reserved for code-shaped content; not the
   display voice.
+- **Bare tags:** unclassed `h1`-`h6` pick up the display voice directly —
+  weight 800, tracking `0.08em`, `--rb-space-3` margin below, tight
+  `line-height: 1.1`. Bare `p` shares that margin; bare `ul`/`ol` add it too,
+  with `--rb-space-4` marker indent (real disc/decimal markers, not stripped).
 
 ## Shape & effects
 

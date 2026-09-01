@@ -33,10 +33,22 @@
  * only serif display voice. Body copy and UI chrome (buttons, labels, table
  * text) stay on the sans body font. */
 :where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *):where(h1, h2, h3, h4, h5, h6) {
+  margin: 0 0 var(--rb-space-3);
   font-family: var(--rb-font-display);
   font-weight: var(--rb-font-weight-bold);
   letter-spacing: var(--rb-heading-tracking);
+  line-height: 1.2;
+  text-wrap: balance;
   color: var(--rb-text);
+}
+
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *):where(p) {
+  margin: 0 0 var(--rb-space-3);
+}
+
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *):where(ul, ol) {
+  margin: 0 0 var(--rb-space-3);
+  padding-inline-start: var(--rb-space-4);
 }
 
 :where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *):where(a) {
