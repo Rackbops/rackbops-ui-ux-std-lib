@@ -4,3 +4,4 @@ _dist/
 *.log
 *.tsbuildinfo
 .DS_Store
+styles/test/.tmp-types-*
