@@ -1,0 +1,7 @@
+/* luminous-precision — muted / empty-state text
+ * Faint secondary text — captions, meta, "No results yet." style empty
+ * states. Italic distinguishes it from regular body copy at a glance. */
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-muted {
+  color: var(--rb-text-faint);
+  font-style: italic;
+}

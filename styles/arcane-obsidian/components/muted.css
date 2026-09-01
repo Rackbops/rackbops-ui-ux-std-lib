@@ -1,0 +1,7 @@
+/* arcane-obsidian — muted / empty-state text
+ * Faint secondary text — captions, meta, "No results yet." style empty
+ * states. Italic distinguishes it from regular body copy at a glance. */
+:where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-muted {
+  color: var(--rb-text-faint);
+  font-style: italic;
+}

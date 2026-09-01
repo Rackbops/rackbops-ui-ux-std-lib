@@ -120,6 +120,11 @@ the baseline ten — no theme extras.
 - **Progress / Spinner** `.rb-progress` (+ `__bar`) / `.rb-spinner` — sunken
   trough, solid accent fill (no gradient here — that stays rationed to tabs
   only).
+- **Muted text** `.rb-muted` — faint secondary/empty-state text;
+  `color: var(--rb-text-faint)` only, no italic — this theme's "close to zero
+  visual flourish" rule rules out a decorative slant too.
+- **Pre / log block** `.rb-pre` — command/log `<pre>`; sunken background,
+  hairline border, radius, small mono, horizontal scroll.
 
 ## Scoping
 

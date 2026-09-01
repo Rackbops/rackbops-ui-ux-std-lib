@@ -132,6 +132,13 @@ theme-agnostic). Variants use BEM-ish modifiers (`rb-btn--primary`).
 - **Table** `.rb-table` — mono uppercase headers, sky-tint row hover; add
   `.rb-num` to numeric cells for the mono/right-aligned treatment.
 - **Progress** `.rb-progress`, **Spinner** `.rb-spinner` — glowing violet.
+- **Muted text** `.rb-muted` — faint secondary/empty-state text;
+  `color: var(--rb-text-faint)`, italic — a friendly, soft touch consistent
+  with the theme's airy, optimistic voice.
+- **Pre / log block** `.rb-pre` — command/log `<pre>`; sunken background,
+  `--rb-outline` hairline (not `--rb-border`, which is the glass-only token
+  and would be invisible on this opaque surface — same choice `.rb-table`
+  makes), radius, small mono, horizontal scroll.
 
 This port carries nazuraki's original component set (plus its `.rb-chip` and
 `.rb-card--floating` extras); the rackbops-specific `eyebrow`, `tabstrip`,

@@ -1,0 +1,14 @@
+/* luminous-precision — command / log block
+ * Styled <pre> for shell commands or short log output: the surface-sunken
+ * well (already the theme's documented "log wells" token), hairline border,
+ * small mono, scrolls horizontally instead of wrapping. */
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-pre {
+  margin: 0;
+  padding: var(--rb-space-3) var(--rb-space-4);
+  background: var(--rb-surface-sunken);
+  border: 1px solid var(--rb-border);
+  border-radius: var(--rb-radius);
+  font-family: var(--rb-font-mono);
+  font-size: var(--rb-text-sm);
+  overflow-x: auto;
+}

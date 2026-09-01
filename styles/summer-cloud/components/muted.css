@@ -1,0 +1,8 @@
+/* summer-cloud — muted / empty-state text
+ * Faint secondary text — captions, meta, "No results yet." style empty
+ * states. Italic gives it a friendly, soft touch consistent with the
+ * theme's airy, optimistic voice. */
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-muted {
+  color: var(--rb-text-faint);
+  font-style: italic;
+}

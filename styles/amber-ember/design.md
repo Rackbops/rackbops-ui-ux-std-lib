@@ -61,9 +61,9 @@ tokens: `.rb-btn` (+ `--primary/--accent/--danger/--ghost`), `.rb-card` (+
 `.rb-textarea` / `.rb-select` / `.rb-label` / `.rb-field` / `.rb-choice` /
 `.rb-checkbox` / `.rb-radio` / `.rb-switch`), `.rb-badge`, `.rb-alert`,
 `.rb-dialog`, `.rb-tabs` / `.rb-tab` / `.rb-tabpanel`, `.rb-table` (+
-`.rb-num`), `.rb-progress` / `.rb-spinner` (keyframe `rb-ember-spin`). See
-amber-hearth's `design.md` for the per-component notes — the behaviour is the
-same; only the palette is dark.
+`.rb-num`), `.rb-progress` / `.rb-spinner` (keyframe `rb-ember-spin`),
+`.rb-muted`, `.rb-pre`. See amber-hearth's `design.md` for the per-component
+notes — the behaviour is the same; only the palette is dark.
 
 ## Light counterpart
 

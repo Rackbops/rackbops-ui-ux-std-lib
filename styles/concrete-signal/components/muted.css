@@ -1,0 +1,7 @@
+/* concrete-signal — muted / empty-state text
+ * Faint secondary text — captions, meta, "No results yet." style empty
+ * states. No italic: brutalism carries its voice through weight, case, and
+ * tracking, never a softening slant. */
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-muted {
+  color: var(--rb-text-faint);
+}

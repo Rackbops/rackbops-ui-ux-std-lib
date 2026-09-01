@@ -1,0 +1,7 @@
+/* amber-ember — muted / empty-state text
+ * Faint secondary text — captions, meta, "No results yet." style empty
+ * states. Italic fits this warm, hand-crafted, unhurried editorial voice. */
+:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-muted {
+  color: var(--rb-text-faint);
+  font-style: italic;
+}

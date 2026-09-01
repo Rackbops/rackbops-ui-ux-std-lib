@@ -114,6 +114,12 @@ the baseline ten — no theme-specific extras.
 - **Progress / Spinner** `.rb-progress` / `.rb-spinner` — sunken square
   trough, solid accent fill (no gradient fill); the spinner keeps the
   zero-radius signature as a square rotating frame.
+- **Muted text** `.rb-muted` — faint secondary/empty-state text;
+  `color: var(--rb-text-faint)` only, no italic — brutalism carries its voice
+  through weight, case, and tracking, never a softening slant.
+- **Pre / log block** `.rb-pre` — command/log `<pre>`; surface-sunken
+  background, hairline border, zero radius (falls out of `--rb-radius`),
+  small mono, horizontal scroll.
 
 ## Light counterpart
 

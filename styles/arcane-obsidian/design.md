@@ -104,6 +104,10 @@ Class prefix `rb-`; shared token/class contract with the other themes.
   accent fill; the spinner is a single accent arc.
 - **Eyebrow** `.rb-eyebrow` — small mono uppercase section label in the accent,
   wide-tracked; subtler than the studio eyebrow (no leading rule).
+- **Muted text** `.rb-muted` — faint secondary/empty-state text;
+  `color: var(--rb-text-faint)`, italic.
+- **Pre / log block** `.rb-pre` — command/log `<pre>`; surface-sunken
+  background, hairline border, radius, small mono, horizontal scroll.
 
 ## Code syntax
 

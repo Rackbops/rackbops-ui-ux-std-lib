@@ -108,6 +108,11 @@ Class prefix `rb-` (shared token/class contract with the other themes).
   the teal left bar.
 - **Progress** `.rb-progress`, **Spinner** `.rb-spinner` — glowing orchid
   indicators (`--accent` bar variant in teal).
+- **Muted text** `.rb-muted` — faint secondary/empty-state text;
+  `color: var(--rb-text-faint)`, italic.
+- **Pre / log block** `.rb-pre` — command/log `<pre>`; the surface-sunken
+  well (already documented above as this theme's "log wells" token),
+  hairline border, radius, small mono, horizontal scroll.
 
 This port carries nazuraki's original component set; the rackbops-specific
 `eyebrow`, `tabstrip`, `wordmark`, and `card--raised` surfaces are not part of
