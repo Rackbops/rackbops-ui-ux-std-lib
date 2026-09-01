@@ -1,7 +1,7 @@
 /* arcane-obsidian — design tokens
  * Reverse-documented from artifact-console's "Arcane Obsidian" theme
  * (artifact-console/static/style.css + report_theme.py). Consume via:
- *   @import "@roshne/styles/arcane-obsidian/tokens";
+ *   @import "@rackbops/styles/arcane-obsidian/tokens";
  * or pull the whole theme with ./index.css.
  *
  * Nothing applies until an element carries data-rb-style="arcane-obsidian"

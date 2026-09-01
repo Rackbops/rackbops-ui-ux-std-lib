@@ -1,5 +1,5 @@
 {
-  "name": "@roshne/styles",
+  "name": "@rackbops/styles",
   "version": "0.1.0",
   "description": "Rackbops design-system styles: tokens, base styles, and component classes per theme.",
   "license": "UNLICENSED",
@@ -9,7 +9,7 @@
     "directory": "styles"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "access": "public"
   },
   "scripts": {
     "test": "node --test"

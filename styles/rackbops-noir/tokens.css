@@ -3,7 +3,7 @@
  * Same structure, class contract, and component CSS as rackbops-studio
  * (token-driven) — only the palette differs, plus a dark-appropriate accent-fg
  * and a lighter accent ramp. Consume via:
- *   @import "@roshne/styles/rackbops-noir/tokens";
+ *   @import "@rackbops/styles/rackbops-noir/tokens";
  * or pull the whole theme with ./index.css.
  *
  * Nothing applies until an element carries data-rb-style="rackbops-noir".

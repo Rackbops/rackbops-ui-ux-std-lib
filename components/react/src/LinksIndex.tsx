@@ -25,8 +25,8 @@ export interface LinksIndexProps extends HTMLAttributes<HTMLDivElement> {
   links: LinkItem[];
 }
 
-// Structural inline layout only -- the card/badge surfaces + colour come from @roshne/styles
-// (rb-card/rb-badge + tokens), so this adds no @roshne/styles classes and the theme contract is
+// Structural inline layout only -- the card/badge surfaces + colour come from @rackbops/styles
+// (rb-card/rb-badge + tokens), so this adds no @rackbops/styles classes and the theme contract is
 // untouched. (Bare-tag heading typography still follows each theme's own base rules.)
 const gridStyle: CSSProperties = {
   display: "grid",

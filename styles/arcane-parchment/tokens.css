@@ -3,7 +3,7 @@
  * "Parchment" scheme. Same structure, class contract, and component CSS as
  * arcane-obsidian (token-driven) — only the palette and code colours differ.
  * Consume via:
- *   @import "@roshne/styles/arcane-parchment/tokens";
+ *   @import "@rackbops/styles/arcane-parchment/tokens";
  * or pull the whole theme with ./index.css.
  *
  * Nothing applies until an element carries data-rb-style="arcane-parchment".

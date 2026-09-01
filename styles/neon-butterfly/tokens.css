@@ -2,7 +2,7 @@
  * Ported from nazuraki/ui-std-lib's @nazuraki/styles "neon-butterfly" theme
  * (MIT, Copyright (c) 2026 nazuraki — see the repo NOTICE), re-namespaced to the
  * rackbops (--rb-*) contract. Consume via:
- *   @import "@roshne/styles/neon-butterfly/tokens";
+ *   @import "@rackbops/styles/neon-butterfly/tokens";
  * or pull the whole theme with ./index.css.
  *
  * Nothing applies until an element carries data-rb-style="neon-butterfly" — set
