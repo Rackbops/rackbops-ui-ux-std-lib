@@ -1,0 +1,49 @@
+/* concrete-signal-light — tabs
+ * Uppercase text tabs; the active tab carries accent text and a hard 3px
+ * underline in the theme's one rationed gradient — its only appearance
+ * outside the token declaration itself. */
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-tabs {
+  display: flex;
+  gap: var(--rb-space-2);
+  border-bottom: 1px solid var(--rb-border);
+}
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-tab {
+  position: relative;
+  padding: var(--rb-space-2) var(--rb-space-4);
+  background: none;
+  border: none;
+  color: var(--rb-text-soft);
+  text-transform: uppercase;
+  font-family: var(--rb-font-body);
+  font-weight: var(--rb-font-weight-bold);
+  font-size: var(--rb-text-sm);
+  letter-spacing: var(--rb-label-tracking);
+  cursor: pointer;
+  transition: color var(--rb-transition);
+}
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-tab:hover {
+  color: var(--rb-text);
+}
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-tab.rb-tab--active,
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-tab[aria-selected="true"] {
+  color: var(--rb-accent);
+}
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-tab.rb-tab--active::after,
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-tab[aria-selected="true"]::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 3px;
+  background: var(--rb-accent-grad);
+}
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-tabpanel {
+  padding: var(--rb-space-4) 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-tab {
+    transition: none;
+  }
+}

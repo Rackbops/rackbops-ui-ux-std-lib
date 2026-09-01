@@ -1,0 +1,20 @@
+/* mono-field — card
+ * White surface; the 1px hairline border does most of the definition work
+ * since surface equals bg in this theme (no color hierarchy between layers). */
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-card {
+  padding: var(--rb-space-5);
+  background: var(--rb-surface);
+  border: 1px solid var(--rb-border);
+  border-radius: var(--rb-radius-lg);
+  color: var(--rb-text);
+  box-shadow: var(--rb-shadow-sm);
+}
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-card > :first-child {
+  margin-top: 0;
+}
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-card > :last-child {
+  margin-bottom: 0;
+}
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-card--raised {
+  box-shadow: var(--rb-shadow-lg);
+}

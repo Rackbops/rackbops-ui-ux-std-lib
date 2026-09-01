@@ -1,0 +1,75 @@
+/* concrete-signal — design tokens
+ * Brutalist industrial: raw poured concrete + hazard signage. The coldest,
+ * hardest theme in the library — zero border-radius everywhere, thick hairline
+ * borders, and hard offset shadows (Npx Npx 0, no blur) instead of glow or
+ * soft blur, so depth reads as literal physical offset, like a stamped card.
+ * Safety-orange is the sole accent, used exactly as functionally as
+ * arcane-obsidian's violet: interaction/focus/emphasis only, never decoration.
+ * Consume via:
+ *   @import "@rackbops/styles/concrete-signal/tokens";
+ * or pull the whole theme with ./index.css.
+ *
+ * Nothing applies until an element carries data-rb-style="concrete-signal" —
+ * set it on <html> for a page, or on any container for an embedded island.
+ * The :where() keeps specificity at zero, so any consumer rule overrides.
+ *
+ * This theme ships its dark, primary look; its light counterpart
+ * "concrete-signal-light" is a separate theme directory with the identical
+ * component contract — only the palette differs.
+ */
+:where([data-rb-style="concrete-signal"]) {
+  color-scheme: dark;
+
+  /* color — raw poured concrete */
+  --rb-bg: #121212;
+  --rb-surface: #1a1a1a;
+  --rb-surface-2: #232323;
+  --rb-surface-sunken: #0a0a0a;
+  --rb-text: #f2f2f0;
+  --rb-text-soft: #b8b8b4;
+  --rb-text-faint: #8f8f8a;
+  --rb-border: #3a3a38;
+  --rb-border-strong: #55534e;
+
+  /* accent — safety-orange is the sole brand voice: interaction/focus/emphasis only */
+  --rb-accent: #ff5e1a;
+  --rb-accent-fg: #121212;
+  --rb-accent-wash: rgba(255, 94, 26, 0.16);
+
+  /* the ONE gradient — rationed to the active-tab underline only */
+  --rb-accent-grad: linear-gradient(90deg, #ff5e1a, #e8342a);
+
+  /* semantic — colour beyond the accent is earned: severity/status only */
+  --rb-info: #4ea1e0;
+  --rb-success: #4caa5c;
+  --rb-warning: #e8b23a;
+  --rb-danger: #e8342a;
+
+  /* typography — system-ui throughout; the industrial voice comes from
+     weight/case/tracking, not font family */
+  --rb-font-display: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --rb-font-body: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --rb-font-mono: ui-monospace, "Cascadia Code", "Cascadia Mono", "Segoe UI Mono", Consolas, Menlo, monospace;
+  --rb-font-weight: 400;
+  --rb-font-weight-medium: 600;
+  --rb-font-weight-bold: 800;
+  --rb-heading-tracking: 0.01em;
+  --rb-label-tracking: 0.08em;
+  --rb-text-sm: 13px;
+
+  /* shape & effects — zero radius everywhere; hard offset shadows, no blur */
+  --rb-radius: 0;
+  --rb-radius-lg: 0;
+  --rb-radius-pill: 0.125rem; /* deliberately near-square, not a true pill — brutalism has no soft pills */
+  --rb-shadow-sm: 2px 2px 0 rgba(0, 0, 0, 0.6);
+  --rb-shadow-lg: 4px 4px 0 rgba(0, 0, 0, 0.6);
+  --rb-blur: 0px; /* this theme never uses blur/glass */
+  --rb-transition: 0.1s; /* snappy; brutalism doesn't ease */
+
+  /* spacing — 4px rhythm */
+  --rb-space-1: 0.25rem;
+  --rb-space-2: 0.5rem;
+  --rb-space-3: 0.75rem;
+  --rb-space-4: 1rem;
+  --rb-space-5: 1.5rem;
+}

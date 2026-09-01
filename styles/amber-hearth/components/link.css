@@ -1,0 +1,47 @@
+/* amber-hearth — nav link (tree/sidebar row)
+ * A list row; hover fills to surface-2 and lights a soft, fully-rounded accent
+ * bar on the left edge — round, not a hard-edged rule, to match the theme's
+ * rounded character. Active carries the accent wash. */
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--rb-space-2);
+  padding: var(--rb-space-2) var(--rb-space-3);
+  border-radius: var(--rb-radius);
+  color: var(--rb-text);
+  font-size: var(--rb-text-sm);
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background var(--rb-transition),
+    color var(--rb-transition);
+}
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-link:hover {
+  background: var(--rb-surface-2);
+}
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-link::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  border-radius: var(--rb-radius-pill);
+  background: transparent;
+  transition: background var(--rb-transition);
+}
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-link:hover::before,
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-link.rb-link--active::before {
+  background: var(--rb-accent);
+}
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-link.rb-link--active {
+  background: var(--rb-accent-wash);
+  color: var(--rb-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-link {
+    transition: none;
+  }
+}

@@ -1,0 +1,61 @@
+/* amber-hearth — base styles
+ * Scoped defaults. Requires tokens.css. Fonts are system stacks (a system serif
+ * for display, system-ui for body) — nothing to load, no webfont network hop.
+ *
+ * The element carrying data-rb-style is the theme's canvas: it gets the
+ * background, text color, and body font — whether that is <html> for a page
+ * or a mount container for an embedded island. Page-only rules (body margin,
+ * viewport height) apply only when the attribute sits on <html>.
+ */
+:where([data-rb-style="amber-hearth"]) {
+  background-color: var(--rb-bg);
+  color: var(--rb-text);
+  font-family: var(--rb-font-body);
+  font-weight: var(--rb-font-weight);
+}
+
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *),
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *)::before,
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *)::after {
+  box-sizing: border-box;
+}
+
+:where(html[data-rb-style="amber-hearth"]) body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--rb-bg);
+  color: var(--rb-text);
+  font-family: var(--rb-font-body);
+  font-weight: var(--rb-font-weight);
+}
+
+/* Headings and titles are the one place this theme goes serif — the library's
+ * only serif display voice. Body copy and UI chrome (buttons, labels, table
+ * text) stay on the sans body font. */
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *):where(h1, h2, h3, h4, h5, h6) {
+  margin: 0 0 var(--rb-space-3);
+  font-family: var(--rb-font-display);
+  font-weight: var(--rb-font-weight-bold);
+  letter-spacing: var(--rb-heading-tracking);
+  line-height: 1.2;
+  text-wrap: balance;
+  color: var(--rb-text);
+}
+
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *):where(p) {
+  margin: 0 0 var(--rb-space-3);
+}
+
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *):where(ul, ol) {
+  margin: 0 0 var(--rb-space-3);
+  padding-inline-start: var(--rb-space-4);
+}
+
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *):where(a) {
+  color: var(--rb-accent);
+}
+
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *)::selection {
+  background: var(--rb-accent);
+  color: var(--rb-accent-fg);
+}

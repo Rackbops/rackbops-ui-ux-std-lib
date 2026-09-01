@@ -1,0 +1,75 @@
+/* amber-ember — button
+ * Soft surface-2 ghost by default; --primary is the one solid amber fill. Buttons
+ * stay on the sans body voice (serif is reserved for headings/titles). Hover
+ * lifts via a softer shadow, never a hard transform — cozy, not snappy. */
+:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--rb-space-2);
+  padding: var(--rb-space-2) var(--rb-space-4);
+  background: var(--rb-surface-2);
+  border: 1px solid var(--rb-border);
+  border-radius: var(--rb-radius);
+  color: var(--rb-text);
+  font-family: var(--rb-font-body);
+  font-weight: var(--rb-font-weight-medium);
+  font-size: var(--rb-text-sm);
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background var(--rb-transition),
+    border-color var(--rb-transition),
+    color var(--rb-transition),
+    box-shadow var(--rb-transition);
+}
+:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-btn:hover,
+:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-btn:focus-visible {
+  border-color: var(--rb-border-strong);
+  outline: none;
+}
+:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-btn--primary {
+  background: var(--rb-accent);
+  border-color: var(--rb-accent);
+  color: var(--rb-accent-fg);
+  box-shadow: var(--rb-shadow-sm);
+}
+:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-btn--primary:hover,
+:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-btn--primary:focus-visible {
+  box-shadow: var(--rb-shadow-lg);
+}
+:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-btn--accent {
+  background: var(--rb-accent-wash);
+  border-color: transparent;
+  color: var(--rb-accent);
+}
+:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-btn--danger {
+  background: transparent;
+  border-color: color-mix(in srgb, var(--rb-danger) 40%, var(--rb-border));
+  color: var(--rb-danger);
+}
+:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-btn--danger:hover,
+:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-btn--danger:focus-visible {
+  border-color: var(--rb-danger);
+}
+:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-btn--ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--rb-text-soft);
+}
+:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-btn--ghost:hover,
+:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-btn--ghost:focus-visible {
+  background: var(--rb-surface-2);
+  border-color: var(--rb-border);
+  color: var(--rb-text);
+}
+:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-btn {
+    transition: none;
+  }
+}

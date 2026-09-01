@@ -1,0 +1,24 @@
+/* amber-hearth — card
+ * Solid raised panel, generously rounded, warm diffused shadow. A heading
+ * (h1-h3) inside a card is the theme's serif display voice, styled bold. */
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-card {
+  background: var(--rb-surface);
+  border: 1px solid var(--rb-border);
+  border-radius: var(--rb-radius-lg);
+  padding: var(--rb-space-5);
+  color: var(--rb-text);
+  box-shadow: var(--rb-shadow-sm);
+}
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-card--raised {
+  background: var(--rb-surface-2);
+  box-shadow: var(--rb-shadow-lg);
+}
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-card > :where(h1, h2, h3):first-child {
+  margin-top: 0;
+}
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-card :where(h1, h2, h3) {
+  font-family: var(--rb-font-display);
+  font-weight: var(--rb-font-weight-bold);
+  letter-spacing: var(--rb-heading-tracking);
+  color: var(--rb-text);
+}

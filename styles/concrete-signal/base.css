@@ -1,0 +1,57 @@
+/* concrete-signal — base styles
+ * Scoped defaults. Requires tokens.css. Fonts are a system stack — nothing to
+ * load; the industrial voice comes from weight/case/tracking, not font family.
+ *
+ * The element carrying data-rb-style is the theme's canvas: it gets the
+ * background, text color, and body font — whether that is <html> for a page
+ * or a mount container for an embedded island. Page-only rules (body margin,
+ * viewport height) apply only when the attribute sits on <html>.
+ */
+:where([data-rb-style="concrete-signal"]) {
+  background-color: var(--rb-bg);
+  color: var(--rb-text);
+  font-family: var(--rb-font-body);
+  font-weight: var(--rb-font-weight);
+}
+
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *),
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *)::before,
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *)::after {
+  box-sizing: border-box;
+}
+
+:where(html[data-rb-style="concrete-signal"]) body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--rb-bg);
+  color: var(--rb-text);
+  font-family: var(--rb-font-body);
+  font-weight: var(--rb-font-weight);
+}
+
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *):where(h1, h2, h3, h4, h5, h6) {
+  margin: 0 0 var(--rb-space-3);
+  font-family: var(--rb-font-display);
+  font-weight: var(--rb-font-weight-bold);
+  letter-spacing: var(--rb-heading-tracking);
+  line-height: 1.1;
+  text-wrap: balance;
+}
+
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *):where(p) {
+  margin: 0 0 var(--rb-space-3);
+}
+
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *):where(ul, ol) {
+  margin: 0 0 var(--rb-space-3);
+  padding-inline-start: var(--rb-space-4);
+}
+
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *):where(a) {
+  color: var(--rb-accent);
+}
+
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *)::selection {
+  background: var(--rb-accent);
+  color: var(--rb-accent-fg);
+}

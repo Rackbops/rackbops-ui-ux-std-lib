@@ -1,0 +1,33 @@
+/* amber-hearth — dialog
+ * Native <dialog>: a raised, generously rounded panel over a blurred backdrop.
+ * The title is the theme's serif display voice, set bold. */
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-dialog {
+  padding: 0;
+  border: 1px solid var(--rb-border-strong);
+  border-radius: var(--rb-radius-lg);
+  background: var(--rb-surface);
+  color: var(--rb-text);
+  box-shadow: var(--rb-shadow-lg);
+  max-width: min(92vw, 34rem);
+}
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-dialog::backdrop {
+  background: rgba(43, 31, 20, 0.4);
+  backdrop-filter: blur(var(--rb-blur));
+}
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-dialog__body {
+  padding: var(--rb-space-5);
+}
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-dialog__title {
+  margin: 0 0 var(--rb-space-3);
+  font-family: var(--rb-font-display);
+  font-weight: var(--rb-font-weight-bold);
+  letter-spacing: var(--rb-heading-tracking);
+  color: var(--rb-text);
+}
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--rb-space-2);
+  padding: var(--rb-space-3) var(--rb-space-5);
+  border-top: 1px solid var(--rb-border);
+}

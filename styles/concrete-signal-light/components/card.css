@@ -1,0 +1,21 @@
+/* concrete-signal-light — card
+ * A poured-concrete panel: square corners, a thicker-than-usual structural
+ * border, and a hard offset shadow instead of blur — depth reads as a
+ * physically stamped slab, not a glow. */
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-card {
+  padding: var(--rb-space-5);
+  background: var(--rb-surface);
+  border: 1px solid var(--rb-border-strong);
+  border-radius: var(--rb-radius);
+  color: var(--rb-text);
+  box-shadow: var(--rb-shadow-sm);
+}
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-card--raised {
+  box-shadow: var(--rb-shadow-lg);
+}
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-card > :first-child {
+  margin-top: 0;
+}
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-card > :last-child {
+  margin-bottom: 0;
+}
