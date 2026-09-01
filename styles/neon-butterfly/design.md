@@ -55,6 +55,11 @@ appear only on interaction or state. Never use pure white or pure black.
 - **Interactive text** (buttons, links, tabs, labels, table headers): uppercase,
   700, 14px (labels/headers 11–12px), letter-spacing `0.1em` (`--rb-label-tracking`).
 - **Body text:** sentence case, 450.
+- **Bare tags:** unclassed `h1`-`h6` carry the mono voice at 700 (the same
+  weight as everything else marked "interactive" — only 450/700 load), with
+  the wide `--rb-heading-tracking` (`0.1em`) and `--rb-space-3` margin below.
+  Bare `p` shares that margin; bare `ul`/`ol` add it too, with `--rb-space-4`
+  marker indent (real disc/decimal markers, not stripped).
 
 Webfonts (JetBrains Mono) are declared in `styles/manifest.json`
 (`neon-butterfly.fonts`); consumers load that stylesheet or self-host, and the

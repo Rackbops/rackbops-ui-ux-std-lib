@@ -66,6 +66,11 @@ Webfonts are declared in `styles/manifest.json` (`luminous-precision.fonts`);
 consumers load that stylesheet (Sora + JetBrains Mono) or self-host. The token
 stacks fall back to system families when the webfonts are absent.
 
+Bare (unclassed) `h1`-`h6` carry the Sora display voice directly — weight 600,
+`--rb-heading-tracking`, `--rb-space-3` margin below. Bare `p` shares that
+margin; bare `ul`/`ol` add it too, with `--rb-space-4` marker indent (real
+disc/decimal markers, not stripped).
+
 ## Shape & effects
 
 - Radius `0.5rem` for buttons and inputs; `1rem` for cards, dialogs, and large

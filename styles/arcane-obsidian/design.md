@@ -51,6 +51,12 @@ Muted-on-surface is tuned to clear WCAG AA (4.5:1) on every surface; the light
 - **Numerals:** `font-variant-numeric: tabular-nums` everywhere data is shown.
 - **Labels** (eyebrows, badges, table headers): mono, uppercase, ~11px, tracked
   `0.06em`.
+- **Bare tags:** unclassed `h1`-`h6` pick up the mono display voice directly —
+  weight 600, tracking `-0.01em`, `--rb-space-3` margin below. `.rb-card`
+  renders a bare `<h3>` and gets this treatment too, since `card.css` declares
+  no heading rule of its own. Bare `p` shares that margin; bare `ul`/`ol` add
+  it too, with `--rb-space-4` marker indent (real disc/decimal markers, not
+  stripped).
 
 ## Shape & effects
 

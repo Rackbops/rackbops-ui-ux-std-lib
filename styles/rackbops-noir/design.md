@@ -46,6 +46,9 @@ Identical to rackbops-studio: the system sans at weight **800** for headlines
 (tracking `-0.02em`, `text-wrap: balance`), the same sans body, and the mono voice
 (`ui-monospace, "SF Mono", …`) for eyebrows, nav, tags, and the rack readouts. The
 eyebrow is mono, uppercase, tracked `0.18em`, accent-coloured, with a leading rule.
+Bare `h1`-`h6`/`p`/`ul`/`ol` get the same treatment as rackbops-studio too:
+unclassed headlines, `--rb-space-3` margin on headings/paragraphs/lists, and
+`--rb-space-4` marker indent with real disc/decimal markers on `ul`/`ol`.
 
 ## Shape & effects
 

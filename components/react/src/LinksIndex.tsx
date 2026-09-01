@@ -33,8 +33,9 @@ const gridStyle: CSSProperties = {
   gridTemplateColumns: "repeat(auto-fill, minmax(16rem, 1fr))",
   gap: "var(--rb-space-4)",
 };
-// Reset the url list structurally (no bullets/indent) so it renders the same under every theme --
-// the themes don't all reset a bare `ul`.
+// Reset the url list structurally (no bullets/indent) -- this is a link-nav list, not prose, so it
+// deliberately opts out of the themes' bare `ul` treatment (disc markers + indent) rather than
+// working around an inconsistency between them.
 const listStyle: CSSProperties = { listStyle: "none", margin: 0, padding: 0 };
 
 // External = an http(s) or protocol-relative (`//host`) url -> opens in a new tab; anything else

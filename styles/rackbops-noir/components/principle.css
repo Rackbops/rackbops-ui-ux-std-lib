@@ -23,6 +23,7 @@
   padding-top: 3px;
 }
 :where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-principle__body h3 {
+  margin: 0; /* the tight 7px gap below is the following p's own margin-top */
   font-size: 1.16rem;
 }
 :where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-principle__body p {
