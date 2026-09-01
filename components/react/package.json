@@ -2,7 +2,7 @@
   "name": "@rackbops/ui-react",
   "version": "0.1.0",
   "description": "React components styled by @rackbops/styles rackbops themes.",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/roshne/rackbops-ui-ux-std-lib.git",

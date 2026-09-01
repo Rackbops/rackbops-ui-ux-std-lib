@@ -2,7 +2,7 @@
   "name": "@rackbops/styles",
   "version": "0.1.0",
   "description": "Rackbops design-system styles: tokens, base styles, and component classes per theme.",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/roshne/rackbops-ui-ux-std-lib.git",
