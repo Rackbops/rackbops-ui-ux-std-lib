@@ -107,7 +107,7 @@ Class prefix `rb-` (shared token/class contract with the other themes).
 This port carries nazuraki's original component set; the rackbops-specific
 `eyebrow`, `tabstrip`, `wordmark`, and `card--raised` surfaces are not part of
 it. It also keeps nazuraki's `.rb-badge--primary` variant (orchid pill), which
-the other rackbops themes don't define — a `@roshne/ui-react` `Badge` never
+the other rackbops themes don't define — a `@rackbops/ui-react` `Badge` never
 emits it, so it is a theme extra, harmless where unused.
 
 ## Code syntax

@@ -4,10 +4,10 @@ Private UX/design-standards library for roshne's apps — the same shape as
 [`nazuraki/ui-std-lib`](https://github.com/nazuraki/ui-std-lib), re-namespaced to
 the rackbops brand (`--rb-*`, `.rb-*`, `data-rb-style`). Two layers:
 
-- **`styles/`** (`@roshne/styles`) — framework-agnostic CSS: design tokens, base
+- **`styles/`** (`@rackbops/styles`) — framework-agnostic CSS: design tokens, base
   styles, and component classes, organized per theme. Any app (React, Svelte,
   plain HTML) can adopt this layer immediately.
-- **`components/react/`** (`@roshne/ui-react`) — React components that render the
+- **`components/react/`** (`@rackbops/ui-react`) — React components that render the
   style layer's classes, for behavior-heavy UI.
 
 Each theme is a **design language** captured as a written `design.md` spec plus
@@ -34,7 +34,7 @@ One `--rb-*` / `rb-*` contract, so any two swap with a single `data-rb-style` fl
 
 Each theme ships a `design.md` — a written spec of the aesthetic (palette,
 typography, shape rules, component inventory). Read it before designing new
-screens. `styles/manifest.json` (exported as `@roshne/styles/manifest`) is the
+screens. `styles/manifest.json` (exported as `@rackbops/styles/manifest`) is the
 machine-readable roster. Most themes use system stacks (`system-ui` +
 `ui-monospace`) — nothing to load. A theme that needs webfonts (e.g.
 `luminous-precision`: Sora + JetBrains Mono) lists its stylesheet URL(s) in that
@@ -44,20 +44,19 @@ showcase does this on theme switch). Ported themes are credited in
 
 ## Consuming
 
-The packages publish to **GitHub Packages** (private, tied to the `roshne`
-account — hence the `@roshne` scope while the design namespace stays `rb`). Add a
-one-line `.npmrc` with a `read:packages` token:
+The packages publish to **public npm** under the `@rackbops` scope (the *design*
+namespace stays `rb` — don't conflate). No auth or `.npmrc` needed:
 
-```
-@roshne:registry=https://npm.pkg.github.com
+```bash
+npm install @rackbops/styles @rackbops/ui-react
 ```
 
 ### Styles (any app)
 
 ```css
-@import "@roshne/styles/arcane-obsidian";        /* full theme */
-@import "@roshne/styles/arcane-obsidian/tokens";  /* tokens only */
-@import "@roshne/styles/all";                     /* every theme, for runtime switching */
+@import "@rackbops/styles/arcane-obsidian";        /* full theme */
+@import "@rackbops/styles/arcane-obsidian/tokens";  /* tokens only */
+@import "@rackbops/styles/all";                     /* every theme, for runtime switching */
 ```
 
 ```html
@@ -76,8 +75,8 @@ via a git dependency instead of a CDN link.
 ### React components
 
 ```tsx
-import "@roshne/styles/arcane-obsidian";
-import { Button, Card, NavLink } from "@roshne/ui-react";
+import "@rackbops/styles/arcane-obsidian";
+import { Button, Card, NavLink } from "@rackbops/ui-react";
 ```
 
 Import a theme's CSS once at the app root; components carry only class names
@@ -101,8 +100,8 @@ rackbops.com uses.
 ```bash
 pnpm install
 pnpm build                              # tsc the React package
-pnpm --filter @roshne/styles test       # theme contract + release-bump tests
-pnpm --filter @roshne/ui-react test     # typecheck + render-to-string component tests
+pnpm --filter @rackbops/styles test       # theme contract + release-bump tests
+pnpm --filter @rackbops/ui-react test     # typecheck + render-to-string component tests
 ```
 
 The contract test (`styles/test/contract.test.mjs`) enforces the theme rules:
@@ -132,13 +131,13 @@ app repo by symlinking or copying into `.claude/skills/design-system/`.
 ## Layout
 
 ```
-styles/                    @roshne/styles
+styles/                    @rackbops/styles
   manifest.json            theme roster: name, scheme, fonts
   all.css                  every theme in one import
   arcane-obsidian/         tokens.css, base.css, components/*.css, index.css, design.md
   rackbops-studio/         same layout + assets/boppy.svg + studio extras
   test/                    contract + release-bump tests (node:test)
-components/react/          @roshne/ui-react (tsc -> dist/)
+components/react/          @rackbops/ui-react (tsc -> dist/)
 site/                      local showcase (index.html + serve.mjs, no build)
 skills/design-system/      agent skill for consuming the system
 ```

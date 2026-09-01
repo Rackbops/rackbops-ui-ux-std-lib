@@ -106,7 +106,7 @@ family.
 
 ## Components
 
-Class prefix `rb-` (shared across themes so `@roshne/ui-react` stays
+Class prefix `rb-` (shared across themes so `@rackbops/ui-react` stays
 theme-agnostic). Variants use BEM-ish modifiers (`rb-btn--primary`).
 
 - **Card** `.rb-card` — glass panel; `--floating` adds the Level 2 hover lift.

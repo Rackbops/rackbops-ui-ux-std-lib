@@ -19,8 +19,8 @@ jobs:
           node-version: 24
       - run: pnpm install --frozen-lockfile
       # Theme contract + release-bump tests (node:test, no runtime deps).
-      - run: pnpm --filter @roshne/styles test
+      - run: pnpm --filter @rackbops/styles test
       # Typecheck/build the React package (tsc, strict).
-      - run: pnpm --filter @roshne/ui-react build
+      - run: pnpm --filter @rackbops/ui-react build
       # React component render tests (node:test + tsx + react-dom/server).
-      - run: pnpm --filter @roshne/ui-react test
+      - run: pnpm --filter @rackbops/ui-react test

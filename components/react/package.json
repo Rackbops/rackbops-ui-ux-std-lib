@@ -1,7 +1,7 @@
 {
-  "name": "@roshne/ui-react",
+  "name": "@rackbops/ui-react",
   "version": "0.1.0",
-  "description": "React components styled by @roshne/styles rackbops themes.",
+  "description": "React components styled by @rackbops/styles rackbops themes.",
   "license": "UNLICENSED",
   "repository": {
     "type": "git",
@@ -9,7 +9,7 @@
     "directory": "components/react"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "access": "public"
   },
   "type": "module",
   "files": [

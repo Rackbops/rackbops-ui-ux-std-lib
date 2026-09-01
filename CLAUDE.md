@@ -26,8 +26,8 @@ one of roshne's apps, some ported (and credited) from `nazuraki/ui-std-lib`
 Run it before staging:
 
 ```bash
-pnpm --filter @roshne/styles test    # contract + release-bump tests
-pnpm --filter @roshne/ui-react test  # React component render tests
+pnpm --filter @rackbops/styles test    # contract + release-bump tests
+pnpm --filter @rackbops/ui-react test  # React component render tests
 pnpm build                           # tsc the React package
 ```
 
@@ -49,8 +49,8 @@ or nazuraki's upstream CSS) before writing them.
 ## Conventions
 
 - **Namespace:** `--rb-*` tokens, `.rb-*` classes, `data-rb-style="<theme>"`.
-  Package scope is `@roshne` (GitHub Packages ties the npm scope to the account);
-  the *design* namespace is `rb`. Don't conflate them.
+  Package scope is `@rackbops` (its own public npm scope); the *design* namespace
+  is `rb`. Don't conflate them.
 - **Fonts: system stacks by default.** Themes reverse-documented from roshne's
   apps use `system-ui` + `ui-monospace` stacks and carry an empty `manifest.json`
   fonts array. A ported theme that needs webfonts (e.g. `luminous-precision`:

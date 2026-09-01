@@ -1,6 +1,6 @@
 /* rackbops-studio — design tokens
  * Reverse-documented from rackbops.com (rackbops/site/index.html). Consume via:
- *   @import "@roshne/styles/rackbops-studio/tokens";
+ *   @import "@rackbops/styles/rackbops-studio/tokens";
  * or pull the whole theme with ./index.css.
  *
  * Nothing applies until an element carries data-rb-style="rackbops-studio"

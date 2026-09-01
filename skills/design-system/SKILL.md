@@ -1,6 +1,6 @@
 ---
 name: design-system
-description: Use the rackbops ui/ux std-lib design system when building or restyling UI in roshne's apps. Trigger whenever creating pages, components, forms, dialogs, or styling in a repo that adopts a rackbops theme — the app should consume @roshne/styles and @roshne/ui-react rather than ad-hoc CSS or one-off components.
+description: Use the rackbops ui/ux std-lib design system when building or restyling UI in roshne's apps. Trigger whenever creating pages, components, forms, dialogs, or styling in a repo that adopts a rackbops theme — the app should consume @rackbops/styles and @rackbops/ui-react rather than ad-hoc CSS or one-off components.
 ---
 
 # Using the rackbops design system
@@ -35,27 +35,28 @@ Themes come as light/dark pairs: `arcane-obsidian` (dark) / `arcane-parchment`
 (light) — the artifact-console developer console; and `rackbops-studio` (light) /
 `rackbops-noir` (dark) — the rackbops editorial studio. All declare the same
 `--rb-*` baseline and the same `rb-*` classes, so changing the attribute restyles
-the app without touching markup. Fonts are system stacks — nothing to load.
+the app without touching markup. Fonts are system stacks for the app themes; the
+ported themes (e.g. `luminous-precision`) declare webfont URLs in the manifest.
 
-The packages publish to **GitHub Packages** (private). Add a one-line `.npmrc`:
+The packages publish to **public npm** under `@rackbops` — no auth needed:
 
+```bash
+npm install @rackbops/styles @rackbops/ui-react
 ```
-@roshne:registry=https://npm.pkg.github.com
-```
 
-with a token that has `read:packages`, then:
+then:
 
 ```tsx
-import "@roshne/styles/arcane-obsidian"; // one theme…
-import "@roshne/styles/all";             // …or all of them, for runtime switching
-import { Button, Card, Dialog, Tabs, Field, Input, Alert } from "@roshne/ui-react";
+import "@rackbops/styles/arcane-obsidian"; // one theme…
+import "@rackbops/styles/all";             // …or all of them, for runtime switching
+import { Button, Card, Dialog, Tabs, Field, Input, Alert } from "@rackbops/ui-react";
 ```
 
 ```html
 <html data-rb-style="arcane-obsidian">
 ```
 
-`@roshne/styles/manifest` is the machine-readable roster — theme names and
+`@rackbops/styles/manifest` is the machine-readable roster — theme names and
 scheme (`dark`/`light`). Validate configured theme names from it rather than
 hardcoding a list. No-build / private-repo apps can consume the CSS via a git
 dependency (jsDelivr can't serve a private repo).
@@ -97,5 +98,5 @@ Copy the `styles/arcane-obsidian/` layout: `tokens.css` (the full baseline
 2. `styles/package.json` — add the directory to `files` and its four `exports`.
 3. `README.md` — the themes table.
 
-Run `pnpm --filter @roshne/styles test` — the contract test enforces all of the
+Run `pnpm --filter @rackbops/styles test` — the contract test enforces all of the
 above and is the definition of done.
