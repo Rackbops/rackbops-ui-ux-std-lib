@@ -1,0 +1,109 @@
+/* summer-cloud — button: pill-shaped, bouncy, tinted-shadow lift */
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--rb-space-2);
+  padding: 0.75rem var(--rb-space-4);
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid var(--rb-border);
+  border-radius: var(--rb-radius-pill);
+  color: var(--rb-text-faint);
+  font-family: var(--rb-font-display);
+  font-weight: var(--rb-font-weight-medium);
+  font-size: var(--rb-text-sm);
+  cursor: pointer;
+  transition:
+    background var(--rb-transition),
+    border-color var(--rb-transition),
+    color var(--rb-transition),
+    box-shadow 0.2s ease,
+    transform 0.2s var(--rb-ease-bounce);
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn:hover,
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn:focus-visible {
+  background: rgba(255, 255, 255, 0.6);
+  border-color: var(--rb-accent-border);
+  color: var(--rb-accent);
+  transform: scale(1.03);
+  outline: none;
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn:focus-visible {
+  box-shadow: 0 0 0 4px var(--rb-accent-2-glow);
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn:active {
+  transform: scale(0.95);
+}
+
+/* Primary — the solid violet CTA. One per view. */
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn--primary {
+  background: var(--rb-accent);
+  border-color: transparent;
+  color: #fff;
+  font-weight: var(--rb-font-weight-bold);
+  box-shadow: var(--rb-shadow-raised);
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn--primary:hover {
+  background: var(--rb-accent-bright);
+  color: #fff;
+  box-shadow: var(--rb-shadow-raised-hover);
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn--primary:focus-visible {
+  background: var(--rb-accent-bright);
+  color: #fff;
+  box-shadow: var(--rb-shadow-raised-hover), 0 0 0 4px var(--rb-accent-glow);
+}
+
+/* Accent — glass with a sky-blue edge, for the secondary path. */
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn--accent {
+  border-color: var(--rb-accent-2);
+  color: var(--rb-accent-2-deep);
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn--accent:hover,
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn--accent:focus-visible {
+  color: var(--rb-accent-2-deep);
+  box-shadow: 0 0 0 4px var(--rb-accent-2-glow);
+}
+
+/* Ghost — no chrome until hovered. */
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn--ghost {
+  background: none;
+  border-color: transparent;
+  box-shadow: none;
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn--ghost:hover,
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn--ghost:focus-visible {
+  background: var(--rb-sky-tint);
+}
+
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn--danger {
+  background: var(--rb-danger-deep);
+  border-color: transparent;
+  color: #fff;
+  font-weight: var(--rb-font-weight-bold);
+  box-shadow: 0 4px 14px rgba(204, 31, 31, 0.39);
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn--danger:hover,
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn--danger:focus-visible {
+  background: var(--rb-danger);
+  color: #4a0000;
+  box-shadow: 0 6px 20px rgba(255, 77, 77, 0.5);
+}
+
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn {
+    transition: background var(--rb-transition), color var(--rb-transition);
+  }
+  :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn:hover,
+  :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn:focus-visible,
+  :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn:active {
+    transform: none;
+  }
+}

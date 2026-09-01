@@ -1,0 +1,30 @@
+/* summer-cloud — dialog (native <dialog>): the floating tier, fully opaque */
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-dialog {
+  padding: var(--rb-space-5);
+  max-width: 32rem;
+  width: calc(100vw - 2rem);
+  background: var(--rb-surface);
+  border: 1px solid var(--rb-border);
+  border-radius: var(--rb-radius);
+  color: var(--rb-text);
+  font-family: var(--rb-font-body);
+  box-shadow: var(--rb-shadow-lg);
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-dialog::backdrop {
+  background: rgba(23, 28, 31, 0.3);
+  backdrop-filter: blur(4px);
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-dialog__title {
+  margin: 0 0 var(--rb-space-3);
+  color: var(--rb-accent);
+  font-family: var(--rb-font-display);
+  font-size: 1.5rem;
+  font-weight: var(--rb-font-weight-bold);
+  letter-spacing: var(--rb-heading-tracking);
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--rb-space-2);
+  margin-top: var(--rb-space-5);
+}

@@ -1,0 +1,17 @@
+/* neon-butterfly — badge */
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-badge {
+  display: inline-block;
+  padding: 0.15rem var(--rb-space-2);
+  border: 1px solid var(--rb-border);
+  border-radius: var(--rb-radius);
+  color: var(--rb-text-faint);
+  text-transform: uppercase;
+  font-size: 11px;
+  font-weight: var(--rb-font-weight-bold);
+  letter-spacing: var(--rb-label-tracking);
+}
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-badge--primary { border-color: var(--rb-accent-border); color: var(--rb-accent); }
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-badge--info    { border-color: var(--rb-info);    color: var(--rb-info); }
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-badge--success { border-color: var(--rb-success); color: var(--rb-success); }
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-badge--warning { border-color: var(--rb-warning); color: var(--rb-warning); }
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-badge--danger  { border-color: var(--rb-danger);  color: var(--rb-danger); }

@@ -1,0 +1,29 @@
+/* summer-cloud — alert / callout: glass card with a semantic left rule */
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-alert {
+  padding: var(--rb-space-4);
+  background: var(--rb-surface-glass);
+  border: 1px solid var(--rb-border);
+  border-left: 4px solid var(--rb-accent-2);
+  border-radius: var(--rb-radius);
+  backdrop-filter: blur(var(--rb-blur));
+  -webkit-backdrop-filter: blur(var(--rb-blur));
+  box-shadow: var(--rb-shadow-sm);
+  color: var(--rb-text);
+  font-size: var(--rb-text-sm);
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-alert--info    { border-left-color: var(--rb-info); }
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-alert--success { border-left-color: var(--rb-success); }
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-alert--warning { border-left-color: var(--rb-warning); }
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-alert--danger  { border-left-color: var(--rb-danger); }
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-alert__title {
+  display: block;
+  margin-bottom: var(--rb-space-1);
+  font-family: var(--rb-font-display);
+  font-weight: var(--rb-font-weight-medium);
+  font-size: var(--rb-text-sm);
+  color: var(--rb-text);
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-alert--info .rb-alert__title    { color: var(--rb-accent-2-deep); }
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-alert--success .rb-alert__title { color: #1a7a1a; }
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-alert--warning .rb-alert__title { color: #594400; }
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-alert--danger .rb-alert__title  { color: #93000a; }

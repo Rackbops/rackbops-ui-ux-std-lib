@@ -1,0 +1,33 @@
+/* neon-butterfly — tabs */
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-tabs {
+  display: flex;
+  gap: var(--rb-space-2);
+  border-bottom: 1px solid var(--rb-border);
+}
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-tab {
+  padding: var(--rb-space-2) var(--rb-space-3);
+  margin-bottom: -1px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--rb-text-faint);
+  text-transform: uppercase;
+  font-family: var(--rb-font-mono);
+  font-weight: var(--rb-font-weight-bold);
+  font-size: var(--rb-text-sm);
+  letter-spacing: var(--rb-label-tracking);
+  cursor: pointer;
+  transition: color var(--rb-transition), border-color var(--rb-transition);
+}
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-tab:hover {
+  color: var(--rb-text);
+}
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-tab--active,
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-tab[aria-selected="true"] {
+  color: var(--rb-accent);
+  border-bottom-color: var(--rb-accent);
+  text-shadow: 0 0 8px var(--rb-accent-glow);
+}
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-tabpanel {
+  padding: var(--rb-space-3) 0;
+}

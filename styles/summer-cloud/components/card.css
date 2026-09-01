@@ -1,0 +1,35 @@
+/* summer-cloud — card: the glassmorphic panel everything else sits in */
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-card {
+  padding: var(--rb-space-5);
+  background: var(--rb-surface-glass);
+  border: 1px solid var(--rb-border);
+  border-radius: var(--rb-radius);
+  backdrop-filter: blur(var(--rb-blur));
+  -webkit-backdrop-filter: blur(var(--rb-blur));
+  box-shadow: var(--rb-shadow-lg);
+  color: var(--rb-text);
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-card > :first-child { margin-top: 0; }
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-card > :last-child { margin-bottom: 0; }
+
+/* Level 2 — floating: higher-opacity white, lifts on hover. Use for
+ * interactive cards (products, tiles), not for static content panels. */
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-card--floating {
+  background: var(--rb-surface-glass-high);
+  backdrop-filter: blur(var(--rb-blur-high));
+  -webkit-backdrop-filter: blur(var(--rb-blur-high));
+  transition: transform var(--rb-transition), box-shadow var(--rb-transition);
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-card--floating:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--rb-shadow-raised-hover);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-card--floating {
+    transition: none;
+  }
+  :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-card--floating:hover {
+    transform: none;
+  }
+}

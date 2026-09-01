@@ -1,0 +1,124 @@
+/* neon-butterfly — form controls: input, textarea, select, checkbox, radio, switch */
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-input,
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-select,
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-textarea {
+  display: block;
+  width: 100%;
+  padding: var(--rb-space-2) var(--rb-space-3);
+  background: var(--rb-surface);
+  border: 1px solid var(--rb-border);
+  border-radius: var(--rb-radius);
+  color: var(--rb-text);
+  font-family: var(--rb-font-mono);
+  font-weight: var(--rb-font-weight);
+  font-size: var(--rb-text-sm);
+  transition: border-color var(--rb-transition), box-shadow var(--rb-transition);
+}
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-select {
+  appearance: none;
+  padding-right: 2.25rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23958da1' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+}
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-input::placeholder,
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-textarea::placeholder {
+  color: var(--rb-text-faint);
+}
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-input:focus,
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-select:focus,
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-textarea:focus {
+  outline: none;
+  border-color: var(--rb-accent-border);
+  box-shadow: 0 0 8px rgba(210, 187, 255, 0.3);
+}
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-input[aria-invalid="true"],
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-textarea[aria-invalid="true"] {
+  border-color: var(--rb-danger);
+}
+
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-label {
+  display: block;
+  margin-bottom: var(--rb-space-1);
+  color: var(--rb-text-faint);
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: var(--rb-font-weight-bold);
+  letter-spacing: var(--rb-label-tracking);
+}
+
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-field {
+  margin-bottom: var(--rb-space-3);
+}
+
+/* checkbox & radio */
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-checkbox,
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-radio {
+  appearance: none;
+  width: 1.1rem;
+  height: 1.1rem;
+  margin: 0;
+  vertical-align: text-bottom;
+  background: var(--rb-surface);
+  border: 1px solid var(--rb-border);
+  border-radius: 0.25rem;
+  cursor: pointer;
+  transition: border-color var(--rb-transition), box-shadow var(--rb-transition);
+}
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-radio {
+  border-radius: 50%;
+}
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-checkbox:checked,
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-radio:checked {
+  border-color: var(--rb-accent-2);
+  box-shadow: inset 0 0 0 3px var(--rb-surface), inset 0 0 0 1rem var(--rb-accent-2),
+    0 0 6px var(--rb-accent-2-glow);
+}
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-checkbox:focus-visible,
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-radio:focus-visible,
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-switch:focus-visible {
+  outline: none;
+  border-color: var(--rb-accent-border);
+}
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-choice {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--rb-space-2);
+  color: var(--rb-text);
+  font-size: var(--rb-text-sm);
+  cursor: pointer;
+}
+
+/* switch */
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-switch {
+  appearance: none;
+  width: 2.4rem;
+  height: 1.3rem;
+  margin: 0;
+  vertical-align: text-bottom;
+  background: var(--rb-surface);
+  border: 1px solid var(--rb-border);
+  border-radius: 1rem;
+  cursor: pointer;
+  position: relative;
+  transition: border-color var(--rb-transition);
+}
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-switch::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: calc(1.3rem - 6px);
+  height: calc(1.3rem - 6px);
+  border-radius: 50%;
+  background: var(--rb-text-faint);
+  transition: transform var(--rb-transition), background var(--rb-transition);
+}
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-switch:checked {
+  border-color: var(--rb-accent-2);
+}
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-switch:checked::after {
+  transform: translateX(1.1rem);
+  background: var(--rb-accent-2);
+  box-shadow: 0 0 6px var(--rb-accent-2-glow);
+}

@@ -1,0 +1,103 @@
+/* summer-cloud — design tokens
+ * Ported from nazuraki/ui-std-lib's @nazuraki/styles "summer-cloud" theme (MIT,
+ * Copyright (c) 2026 nazuraki — see the repo NOTICE), re-namespaced to the
+ * rackbops (--rb-*) contract. Consume via:
+ *   @import "@roshne/styles/summer-cloud/tokens";
+ * or pull the whole theme with ./index.css.
+ *
+ * Nothing applies until an element carries data-rb-style="summer-cloud" — set it
+ * on <html> for a page, or on any container for an embedded island. The :where()
+ * keeps specificity at zero, so any consumer rule overrides.
+ *
+ * Names marked (extra) are additions beyond the baseline set that only this
+ * theme's own component CSS relies on. summer-cloud is a dual-accent light
+ * design: violet is the brand voice (baseline --rb-accent); sky blue marks
+ * active paths (the --rb-accent-2 extra). Depth is a primary-tinted soft shadow,
+ * never grey — its shadow-soft/shadow map onto baseline --rb-shadow-sm/-lg.
+ */
+:where([data-rb-style="summer-cloud"]) {
+  color-scheme: light;
+
+  /* color — airy off-white ground */
+  --rb-bg: #f6fafe;
+  --rb-bg-blend: #eaeef2; /* (extra) */
+  --rb-surface: #ffffff;
+  --rb-surface-2: #eef3f9; /* tinted raised panel */
+  --rb-surface-sunken: #f0f4f8; /* inset fields */
+  --rb-surface-glass: rgba(255, 255, 255, 0.6); /* (extra) glass panes */
+  --rb-surface-glass-high: rgba(255, 255, 255, 0.8); /* (extra) floating tier */
+  --rb-text: #171c1f;
+  --rb-text-soft: #2f2b3a; /* secondary body copy, above faint */
+  --rb-text-faint: #484457; /* labels, meta */
+  --rb-border: rgba(255, 255, 255, 0.4); /* on glass */
+  --rb-border-strong: rgba(255, 255, 255, 0.7); /* lit top edge of glass panes */
+  --rb-outline: #c9c3da; /* (extra) hairline on opaque surfaces */
+
+  /* accent — violet is the brand voice */
+  --rb-accent: #4500d9;
+  --rb-accent-fg: #ffffff; /* white ink on the solid violet fill */
+  --rb-accent-wash: rgba(69, 0, 217, 0.1); /* light violet tint */
+  --rb-accent-grad: linear-gradient(120deg, #4500d9, #0cb3ff); /* violet → sky */
+  --rb-accent-bright: #5d2bff; /* (extra) shadow/glow tint */
+  --rb-accent-glow: rgba(93, 43, 255, 0.4); /* (extra) */
+  --rb-accent-border: rgba(69, 0, 217, 0.2); /* (extra) */
+
+  /* accent-2 (extra) — sky blue: active states, links, focus */
+  --rb-accent-2: #0cb3ff;
+  --rb-accent-2-glow: rgba(12, 179, 255, 0.2);
+  --rb-accent-2-deep: #006492; /* readable accent text on white */
+
+  /* semantic */
+  --rb-info: #0cb3ff;
+  --rb-success: #30e330;
+  --rb-warning: #f2c025;
+  --rb-danger: #ff4d4d;
+  --rb-danger-deep: #cc1f1f; /* (extra) danger where white text sits on it */
+
+  /* sky gradient (extra) */
+  --rb-sky-start: #f0f4f8;
+  --rb-sky-end: #c9e6ff;
+  --rb-sky-tint: rgba(255, 255, 255, 0.7);
+
+  /* code syntax (extra) — deepened palette hues for contrast on white */
+  --rb-code-keyword: #4500d9;
+  --rb-code-string: #157a2a;
+  --rb-code-number: #9a6b00;
+  --rb-code-comment: #6e6880;
+  --rb-code-function: #006492;
+  --rb-code-variable: #cc1f1f;
+  --rb-code-type: #00877a;
+  --rb-code-meta: #484457;
+
+  /* typography */
+  --rb-font-display: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --rb-font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --rb-font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --rb-font-weight: 400;
+  --rb-font-weight-medium: 600;
+  --rb-font-weight-bold: 700;
+  --rb-heading-tracking: -0.02em; /* display sizes */
+  --rb-label-tracking: 0.05em;
+  --rb-text-sm: 14px;
+
+  /* shape & effects — big soft radii, primary-tinted soft shadows */
+  --rb-radius: 1rem;
+  --rb-radius-sm: 0.25rem; /* (extra) */
+  --rb-radius-lg: 1.5rem; /* cards and large containers */
+  --rb-radius-pill: 9999px; /* chips, badges, switches */
+  --rb-shadow-sm: 0 10px 30px rgba(0, 100, 146, 0.05); /* soft ambient */
+  --rb-shadow-lg: 0 20px 40px rgba(93, 43, 255, 0.08); /* large ambient */
+  --rb-shadow-raised: 0 4px 14px rgba(93, 43, 255, 0.39); /* (extra) raised button */
+  --rb-shadow-raised-hover: 0 6px 20px rgba(93, 43, 255, 0.5); /* (extra) */
+  --rb-blur: 12px;
+  --rb-blur-high: 20px; /* (extra) */
+  --rb-transition: 0.3s;
+  --rb-ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1); /* (extra) */
+
+  /* spacing */
+  --rb-space-1: 0.25rem;
+  --rb-space-2: 0.5rem;
+  --rb-space-3: 1rem;
+  --rb-space-4: 1.5rem;
+  --rb-space-5: 2rem;
+}

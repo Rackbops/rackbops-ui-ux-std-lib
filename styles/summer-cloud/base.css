@@ -1,0 +1,58 @@
+/* summer-cloud — base styles
+ * Scoped defaults. Requires tokens.css. Apps that need the webfonts should
+ * include the Google Fonts <link>s for Plus Jakarta Sans (400;600;700;800),
+ * Inter (400;600) and JetBrains Mono (500;700), or self-host; every token
+ * stack falls back to a system family.
+ *
+ * The element carrying data-rb-style is the theme's canvas: it gets the
+ * background, text color, and body font — whether that is <html> for a page
+ * or a mount container for an embedded island. Page-only rules (body margin,
+ * viewport height) apply only when the attribute sits on <html>.
+ */
+:where([data-rb-style="summer-cloud"]) {
+  background-color: var(--rb-bg);
+  color: var(--rb-text);
+  font-family: var(--rb-font-body);
+  font-weight: var(--rb-font-weight);
+  -webkit-font-smoothing: antialiased;
+}
+
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *),
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *)::before,
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *)::after {
+  box-sizing: border-box;
+}
+
+:where(html[data-rb-style="summer-cloud"]) body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--rb-bg);
+  color: var(--rb-text);
+  font-family: var(--rb-font-body);
+  font-weight: var(--rb-font-weight);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Opt-in page background: the sky gradient. Flat --rb-bg is also correct, but
+ * the gradient is the signature — the theme reads as "airy" only against it.
+ * Apply to <body>, or to the attributed container itself. */
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-bg {
+  background: linear-gradient(135deg, var(--rb-sky-start) 0%, var(--rb-sky-end) 100%);
+  background-attachment: fixed;
+}
+
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *):where(h1, h2, h3, h4) {
+  font-family: var(--rb-font-display);
+  font-weight: var(--rb-font-weight-bold);
+  letter-spacing: var(--rb-heading-tracking);
+  color: var(--rb-text);
+}
+
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *):where(a) {
+  color: var(--rb-accent);
+}
+
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *)::selection {
+  background: var(--rb-accent);
+  color: #fff;
+}
