@@ -1,0 +1,89 @@
+/* neon-butterfly — design tokens
+ * Ported from nazuraki/ui-std-lib's @nazuraki/styles "neon-butterfly" theme
+ * (MIT, Copyright (c) 2026 nazuraki — see the repo NOTICE), re-namespaced to the
+ * rackbops (--rb-*) contract. Consume via:
+ *   @import "@roshne/styles/neon-butterfly/tokens";
+ * or pull the whole theme with ./index.css.
+ *
+ * Nothing applies until an element carries data-rb-style="neon-butterfly" — set
+ * it on <html> for a page, or on any container for an embedded island. The
+ * :where() keeps specificity at zero, so any consumer rule overrides.
+ *
+ * Names marked (extra) are additions beyond the baseline set that only this
+ * theme's own component CSS relies on. neon-butterfly is a dual-accent design:
+ * lilac is the brand voice (baseline --rb-accent); neon green marks active
+ * paths and critical signals (the --rb-accent-2 extra). All-mono type; depth is
+ * glow, not shadow, so --rb-shadow-* are declared for parity but the components
+ * lean on the glow extras.
+ */
+:where([data-rb-style="neon-butterfly"]) {
+  color-scheme: dark;
+
+  /* color — deep navy foundation */
+  --rb-bg: #0b1326;
+  --rb-bg-blend: #1a1f2e; /* (extra) blend behind the butterfly-circuit bg */
+  --rb-surface: #171f33;
+  --rb-surface-2: #1f2740; /* raised panel, a step above surface */
+  --rb-surface-sunken: #0e1526; /* inset fields */
+  --rb-surface-glass: rgba(23, 31, 51, 0.55); /* (extra) glass panes over blur */
+  --rb-text: #dae2fd;
+  --rb-text-soft: #aeb4cf; /* secondary body copy */
+  --rb-text-faint: #958da1; /* labels, idle tabs, meta */
+  --rb-border: rgba(255, 255, 255, 0.1);
+  --rb-border-strong: rgba(255, 255, 255, 0.25); /* lit top edge of glass panes */
+
+  /* accent — lilac is the brand voice */
+  --rb-accent: #d2bbff;
+  --rb-accent-fg: #0b1326; /* dark ink on the solid lilac fill */
+  --rb-accent-wash: rgba(210, 187, 255, 0.16);
+  --rb-accent-grad: linear-gradient(120deg, #d2bbff, #39ff14); /* lilac → neon */
+  --rb-accent-glow: rgba(210, 187, 255, 0.6); /* (extra) lilac glow */
+  --rb-accent-border: rgba(210, 187, 255, 0.8); /* (extra) lit lilac edge */
+
+  /* accent-2 (extra) — neon green: active states, focus, critical paths */
+  --rb-accent-2: #39ff14;
+  --rb-accent-2-glow: rgba(57, 255, 20, 0.5);
+
+  /* semantic */
+  --rb-info: #4dc9ff;
+  --rb-success: #39ff14;
+  --rb-warning: #ffd23f;
+  --rb-danger: #ff2d78;
+
+  /* code syntax (extra) — lilac keywords, neon strings */
+  --rb-code-keyword: #d2bbff;
+  --rb-code-string: #39ff14;
+  --rb-code-number: #ffd23f;
+  --rb-code-comment: #8a8199;
+  --rb-code-function: #4dc9ff;
+  --rb-code-variable: #ff6ba0;
+  --rb-code-type: #7fdcff;
+  --rb-code-meta: #958da1;
+
+  /* typography — all-mono: display and body share the JetBrains Mono stack */
+  --rb-font-display: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --rb-font-body: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --rb-font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --rb-font-weight: 450;
+  --rb-font-weight-medium: 700; /* only 450 + 700 webfont weights load */
+  --rb-font-weight-bold: 700;
+  --rb-heading-tracking: 0.1em; /* mono headings ride the wide tracking */
+  --rb-label-tracking: 0.1em; /* uppercase labels, buttons, tabs */
+  --rb-text-sm: 14px;
+
+  /* shape & effects — one radius everywhere; glow over drop shadow */
+  --rb-radius: 0.5rem;
+  --rb-radius-lg: 0.5rem; /* one radius everywhere is the look */
+  --rb-radius-pill: 999px; /* chips, badges, switches */
+  --rb-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4); /* baseline parity; theme uses glow */
+  --rb-shadow-lg: 0 10px 34px rgba(0, 0, 0, 0.55);
+  --rb-blur: 12px; /* glass backdrop-filter */
+  --rb-transition: 0.3s;
+
+  /* spacing */
+  --rb-space-1: 0.25rem;
+  --rb-space-2: 0.5rem;
+  --rb-space-3: 1rem;
+  --rb-space-4: 1.5rem;
+  --rb-space-5: 2rem;
+}

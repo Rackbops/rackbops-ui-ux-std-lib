@@ -1,0 +1,34 @@
+/* summer-cloud — table: mono header labels, sky-tint row hover */
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--rb-text-sm);
+  color: var(--rb-text);
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-table th {
+  padding: var(--rb-space-3);
+  border-bottom: 1px solid var(--rb-outline);
+  color: var(--rb-text-faint);
+  text-align: left;
+  text-transform: uppercase;
+  font-family: var(--rb-font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: var(--rb-label-tracking);
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-table td {
+  padding: var(--rb-space-3);
+  border-bottom: 1px solid rgba(201, 195, 218, 0.4);
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-table tbody tr {
+  transition: background var(--rb-transition);
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-table tbody tr:hover {
+  background: var(--rb-sky-tint);
+}
+/* Numeric cells take the mono voice — prices and data read as utility-grade. */
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-table td.rb-num,
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-table th.rb-num {
+  font-family: var(--rb-font-mono);
+  text-align: right;
+}

@@ -1,0 +1,38 @@
+/* summer-cloud — tabs: violet underline on the active tab, sky tint on hover */
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-tabs {
+  display: flex;
+  gap: var(--rb-space-2);
+  border-bottom: 1px solid var(--rb-outline);
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-tab {
+  padding: var(--rb-space-2) var(--rb-space-3);
+  margin-bottom: -1px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  border-radius: var(--rb-radius-sm) var(--rb-radius-sm) 0 0;
+  color: var(--rb-text-faint);
+  font-family: var(--rb-font-display);
+  font-weight: var(--rb-font-weight-medium);
+  font-size: var(--rb-text-sm);
+  cursor: pointer;
+  transition: color var(--rb-transition), background var(--rb-transition),
+    border-color var(--rb-transition);
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-tab:hover {
+  background: var(--rb-sky-tint);
+  color: var(--rb-accent);
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-tab:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 4px var(--rb-accent-2-glow);
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-tab--active,
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-tab[aria-selected="true"] {
+  color: var(--rb-accent);
+  border-bottom-color: var(--rb-accent);
+  font-weight: var(--rb-font-weight-bold);
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-tabpanel {
+  padding: var(--rb-space-3) 0;
+}

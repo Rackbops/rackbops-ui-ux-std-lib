@@ -12,6 +12,8 @@ nazuraki's; the rackbops copies change only the token/class names and adapt each
 theme to the rackbops baseline token set.
 
   - styles/luminous-precision/
+  - styles/neon-butterfly/  (includes assets/butterfly-circuit.png)
+  - styles/summer-cloud/
 
 They are used under the MIT License:
 

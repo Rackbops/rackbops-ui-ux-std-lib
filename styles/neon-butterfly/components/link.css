@@ -1,0 +1,55 @@
+/* neon-butterfly — nav link: uppercase mono link with ">" chevron and glow hover */
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-link {
+  display: flex;
+  align-items: baseline;
+  gap: var(--rb-space-3);
+  padding: 1.25rem var(--rb-space-4);
+  background: var(--rb-surface-glass);
+  border: 1px solid var(--rb-border);
+  border-radius: var(--rb-radius);
+  backdrop-filter: blur(var(--rb-blur));
+  color: var(--rb-text);
+  text-decoration: none;
+  text-transform: uppercase;
+  font-weight: var(--rb-font-weight-bold);
+  font-size: var(--rb-text-sm);
+  letter-spacing: var(--rb-label-tracking);
+  transition:
+    border-color var(--rb-transition),
+    color var(--rb-transition),
+    transform var(--rb-transition);
+}
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-link::before {
+  content: ">";
+  color: var(--rb-text-faint);
+  transition: color var(--rb-transition);
+}
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-link:hover {
+  border-color: var(--rb-accent-border);
+  color: var(--rb-accent);
+  transform: translateX(4px);
+  animation: rb-nb-pulse-glow 2s infinite;
+}
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-link:hover::before {
+  color: var(--rb-accent-2);
+  text-shadow: 0 0 5px var(--rb-accent-2-glow);
+}
+
+@keyframes rb-nb-pulse-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 5px rgba(210, 187, 255, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 20px var(--rb-accent-glow);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-link {
+    transition: none;
+  }
+  :where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-link:hover {
+    animation: none;
+  }
+}

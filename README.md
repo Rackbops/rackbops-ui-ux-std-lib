@@ -29,6 +29,8 @@ One `--rb-*` / `rb-*` contract, so any two swap with a single `data-rb-style` fl
 | `rackbops-studio` | light | rackbops.com | Cool-paper editorial studio, vermillion over navy ink, heavy 800 headlines, mono eyebrows, the rack-equaliser panel + Boppy mascot, soft-shadow depth. |
 | `rackbops-noir` | dark | rackbops.com | The dark counterpart of rackbops-studio — the mode rackbops.com toggles into, deep slate with brighter vermillion. |
 | `luminous-precision` | dark | nazuraki/ui-std-lib | Glassmorphic obsidian console — orchid brand voice, electric-teal active paths, glow-as-elevation; Sora headlines over JetBrains Mono. Ported (credited) from nazuraki/ui-std-lib. |
+| `neon-butterfly` | dark | nazuraki/ui-std-lib | Mono-spaced neon terminal — lilac brand voice, neon-lime activity signals, glass over deep navy, all-uppercase JetBrains Mono. Ported (credited) from nazuraki/ui-std-lib. |
+| `summer-cloud` | light | nazuraki/ui-std-lib | Airy retail glass — vivid violet emphasis, sky-blue interaction, white glass floating on a sky gradient, bouncy motion. Ported (credited) from nazuraki/ui-std-lib. |
 
 Each theme ships a `design.md` — a written spec of the aesthetic (palette,
 typography, shape rules, component inventory). Read it before designing new

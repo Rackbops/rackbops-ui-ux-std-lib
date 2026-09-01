@@ -1,0 +1,27 @@
+/* neon-butterfly — table */
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--rb-text-sm);
+  color: var(--rb-text);
+}
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-table th {
+  padding: var(--rb-space-2) var(--rb-space-3);
+  border-bottom: 1px solid var(--rb-accent-border);
+  color: var(--rb-text-faint);
+  text-align: left;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: var(--rb-font-weight-bold);
+  letter-spacing: var(--rb-label-tracking);
+}
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-table td {
+  padding: var(--rb-space-2) var(--rb-space-3);
+  border-bottom: 1px solid var(--rb-border);
+}
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-table tbody tr {
+  transition: background var(--rb-transition);
+}
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-table tbody tr:hover {
+  background: var(--rb-surface-glass);
+}

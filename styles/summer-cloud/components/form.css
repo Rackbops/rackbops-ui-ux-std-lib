@@ -1,0 +1,146 @@
+/* summer-cloud — form controls: input, textarea, select, checkbox, radio, switch
+ * Fields are sunken (no resting border) and bloom a sky-blue ring on focus. */
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-input,
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-select,
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-textarea {
+  display: block;
+  width: 100%;
+  padding: 0.75rem var(--rb-space-3);
+  background: var(--rb-surface-sunken);
+  border: 1px solid transparent;
+  border-radius: var(--rb-radius);
+  color: var(--rb-text);
+  font-family: var(--rb-font-body);
+  font-weight: var(--rb-font-weight);
+  font-size: 16px;
+  transition: border-color var(--rb-transition), box-shadow var(--rb-transition);
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-select {
+  appearance: none;
+  padding-right: 2.25rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23484457' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-input::placeholder,
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-textarea::placeholder {
+  color: var(--rb-outline);
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-input:focus,
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-select:focus,
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-textarea:focus {
+  outline: none;
+  border-color: var(--rb-accent-2);
+  box-shadow: 0 0 0 4px var(--rb-accent-2-glow);
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-input[aria-invalid="true"],
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-textarea[aria-invalid="true"] {
+  border-color: var(--rb-danger);
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-input[aria-invalid="true"]:focus,
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-textarea[aria-invalid="true"]:focus {
+  box-shadow: 0 0 0 4px rgba(255, 77, 77, 0.2);
+}
+
+/* Labels are the mono voice: small, tracked, utility-grade. */
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-label {
+  display: block;
+  margin-bottom: var(--rb-space-1);
+  padding-left: var(--rb-space-1);
+  color: var(--rb-text-faint);
+  font-family: var(--rb-font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: var(--rb-label-tracking);
+}
+
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-field {
+  margin-bottom: var(--rb-space-3);
+}
+
+/* checkbox & radio */
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-checkbox,
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-radio {
+  appearance: none;
+  width: 1.25rem;
+  height: 1.25rem;
+  margin: 0;
+  vertical-align: text-bottom;
+  background: var(--rb-surface-sunken);
+  border: 1px solid var(--rb-outline);
+  border-radius: var(--rb-radius-sm);
+  cursor: pointer;
+  transition: background var(--rb-transition), border-color var(--rb-transition),
+    box-shadow var(--rb-transition);
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-radio {
+  border-radius: 50%;
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-checkbox:checked,
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-radio:checked {
+  background: var(--rb-accent);
+  border-color: var(--rb-accent);
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-checkbox:checked {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='10' viewBox='0 0 12 10'%3E%3Cpath d='M1 5l3.5 3.5L11 1.5' fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-radio:checked {
+  box-shadow: inset 0 0 0 4px var(--rb-surface);
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-checkbox:focus-visible,
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-radio:focus-visible,
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-switch:focus-visible {
+  outline: none;
+  border-color: var(--rb-accent-2);
+  box-shadow: 0 0 0 4px var(--rb-accent-2-glow);
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-choice {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--rb-space-2);
+  color: var(--rb-text);
+  font-size: var(--rb-text-sm);
+  cursor: pointer;
+}
+
+/* switch — the cloud-toggle: oversized, squishy, green when live */
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-switch {
+  appearance: none;
+  width: 3rem;
+  height: 1.75rem;
+  margin: 0;
+  vertical-align: text-bottom;
+  background: var(--rb-surface-sunken);
+  border: 1px solid var(--rb-outline);
+  border-radius: var(--rb-radius-pill);
+  cursor: pointer;
+  position: relative;
+  transition: background var(--rb-transition), border-color var(--rb-transition);
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-switch::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: calc(1.75rem - 6px);
+  height: calc(1.75rem - 6px);
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 2px 6px rgba(93, 43, 255, 0.2);
+  transition: transform var(--rb-transition) var(--rb-ease-bounce);
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-switch:checked {
+  background: var(--rb-success);
+  border-color: var(--rb-success);
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-switch:checked::after {
+  transform: translateX(1.25rem);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-switch::after {
+    transition: none;
+  }
+}

@@ -1,0 +1,29 @@
+/* neon-butterfly — dialog (native <dialog>) */
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-dialog {
+  padding: var(--rb-space-4);
+  max-width: 32rem;
+  width: calc(100vw - 2rem);
+  background: var(--rb-surface);
+  border: 1px solid var(--rb-accent-border);
+  border-radius: var(--rb-radius);
+  color: var(--rb-text);
+  font-family: var(--rb-font-mono);
+  box-shadow: 0 0 30px rgba(210, 187, 255, 0.25);
+}
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-dialog::backdrop {
+  background: rgba(11, 19, 38, 0.7);
+  backdrop-filter: blur(4px);
+}
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-dialog__title {
+  margin: 0 0 var(--rb-space-3);
+  color: var(--rb-accent);
+  text-transform: uppercase;
+  font-size: 1rem;
+  letter-spacing: var(--rb-label-tracking);
+}
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--rb-space-2);
+  margin-top: var(--rb-space-4);
+}

@@ -1,0 +1,103 @@
+# neon-butterfly
+
+> **Source & attribution.** Ported from
+> [`nazuraki/ui-std-lib`](https://github.com/nazuraki/ui-std-lib)'s
+> `@nazuraki/styles` "neon-butterfly" theme (MIT, Copyright (c) 2026 nazuraki —
+> see the repo [`NOTICE`](../../NOTICE)), re-namespaced from `--nb-*` / `.nb-*` /
+> `data-nb-style` to the rackbops `--rb-*` contract. The aesthetic below is
+> nazuraki's; only the token/class names changed.
+
+Dark, mono-spaced, neon-accented terminal aesthetic. Deep navy backgrounds with
+frosted-glass surfaces; lilac is the primary voice, neon lime the accent that
+signals activity. Everything is uppercase, tracked-out JetBrains Mono — the UI
+should feel like a beautiful command console, not a document.
+
+## Token mapping (dual accent)
+
+neon-butterfly is a two-accent design, but the rackbops baseline carries a single
+`--rb-accent`. The mapping:
+
+| Role | rackbops token | Value |
+| --- | --- | --- |
+| Primary / brand voice (lilac) | `--rb-accent` (+ `--rb-accent-fg`, `--rb-accent-glow`, `--rb-accent-border`) | `#d2bbff` |
+| Active / critical (neon lime) | `--rb-accent-2` (+ `--rb-accent-2-glow`) — theme extra | `#39ff14` |
+| Lit glass edge | `--rb-border-strong` | `rgba(255,255,255,0.25)` |
+| Glass pane fill | `--rb-surface-glass` — theme extra | `rgba(23,31,51,0.55)` |
+
+## Color
+
+| Role | Value | Usage |
+| --- | --- | --- |
+| Background | `#0b1326` | Page background (often blended over imagery with `luminosity`) |
+| Surface | `#171f33` | Solid panels, inputs, dialogs |
+| Surface glass | `rgba(23,31,51,0.55)` + 12px blur | Cards, nav links, alerts |
+| Text | `#dae2fd` | Body text |
+| Text faint | `#958da1` | Secondary text, labels, idle chevrons |
+| Accent (lilac) | `#d2bbff` | Emphasis, hover states, active tabs, glow |
+| Accent-2 (neon lime) | `#39ff14` | Activity signals: checked states, chevrons on hover, success |
+| Info | `#4dc9ff` | Informational callouts and badges |
+| Success | `#39ff14` | Shares the accent-2 hue — success *is* the neon signal |
+| Warning | `#ffd23f` | Caution states |
+| Danger | `#ff2d78` | Destructive actions, errors |
+| Border | `rgba(255,255,255,0.1)` | All resting borders |
+
+The signature page background is the butterfly-circuit artwork
+(`assets/butterfly-circuit.png`) blended into the navy with `luminosity` — apply
+via `.rb-bg` on `<body>`. Optional; plain `--rb-bg` navy is also correct.
+
+Rules: color is communication — resting UI stays in navy/faint; lilac and lime
+appear only on interaction or state. Never use pure white or pure black.
+
+## Typography
+
+- **Family:** JetBrains Mono (weights 450 regular, 700 bold; `--rb-font-weight`
+  is 450, `--rb-font-weight-medium`/`-bold` are 700); fallback `ui-monospace`.
+- **Interactive text** (buttons, links, tabs, labels, table headers): uppercase,
+  700, 14px (labels/headers 11–12px), letter-spacing `0.1em` (`--rb-label-tracking`).
+- **Body text:** sentence case, 450.
+
+Webfonts (JetBrains Mono) are declared in `styles/manifest.json`
+(`neon-butterfly.fonts`); consumers load that stylesheet or self-host, and the
+token stack falls back to `ui-monospace`.
+
+## Shape & effects
+
+- Radius `0.5rem` everywhere (`--rb-radius` == `--rb-radius-lg`); pills
+  (`--rb-radius-pill`) for switches/progress.
+- Borders are 1px hairlines; emphasis comes from border *color*, not weight.
+- Glow, not shadow: elevation is expressed with colored `box-shadow` glows
+  (`rb-nb-pulse-glow` on hover) rather than dark drop shadows. `--rb-shadow-*`
+  exist for baseline parity but the components lean on glow.
+- Transitions 0.3s; hover motion is a 4px `translateX` slide on links.
+- Respect `prefers-reduced-motion`.
+
+## Components
+
+Class prefix `rb-`. Variants use BEM-ish modifiers (`rb-btn--accent`).
+
+- **Card** `.rb-card` — frosted glass panel.
+- **NavLink** `.rb-link` — the switchboard link: `>` chevron turns lime on hover.
+- **Button** `.rb-btn` — `--primary`, `--accent`, `--danger` variants.
+- **Form** `.rb-input`, `.rb-textarea`, `.rb-select`, `.rb-label`, `.rb-field`,
+  `.rb-checkbox`, `.rb-radio`, `.rb-switch`, `.rb-choice` — checked states glow lime.
+- **Badge** `.rb-badge` + semantic modifiers.
+- **Alert** `.rb-alert` — left accent bar carries the semantic color.
+- **Dialog** `.rb-dialog` — native `<dialog>`, lilac border + glow, blurred backdrop.
+- **Tabs** `.rb-tabs`/`.rb-tab`/`.rb-tabpanel` — active tab underlined in lilac with text glow.
+- **Table** `.rb-table` — lilac header rule, glass row hover.
+- **Progress** `.rb-progress`, **Spinner** `.rb-spinner` — glowing lilac indicators.
+
+This port carries nazuraki's original component set; the rackbops-specific
+`eyebrow`, `tabstrip`, `wordmark`, and `card--raised` surfaces are not part of it.
+
+## Code syntax
+
+Tokens `--rb-code-*` (theme extra). Lilac keywords, neon-lime strings, gold
+numbers, info-cyan functions, light-cyan types, softened-pink variables,
+dimmed-faint comments, faint meta.
+
+## Scoping
+
+Every rule is guarded by `data-rb-style="neon-butterfly"` (self or ancestor),
+wrapped in zero-specificity `:where()`. Set the attribute on `<html>` for a page
+or on a container for an embedded island.

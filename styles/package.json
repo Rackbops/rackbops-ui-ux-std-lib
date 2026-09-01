@@ -20,6 +20,8 @@
     "rackbops-studio",
     "rackbops-noir",
     "luminous-precision",
+    "neon-butterfly",
+    "summer-cloud",
     "all.css",
     "manifest.json"
   ],
@@ -45,6 +47,14 @@
     "./luminous-precision": "./luminous-precision/index.css",
     "./luminous-precision/tokens": "./luminous-precision/tokens.css",
     "./luminous-precision/base": "./luminous-precision/base.css",
-    "./luminous-precision/components/*": "./luminous-precision/components/*.css"
+    "./luminous-precision/components/*": "./luminous-precision/components/*.css",
+    "./neon-butterfly": "./neon-butterfly/index.css",
+    "./neon-butterfly/tokens": "./neon-butterfly/tokens.css",
+    "./neon-butterfly/base": "./neon-butterfly/base.css",
+    "./neon-butterfly/components/*": "./neon-butterfly/components/*.css",
+    "./summer-cloud": "./summer-cloud/index.css",
+    "./summer-cloud/tokens": "./summer-cloud/tokens.css",
+    "./summer-cloud/base": "./summer-cloud/base.css",
+    "./summer-cloud/components/*": "./summer-cloud/components/*.css"
   }
 }
