@@ -16,6 +16,12 @@
     "rackbops-noir": {
       "scheme": "dark",
       "fonts": []
+    },
+    "luminous-precision": {
+      "scheme": "dark",
+      "fonts": [
+        "https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap"
+      ]
     }
   }
 }

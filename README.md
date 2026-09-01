@@ -10,14 +10,17 @@ the rackbops brand (`--rb-*`, `.rb-*`, `data-rb-style`). Two layers:
 - **`components/react/`** (`@roshne/ui-react`) — React components that render the
   style layer's classes, for behavior-heavy UI.
 
-Each theme is a **design language reverse-documented from one of roshne's apps**,
-captured as a written `design.md` spec plus its CSS. One shared `--rb-*` token /
-`rb-*` class contract means themes are drop-in swappable — one attribute flip.
+Each theme is a **design language** captured as a written `design.md` spec plus
+its CSS — most reverse-documented from one of roshne's apps, some ported (and
+credited) from [`nazuraki/ui-std-lib`](https://github.com/nazuraki/ui-std-lib).
+One shared `--rb-*` token / `rb-*` class contract means themes are drop-in
+swappable — one attribute flip.
 
 ## Themes
 
-Two app design languages, each shipped as a light/dark pair — one `--rb-*` /
-`rb-*` contract, so any two swap with a single `data-rb-style` flip.
+Two of roshne's app design languages (each a light/dark pair), plus themes
+ported — credited — from [`nazuraki/ui-std-lib`](https://github.com/nazuraki/ui-std-lib).
+One `--rb-*` / `rb-*` contract, so any two swap with a single `data-rb-style` flip.
 
 | Theme | Scheme | Source | Description |
 | --- | --- | --- | --- |
@@ -25,12 +28,17 @@ Two app design languages, each shipped as a light/dark pair — one `--rb-*` /
 | `arcane-parchment` | light | artifact-console | The AA-tuned light counterpart of arcane-obsidian — same console language on a cool parchment ground. |
 | `rackbops-studio` | light | rackbops.com | Cool-paper editorial studio, vermillion over navy ink, heavy 800 headlines, mono eyebrows, the rack-equaliser panel + Boppy mascot, soft-shadow depth. |
 | `rackbops-noir` | dark | rackbops.com | The dark counterpart of rackbops-studio — the mode rackbops.com toggles into, deep slate with brighter vermillion. |
+| `luminous-precision` | dark | nazuraki/ui-std-lib | Glassmorphic obsidian console — orchid brand voice, electric-teal active paths, glow-as-elevation; Sora headlines over JetBrains Mono. Ported (credited) from nazuraki/ui-std-lib. |
 
 Each theme ships a `design.md` — a written spec of the aesthetic (palette,
 typography, shape rules, component inventory). Read it before designing new
 screens. `styles/manifest.json` (exported as `@roshne/styles/manifest`) is the
-machine-readable roster. Fonts are system stacks (`system-ui` + `ui-monospace`) —
-nothing to load, and the manifest carries no font URLs.
+machine-readable roster. Most themes use system stacks (`system-ui` +
+`ui-monospace`) — nothing to load. A theme that needs webfonts (e.g.
+`luminous-precision`: Sora + JetBrains Mono) lists its stylesheet URL(s) in that
+theme's manifest `fonts` array; consumers inject those `<link>`s (the `site/`
+showcase does this on theme switch). Ported themes are credited in
+[`NOTICE`](NOTICE).
 
 ## Consuming
 

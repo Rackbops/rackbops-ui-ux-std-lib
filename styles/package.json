@@ -19,6 +19,7 @@
     "arcane-parchment",
     "rackbops-studio",
     "rackbops-noir",
+    "luminous-precision",
     "all.css",
     "manifest.json"
   ],
@@ -40,6 +41,10 @@
     "./rackbops-noir": "./rackbops-noir/index.css",
     "./rackbops-noir/tokens": "./rackbops-noir/tokens.css",
     "./rackbops-noir/base": "./rackbops-noir/base.css",
-    "./rackbops-noir/components/*": "./rackbops-noir/components/*.css"
+    "./rackbops-noir/components/*": "./rackbops-noir/components/*.css",
+    "./luminous-precision": "./luminous-precision/index.css",
+    "./luminous-precision/tokens": "./luminous-precision/tokens.css",
+    "./luminous-precision/base": "./luminous-precision/base.css",
+    "./luminous-precision/components/*": "./luminous-precision/components/*.css"
   }
 }

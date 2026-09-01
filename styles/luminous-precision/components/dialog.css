@@ -1,0 +1,31 @@
+/* luminous-precision — dialog (native <dialog>) */
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-dialog {
+  padding: var(--rb-space-4);
+  max-width: 32rem;
+  width: calc(100vw - 2rem);
+  background: var(--rb-surface);
+  border: 1px solid var(--rb-border);
+  border-top-color: var(--rb-border-strong);
+  border-radius: var(--rb-radius-lg);
+  color: var(--rb-text);
+  font-family: var(--rb-font-mono);
+  box-shadow: 0 0 40px var(--rb-accent-glow);
+}
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-dialog::backdrop {
+  background: rgba(10, 12, 16, 0.6);
+  backdrop-filter: blur(var(--rb-blur));
+}
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-dialog__title {
+  margin: 0 0 var(--rb-space-3);
+  color: var(--rb-accent);
+  font-family: var(--rb-font-display);
+  font-size: 1.25rem;
+  font-weight: var(--rb-font-weight-medium);
+  letter-spacing: var(--rb-heading-tracking);
+}
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--rb-space-2);
+  margin-top: var(--rb-space-4);
+}

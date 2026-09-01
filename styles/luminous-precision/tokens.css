@@ -1,0 +1,89 @@
+/* luminous-precision — design tokens
+ * Ported from nazuraki/ui-std-lib's @nazuraki/styles "luminous-precision"
+ * theme (MIT, Copyright (c) 2026 nazuraki — see the repo NOTICE), re-namespaced
+ * to the rackbops (--rb-*) contract. Consume via:
+ *   @import "@roshne/styles/luminous-precision/tokens";
+ * or pull the whole theme with ./index.css.
+ *
+ * Nothing applies until an element carries data-rb-style="luminous-precision"
+ * — set it on <html> for a page, or on any container for an embedded island.
+ * The :where() keeps specificity at zero, so any consumer rule overrides.
+ *
+ * Every theme declares the same baseline token set (styles/test enforces
+ * parity); names marked (extra) are additions beyond it that only this theme's
+ * own component CSS may rely on. luminous-precision is a dual-accent design:
+ * vibrant orchid is the brand voice (baseline --rb-accent); electric teal marks
+ * active paths and critical signals (the --rb-accent-2 extra). Depth is light,
+ * not shadow — elevation comes from glow, so the baseline --rb-shadow-* are
+ * declared for contract parity but the components lean on the glow extras.
+ */
+:where([data-rb-style="luminous-precision"]) {
+  color-scheme: dark;
+
+  /* color — deep obsidian foundation, tonal indigo surfaces */
+  --rb-bg: #0a0c10;
+  --rb-surface: #1a1d29;
+  --rb-surface-2: #242838; /* raised indigo panel, a step above surface */
+  --rb-surface-sunken: #0c0e14; /* inset fields, log wells, progress troughs */
+  --rb-surface-glass: rgba(26, 29, 41, 0.4); /* (extra) glass panes over blur */
+  --rb-text: #e2e2eb;
+  --rb-text-soft: #b4b2c0; /* secondary body copy, between text and faint */
+  --rb-text-faint: #958e9b; /* labels, idle tabs, meta */
+  --rb-border: rgba(255, 255, 255, 0.08); /* resting hairline */
+  --rb-border-strong: rgba(255, 255, 255, 0.2); /* lit top edge of glass panes */
+
+  /* accent — orchid is the primary brand voice */
+  --rb-accent: #c6a5ff; /* vibrant orchid */
+  --rb-accent-fg: #16101f; /* dark ink on the solid orchid fill */
+  --rb-accent-wash: rgba(198, 165, 255, 0.16); /* tinted orchid fill */
+  --rb-accent-grad: linear-gradient(120deg, #c6a5ff, #00f5ff); /* orchid → teal */
+  --rb-accent-glow: rgba(198, 165, 255, 0.35); /* (extra) orchid glow */
+  --rb-accent-border: rgba(198, 165, 255, 0.6); /* (extra) lit orchid edge */
+
+  /* accent-2 (extra) — electric teal: active states, focus, critical paths */
+  --rb-accent-2: #00f5ff;
+  --rb-accent-2-glow: rgba(0, 245, 255, 0.3);
+
+  /* semantic — colour beyond the accents is earned: severity/status only */
+  --rb-info: #83b7ff;
+  --rb-success: #47e34e;
+  --rb-warning: #ffb86c;
+  --rb-danger: #ff4d6d;
+
+  /* code syntax (extra) — palette voices reused, never new hues */
+  --rb-code-keyword: #c6a5ff;
+  --rb-code-string: #47e34e;
+  --rb-code-number: #ffb86c;
+  --rb-code-comment: #837b8d;
+  --rb-code-function: #83b7ff;
+  --rb-code-variable: #ff7d95;
+  --rb-code-type: #00f5ff;
+  --rb-code-meta: #958e9b;
+
+  /* typography — Sora headlines over a JetBrains Mono body */
+  --rb-font-display: "Sora", ui-sans-serif, system-ui, sans-serif;
+  --rb-font-body: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --rb-font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --rb-font-weight: 400;
+  --rb-font-weight-medium: 600; /* labels, interactive text */
+  --rb-font-weight-bold: 700;
+  --rb-heading-tracking: -0.01em;
+  --rb-label-tracking: 0.05em; /* uppercase labels, buttons, tabs */
+  --rb-text-sm: 14px;
+
+  /* shape & effects — light-first depth; glow over drop shadow */
+  --rb-radius: 0.5rem; /* buttons, inputs */
+  --rb-radius-lg: 1rem; /* cards, dialogs, large containers */
+  --rb-radius-pill: 999px; /* chips, badges, switches */
+  --rb-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3); /* baseline parity; theme uses glow */
+  --rb-shadow-lg: 0 10px 34px rgba(0, 0, 0, 0.5);
+  --rb-blur: 12px; /* glass backdrop-filter */
+  --rb-transition: 0.3s;
+
+  /* spacing — 8px rhythm; generous negative space so glows can breathe */
+  --rb-space-1: 0.25rem;
+  --rb-space-2: 0.5rem;
+  --rb-space-3: 1rem;
+  --rb-space-4: 1.5rem;
+  --rb-space-5: 2rem;
+}

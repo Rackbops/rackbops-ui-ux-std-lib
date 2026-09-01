@@ -1,0 +1,12 @@
+/* luminous-precision — card: glass pane with a lit top edge */
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-card {
+  padding: var(--rb-space-4);
+  background: var(--rb-surface-glass);
+  border: 1px solid var(--rb-border);
+  border-top-color: var(--rb-border-strong);
+  border-radius: var(--rb-radius-lg);
+  backdrop-filter: blur(var(--rb-blur));
+  color: var(--rb-text);
+}
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-card > :first-child { margin-top: 0; }
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-card > :last-child { margin-bottom: 0; }
