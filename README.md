@@ -1,6 +1,6 @@
 # rackbops-ui-ux-std-lib
 
-Private UX/design-standards library for roshne's apps — the same shape as
+UX/design-standards library for roshne's apps — the same shape as
 [`nazuraki/ui-std-lib`](https://github.com/nazuraki/ui-std-lib), re-namespaced to
 the rackbops brand (`--rb-*`, `.rb-*`, `data-rb-style`). Two layers:
 
@@ -69,8 +69,9 @@ theme just that subtree (embed-safe; the `:where()` guards are zero-specificity
 so your own rules override). Several themes can load at once and swapping is one
 attribute flip.
 
-A **private repo can't be served by jsDelivr**, so no-build apps consume the CSS
-via a git dependency instead of a CDN link.
+No-build apps can load a theme's CSS from a CDN — jsDelivr mirrors public npm,
+e.g. `https://cdn.jsdelivr.net/npm/@rackbops/styles/luminous-precision/index.css`
+(once the package is published).
 
 ### React components
 
@@ -89,11 +90,9 @@ pnpm install
 pnpm showcase   # http://localhost:5177/site/
 ```
 
-Renders every component under a theme switcher. This is a **private** design
-system, so it is deliberately **not** published to GitHub Pages (Pages from a
-private repo is a public site on non-Enterprise plans). To host it privately,
-deploy `site/` behind Cloudflare Access on the box — the same pattern
-rackbops.com uses.
+Renders every component under a theme switcher. It runs locally (above); a hosted
+showcase is parked (repo issue #2) — `site/` can be served behind Cloudflare Access
+on the box, the same pattern rackbops.com uses.
 
 ## Developing
 

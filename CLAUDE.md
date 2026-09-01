@@ -1,6 +1,6 @@
 # rackbops-ui-ux-std-lib -- Claude instructions
 
-Private UX/design-standards library for roshne's apps -- CSS themes + React
+UX/design-standards library for roshne's apps -- CSS themes + React
 components, one `--rb-*` token / `rb-*` class contract with swappable themes.
 Modeled on `nazuraki/ui-std-lib`, re-namespaced to the rackbops brand. This is
 **not** the `roshne/ui-std-lib` fork (that tracks Nazu's shared system); it is

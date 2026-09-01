@@ -58,8 +58,8 @@ import { Button, Card, Dialog, Tabs, Field, Input, Alert } from "@rackbops/ui-re
 
 `@rackbops/styles/manifest` is the machine-readable roster — theme names and
 scheme (`dark`/`light`). Validate configured theme names from it rather than
-hardcoding a list. No-build / private-repo apps can consume the CSS via a git
-dependency (jsDelivr can't serve a private repo).
+hardcoding a list. No-build apps can load the CSS from jsDelivr's npm mirror once published, e.g.
+`https://cdn.jsdelivr.net/npm/@rackbops/styles/<theme>/index.css`.
 
 ## Component inventory
 
