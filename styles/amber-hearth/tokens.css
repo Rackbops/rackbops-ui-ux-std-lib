@@ -1,0 +1,77 @@
+/* amber-hearth — design tokens
+ * An original rackbops theme: warm hand-crafted editorial voice, clay-terracotta
+ * accent on a warm cream ground. This is the library's only serif display voice
+ * — a system serif stack for headings and titles, no webfont — over a humanist
+ * system-ui body. Consume via:
+ *   @import "@rackbops/styles/amber-hearth/tokens";
+ * or pull the whole theme with ./index.css.
+ *
+ * Nothing applies until an element carries data-rb-style="amber-hearth" — set it
+ * on <html> for a page, or on any container for an embedded island. The :where()
+ * keeps specificity at zero, so any consumer rule overrides.
+ *
+ * Every theme declares the same baseline token set (styles/test enforces
+ * parity); this theme adds nothing beyond it. Light ("Hearth") is the primary
+ * look; its dark counterpart ("Ember") ships as its own theme — see
+ * amber-ember/tokens.css and design.md.
+ */
+:where([data-rb-style="amber-hearth"]) {
+  color-scheme: light;
+
+  /* color — warm cream ground, clay-terracotta accent */
+  --rb-bg: #fbf3e9;
+  --rb-surface: #ffffff;
+  --rb-surface-2: #f5e9d9;
+  --rb-surface-sunken: #efe1cd;
+  --rb-text: #2b1f14;
+  --rb-text-soft: #5c4a38;
+  --rb-text-faint: #6e5945;
+  --rb-border: #e6d3ba;
+  --rb-border-strong: #d1b98f;
+
+  /* accent — clay-terracotta is the sole brand voice. Darkened from the naive
+     #c1592f to #b5542c so accent-fg-on-accent (the primary button fill)
+     clears WCAG AA (4.67:1, was 4.21:1). */
+  --rb-accent: #b5542c;
+  --rb-accent-fg: #fff8f0;
+  --rb-accent-wash: rgba(181, 84, 44, 0.14);
+
+  /* the ONE gradient — rationed to the active-tab underline only */
+  --rb-accent-grad: linear-gradient(120deg, #b5542c, #e08a3f 50%, #d9a441);
+
+  /* semantic — info/success/warning darkened for AA as text on --rb-surface
+     (warning was 2.97:1, the worst offender; info/success were 4.44/4.13,
+     just under 4.5). Danger already cleared AA (5.49:1), left unchanged. */
+  --rb-info: #3c7ba3;
+  --rb-success: #497f4b;
+  --rb-warning: #9c6b22;
+  --rb-danger: #b8412a;
+
+  /* typography — the library's only serif display voice, over a sans body */
+  --rb-font-display: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --rb-font-body: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --rb-font-mono: ui-monospace, "Cascadia Code", "Cascadia Mono", "Segoe UI Mono", Consolas, Menlo, monospace;
+  --rb-font-weight: 400;
+  --rb-font-weight-medium: 600;
+  --rb-font-weight-bold: 700;
+  --rb-heading-tracking: -0.01em;
+  --rb-label-tracking: 0.04em;
+  --rb-text-sm: 13px;
+
+  /* shape & effects — the most generously rounded theme in the roster, warm
+   * diffused shadows (brown-tinted, never neutral black), unhurried transitions */
+  --rb-radius: 0.875rem;
+  --rb-radius-lg: 1.25rem;
+  --rb-radius-pill: 999px;
+  --rb-shadow-sm: 0 2px 6px rgba(80, 50, 20, 0.12);
+  --rb-shadow-lg: 0 12px 32px rgba(80, 50, 20, 0.18);
+  --rb-blur: 12px;
+  --rb-transition: 0.18s;
+
+  /* spacing — 4px rhythm */
+  --rb-space-1: 0.25rem;
+  --rb-space-2: 0.5rem;
+  --rb-space-3: 0.75rem;
+  --rb-space-4: 1rem;
+  --rb-space-5: 1.5rem;
+}

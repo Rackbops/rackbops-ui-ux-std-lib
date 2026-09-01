@@ -1,0 +1,83 @@
+/* concrete-signal-light — button
+ * Uppercase, heavy weight — the industrial label voice. Default is an
+ * outlined ghost; --primary is the one solid accent fill and carries the
+ * theme's signature press interaction: the offset shadow disappears and the
+ * button translates into the surface by the shadow's own offset, like a
+ * stamped card being pressed flat. */
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--rb-space-2);
+  padding: var(--rb-space-2) var(--rb-space-4);
+  background: var(--rb-surface-2);
+  border: 1px solid var(--rb-border);
+  border-radius: var(--rb-radius);
+  color: var(--rb-text);
+  text-transform: uppercase;
+  font-family: var(--rb-font-body);
+  font-weight: var(--rb-font-weight-bold);
+  font-size: var(--rb-text-sm);
+  letter-spacing: var(--rb-label-tracking);
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    border-color var(--rb-transition),
+    color var(--rb-transition);
+}
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-btn:hover,
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-btn:focus-visible {
+  border-color: var(--rb-accent);
+  color: var(--rb-accent);
+  outline: none;
+}
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-btn--primary {
+  background: var(--rb-accent);
+  border-color: var(--rb-accent);
+  color: var(--rb-accent-fg);
+  box-shadow: var(--rb-shadow-sm);
+  transition:
+    transform var(--rb-transition),
+    box-shadow var(--rb-transition);
+}
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-btn--primary:hover,
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-btn--primary:focus-visible,
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-btn--primary:active {
+  border-color: var(--rb-accent);
+  color: var(--rb-accent-fg);
+  outline: none;
+  transform: translate(2px, 2px);
+  box-shadow: none;
+}
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-btn--accent {
+  background: var(--rb-accent-wash);
+  border-color: var(--rb-accent);
+  color: var(--rb-accent);
+}
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-btn--danger {
+  background: transparent;
+  border-color: var(--rb-danger);
+  color: var(--rb-danger);
+}
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-btn--ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--rb-text-soft);
+}
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-btn--ghost:hover,
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-btn--ghost:focus-visible {
+  background: var(--rb-surface-2);
+  border-color: var(--rb-border);
+  color: var(--rb-text);
+}
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-btn,
+  :where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-btn--primary {
+    transition: none;
+  }
+}

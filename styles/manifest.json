@@ -34,6 +34,26 @@
       "fonts": [
         "https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Inter:wght@400;600&family=JetBrains+Mono:wght@500;700&display=swap"
       ]
+    },
+    "concrete-signal": {
+      "scheme": "dark",
+      "fonts": []
+    },
+    "concrete-signal-light": {
+      "scheme": "light",
+      "fonts": []
+    },
+    "amber-hearth": {
+      "scheme": "light",
+      "fonts": []
+    },
+    "amber-ember": {
+      "scheme": "dark",
+      "fonts": []
+    },
+    "mono-field": {
+      "scheme": "light",
+      "fonts": []
     }
   }
 }

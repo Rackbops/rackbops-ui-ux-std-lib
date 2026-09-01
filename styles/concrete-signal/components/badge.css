@@ -1,0 +1,38 @@
+/* concrete-signal — badge / status chip
+ * A stamped label: a 16%-tint fill of its hue behind full-strength text, plus
+ * a 1px solid border of that same hue — badges get a border here, unlike
+ * softer themes, to keep the stamped-label feel. */
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--rb-space-1);
+  padding: 2px var(--rb-space-2);
+  border: 1px solid var(--rb-accent);
+  border-radius: var(--rb-radius-pill);
+  background: var(--rb-accent-wash);
+  color: var(--rb-accent);
+  text-transform: uppercase;
+  font-weight: var(--rb-font-weight-bold);
+  font-size: 11px;
+  letter-spacing: var(--rb-label-tracking);
+}
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-badge--info {
+  border-color: var(--rb-info);
+  background: color-mix(in srgb, var(--rb-info) 16%, transparent);
+  color: var(--rb-info);
+}
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-badge--success {
+  border-color: var(--rb-success);
+  background: color-mix(in srgb, var(--rb-success) 16%, transparent);
+  color: var(--rb-success);
+}
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-badge--warning {
+  border-color: var(--rb-warning);
+  background: color-mix(in srgb, var(--rb-warning) 16%, transparent);
+  color: var(--rb-warning);
+}
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-badge--danger {
+  border-color: var(--rb-danger);
+  background: color-mix(in srgb, var(--rb-danger) 16%, transparent);
+  color: var(--rb-danger);
+}

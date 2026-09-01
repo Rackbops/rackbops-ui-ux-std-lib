@@ -1,0 +1,76 @@
+/* mono-field — design tokens
+ * An original standalone theme for @rackbops/styles: the library's
+ * deliberately restrained, "anti-flashy" light theme — a quiet foil to the
+ * glow/gradient/neon themes elsewhere in the roster. Consume via:
+ *   @import "@rackbops/styles/mono-field/tokens";
+ * or pull the whole theme with ./index.css.
+ *
+ * Nothing applies until an element carries data-rb-style="mono-field" — set it
+ * on <html> for a page, or on any container for an embedded island. The
+ * :where() keeps specificity at zero, so any consumer rule overrides.
+ *
+ * There is no ported or reverse-documented source: this is a purpose-designed
+ * theme built directly to the library's shared baseline --rb-* contract, with
+ * no theme extras. Visual hierarchy comes from thin 1px hairline borders and
+ * generous spacing rather than color contrast between surface layers or
+ * shadow depth; the one gradient (--rb-accent-grad) is rationed to the
+ * active-tab underline and appears nowhere else.
+ */
+:where([data-rb-style="mono-field"]) {
+  color-scheme: light;
+
+  /* color — near-flat grayscale surfaces; hierarchy comes from borders, not fills */
+  --rb-bg: #ffffff;
+  --rb-surface: #ffffff;
+  --rb-surface-2: #f7f7f7;
+  --rb-surface-sunken: #f0f0f0;
+  --rb-text: #111111;
+  --rb-text-soft: #5a5a5a;
+  --rb-text-faint: #6b6b6b;
+  --rb-border: #e0e0e0;
+  --rb-border-strong: #c4c4c4;
+
+  /* accent — a near-black ink-blue, just enough to read as "the interactive
+     color" without ever reading as decoration */
+  --rb-accent: #1d2733;
+  --rb-accent-fg: #ffffff;
+  --rb-accent-wash: rgba(29, 39, 51, 0.06);
+
+  /* the ONE gradient — rationed to the active-tab underline, nowhere else */
+  --rb-accent-grad: linear-gradient(120deg, #1d2733, #4a5568);
+
+  /* semantic — desaturated compared to the rest of the roster, to keep this
+     theme's voice consistently quiet. Warning darkened from #a9791f (3.60:1
+     on --rb-surface-2, failed AA) to #91681b (4.67:1) — the sole failing hue. */
+  --rb-info: #4a6fa5;
+  --rb-success: #3f7d4f;
+  --rb-warning: #91681b;
+  --rb-danger: #a13a3a;
+
+  /* typography — small/tight system-ui type; no uppercase tricks anywhere */
+  --rb-font-display: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --rb-font-body: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --rb-font-mono: ui-monospace, "Cascadia Code", "Cascadia Mono", "Segoe UI Mono", Consolas, Menlo, monospace;
+  --rb-font-weight: 400;
+  --rb-font-weight-medium: 500;
+  --rb-font-weight-bold: 600; /* this theme never goes past 600 — part of the quiet voice */
+  --rb-heading-tracking: -0.005em;
+  --rb-label-tracking: 0.02em;
+  --rb-text-sm: 13px;
+
+  /* shape & effects — small tight radii, barely-there shadows, no glass, no glow */
+  --rb-radius: 0.25rem;
+  --rb-radius-lg: 0.375rem;
+  --rb-radius-pill: 999px;
+  --rb-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --rb-shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --rb-blur: 8px;
+  --rb-transition: 0.12s;
+
+  /* spacing */
+  --rb-space-1: 0.25rem;
+  --rb-space-2: 0.5rem;
+  --rb-space-3: 0.75rem;
+  --rb-space-4: 1rem;
+  --rb-space-5: 1.5rem;
+}

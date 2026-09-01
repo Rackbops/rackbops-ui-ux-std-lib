@@ -1,0 +1,34 @@
+/* mono-field — badge
+ * A pill: a 12%-alpha tint of its hue behind full-strength (but desaturated)
+ * text. Normal case, weight 500 — no shouting, even here (unusual for a
+ * badge, but matches this theme's no-shouting rule). */
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--rb-space-1);
+  padding: 2px var(--rb-space-2);
+  border-radius: var(--rb-radius-pill);
+  color: var(--rb-accent);
+  background: color-mix(in srgb, var(--rb-accent) 12%, transparent);
+  font-family: var(--rb-font-body);
+  font-size: 12px;
+  font-weight: var(--rb-font-weight-medium);
+  letter-spacing: var(--rb-label-tracking);
+  text-transform: none;
+}
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-badge--info {
+  background: color-mix(in srgb, var(--rb-info) 12%, transparent);
+  color: var(--rb-info);
+}
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-badge--success {
+  background: color-mix(in srgb, var(--rb-success) 12%, transparent);
+  color: var(--rb-success);
+}
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-badge--warning {
+  background: color-mix(in srgb, var(--rb-warning) 12%, transparent);
+  color: var(--rb-warning);
+}
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-badge--danger {
+  background: color-mix(in srgb, var(--rb-danger) 12%, transparent);
+  color: var(--rb-danger);
+}
