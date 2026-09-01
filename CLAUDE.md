@@ -25,8 +25,9 @@ roshne's apps. Every theme must satisfy `styles/test/contract.test.mjs`:
 Run it before staging:
 
 ```bash
-pnpm --filter @roshne/styles test   # contract + release-bump tests
-pnpm build                          # tsc the React package
+pnpm --filter @roshne/styles test    # contract + release-bump tests
+pnpm --filter @roshne/ui-react test  # React component render tests
+pnpm build                           # tsc the React package
 ```
 
 Themes are drop-in swappable: both declare the same baseline tokens and `rb-*`

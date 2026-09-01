@@ -92,6 +92,7 @@ rackbops.com uses.
 pnpm install
 pnpm build                              # tsc the React package
 pnpm --filter @roshne/styles test       # theme contract + release-bump tests
+pnpm --filter @roshne/ui-react test     # typecheck + render-to-string component tests
 ```
 
 The contract test (`styles/test/contract.test.mjs`) enforces the theme rules:
