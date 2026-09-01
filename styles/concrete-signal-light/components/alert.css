@@ -1,0 +1,44 @@
+/* concrete-signal-light — alert / callout
+ * A square-cornered surface panel with a 6px solid left bar — thicker than
+ * the library norm, read like a hazard stripe. */
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-alert {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rb-space-1);
+  padding: var(--rb-space-3) var(--rb-space-4);
+  background: var(--rb-surface);
+  border: 1px solid var(--rb-border);
+  border-left: 6px solid var(--rb-accent);
+  border-radius: var(--rb-radius);
+  color: var(--rb-text);
+  font-size: var(--rb-text-sm);
+}
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-alert__title {
+  text-transform: uppercase;
+  font-weight: var(--rb-font-weight-bold);
+  letter-spacing: var(--rb-label-tracking);
+}
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-alert--info {
+  border-left-color: var(--rb-info);
+}
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-alert--success {
+  border-left-color: var(--rb-success);
+}
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-alert--warning {
+  border-left-color: var(--rb-warning);
+}
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-alert--danger {
+  border-left-color: var(--rb-danger);
+}
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-alert--info .rb-alert__title {
+  color: var(--rb-info);
+}
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-alert--success .rb-alert__title {
+  color: var(--rb-success);
+}
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-alert--warning .rb-alert__title {
+  color: var(--rb-warning);
+}
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-alert--danger .rb-alert__title {
+  color: var(--rb-danger);
+}

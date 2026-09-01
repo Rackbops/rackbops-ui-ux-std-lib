@@ -1,0 +1,32 @@
+/* amber-ember — badge / status chip
+ * A true pill: a 16%-alpha tint of its hue behind full-strength text. Normal
+ * case, medium weight — this theme has no uppercase-shouty labels. */
+:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--rb-space-1);
+  padding: 2px var(--rb-space-2);
+  border-radius: var(--rb-radius-pill);
+  font-family: var(--rb-font-body);
+  font-size: 12px;
+  font-weight: var(--rb-font-weight-medium);
+  letter-spacing: var(--rb-label-tracking);
+  background: var(--rb-accent-wash);
+  color: var(--rb-accent);
+}
+:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-badge--info {
+  background: color-mix(in srgb, var(--rb-info) 16%, transparent);
+  color: var(--rb-info);
+}
+:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-badge--success {
+  background: color-mix(in srgb, var(--rb-success) 16%, transparent);
+  color: var(--rb-success);
+}
+:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-badge--warning {
+  background: color-mix(in srgb, var(--rb-warning) 16%, transparent);
+  color: var(--rb-warning);
+}
+:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-badge--danger {
+  background: color-mix(in srgb, var(--rb-danger) 16%, transparent);
+  color: var(--rb-danger);
+}

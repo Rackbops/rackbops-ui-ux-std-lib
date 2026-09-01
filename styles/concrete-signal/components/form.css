@@ -1,0 +1,138 @@
+/* concrete-signal — form controls: input, textarea, select, checkbox, radio, switch
+ * Sunken square-cornered fields; focus is a hard border-weight change (1px to
+ * 2px solid accent) — no soft wash ring, brutalism doesn't glow. Checked
+ * checkbox/radio/switch states are a flat accent fill, not a tinted ring. */
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rb-space-1);
+}
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-label {
+  color: var(--rb-text-soft);
+  text-transform: uppercase;
+  font-size: var(--rb-text-sm);
+  font-weight: var(--rb-font-weight-medium);
+  letter-spacing: var(--rb-label-tracking);
+}
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-input,
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-textarea,
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-select {
+  display: block;
+  width: 100%;
+  padding: var(--rb-space-2) var(--rb-space-3);
+  background: var(--rb-surface-sunken);
+  border: 1px solid var(--rb-border);
+  border-radius: var(--rb-radius);
+  color: var(--rb-text);
+  font-family: var(--rb-font-body);
+  font-weight: var(--rb-font-weight);
+  font-size: var(--rb-text-sm);
+  transition: border-color var(--rb-transition);
+}
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-textarea {
+  min-height: 5rem;
+  resize: vertical;
+}
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-select {
+  appearance: none;
+  padding-right: 2.25rem;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%238f8f8a' stroke-width='1.5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right var(--rb-space-3) center;
+}
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-input::placeholder,
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-textarea::placeholder {
+  color: var(--rb-text-faint);
+}
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-input:focus,
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-textarea:focus,
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-select:focus {
+  outline: none;
+  border: 2px solid var(--rb-accent);
+}
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-input[aria-invalid="true"],
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-textarea[aria-invalid="true"] {
+  border-color: var(--rb-danger);
+}
+
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-choice {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--rb-space-2);
+  color: var(--rb-text);
+  font-size: var(--rb-text-sm);
+  cursor: pointer;
+}
+
+/* checkbox & radio — square, sunken; checked is a flat accent fill framed by
+   an inset ring of the field background, not a glow */
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-checkbox,
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-radio {
+  appearance: none;
+  width: 1.1rem;
+  height: 1.1rem;
+  margin: 0;
+  vertical-align: text-bottom;
+  background: var(--rb-surface-sunken);
+  border: 1px solid var(--rb-border);
+  border-radius: var(--rb-radius);
+  cursor: pointer;
+  transition: border-color var(--rb-transition), background var(--rb-transition);
+}
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-checkbox:checked,
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-radio:checked {
+  background: var(--rb-accent);
+  border-color: var(--rb-accent);
+  box-shadow: inset 0 0 0 3px var(--rb-surface-sunken);
+}
+
+/* switch — square track and thumb; flat accent fill when on */
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-switch {
+  appearance: none;
+  position: relative;
+  width: 2.4rem;
+  height: 1.3rem;
+  margin: 0;
+  vertical-align: text-bottom;
+  background: var(--rb-surface-sunken);
+  border: 1px solid var(--rb-border);
+  border-radius: var(--rb-radius);
+  cursor: pointer;
+  transition: border-color var(--rb-transition);
+}
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-switch::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: calc(1.3rem - 6px);
+  height: calc(1.3rem - 6px);
+  background: var(--rb-text-faint);
+  transition: transform var(--rb-transition), background var(--rb-transition);
+}
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-switch:checked {
+  border-color: var(--rb-accent);
+}
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-switch:checked::after {
+  transform: translateX(1.1rem);
+  background: var(--rb-accent);
+}
+
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-checkbox:focus-visible,
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-radio:focus-visible,
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-switch:focus-visible {
+  outline: none;
+  border: 2px solid var(--rb-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-input,
+  :where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-textarea,
+  :where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-select,
+  :where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-checkbox,
+  :where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-radio,
+  :where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-switch,
+  :where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-switch::after {
+    transition: none;
+  }
+}

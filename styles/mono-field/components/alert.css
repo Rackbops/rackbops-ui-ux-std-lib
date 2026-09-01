@@ -1,0 +1,35 @@
+/* mono-field — alert / callout
+ * A surface-2 panel — a rare use of the theme's one non-white surface, to
+ * read as "flagged". A thin 2px left bar carries the semantic color; kept
+ * quiet, not bold. */
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-alert {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rb-space-1);
+  padding: var(--rb-space-3) var(--rb-space-4);
+  background: var(--rb-surface-2);
+  border: 1px solid var(--rb-border);
+  border-left: 2px solid var(--rb-accent);
+  border-radius: var(--rb-radius);
+  color: var(--rb-text);
+  font-size: var(--rb-text-sm);
+}
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-alert__title {
+  display: block;
+  margin-bottom: var(--rb-space-1);
+  color: var(--rb-text);
+  font-weight: var(--rb-font-weight-medium);
+  font-size: var(--rb-text-sm);
+}
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-alert--info {
+  border-left-color: var(--rb-info);
+}
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-alert--success {
+  border-left-color: var(--rb-success);
+}
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-alert--warning {
+  border-left-color: var(--rb-warning);
+}
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-alert--danger {
+  border-left-color: var(--rb-danger);
+}

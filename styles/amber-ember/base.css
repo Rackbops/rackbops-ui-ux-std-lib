@@ -1,0 +1,49 @@
+/* amber-ember — base styles
+ * Scoped defaults. Requires tokens.css. Fonts are system stacks (a system serif
+ * for display, system-ui for body) — nothing to load, no webfont network hop.
+ *
+ * The element carrying data-rb-style is the theme's canvas: it gets the
+ * background, text color, and body font — whether that is <html> for a page
+ * or a mount container for an embedded island. Page-only rules (body margin,
+ * viewport height) apply only when the attribute sits on <html>.
+ */
+:where([data-rb-style="amber-ember"]) {
+  background-color: var(--rb-bg);
+  color: var(--rb-text);
+  font-family: var(--rb-font-body);
+  font-weight: var(--rb-font-weight);
+}
+
+:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *),
+:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *)::before,
+:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *)::after {
+  box-sizing: border-box;
+}
+
+:where(html[data-rb-style="amber-ember"]) body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--rb-bg);
+  color: var(--rb-text);
+  font-family: var(--rb-font-body);
+  font-weight: var(--rb-font-weight);
+}
+
+/* Headings and titles are the one place this theme goes serif — the library's
+ * only serif display voice. Body copy and UI chrome (buttons, labels, table
+ * text) stay on the sans body font. */
+:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *):where(h1, h2, h3, h4, h5, h6) {
+  font-family: var(--rb-font-display);
+  font-weight: var(--rb-font-weight-bold);
+  letter-spacing: var(--rb-heading-tracking);
+  color: var(--rb-text);
+}
+
+:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *):where(a) {
+  color: var(--rb-accent);
+}
+
+:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *)::selection {
+  background: var(--rb-accent);
+  color: var(--rb-accent-fg);
+}

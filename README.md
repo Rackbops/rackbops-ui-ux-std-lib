@@ -12,15 +12,18 @@ the rackbops brand (`--rb-*`, `.rb-*`, `data-rb-style`). Two layers:
 
 Each theme is a **design language** captured as a written `design.md` spec plus
 its CSS — most reverse-documented from one of roshne's apps, some ported (and
-credited) from [`nazuraki/ui-std-lib`](https://github.com/nazuraki/ui-std-lib).
-One shared `--rb-*` token / `rb-*` class contract means themes are drop-in
-swappable — one attribute flip.
+credited) from [`nazuraki/ui-std-lib`](https://github.com/nazuraki/ui-std-lib),
+and some original designs built directly for this library. One shared `--rb-*`
+token / `rb-*` class contract means themes are drop-in swappable — one
+attribute flip.
 
 ## Themes
 
-Two of roshne's app design languages (each a light/dark pair), plus themes
-ported — credited — from [`nazuraki/ui-std-lib`](https://github.com/nazuraki/ui-std-lib).
-One `--rb-*` / `rb-*` contract, so any two swap with a single `data-rb-style` flip.
+Two of roshne's app design languages (each a light/dark pair), three themes
+ported — credited — from [`nazuraki/ui-std-lib`](https://github.com/nazuraki/ui-std-lib),
+and five original designs built for this library (two light/dark pairs plus
+one standalone). One `--rb-*` / `rb-*` contract, so any two swap with a single
+`data-rb-style` flip.
 
 | Theme | Scheme | Source | Description |
 | --- | --- | --- | --- |
@@ -31,6 +34,11 @@ One `--rb-*` / `rb-*` contract, so any two swap with a single `data-rb-style` fl
 | `luminous-precision` | dark | nazuraki/ui-std-lib | Glassmorphic obsidian console — orchid brand voice, electric-teal active paths, glow-as-elevation; Sora headlines over JetBrains Mono. Ported (credited) from nazuraki/ui-std-lib. |
 | `neon-butterfly` | dark | nazuraki/ui-std-lib | Mono-spaced neon terminal — lilac brand voice, neon-lime activity signals, glass over deep navy, all-uppercase JetBrains Mono. Ported (credited) from nazuraki/ui-std-lib. |
 | `summer-cloud` | light | nazuraki/ui-std-lib | Airy retail glass — vivid violet emphasis, sky-blue interaction, white glass floating on a sky gradient, bouncy motion. Ported (credited) from nazuraki/ui-std-lib. |
+| `concrete-signal` | dark | original | Brutalist industrial — zero radius, hard offset shadows instead of blur, sole safety-orange accent, snappy 0.1s transitions, all-uppercase heavy labels. |
+| `concrete-signal-light` | light | original | The light counterpart of concrete-signal — same hard-edged mechanics on a poured-concrete off-white ground. |
+| `amber-hearth` | light | original | Warm hand-crafted editorial — clay-terracotta accent on cream, the library's only serif display voice, the most generously rounded shape language, warm-toned diffused shadows. |
+| `amber-ember` | dark | original | The dark, espresso-ground counterpart of amber-hearth — same serif-and-clay language on a warm dark night palette. |
+| `mono-field` | light | original | Deliberately restrained quiet monochrome — near-flat grayscale surfaces, hairline-driven hierarchy, near-black ink accent, no uppercase, no glow. Standalone, no pair. |
 
 Each theme ships a `design.md` — a written spec of the aesthetic (palette,
 typography, shape rules, component inventory). Read it before designing new

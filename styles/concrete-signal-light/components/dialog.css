@@ -1,0 +1,33 @@
+/* concrete-signal-light — dialog (native <dialog>)
+ * A square-cornered slab dropped onto a flat, unblurred backdrop — this
+ * theme never uses blur/glass, so the scrim behind the dialog stays flat. */
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-dialog {
+  padding: 0;
+  max-width: min(92vw, 32rem);
+  width: calc(100vw - 2rem);
+  background: var(--rb-surface);
+  border: 2px solid var(--rb-border-strong);
+  border-radius: var(--rb-radius);
+  color: var(--rb-text);
+  box-shadow: var(--rb-shadow-lg);
+}
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.6);
+}
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-dialog__body {
+  padding: var(--rb-space-5);
+}
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-dialog__title {
+  margin: 0 0 var(--rb-space-3);
+  text-transform: uppercase;
+  font-family: var(--rb-font-display);
+  font-weight: var(--rb-font-weight-bold);
+  letter-spacing: var(--rb-label-tracking);
+}
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--rb-space-2);
+  padding: var(--rb-space-3) var(--rb-space-5);
+  border-top: 1px solid var(--rb-border);
+}

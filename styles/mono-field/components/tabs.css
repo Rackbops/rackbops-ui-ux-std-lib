@@ -1,0 +1,48 @@
+/* mono-field — tabs
+ * Normal-case text tabs. The active tab carries accent text and is
+ * underlined with the theme's one gradient — rationed here and nowhere else. */
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-tabs {
+  display: flex;
+  gap: var(--rb-space-2);
+  border-bottom: 1px solid var(--rb-border);
+}
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-tab {
+  position: relative;
+  padding: var(--rb-space-2) var(--rb-space-4);
+  background: transparent;
+  border: 0;
+  color: var(--rb-text-soft);
+  font-family: var(--rb-font-body);
+  font-weight: var(--rb-font-weight-medium);
+  font-size: var(--rb-text-sm);
+  text-transform: none;
+  cursor: pointer;
+  transition: color var(--rb-transition);
+}
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-tab:hover {
+  color: var(--rb-text);
+}
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-tab.rb-tab--active,
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-tab[aria-selected="true"] {
+  color: var(--rb-accent);
+}
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-tab.rb-tab--active::after,
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-tab[aria-selected="true"]::after {
+  content: "";
+  position: absolute;
+  left: var(--rb-space-3);
+  right: var(--rb-space-3);
+  bottom: -1px;
+  height: 2px;
+  border-radius: 2px 2px 0 0;
+  background: var(--rb-accent-grad);
+}
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-tabpanel {
+  padding: var(--rb-space-4) 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-tab {
+    transition: none;
+  }
+}

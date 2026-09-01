@@ -1,0 +1,33 @@
+/* concrete-signal — table
+ * Dense, spec-sheet reading: 1px border-strong rules everywhere (not faint
+ * hairlines), uppercase tracked headers, tabular numerals, and a row hover
+ * that snaps instantly — no transition softness. */
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--rb-text-sm);
+  font-variant-numeric: tabular-nums;
+  color: var(--rb-text);
+}
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-table th {
+  padding: var(--rb-space-2) var(--rb-space-3);
+  border-bottom: 1px solid var(--rb-border-strong);
+  color: var(--rb-text-faint);
+  text-align: left;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: var(--rb-font-weight-bold);
+  letter-spacing: var(--rb-label-tracking);
+}
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-table td {
+  padding: var(--rb-space-2) var(--rb-space-3);
+  border-bottom: 1px solid var(--rb-border-strong);
+  color: var(--rb-text);
+}
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-table tbody tr:hover td {
+  background: var(--rb-surface-2);
+}
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-table .rb-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}

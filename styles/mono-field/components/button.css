@@ -1,0 +1,86 @@
+/* mono-field — button
+ * Plain bordered ghost on white by default; --primary is the one solid
+ * ink-blue fill. No hover lift, no glow ring — just a barely-there shadow
+ * change on primary and a plain accent outline on focus. */
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--rb-space-2);
+  padding: var(--rb-space-2) var(--rb-space-4);
+  background: var(--rb-surface);
+  border: 1px solid var(--rb-border);
+  border-radius: var(--rb-radius);
+  color: var(--rb-text);
+  font-family: var(--rb-font-body);
+  font-weight: var(--rb-font-weight-medium);
+  font-size: var(--rb-text-sm);
+  text-transform: none;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    border-color var(--rb-transition),
+    background var(--rb-transition),
+    color var(--rb-transition),
+    box-shadow var(--rb-transition);
+}
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-btn:hover {
+  border-color: var(--rb-border-strong);
+}
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-btn:focus-visible {
+  outline: 2px solid var(--rb-accent);
+  outline-offset: 2px;
+}
+
+/* Primary — the one solid fill. Barely-there shadow lift on hover only. */
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-btn--primary {
+  background: var(--rb-accent);
+  border-color: var(--rb-accent);
+  color: var(--rb-accent-fg);
+  box-shadow: var(--rb-shadow-sm);
+}
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-btn--primary:hover {
+  box-shadow: var(--rb-shadow-lg);
+}
+
+/* Accent — an accent-wash chip. */
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-btn--accent {
+  background: var(--rb-accent-wash);
+  border-color: transparent;
+  color: var(--rb-accent);
+}
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-btn--accent:hover {
+  border-color: var(--rb-accent);
+}
+
+/* Danger — a danger-colored ghost. */
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-btn--danger {
+  background: var(--rb-surface);
+  border-color: var(--rb-border);
+  color: var(--rb-danger);
+}
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-btn--danger:hover {
+  border-color: var(--rb-danger);
+}
+
+/* Ghost — chromeless. */
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-btn--ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--rb-text-soft);
+}
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-btn--ghost:hover {
+  border-color: transparent;
+  color: var(--rb-text);
+}
+
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-btn {
+    transition: none;
+  }
+}

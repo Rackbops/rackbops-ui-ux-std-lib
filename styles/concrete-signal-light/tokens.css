@@ -1,0 +1,75 @@
+/* concrete-signal-light — design tokens
+ * The light, AA-tuned counterpart of concrete-signal: the same brutalist
+ * industrial language — zero border-radius everywhere, thick hairline
+ * borders, hard offset shadows instead of blur — rendered on a poured-
+ * concrete off-white ground instead of the dark slab. It ships the identical
+ * `rb-*` component set as concrete-signal (token-driven, so only the palette
+ * differs) and swaps in with a single attribute flip. Consume via:
+ *   @import "@rackbops/styles/concrete-signal-light/tokens";
+ * or pull the whole theme with ./index.css.
+ *
+ * Nothing applies until an element carries
+ * data-rb-style="concrete-signal-light" — set it on <html> for a page, or on
+ * any container for an embedded island. The :where() keeps specificity at
+ * zero, so any consumer rule overrides.
+ */
+:where([data-rb-style="concrete-signal-light"]) {
+  color-scheme: light;
+
+  /* color — poured concrete, off-white */
+  --rb-bg: #eeece6;
+  --rb-surface: #f7f6f2;
+  --rb-surface-2: #e4e2da;
+  --rb-surface-sunken: #dcdad2;
+  --rb-text: #141311;
+  --rb-text-soft: #4a4844;
+  --rb-text-faint: #5f5d58;
+  --rb-border: #c9c6bc;
+  --rb-border-strong: #a8a59a;
+
+  /* accent — safety-orange is the sole brand voice: interaction/focus/emphasis only.
+     Darkened from the naive #d94a12 to #cc4611 so accent-fg-on-accent (the
+     primary button fill) clears WCAG AA (4.72:1, was 4.25:1). */
+  --rb-accent: #cc4611;
+  --rb-accent-fg: #ffffff;
+  --rb-accent-wash: rgba(204, 70, 17, 0.14);
+
+  /* the ONE gradient — rationed to the active-tab underline only */
+  --rb-accent-grad: linear-gradient(90deg, #cc4611, #b8281f);
+
+  /* semantic — colour beyond the accent is earned: severity/status only.
+     Warning darkened from #b8842a (3.05:1 on --rb-surface, failed AA) to
+     #906721 (4.68:1) — it's the sole failing semantic hue on this ground. */
+  --rb-info: #2f6fa8;
+  --rb-success: #3d7a45;
+  --rb-warning: #906721;
+  --rb-danger: #b8281f;
+
+  /* typography — system-ui throughout; the industrial voice comes from
+     weight/case/tracking, not font family */
+  --rb-font-display: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --rb-font-body: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --rb-font-mono: ui-monospace, "Cascadia Code", "Cascadia Mono", "Segoe UI Mono", Consolas, Menlo, monospace;
+  --rb-font-weight: 400;
+  --rb-font-weight-medium: 600;
+  --rb-font-weight-bold: 800;
+  --rb-heading-tracking: 0.01em;
+  --rb-label-tracking: 0.08em;
+  --rb-text-sm: 13px;
+
+  /* shape & effects — zero radius everywhere; hard offset shadows, no blur */
+  --rb-radius: 0;
+  --rb-radius-lg: 0;
+  --rb-radius-pill: 0.125rem; /* deliberately near-square, not a true pill — brutalism has no soft pills */
+  --rb-shadow-sm: 2px 2px 0 rgba(20, 19, 17, 0.18);
+  --rb-shadow-lg: 4px 4px 0 rgba(20, 19, 17, 0.22);
+  --rb-blur: 0px; /* this theme never uses blur/glass */
+  --rb-transition: 0.1s; /* snappy; brutalism doesn't ease */
+
+  /* spacing — 4px rhythm */
+  --rb-space-1: 0.25rem;
+  --rb-space-2: 0.5rem;
+  --rb-space-3: 0.75rem;
+  --rb-space-4: 1rem;
+  --rb-space-5: 1.5rem;
+}

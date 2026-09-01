@@ -1,0 +1,41 @@
+/* mono-field — base styles
+ * Scoped defaults. Requires tokens.css. Fonts are system stacks — nothing to
+ * load, this theme renders offline.
+ *
+ * The element carrying data-rb-style is the theme's canvas: it gets the
+ * background, text color, and body font — whether that is <html> for a page
+ * or a mount container for an embedded island. Page-only rules (body margin,
+ * viewport height) apply only when the attribute sits on <html>.
+ */
+:where([data-rb-style="mono-field"]) {
+  background-color: var(--rb-bg);
+  color: var(--rb-text);
+  font-family: var(--rb-font-body);
+  font-weight: var(--rb-font-weight);
+  -webkit-font-smoothing: antialiased;
+}
+
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *),
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *)::before,
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *)::after {
+  box-sizing: border-box;
+}
+
+:where(html[data-rb-style="mono-field"]) body {
+  margin: 0;
+  min-height: 100vh;
+  background-color: var(--rb-bg);
+  color: var(--rb-text);
+  font-family: var(--rb-font-body);
+  font-weight: var(--rb-font-weight);
+  -webkit-font-smoothing: antialiased;
+}
+
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *):where(a) {
+  color: var(--rb-accent);
+}
+
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *)::selection {
+  background: var(--rb-accent);
+  color: var(--rb-accent-fg);
+}

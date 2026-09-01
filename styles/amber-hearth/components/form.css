@@ -1,0 +1,72 @@
+/* amber-hearth — form controls
+ * Sunken fields on the warm cream ground; focus swaps the border for the accent
+ * plus a soft accent-wash ring. Labels stay normal-case, medium weight, sans. */
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--rb-space-1);
+}
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-label {
+  font-family: var(--rb-font-body);
+  font-size: var(--rb-text-sm);
+  font-weight: var(--rb-font-weight-medium);
+  color: var(--rb-text-soft);
+}
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-input,
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-textarea,
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-select {
+  width: 100%;
+  padding: var(--rb-space-2) var(--rb-space-3);
+  background: var(--rb-surface-sunken);
+  border: 1px solid var(--rb-border);
+  border-radius: var(--rb-radius);
+  color: var(--rb-text);
+  font-family: var(--rb-font-body);
+  font-size: var(--rb-text-sm);
+  transition:
+    border-color var(--rb-transition),
+    box-shadow var(--rb-transition);
+}
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-textarea {
+  min-height: 5rem;
+  resize: vertical;
+}
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-input:focus-visible,
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-textarea:focus-visible,
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-select:focus-visible {
+  outline: none;
+  border-color: var(--rb-accent);
+  box-shadow: 0 0 0 3px var(--rb-accent-wash);
+}
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-input::placeholder,
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-textarea::placeholder {
+  color: var(--rb-text-faint);
+}
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-choice {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--rb-space-2);
+  font-family: var(--rb-font-body);
+  font-size: var(--rb-text-sm);
+  color: var(--rb-text);
+  cursor: pointer;
+}
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-checkbox,
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-radio,
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-switch {
+  accent-color: var(--rb-accent);
+  width: 1rem;
+  height: 1rem;
+  cursor: pointer;
+}
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-switch {
+  width: 2rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-input,
+  :where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-textarea,
+  :where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-select {
+    transition: none;
+  }
+}

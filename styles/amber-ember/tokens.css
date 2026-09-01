@@ -1,0 +1,72 @@
+/* amber-ember — design tokens
+ * The dark counterpart of amber-hearth: same warm hand-crafted editorial
+ * voice — clay-terracotta accent, the library's only serif display voice — on
+ * an espresso ground instead of warm cream. Consume via:
+ *   @import "@rackbops/styles/amber-ember/tokens";
+ * or pull the whole theme with ./index.css.
+ *
+ * Nothing applies until an element carries data-rb-style="amber-ember" — set it
+ * on <html> for a page, or on any container for an embedded island. The :where()
+ * keeps specificity at zero, so any consumer rule overrides.
+ *
+ * Every theme declares the same baseline token set (styles/test enforces
+ * parity); this theme adds nothing beyond it. It ships the identical `rb-*`
+ * component set as amber-hearth — the components are token-driven, so only the
+ * palette differs. See amber-hearth/design.md for the light, primary look.
+ */
+:where([data-rb-style="amber-ember"]) {
+  color-scheme: dark;
+
+  /* color — espresso ground, warm amber accent */
+  --rb-bg: #1c130c;
+  --rb-surface: #26190f;
+  --rb-surface-2: #331f13;
+  --rb-surface-sunken: #150e08;
+  --rb-text: #f5e9da;
+  --rb-text-soft: #c9b39a;
+  --rb-text-faint: #a68a6c;
+  --rb-border: #40291a;
+  --rb-border-strong: #5a3a24;
+
+  /* accent — warm amber is the sole brand voice */
+  --rb-accent: #e08a3f;
+  --rb-accent-fg: #1c130c;
+  --rb-accent-wash: rgba(224, 138, 63, 0.18);
+
+  /* the ONE gradient — rationed to the active-tab underline only */
+  --rb-accent-grad: linear-gradient(120deg, #e08a3f, #c1592f 50%, #f2c15a);
+
+  /* semantic */
+  --rb-info: #5a9fc4;
+  --rb-success: #6ba26e;
+  --rb-warning: #dba748;
+  --rb-danger: #d1614a;
+
+  /* typography — the library's only serif display voice, over a sans body */
+  --rb-font-display: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --rb-font-body: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --rb-font-mono: ui-monospace, "Cascadia Code", "Cascadia Mono", "Segoe UI Mono", Consolas, Menlo, monospace;
+  --rb-font-weight: 400;
+  --rb-font-weight-medium: 600;
+  --rb-font-weight-bold: 700;
+  --rb-heading-tracking: -0.01em;
+  --rb-label-tracking: 0.04em;
+  --rb-text-sm: 13px;
+
+  /* shape & effects — the most generously rounded theme in the roster, warm
+   * diffused shadows (deepened for the dark ground), unhurried transitions */
+  --rb-radius: 0.875rem;
+  --rb-radius-lg: 1.25rem;
+  --rb-radius-pill: 999px;
+  --rb-shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.35);
+  --rb-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5);
+  --rb-blur: 12px;
+  --rb-transition: 0.18s;
+
+  /* spacing — 4px rhythm */
+  --rb-space-1: 0.25rem;
+  --rb-space-2: 0.5rem;
+  --rb-space-3: 0.75rem;
+  --rb-space-4: 1rem;
+  --rb-space-5: 1.5rem;
+}
