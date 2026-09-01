@@ -144,3 +144,10 @@ skills/design-system/      agent skill for consuming the system
 Relationship to `roshne/ui-std-lib`: that repo is roshne's **fork of Nazu's**
 shared system (for consuming / contributing upstream). *This* repo is roshne's
 own, separately-branded design-standards library.
+
+## License
+
+MIT, matching the upstream `nazuraki/ui-std-lib` this library ports themes
+from. See [`LICENSE`](LICENSE). The `luminous-precision`, `neon-butterfly`,
+and `summer-cloud` themes retain nazuraki's own MIT copyright notice; see
+[`NOTICE`](NOTICE).
