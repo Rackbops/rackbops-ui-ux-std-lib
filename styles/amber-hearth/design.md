@@ -110,6 +110,11 @@ Class prefix `rb-`; shared token/class contract with the other themes. No
 - **Progress / Spinner** `.rb-progress` / `.rb-spinner` — sunken trough with a
   solid accent fill (the gradient stays reserved for tabs); the spinner is a
   single accent arc (`rb-hearth-spin`).
+- **Muted text** `.rb-muted` — faint secondary/empty-state text;
+  `color: var(--rb-text-faint)`, italic — fits this warm, hand-crafted,
+  unhurried editorial voice.
+- **Pre / log block** `.rb-pre` — command/log `<pre>`; sunken background,
+  hairline border, radius, small mono, horizontal scroll.
 
 ## Dark counterpart
 

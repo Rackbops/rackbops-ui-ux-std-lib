@@ -1,0 +1,7 @@
+/* rackbops-noir — muted / empty-state text
+ * Faint secondary text — captions, meta, "No results yet." style empty
+ * states. Italic reads naturally in this editorial, print-like theme. */
+:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-muted {
+  color: var(--rb-text-faint);
+  font-style: italic;
+}

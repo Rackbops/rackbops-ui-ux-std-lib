@@ -1,0 +1,7 @@
+/* mono-field — muted / empty-state text
+ * Faint secondary text — captions, meta, "No results yet." style empty
+ * states. No italic: this theme carries "close to zero visual flourish";
+ * faint color alone stays consistent with its quiet, unshouty voice. */
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-muted {
+  color: var(--rb-text-faint);
+}

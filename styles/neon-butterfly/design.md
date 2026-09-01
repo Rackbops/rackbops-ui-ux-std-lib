@@ -91,6 +91,11 @@ Class prefix `rb-`. Variants use BEM-ish modifiers (`rb-btn--accent`).
 - **Tabs** `.rb-tabs`/`.rb-tab`/`.rb-tabpanel` — active tab underlined in lilac with text glow.
 - **Table** `.rb-table` — lilac header rule, glass row hover.
 - **Progress** `.rb-progress`, **Spinner** `.rb-spinner` — glowing lilac indicators.
+- **Muted text** `.rb-muted` — faint secondary/empty-state text;
+  `color: var(--rb-text-faint)` only, no italic — this theme's mono/uppercase
+  terminal voice never reaches for a literary flourish.
+- **Pre / log block** `.rb-pre` — command/log `<pre>`; sunken background,
+  hairline border, radius, small mono, horizontal scroll.
 
 This port carries nazuraki's original component set; the rackbops-specific
 `eyebrow`, `tabstrip`, `wordmark`, and `card--raised` surfaces are not part of it.

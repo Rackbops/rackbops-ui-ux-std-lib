@@ -1,0 +1,16 @@
+/* summer-cloud — command / log block
+ * Styled <pre> for shell commands or short log output: sunken well, small
+ * mono, scrolls horizontally instead of wrapping. Uses --rb-outline, not
+ * --rb-border — border here is a glass-only token (translucent white) and
+ * would be invisible on this opaque surface; outline is this theme's own
+ * "hairline on opaque surfaces" token (see table.css for the same choice). */
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-pre {
+  margin: 0;
+  padding: var(--rb-space-3) var(--rb-space-4);
+  background: var(--rb-surface-sunken);
+  border: 1px solid var(--rb-outline);
+  border-radius: var(--rb-radius);
+  font-family: var(--rb-font-mono);
+  font-size: var(--rb-text-sm);
+  overflow-x: auto;
+}

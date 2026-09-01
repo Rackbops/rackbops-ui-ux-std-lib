@@ -124,6 +124,11 @@ Class prefix `rb-`; shared token/class contract with the other themes.
 - **Progress / Spinner** `.rb-progress` / `.rb-spinner` — pill trough with a
   vermillion fill; single-arc spinner.
 - **Eyebrow** `.rb-eyebrow` — the mono kicker with leading rule.
+- **Muted text** `.rb-muted` — faint secondary/empty-state text;
+  `color: var(--rb-text-faint)`, italic — reads naturally in this editorial,
+  print-like theme.
+- **Pre / log block** `.rb-pre` — command/log `<pre>`; surface-sunken
+  background, hairline border, radius, small mono, horizontal scroll.
 
 ### Theme extras
 

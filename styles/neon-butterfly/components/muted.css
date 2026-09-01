@@ -1,0 +1,7 @@
+/* neon-butterfly — muted / empty-state text
+ * Faint secondary text — captions, meta, "No results yet." style empty
+ * states. No italic: this theme's mono/uppercase terminal voice never
+ * reaches for a literary flourish — "a command console, not a document". */
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-muted {
+  color: var(--rb-text-faint);
+}
