@@ -82,7 +82,8 @@ Class prefix `rb-`. Variants use BEM-ish modifiers (`rb-btn--accent`).
 
 - **Card** `.rb-card` — frosted glass panel.
 - **NavLink** `.rb-link` — the switchboard link: `>` chevron turns lime on hover.
-- **Button** `.rb-btn` — `--primary`, `--accent`, `--danger` variants.
+- **Button** `.rb-btn` — `--primary`, `--accent`, `--danger` variants; `--sm`
+  compact size for inline/table-row actions.
 - **Form** `.rb-input`, `.rb-textarea`, `.rb-select`, `.rb-label`, `.rb-field`,
   `.rb-checkbox`, `.rb-radio`, `.rb-switch`, `.rb-choice` — checked states glow lime.
 - **Badge** `.rb-badge` + semantic modifiers.

@@ -20,6 +20,12 @@
     border-color var(--rb-transition) ease,
     color var(--rb-transition) ease;
 }
+/* --sm: compact size for inline/table-row actions; drops to the theme's small
+ * type scale. The optional arrow inherits font-size, so it scales too. */
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn--sm {
+  padding: 7px 14px;
+  font-size: var(--rb-text-sm);
+}
 :where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn:active {
   transform: translateY(1px);
 }

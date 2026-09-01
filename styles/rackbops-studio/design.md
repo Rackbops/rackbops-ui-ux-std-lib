@@ -105,7 +105,8 @@ Class prefix `rb-`; shared token/class contract with the other themes.
 
 - **Button** `.rb-btn` — `--primary` ink-fill→vermillion, `--accent` solid
   vermillion, `--ghost` bordered outline, `--danger` rose outline; `.rb-btn__arrow`
-  slides on hover.
+  slides on hover. `--sm` is a compact size for inline/table-row actions — the
+  arrow scales with it.
 - **Card** `.rb-card` (+ `__tag`) — white panel, soft shadow, `-4px` hover lift.
 - **NavLink** `.rb-link` — mono header nav; hover fills to a surface pill; accent
   on the active route.

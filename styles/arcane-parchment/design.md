@@ -67,7 +67,7 @@ same mono voice with `--rb-space-3` margin, and bare `ul`/`ol` add
 ## Components
 
 Class prefix `rb-`; the full arcane-obsidian inventory, styled identically from
-tokens: `.rb-wordmark` (+ `__spark`), `.rb-btn` (+ `--primary/--accent/--danger/--ghost`),
+tokens: `.rb-wordmark` (+ `__spark`), `.rb-btn` (+ `--primary/--accent/--danger/--ghost`, `--sm` compact size),
 `.rb-card` (+ `--raised`), `.rb-link`, the form set, `.rb-badge`, `.rb-alert`,
 `.rb-dialog`, `.rb-tabs`, `.rb-tabstrip`, `.rb-table` (+ `.rb-num`),
 `.rb-progress` / `.rb-spinner`, `.rb-eyebrow`, `.rb-muted`, `.rb-pre`. See
