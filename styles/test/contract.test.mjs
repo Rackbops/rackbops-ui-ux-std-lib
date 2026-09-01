@@ -13,7 +13,7 @@
 // glass/glow, no code-* baseline), and fonts are system stacks so a theme may
 // carry an empty manifest fonts array.
 import assert from "node:assert/strict";
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { test } from "node:test";
 import { fileURLToPath } from "node:url";
@@ -104,18 +104,38 @@ function themeCssFiles(theme) {
   return files.map((f) => join(dir, f));
 }
 
+// Every CSS-only export resolves "types" to this one shared side-effect stub
+// (see css-side-effect.d.ts) -- required so TypeScript's stricter side-effect
+// import checking (moduleResolution: "bundler"/"node16",
+// noUncheckedSideEffectImports) doesn't force a consumer-side shim.
+const TYPES_STUB = "./css-side-effect.d.ts";
+
+/** Assert a CSS-only exports entry has the {types, default} shape and both resolve to real files. */
+function assertCssExport(key, expectedDefault) {
+  const entry = pkg.exports[key];
+  assert.equal(typeof entry, "object", `package.json exports[${key}] should be a {types, default} object`);
+  assert.equal(entry.types, TYPES_STUB, `package.json exports[${key}].types`);
+  assert.equal(entry.default, expectedDefault, `package.json exports[${key}].default`);
+  assert.ok(existsSync(join(ROOT, entry.types)), `${entry.types} does not exist`);
+}
+
 test("manifest, package.json, and theme directories agree", () => {
   const manifestThemes = Object.keys(manifest.themes).sort();
   assert.deepEqual([...themeDirs].sort(), manifestThemes);
   for (const theme of manifestThemes) {
     assert.ok(pkg.files.includes(theme), `package.json files misses ${theme}`);
-    for (const sub of ["", "/tokens", "/base", "/components/*"]) {
-      assert.ok(pkg.exports[`./${theme}${sub}`], `package.json exports misses ./${theme}${sub}`);
-    }
+    assertCssExport(`./${theme}`, `./${theme}/index.css`);
+    assertCssExport(`./${theme}/tokens`, `./${theme}/tokens.css`);
+    assertCssExport(`./${theme}/base`, `./${theme}/base.css`);
+    const componentsEntry = pkg.exports[`./${theme}/components/*`];
+    assert.equal(componentsEntry?.types, TYPES_STUB, `package.json exports[./${theme}/components/*].types`);
+    assert.equal(componentsEntry?.default, `./${theme}/components/*.css`);
   }
-  assert.equal(pkg.exports["./all"], "./all.css");
+  assertCssExport("./all", "./all.css");
   assert.equal(pkg.exports["./manifest"], "./manifest.json");
   assert.ok(pkg.files.includes("all.css") && pkg.files.includes("manifest.json"));
+  assert.ok(pkg.files.includes("css-side-effect.d.ts"), "package.json files misses css-side-effect.d.ts");
+  assert.ok(existsSync(join(ROOT, TYPES_STUB)));
 });
 
 test("manifest entries are well-formed", () => {
