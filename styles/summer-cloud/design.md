@@ -82,6 +82,11 @@ Three voices, per the project's design system:
 Interactive text (buttons, links, tabs) is Plus Jakarta Sans 600 at 14px,
 sentence case. Uppercase never appears outside the mono voice.
 
+Bare (unclassed) `h1`-`h6` carry the display voice directly — Plus Jakarta
+Sans 700, `--rb-heading-tracking`, `--rb-space-3` margin below. Bare `p`
+shares that margin; bare `ul`/`ol` add it too, with `--rb-space-4` marker
+indent (real disc/decimal markers, not stripped).
+
 The three webfonts are declared in `styles/manifest.json` (`summer-cloud.fonts`);
 consumers load that stylesheet or self-host. Every stack falls back to a system
 family.
