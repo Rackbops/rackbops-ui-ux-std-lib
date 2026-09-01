@@ -1,0 +1,88 @@
+/* luminous-precision — button */
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--rb-space-2);
+  padding: var(--rb-space-2) var(--rb-space-3);
+  background: transparent;
+  border: 1px solid var(--rb-border-strong);
+  border-radius: var(--rb-radius);
+  color: var(--rb-text);
+  text-transform: uppercase;
+  font-family: var(--rb-font-mono);
+  font-weight: var(--rb-font-weight-medium);
+  font-size: var(--rb-text-sm);
+  letter-spacing: var(--rb-label-tracking);
+  cursor: pointer;
+  transition:
+    border-color var(--rb-transition),
+    color var(--rb-transition),
+    box-shadow var(--rb-transition);
+}
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn:hover,
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn:focus-visible {
+  border-color: var(--rb-accent-border);
+  color: var(--rb-accent);
+  animation: rb-lp-pulse-glow 2s infinite;
+  outline: none;
+}
+
+/* primary: solid orchid fill, dark text, glow pulse on hover */
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn--primary {
+  background: var(--rb-accent);
+  border-color: var(--rb-accent);
+  color: var(--rb-accent-fg);
+}
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn--primary:hover,
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn--primary:focus-visible {
+  border-color: var(--rb-accent);
+  color: var(--rb-accent-fg);
+}
+
+/* accent: teal ghost — critical navigation paths */
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn--accent {
+  border-color: var(--rb-accent-2);
+  color: var(--rb-accent-2);
+}
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn--accent:hover,
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn--accent:focus-visible {
+  border-color: var(--rb-accent-2);
+  color: var(--rb-accent-2);
+  animation-name: rb-lp-pulse-glow-accent;
+}
+
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn--danger {
+  border-color: var(--rb-danger);
+  color: var(--rb-danger);
+}
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn--danger:hover,
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn--danger:focus-visible {
+  border-color: var(--rb-danger);
+  color: var(--rb-danger);
+}
+
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  animation: none;
+}
+
+@keyframes rb-lp-pulse-glow-accent {
+  0%,
+  100% {
+    box-shadow: 0 0 5px rgba(0, 245, 255, 0.15);
+  }
+  50% {
+    box-shadow: 0 0 20px var(--rb-accent-2-glow);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn {
+    transition: none;
+  }
+  :where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn:hover,
+  :where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn:focus-visible {
+    animation: none;
+  }
+}

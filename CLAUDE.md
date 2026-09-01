@@ -11,8 +11,9 @@ git & shipping, tool routing, shell choice). It is not restated here.
 
 ## The contract is the definition of done
 
-Each theme is a self-contained design language reverse-documented from one of
-roshne's apps. Every theme must satisfy `styles/test/contract.test.mjs`:
+Each theme is a self-contained design language -- most reverse-documented from
+one of roshne's apps, some ported (and credited) from `nazuraki/ui-std-lib`
+(MIT; see `NOTICE`). Every theme must satisfy `styles/test/contract.test.mjs`:
 
 - every selector guarded by `:where([data-rb-style="<theme>"], … *)` (zero
   specificity, embed-safe),
@@ -30,27 +31,33 @@ pnpm --filter @roshne/ui-react test  # React component render tests
 pnpm build                           # tsc the React package
 ```
 
-Themes are drop-in swappable: both declare the same baseline tokens and `rb-*`
+Themes are drop-in swappable: all declare the same baseline tokens and `rb-*`
 classes, so a screen restyles by flipping `data-rb-style` alone. A **semantic**
 change (a token's meaning, a component's contract) must reach every surface --
-both themes' CSS, the React components, each `design.md`, the showcase, and the
-README themes table.
+every theme's CSS, the React components, each `design.md`, the showcase, the
+README themes table, and this file.
 
 ## Fidelity is a hard rule
 
-Each `design.md` and each `tokens.css` **asserts facts about a real app's UI**
-(artifact-console / rackbops.com). A palette value or a stated rule that is
-untrue of the source app is a MAJOR defect, not doc polish -- verify colour
-values and aesthetic claims against the app's own CSS before writing them.
+Each `design.md` and each `tokens.css` **asserts facts about its source** -- a
+real app's UI (artifact-console / rackbops.com) for the reverse-documented
+themes, or nazuraki's upstream theme for the ported ones. A palette value or a
+stated rule that is untrue of that source is a MAJOR defect, not doc polish --
+verify colour values and aesthetic claims against the source (the app's own CSS,
+or nazuraki's upstream CSS) before writing them.
 
 ## Conventions
 
 - **Namespace:** `--rb-*` tokens, `.rb-*` classes, `data-rb-style="<theme>"`.
   Package scope is `@roshne` (GitHub Packages ties the npm scope to the account);
   the *design* namespace is `rb`. Don't conflate them.
-- **System fonts only.** Both themes use `system-ui` + `ui-monospace` stacks --
-  no webfonts, so `manifest.json` fonts arrays are empty. This is deliberate (the
-  contract test allows it); don't "fix" it by adding Google Fonts.
+- **Fonts: system stacks by default.** Themes reverse-documented from roshne's
+  apps use `system-ui` + `ui-monospace` stacks and carry an empty `manifest.json`
+  fonts array. A ported theme that needs webfonts (e.g. `luminous-precision`:
+  Sora + JetBrains Mono) declares its stylesheet URL(s) in that theme's manifest
+  `fonts` array (the contract test requires https URLs there), and consumers
+  inject those `<link>`s -- the `site/` showcase does this on theme switch. Don't
+  add webfonts to a system-stack theme.
 - **Theme extras** (beyond the shared component set) are allowed but must be
   guarded and imported by that theme's `index.css` like any component.
 - **Commit convention:** Conventional Commits `type(scope): subject`. A `type!:`

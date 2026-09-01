@@ -1,0 +1,19 @@
+/* luminous-precision — badge: pill chip, 15% tint of its hue behind
+ * full-saturation text */
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-badge {
+  display: inline-block;
+  padding: 0.15rem var(--rb-space-2);
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  border-radius: 9999px;
+  color: var(--rb-text-faint);
+  text-transform: uppercase;
+  font-size: 11px;
+  font-weight: var(--rb-font-weight-medium);
+  letter-spacing: var(--rb-label-tracking);
+}
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-badge--primary { background: rgba(198, 165, 255, 0.15); color: var(--rb-accent); }
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-badge--info    { background: rgba(131, 183, 255, 0.15); color: var(--rb-info); }
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-badge--success { background: rgba(71, 227, 78, 0.15);   color: var(--rb-success); }
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-badge--warning { background: rgba(255, 184, 108, 0.15); color: var(--rb-warning); }
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-badge--danger  { background: rgba(255, 77, 109, 0.15);  color: var(--rb-danger); }

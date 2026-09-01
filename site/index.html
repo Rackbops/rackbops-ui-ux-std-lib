@@ -220,7 +220,24 @@
       const select = document.getElementById("theme");
       const KEY = "rb-showcase-theme";
 
+      // Webfont themes (e.g. luminous-precision) list their Google Fonts
+      // stylesheet(s) in the manifest; inject each once, on demand, when its
+      // theme is first shown. System-stack themes carry an empty list.
+      let themeFonts = {};
+      const loadedFonts = new Set();
+      function ensureFonts(theme) {
+        for (const url of themeFonts[theme] || []) {
+          if (loadedFonts.has(url)) continue;
+          loadedFonts.add(url);
+          const link = document.createElement("link");
+          link.rel = "stylesheet";
+          link.href = url;
+          document.head.appendChild(link);
+        }
+      }
+
       function setTheme(value) {
+        ensureFonts(value);
         // Suppress transitions for the flip so themed values snap to the new
         // theme instead of animating (and possibly sticking) between palettes.
         root.classList.add("sc-switching");
@@ -233,7 +250,13 @@
         let themes = ["arcane-obsidian", "rackbops-studio"];
         try {
           const res = await fetch("../styles/manifest.json");
-          if (res.ok) themes = Object.keys((await res.json()).themes);
+          if (res.ok) {
+            const roster = (await res.json()).themes;
+            themes = Object.keys(roster);
+            themeFonts = Object.fromEntries(
+              Object.entries(roster).map(([name, entry]) => [name, entry.fonts || []])
+            );
+          }
         } catch {}
         select.innerHTML = "";
         for (const t of themes) {
