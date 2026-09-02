@@ -120,6 +120,8 @@ theme-agnostic). Variants use BEM-ish modifiers (`rb-btn--primary`).
 - **Button** `.rb-btn` — glass by default; `--primary` (solid violet CTA, one
   per view), `--accent` (sky-edged glass), `--ghost`, `--danger`. `--sm` is a
   compact size for inline and table-row actions — the pill shape is kept.
+  `.rb-icon-btn` is a square icon-only hit target (>=2rem), paired with
+  `.rb-btn` — the pill radius reads as a circle on the square box.
 - **Form** `.rb-input`, `.rb-textarea`, `.rb-select`, `.rb-label`, `.rb-field`,
   `.rb-checkbox`, `.rb-radio`, `.rb-switch`, `.rb-choice` — sunken fields, no
   resting border, sky-blue ring on focus. The switch is the oversized

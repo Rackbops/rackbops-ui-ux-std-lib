@@ -89,6 +89,7 @@ the baseline ten — no theme-specific extras.
   accent fill with the offset-shadow press interaction; `--accent` an
   accent-wash chip; `--danger` a danger-colored ghost; `--ghost` chromeless.
   `--sm` is the compact size for dense toolbars and table-row actions.
+  `.rb-icon-btn` is a square icon-only hit target (>=2rem), paired with `.rb-btn`.
 - **Card** `.rb-card` (+ `--raised`) — surface panel, a thicker
   `border-strong` edge, `shadow-sm` (`--raised` upgrades to `shadow-lg`).
 - **Link** `.rb-link` (nav/sidebar row) — hover fills to surface-2 and stamps

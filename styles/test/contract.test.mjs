@@ -212,6 +212,22 @@ test("every theme's button.css declares a guarded .rb-btn--sm compact variant", 
   }
 });
 
+test("every theme's button.css declares a guarded .rb-icon-btn variant", () => {
+  // The icon-only square hit target is part of the button contract: every
+  // theme must carry it so a screen keeps its icon-only affordances (close,
+  // edit, delete glyphs) when it swaps data-rb-style.
+  for (const theme of themeDirs) {
+    const file = join(ROOT, theme, "components", "button.css");
+    const { selectors } = parseCss(readFileSync(file, "utf-8"));
+    const guard = `[data-rb-style="${theme}"]`;
+    const iconBtn = selectors.filter((s) => /\.rb-icon-btn(?![\w-])/.test(s));
+    assert.ok(iconBtn.length > 0, `${theme}: button.css is missing a .rb-icon-btn rule`);
+    for (const sel of iconBtn) {
+      assert.ok(sel.includes(guard), `${theme}: unguarded .rb-icon-btn selector: ${sel}`);
+    }
+  }
+});
+
 test("keyframe names are rb-prefixed and unique across all themes", () => {
   const seen = new Map();
   for (const theme of themeDirs) {

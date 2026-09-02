@@ -94,7 +94,8 @@ the baseline ten — no theme extras.
   `--primary` is the one solid accent fill (barely-there shadow lift on
   hover, no transform, no lift); `--accent` an accent-wash chip; `--danger` a
   danger-colored ghost; `--ghost` chromeless. `--sm` is a compact size for
-  inline and table-row actions.
+  inline and table-row actions. `.rb-icon-btn` is a square icon-only hit
+  target (>=2rem), paired with `.rb-btn`.
 - **Card** `.rb-card` (+ `--raised`) — white panel; the hairline border does
   most of the definition work since surface equals bg.
 - **NavLink** `.rb-link` — sidebar/tree row; hover fills to surface-2 (the

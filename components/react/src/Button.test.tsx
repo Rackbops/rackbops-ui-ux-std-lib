@@ -44,6 +44,27 @@ test('type is overridable to "submit"', () => {
   assert.match(renderToStaticMarkup(<Button type="submit">Go</Button>), /type="submit"/);
 });
 
+test("iconOnly adds rb-icon-btn", () => {
+  const cls = classOf(<Button iconOnly aria-label="Close" />).split(" ");
+  assert.ok(cls.includes("rb-btn"), "keeps the base class");
+  assert.ok(cls.includes("rb-icon-btn"), "adds the icon-only class");
+});
+
+test("iconOnly is false by default and emits no icon class", () => {
+  const cls = classOf(<Button>Go</Button>).split(" ");
+  assert.deepEqual(cls, ["rb-btn"], "iconOnly omitted is a no-op, same as false");
+});
+
+test("iconOnly composes with variant and size (all three classes present)", () => {
+  const cls = classOf(
+    <Button iconOnly size="sm" variant="danger" aria-label="Delete" />,
+  ).split(" ");
+  assert.ok(cls.includes("rb-btn"));
+  assert.ok(cls.includes("rb-btn--danger"), "the color variant still applies");
+  assert.ok(cls.includes("rb-btn--sm"), "the size variant still applies");
+  assert.ok(cls.includes("rb-icon-btn"), "the icon-only class still applies");
+});
+
 test("forwards className after the component's own classes, and other props", () => {
   const html = renderToStaticMarkup(
     <Button size="sm" className="mine" id="save" disabled>

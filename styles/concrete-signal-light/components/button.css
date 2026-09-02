@@ -30,6 +30,16 @@
   padding: var(--rb-space-1) var(--rb-space-3);
   font-size: calc(var(--rb-text-sm) - 1px);
 }
+/* --icon: square icon-only hit target (>=2rem); pair with .rb-btn (+ an
+ * optional color variant) — inherits color/border/hover/focus from it. */
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-icon-btn {
+  padding: var(--rb-space-2);
+  min-width: 2rem;
+  min-height: 2rem;
+  gap: 0;
+  justify-content: center;
+  line-height: 1;
+}
 :where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-btn:hover,
 :where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-btn:focus-visible {
   border-color: var(--rb-accent);
