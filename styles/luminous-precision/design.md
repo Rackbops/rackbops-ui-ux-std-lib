@@ -94,7 +94,8 @@ Class prefix `rb-` (shared token/class contract with the other themes).
   lights a 2px teal bar on the left edge.
 - **Button** `.rb-btn` — ghost by default; `--primary` is the one solid fill
   (orchid, dark text), `--accent` teal ghost, `--danger` rose ghost. `--sm` is
-  the compact size for inline and table-row actions.
+  the compact size for inline and table-row actions. `.rb-icon-btn` is a
+  square icon-only hit target (>=2rem), paired with `.rb-btn`.
 - **Form** `.rb-input`, `.rb-textarea`, `.rb-select`, `.rb-label`,
   `.rb-field`, `.rb-checkbox`, `.rb-radio`, `.rb-switch`, `.rb-choice` —
   checked/focus states glow teal.

@@ -83,7 +83,9 @@ Class prefix `rb-`; shared token/class contract with the other themes.
 - **Button** `.rb-btn` — surface-2 ghost by default; `--primary` is the one solid
   violet fill (dark ink), `--accent` a violet-wash chip, `--danger` a rose ghost,
   `--ghost` chromeless. `--sm` is a compact size — tighter padding, type down
-  ~1px — for inline and table-row actions.
+  ~1px — for inline and table-row actions. `.rb-icon-btn` is a square icon-only
+  hit target (>=2rem) — pair it with `.rb-btn` (+ an optional color variant)
+  for close/edit/delete glyph buttons.
 - **Card** `.rb-card` (+ `--raised`) — solid panel, hairline border, shadow-sm.
 - **NavLink** `.rb-link` — tree/sidebar row; hover fills to surface-2 and lights a
   2px accent bar on the left edge; `--active` carries the accent wash.
