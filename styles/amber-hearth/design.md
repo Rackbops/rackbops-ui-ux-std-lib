@@ -108,7 +108,9 @@ Class prefix `rb-`; shared token/class contract with the other themes. No
   gradient — the only place `--rb-accent-grad` appears in this theme.
 - **Table** `.rb-table` (+ `.rb-num`) — faint header rule, tabular numerals,
   row hover to surface-2 with the theme's own soft transition, normal-case
-  weight-600 headers.
+  weight-600 headers. `--interactive` marks clickable rows: pointer cursor,
+  plus a focus-visible ring (and the surface-2 wash) for a `tabindex` row or a
+  row-wrapping button/link.
 - **Progress / Spinner** `.rb-progress` / `.rb-spinner` — sunken trough with a
   solid accent fill (the gradient stays reserved for tabs); the spinner is a
   single accent arc (`rb-hearth-spin`).

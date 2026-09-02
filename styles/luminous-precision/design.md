@@ -107,7 +107,9 @@ Class prefix `rb-` (shared token/class contract with the other themes).
 - **Tabs** `.rb-tabs`/`.rb-tab`/`.rb-tabpanel` — active tab underlined in
   teal with text glow.
 - **Table** `.rb-table` — lit header rule; row hover shifts glass and lights
-  the teal left bar.
+  the teal left bar. `--interactive` marks clickable rows: pointer cursor,
+  plus a focus-visible ring (and the same glass/teal-bar wash) for a
+  `tabindex` row or a row-wrapping button/link.
 - **Progress** `.rb-progress`, **Spinner** `.rb-spinner` — glowing orchid
   indicators (`--accent` bar variant in teal).
 - **Muted text** `.rb-muted` — faint secondary/empty-state text;

@@ -113,6 +113,9 @@ the baseline ten — no theme-specific extras.
 - **Table** `.rb-table` (+ `.rb-num`) — dense, uppercase weight-700 headers,
   1px `border-strong` rules throughout (a spec-sheet read, not faint
   hairlines), tabular numerals, instant row hover to surface-2.
+  `--interactive` marks clickable rows: pointer cursor, plus an (equally
+  instant) focus-visible ring and surface-2 wash for a `tabindex` row or a
+  row-wrapping button/link.
 - **Progress / Spinner** `.rb-progress` / `.rb-spinner` — sunken square
   trough, solid accent fill (no gradient fill); the spinner keeps the
   zero-radius signature as a square rotating frame.

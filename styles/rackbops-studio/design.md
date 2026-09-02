@@ -122,7 +122,9 @@ Class prefix `rb-`; shared token/class contract with the other themes.
 - **Tabs** `.rb-tabs` / `.rb-tab` / `.rb-tabpanel` — understated; active goes ink
   with a vermillion underbar.
 - **Table** `.rb-table` (+ `.rb-num`) — mono uppercase header rule, generous rows,
-  quiet hover wash.
+  quiet hover wash. `--interactive` marks clickable rows: pointer cursor, plus
+  a bolder 2.5px focus-visible ring (and the same hover wash) for a `tabindex`
+  row or a row-wrapping button/link.
 - **Progress / Spinner** `.rb-progress` / `.rb-spinner` — pill trough with a
   vermillion fill; single-arc spinner.
 - **Eyebrow** `.rb-eyebrow` — the mono kicker with leading rule.

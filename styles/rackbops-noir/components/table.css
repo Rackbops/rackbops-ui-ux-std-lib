@@ -25,6 +25,24 @@
 :where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-table tbody tr:hover td {
   background: var(--rb-surface-2);
 }
+/* --interactive: clickable rows (a tabindex tr, or a row-wrapping button/link) —
+ * pointer cursor plus a keyboard-equivalent of the hover wash and a focus ring,
+ * matching the editorial themes' bolder 2.5px ring. */
+:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-table--interactive tbody tr {
+  cursor: pointer;
+}
+:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-table--interactive tbody tr:focus-visible,
+:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-table--interactive tbody tr:has(:focus-visible) {
+  outline: 2.5px solid var(--rb-accent);
+  outline-offset: -3px;
+  /* base.css's global :focus-visible rule also sets a 3px border-radius (meant
+   * for buttons/inputs); cancel it here since a table row shouldn't inherit it. */
+  border-radius: 0;
+}
+:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-table--interactive tbody tr:focus-visible td,
+:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-table--interactive tbody tr:has(:focus-visible) td {
+  background: var(--rb-surface-2);
+}
 :where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-table .rb-num {
   text-align: right;
   font-variant-numeric: tabular-nums;

@@ -65,7 +65,7 @@ behaviour is the same, only the palette differs. The full baseline twelve:
 `--raised`), `.rb-link`, the form set (`.rb-input`/`.rb-textarea`/
 `.rb-select`/`.rb-label`/`.rb-field`/`.rb-choice`/`.rb-checkbox`/`.rb-radio`/
 `.rb-switch`), `.rb-badge`, `.rb-alert`, `.rb-dialog`, `.rb-tabs`/`.rb-tab`/
-`.rb-tabpanel`, `.rb-table` (+ `.rb-num`), `.rb-progress`/`.rb-spinner`,
+`.rb-tabpanel`, `.rb-table` (+ `.rb-num`, `--interactive`), `.rb-progress`/`.rb-spinner`,
 `.rb-muted` (no italic — brutalism never softens with a slant), `.rb-pre`
 (zero radius falls out of `--rb-radius` automatically).
 

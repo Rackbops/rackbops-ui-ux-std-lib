@@ -91,7 +91,9 @@ Class prefix `rb-`. Variants use BEM-ish modifiers (`rb-btn--accent`).
 - **Alert** `.rb-alert` — left accent bar carries the semantic color.
 - **Dialog** `.rb-dialog` — native `<dialog>`, lilac border + glow, blurred backdrop.
 - **Tabs** `.rb-tabs`/`.rb-tab`/`.rb-tabpanel` — active tab underlined in lilac with text glow.
-- **Table** `.rb-table` — lilac header rule, glass row hover.
+- **Table** `.rb-table` — lilac header rule, glass row hover. `--interactive`
+  marks clickable rows: pointer cursor, plus a focus-visible ring (and the
+  same glass wash) for a `tabindex` row or a row-wrapping button/link.
 - **Progress** `.rb-progress`, **Spinner** `.rb-spinner` — glowing lilac indicators.
 - **Muted text** `.rb-muted` — faint secondary/empty-state text;
   `color: var(--rb-text-faint)` only, no italic — this theme's mono/uppercase

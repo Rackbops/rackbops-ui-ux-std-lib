@@ -25,3 +25,14 @@
 :where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-table tbody tr:hover {
   background: var(--rb-surface-glass);
 }
+/* --interactive: clickable rows (a tabindex tr, or a row-wrapping button/link) —
+ * pointer cursor plus a keyboard-equivalent of the glass hover and a focus ring. */
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-table--interactive tbody tr {
+  cursor: pointer;
+}
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-table--interactive tbody tr:focus-visible,
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-table--interactive tbody tr:has(:focus-visible) {
+  outline: 2px solid var(--rb-accent);
+  outline-offset: -2px;
+  background: var(--rb-surface-glass);
+}

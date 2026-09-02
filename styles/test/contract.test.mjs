@@ -228,6 +228,22 @@ test("every theme's button.css declares a guarded .rb-icon-btn variant", () => {
   }
 });
 
+test("every theme's table.css declares a guarded .rb-table--interactive variant", () => {
+  // The clickable/interactive row modifier is part of the table contract: every
+  // theme must carry it so a screen keeps its clickable-row affordance (hover,
+  // cursor, focus-visible ring) when it swaps data-rb-style.
+  for (const theme of themeDirs) {
+    const file = join(ROOT, theme, "components", "table.css");
+    const { selectors } = parseCss(readFileSync(file, "utf-8"));
+    const guard = `[data-rb-style="${theme}"]`;
+    const interactive = selectors.filter((s) => /\.rb-table--interactive(?![\w-])/.test(s));
+    assert.ok(interactive.length > 0, `${theme}: table.css is missing a .rb-table--interactive rule`);
+    for (const sel of interactive) {
+      assert.ok(sel.includes(guard), `${theme}: unguarded .rb-table--interactive selector: ${sel}`);
+    }
+  }
+});
+
 test("keyframe names are rb-prefixed and unique across all themes", () => {
   const seen = new Map();
   for (const theme of themeDirs) {
