@@ -57,7 +57,7 @@ one gradient rationed to the active-tab underline only.
 
 Class prefix `rb-`; the full amber-hearth inventory, styled identically from
 tokens: `.rb-btn` (+ `--primary/--accent/--danger/--ghost`, `--sm` compact size, `.rb-icon-btn` icon-only square), `.rb-card` (+
-`--raised`), `.rb-link` (+ `--active`), the form set (`.rb-input` /
+`--raised`), `.rb-link` (+ `--active`), `.rb-nav-rail`, the form set (`.rb-input` /
 `.rb-textarea` / `.rb-select` / `.rb-label` / `.rb-field` / `.rb-choice` /
 `.rb-checkbox` / `.rb-radio` / `.rb-switch`), `.rb-badge`, `.rb-alert`,
 `.rb-dialog`, `.rb-tabs` / `.rb-tab` / `.rb-tabpanel`, `.rb-table` (+

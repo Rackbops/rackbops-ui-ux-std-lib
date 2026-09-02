@@ -82,6 +82,10 @@ Class prefix `rb-`. Variants use BEM-ish modifiers (`rb-btn--accent`).
 
 - **Card** `.rb-card` — frosted glass panel.
 - **NavLink** `.rb-link` — the switchboard link: `>` chevron turns lime on hover.
+- **Nav rail** `.rb-nav-rail` — the sidebar container: 14rem fixed-width flex
+  column, the same glass panel + blur as `.rb-card`, a hairline right edge.
+  Composes with `.rb-link` for items; introduces no active-state convention
+  of its own.
 - **Button** `.rb-btn` — `--primary`, `--accent`, `--danger` variants; `--sm`
   compact size for inline/table-row actions; `.rb-icon-btn` a square icon-only
   hit target (>=2rem), paired with `.rb-btn`.

@@ -1,0 +1,15 @@
+/* concrete-signal — nav rail (vertical sidebar container)
+ * Flush edge chrome, not a floating card: fixed-width flex column, surface
+ * background, a 1px border-strong right edge (this theme's spec-sheet
+ * convention, not a faint hairline). Composes with .rb-link for items --
+ * active/hover are entirely that component's own tokens, nothing new here. */
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-nav-rail {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  gap: var(--rb-space-1);
+  width: 14rem;
+  padding: var(--rb-space-3);
+  background: var(--rb-surface);
+  border-right: 1px solid var(--rb-border-strong);
+}

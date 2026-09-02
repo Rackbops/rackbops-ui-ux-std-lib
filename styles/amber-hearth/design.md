@@ -92,6 +92,9 @@ Class prefix `rb-`; shared token/class contract with the other themes. No
   soft, fully-rounded 3px accent bar on the left edge (rounded to match the
   row's own character, not a hard-edged rule); `--active` carries the accent
   wash.
+- **Nav rail** `.rb-nav-rail` — the sidebar container: 14rem fixed-width flex
+  column, surface background, a hairline right edge. Composes with `.rb-link`
+  for items; introduces no active-state convention of its own.
 - **Form** `.rb-input` / `.rb-textarea` / `.rb-select` / `.rb-label` /
   `.rb-field` / `.rb-choice` / `.rb-checkbox` / `.rb-radio` / `.rb-switch` —
   sunken fields; focus swaps to the accent border + soft wash ring; labels

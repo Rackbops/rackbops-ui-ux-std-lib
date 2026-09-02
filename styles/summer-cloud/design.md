@@ -117,6 +117,10 @@ theme-agnostic). Variants use BEM-ish modifiers (`rb-btn--primary`).
 - **Card** `.rb-card` — glass panel; `--floating` adds the Level 2 hover lift.
 - **NavLink** `.rb-link` — pill, sky-tint wash, `→` slides 4px on hover;
   `--active` / `[aria-current=page]` becomes the violet underline rule.
+- **Nav rail** `.rb-nav-rail` — the sidebar container: 14rem fixed-width flex
+  column, the same glass panel + blur as `.rb-card`, a hairline right edge.
+  Composes with `.rb-link` for items; introduces no active-state convention
+  of its own.
 - **Button** `.rb-btn` — glass by default; `--primary` (solid violet CTA, one
   per view), `--accent` (sky-edged glass), `--ghost`, `--danger`. `--sm` is a
   compact size for inline and table-row actions — the pill shape is kept.

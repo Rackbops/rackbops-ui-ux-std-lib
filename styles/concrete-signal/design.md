@@ -95,6 +95,10 @@ the baseline ten — no theme-specific extras.
 - **Link** `.rb-link` (nav/sidebar row) — hover fills to surface-2 and stamps
   a hard 3px solid accent bar on the left edge; `--active` adds the accent
   wash and bold text.
+- **Nav rail** `.rb-nav-rail` — the sidebar container: 14rem fixed-width flex
+  column, surface background, a 1px border-strong right edge (this theme's
+  spec-sheet convention, not a faint hairline). Composes with `.rb-link` for
+  items; introduces no active-state convention of its own.
 - **Form** `.rb-input` / `.rb-textarea` / `.rb-select` / `.rb-label` /
   `.rb-field` / `.rb-choice` / `.rb-checkbox` / `.rb-radio` / `.rb-switch` —
   sunken square fields; focus swaps the border from 1px to 2px solid accent;
