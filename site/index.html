@@ -230,6 +230,20 @@ ok 12 - keyframe names are rb-prefixed and unique across all themes</pre>
             <tr><td>Tooling</td><td><span class="rb-badge rb-badge--warning">review</span></td><td class="rb-num">276</td></tr>
           </tbody>
         </table>
+        <!-- --interactive: clickable rows. Each <tr> is tabindex-focusable, carries
+             role="button" so assistive tech announces it as actionable (not a plain
+             table row), and is wired below for real click + Enter/Space activation
+             (a real app would push a route or open a detail view instead of just
+             updating the status line). Tab through the rows to see the focus ring. -->
+        <p class="rb-muted" id="interactive-table-status" style="margin: 1rem 0 0.5rem">rb-table--interactive — click a row, or tab to one and press Enter/Space</p>
+        <table class="rb-table rb-table--interactive">
+          <thead><tr><th>Job</th><th>Status</th><th class="rb-num">Duration</th></tr></thead>
+          <tbody>
+            <tr tabindex="0" role="button"><td>deploy-console</td><td><span class="rb-badge rb-badge--success">passed</span></td><td class="rb-num">48s</td></tr>
+            <tr tabindex="0" role="button"><td>nightly-sync</td><td><span class="rb-badge rb-badge--warning">retrying</span></td><td class="rb-num">2m 11s</td></tr>
+            <tr tabindex="0" role="button"><td>backup-verify</td><td><span class="rb-badge rb-badge--danger">failed</span></td><td class="rb-num">6s</td></tr>
+          </tbody>
+        </table>
       </section>
 
       <section>
@@ -337,6 +351,23 @@ ok 12 - keyframe names are rb-prefixed and unique across all themes</pre>
       select.addEventListener("change", () => {
         setTheme(select.value);
         try { localStorage.setItem(KEY, select.value); } catch {}
+      });
+
+      // rb-table--interactive demo: wire real activation (click, and Enter/Space
+      // while focused) for each role="button" row, with an observable result —
+      // a real app would push a route or open a detail view here instead.
+      const tableStatus = document.getElementById("interactive-table-status");
+      document.querySelectorAll(".rb-table--interactive tbody tr[role='button']").forEach((row) => {
+        const activate = () => {
+          tableStatus.textContent = `rb-table--interactive — activated "${row.children[0].textContent}"`;
+        };
+        row.addEventListener("click", activate);
+        row.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            activate();
+          }
+        });
       });
 
       const dlg = document.getElementById("demo-dialog");

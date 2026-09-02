@@ -102,7 +102,9 @@ Class prefix `rb-`; shared token/class contract with the other themes.
 - **Tabstrip** `.rb-tabstrip` — top-level view nav: bordered pill buttons; active
   gets accent text + wash + accent-tinted border.
 - **Table** `.rb-table` (+ `.rb-num`) — dense data table, faint header rule,
-  tabular numerals, row hover to surface-2.
+  tabular numerals, row hover to surface-2. `--interactive` marks clickable
+  rows: pointer cursor, plus a focus-visible ring (and the surface-2 wash) for
+  a `tabindex` row or a row-wrapping button/link.
 - **Progress / Spinner** `.rb-progress` / `.rb-spinner` — sunken trough with an
   accent fill; the spinner is a single accent arc.
 - **Eyebrow** `.rb-eyebrow` — small mono uppercase section label in the accent,

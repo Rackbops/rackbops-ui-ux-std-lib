@@ -134,6 +134,9 @@ theme-agnostic). Variants use BEM-ish modifiers (`rb-btn--primary`).
 - **Tabs** `.rb-tabs`/`.rb-tab`/`.rb-tabpanel` — violet underline when active.
 - **Table** `.rb-table` — mono uppercase headers, sky-tint row hover; add
   `.rb-num` to numeric cells for the mono/right-aligned treatment.
+  `--interactive` marks clickable rows: pointer cursor, plus a focus-visible
+  ring (and the same sky-tint wash) for a `tabindex` row or a row-wrapping
+  button/link.
 - **Progress** `.rb-progress`, **Spinner** `.rb-spinner` — glowing violet.
 - **Muted text** `.rb-muted` — faint secondary/empty-state text;
   `color: var(--rb-text-faint)`, italic — a friendly, soft touch consistent

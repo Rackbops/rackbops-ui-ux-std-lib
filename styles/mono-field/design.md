@@ -119,6 +119,9 @@ the baseline ten — no theme extras.
   rationed gradient.
 - **Table** `.rb-table` (+ `.rb-num`) — faint header rule, tabular numerals,
   row hover to surface-2, normal-case weight-500 headers (never uppercase).
+  `--interactive` marks clickable rows: pointer cursor, plus a focus-visible
+  ring (and the surface-2 wash) for a `tabindex` row or a row-wrapping
+  button/link.
 - **Progress / Spinner** `.rb-progress` (+ `__bar`) / `.rb-spinner` — sunken
   trough, solid accent fill (no gradient here — that stays rationed to tabs
   only).

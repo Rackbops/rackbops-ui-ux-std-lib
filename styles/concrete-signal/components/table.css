@@ -27,6 +27,21 @@
 :where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-table tbody tr:hover td {
   background: var(--rb-surface-2);
 }
+/* --interactive: clickable rows (a tabindex tr, or a row-wrapping button/link) —
+ * pointer cursor plus a keyboard-equivalent of the hover wash and a focus ring;
+ * no transition here either, matching the table's instant-snap hover. */
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-table--interactive tbody tr {
+  cursor: pointer;
+}
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-table--interactive tbody tr:focus-visible,
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-table--interactive tbody tr:has(:focus-visible) {
+  outline: 2px solid var(--rb-accent);
+  outline-offset: -2px;
+}
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-table--interactive tbody tr:focus-visible td,
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-table--interactive tbody tr:has(:focus-visible) td {
+  background: var(--rb-surface-2);
+}
 :where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-table .rb-num {
   text-align: right;
   font-variant-numeric: tabular-nums;
