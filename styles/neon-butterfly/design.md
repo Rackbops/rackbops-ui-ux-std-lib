@@ -99,6 +99,15 @@ Class prefix `rb-`. Variants use BEM-ish modifiers (`rb-btn--accent`).
   marks clickable rows: pointer cursor, plus a focus-visible ring (and the
   same glass wash) for a `tabindex` row or a row-wrapping button/link.
 - **Progress** `.rb-progress`, **Spinner** `.rb-spinner` — glowing lilac indicators.
+- **Stepper** `.rb-stepper` (+ `__step` / `__node` / `__label`, `--complete` /
+  `--current` / `--upcoming`) — a milestone rail: complete nodes solid accent
+  with a checkmark, current a surface-fill ring with an accent border, both
+  the rail fill and the current node glowing with the same `--rb-accent-glow` box-shadow
+  `.rb-progress__bar` uses. Upcoming reads faint surface-2; rail track is
+  `surface` (matching how `.rb-progress` itself sits), and each connector
+  segment picks up that same glow once its own step is reached (complete or
+  current) -- no separate progress value to keep in sync with the step
+  states.
 - **Muted text** `.rb-muted` — faint secondary/empty-state text;
   `color: var(--rb-text-faint)` only, no italic — this theme's mono/uppercase
   terminal voice never reaches for a literary flourish.

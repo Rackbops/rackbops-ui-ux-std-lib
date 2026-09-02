@@ -29,6 +29,7 @@ export {
 } from "./feedback.js";
 export { Dialog, type DialogProps } from "./Dialog.js";
 export { Tabs, type TabsProps, type TabItem } from "./Tabs.js";
+export { Stepper, type StepperProps, type StepperStep } from "./Stepper.js";
 export {
   LinksIndex,
   type LinksIndexProps,

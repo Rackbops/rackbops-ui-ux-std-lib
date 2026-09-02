@@ -270,6 +270,32 @@ ok 12 - keyframe names are rb-prefixed and unique across all themes</pre>
       </section>
 
       <section>
+        <h2 class="sc-title">Stepper</h2>
+        <!-- All three states demonstrated: two complete, one current
+             (aria-current="step"), one upcoming. State reads through the
+             node's icon/border, not color alone -- a complete node's
+             checkmark and a current node's ring survive in grayscale. -->
+        <ol class="rb-stepper">
+          <li class="rb-stepper__step rb-stepper--complete">
+            <span class="rb-stepper__node">&check;</span>
+            <span class="rb-stepper__label">Design</span>
+          </li>
+          <li class="rb-stepper__step rb-stepper--complete">
+            <span class="rb-stepper__node">&check;</span>
+            <span class="rb-stepper__label">Build</span>
+          </li>
+          <li class="rb-stepper__step rb-stepper--current" aria-current="step">
+            <span class="rb-stepper__node">3</span>
+            <span class="rb-stepper__label">Ship</span>
+          </li>
+          <li class="rb-stepper__step rb-stepper--upcoming">
+            <span class="rb-stepper__node">4</span>
+            <span class="rb-stepper__label">Monitor</span>
+          </li>
+        </ol>
+      </section>
+
+      <section>
         <h2 class="sc-title">Dialog</h2>
         <button class="rb-btn rb-btn--primary" id="open-dialog">Open dialog</button>
         <dialog class="rb-dialog" id="demo-dialog">

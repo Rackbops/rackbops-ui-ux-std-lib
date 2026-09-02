@@ -142,6 +142,15 @@ theme-agnostic). Variants use BEM-ish modifiers (`rb-btn--primary`).
   ring (and the same sky-tint wash) for a `tabindex` row or a row-wrapping
   button/link.
 - **Progress** `.rb-progress`, **Spinner** `.rb-spinner` — glowing violet.
+- **Stepper** `.rb-stepper` (+ `__step` / `__node` / `__label`, `--complete` /
+  `--current` / `--upcoming`) — a milestone rail: complete nodes solid accent
+  with a checkmark, current a white-on-accent-border ring lifted with
+  `--rb-shadow-raised` ("nothing sits flat on the page"), upcoming faint
+  surface-2. Rail track is `--rb-bg-blend` (the same token `.rb-progress`
+  itself uses); each connector segment glows with `--rb-accent-glow` at the
+  same 10px blur `.rb-progress__bar` uses once its own step is reached
+  (complete or current) -- no separate progress value to keep in sync with
+  the step states.
 - **Muted text** `.rb-muted` — faint secondary/empty-state text;
   `color: var(--rb-text-faint)`, italic — a friendly, soft touch consistent
   with the theme's airy, optimistic voice.

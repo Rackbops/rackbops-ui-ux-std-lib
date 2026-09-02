@@ -110,6 +110,13 @@ Class prefix `rb-`; shared token/class contract with the other themes.
   a `tabindex` row or a row-wrapping button/link.
 - **Progress / Spinner** `.rb-progress` / `.rb-spinner` — sunken trough with an
   accent fill; the spinner is a single accent arc.
+- **Stepper** `.rb-stepper` (+ `__step` / `__node` / `__label`, `--complete` /
+  `--current` / `--upcoming`) — a milestone rail: complete nodes solid accent
+  with a checkmark, current a surface-fill ring with an accent border and a
+  `shadow-lg` lift, upcoming faint surface-2. Rail track is `surface-sunken`; each
+  connector segment fills to accent once its own step is reached
+  (complete or current), so the rail can't drift out of sync with the
+  step states.
 - **Eyebrow** `.rb-eyebrow` — small mono uppercase section label in the accent,
   wide-tracked; subtler than the studio eyebrow (no leading rule).
 - **Muted text** `.rb-muted` — faint secondary/empty-state text;
