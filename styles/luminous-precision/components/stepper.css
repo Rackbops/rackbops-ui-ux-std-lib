@@ -1,0 +1,88 @@
+/* luminous-precision — stepper (delivery / milestone tracker)
+ * <ol class="rb-stepper"> with one
+ * <li class="rb-stepper__step rb-stepper--complete|current|upcoming"> per
+ * milestone: a .rb-stepper__node icon/number circle + .rb-stepper__label.
+ * Each non-first step draws its OWN connector segment back to the previous
+ * step's node (right: 50%; width: 100% of that step's own flex slice, self-
+ * aligning to node centers regardless of item count or label width -- a
+ * single full-width rail can't do this without knowing how many steps there
+ * are, since node centers sit inset within their own slice). isolation:
+ * isolate keeps every segment's negative z-index scoped to this stepper, so
+ * it paints behind every node without needing per-node z-index of its own.
+ * A segment fills once its OWN step is reached (complete or current) -- the
+ * same state class already on the <li>, not a second progress mechanism.
+ * Elevation here is glow, not shadow: a filled segment and the current node
+ * both take the same accent-glow box-shadow .rb-progress__bar already uses. */
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-stepper {
+  display: flex;
+  isolation: isolate;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-stepper__step {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--rb-space-2);
+  text-align: center;
+}
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-stepper__step:not(:first-child)::before {
+  content: "";
+  position: absolute;
+  top: 1rem;
+  right: 50%;
+  width: 100%;
+  height: 2px;
+  background: var(--rb-surface-sunken);
+  z-index: -1;
+  transition: background-color var(--rb-transition), box-shadow var(--rb-transition);
+}
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-stepper__step:not(:first-child).rb-stepper--complete::before,
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-stepper__step:not(:first-child).rb-stepper--current::before {
+  background: var(--rb-accent);
+  box-shadow: 0 0 8px var(--rb-accent-glow);
+}
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-stepper__node {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: 2px solid transparent;
+  border-radius: var(--rb-radius-pill);
+  background: var(--rb-surface-2);
+  color: var(--rb-text-faint);
+  font-size: var(--rb-text-sm);
+  font-weight: var(--rb-font-weight-medium);
+}
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-stepper__label {
+  font-size: var(--rb-text-sm);
+  color: var(--rb-text-faint);
+}
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-stepper--complete .rb-stepper__node {
+  background: var(--rb-accent);
+  color: var(--rb-accent-fg);
+}
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-stepper--complete .rb-stepper__label {
+  color: var(--rb-text);
+}
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-stepper--current .rb-stepper__node {
+  background: var(--rb-surface);
+  border-color: var(--rb-accent);
+  color: var(--rb-accent);
+  box-shadow: 0 0 8px var(--rb-accent-glow);
+}
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-stepper--current .rb-stepper__label {
+  color: var(--rb-accent);
+  font-weight: var(--rb-font-weight-medium);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-stepper__step:not(:first-child)::before {
+    transition: none;
+  }
+}

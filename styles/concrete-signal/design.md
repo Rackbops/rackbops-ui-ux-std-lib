@@ -123,6 +123,13 @@ the baseline ten — no theme-specific extras.
 - **Progress / Spinner** `.rb-progress` / `.rb-spinner` — sunken square
   trough, solid accent fill (no gradient fill); the spinner keeps the
   zero-radius signature as a square rotating frame.
+- **Stepper** `.rb-stepper` (+ `__step` / `__node` / `__label`, `--complete` /
+  `--current` / `--upcoming`) — a milestone rail: complete nodes solid accent
+  with a checkmark, current a surface-fill ring with an accent border,
+  lifted with the hard, literal offset `shadow-lg` (never a glow or blur), upcoming faint
+  surface-2. Labels carry the brutalist uppercase/tracked voice through
+  weight and case, same as every other label here. Rail fill snaps instantly
+  instead of transitioning, matching this theme's every other hover/fill.
 - **Muted text** `.rb-muted` — faint secondary/empty-state text;
   `color: var(--rb-text-faint)` only, no italic — brutalism carries its voice
   through weight, case, and tracking, never a softening slant.

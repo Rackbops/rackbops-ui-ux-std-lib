@@ -130,6 +130,13 @@ Class prefix `rb-`; shared token/class contract with the other themes.
   row or a row-wrapping button/link.
 - **Progress / Spinner** `.rb-progress` / `.rb-spinner` — pill trough with a
   vermillion fill; single-arc spinner.
+- **Stepper** `.rb-stepper` (+ `__step` / `__node` / `__label`, `--complete` /
+  `--current` / `--upcoming`) — a milestone rail: complete nodes solid accent
+  with a checkmark, current a white-on-accent-border ring with `shadow-lg`
+  lift, upcoming faint surface-2. Rail track is `surface-sunken`; each
+  connector segment fills to accent once its own step is reached
+  (complete or current), so the rail can't drift out of sync with the
+  step states.
 - **Eyebrow** `.rb-eyebrow` — the mono kicker with leading rule.
 - **Muted text** `.rb-muted` — faint secondary/empty-state text;
   `color: var(--rb-text-faint)`, italic — reads naturally in this editorial,
