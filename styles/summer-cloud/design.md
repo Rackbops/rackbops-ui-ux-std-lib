@@ -144,7 +144,10 @@ theme-agnostic). Variants use BEM-ish modifiers (`rb-btn--primary`).
 - **Pre / log block** `.rb-pre` — command/log `<pre>`; sunken background,
   `--rb-outline` hairline (not `--rb-border`, which is the glass-only token
   and would be invisible on this opaque surface — same choice `.rb-table`
-  makes), radius, small mono, horizontal scroll.
+  makes), radius, small mono, horizontal scroll. Pair with `.rb-log`
+  (`<pre class="rb-pre rb-log">`) for multi-line streaming output: a capped
+  16rem height with vertical scroll, wrapped lines instead of horizontal
+  scroll, and roomier line-height for dense text.
 
 This port carries nazuraki's original component set (plus its `.rb-chip` and
 `.rb-card--floating` extras); the rackbops-specific `eyebrow`, `tabstrip`,

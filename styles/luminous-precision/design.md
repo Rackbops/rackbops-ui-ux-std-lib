@@ -116,7 +116,10 @@ Class prefix `rb-` (shared token/class contract with the other themes).
   `color: var(--rb-text-faint)`, italic.
 - **Pre / log block** `.rb-pre` — command/log `<pre>`; the surface-sunken
   well (already documented above as this theme's "log wells" token),
-  hairline border, radius, small mono, horizontal scroll.
+  hairline border, radius, small mono, horizontal scroll. Pair with `.rb-log`
+  (`<pre class="rb-pre rb-log">`) for multi-line streaming output: a capped
+  16rem height with vertical scroll, wrapped lines instead of horizontal
+  scroll, and roomier line-height for dense text.
 
 This port carries nazuraki's original component set; the rackbops-specific
 `eyebrow`, `tabstrip`, `wordmark`, and `card--raised` surfaces are not part of

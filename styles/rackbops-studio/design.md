@@ -132,7 +132,10 @@ Class prefix `rb-`; shared token/class contract with the other themes.
   `color: var(--rb-text-faint)`, italic — reads naturally in this editorial,
   print-like theme.
 - **Pre / log block** `.rb-pre` — command/log `<pre>`; surface-sunken
-  background, hairline border, radius, small mono, horizontal scroll.
+  background, hairline border, radius, small mono, horizontal scroll. Pair
+  with `.rb-log` (`<pre class="rb-pre rb-log">`) for multi-line streaming
+  output: a capped 16rem height with vertical scroll, wrapped lines instead
+  of horizontal scroll, and roomier line-height for dense text.
 
 ### Theme extras
 
