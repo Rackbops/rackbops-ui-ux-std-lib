@@ -1,0 +1,19 @@
+/* neon-butterfly — log / terminal block
+ * Pairs with .rb-pre for the shared look (surface-sunken well, hairline
+ * border, radius, small mono) -- .rb-log itself only adds what changes for
+ * multi-line streaming output: a capped height with vertical scroll, wrapped
+ * long lines instead of .rb-pre's horizontal scroll, and a touch more
+ * line-height so dense text stays readable. Use together on one element:
+ * <pre class="rb-pre rb-log">. */
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-log {
+  max-height: 16rem;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+}
+/* Specificity-pinned (not import-order-dependent) override of .rb-pre's
+ * overflow-x: auto -- .rb-log wraps instead of scrolling horizontally. */
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-pre.rb-log {
+  overflow-x: hidden;
+}

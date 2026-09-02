@@ -124,7 +124,10 @@ the baseline ten — no theme-specific extras.
   through weight, case, and tracking, never a softening slant.
 - **Pre / log block** `.rb-pre` — command/log `<pre>`; surface-sunken
   background, hairline border, zero radius (falls out of `--rb-radius`),
-  small mono, horizontal scroll.
+  small mono, horizontal scroll. Pair with `.rb-log`
+  (`<pre class="rb-pre rb-log">`) for multi-line streaming output: a capped
+  16rem height with vertical scroll, wrapped lines instead of horizontal
+  scroll, and roomier line-height for dense text.
 
 ## Light counterpart
 

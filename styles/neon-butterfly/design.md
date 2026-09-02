@@ -99,7 +99,10 @@ Class prefix `rb-`. Variants use BEM-ish modifiers (`rb-btn--accent`).
   `color: var(--rb-text-faint)` only, no italic — this theme's mono/uppercase
   terminal voice never reaches for a literary flourish.
 - **Pre / log block** `.rb-pre` — command/log `<pre>`; sunken background,
-  hairline border, radius, small mono, horizontal scroll.
+  hairline border, radius, small mono, horizontal scroll. Pair with `.rb-log`
+  (`<pre class="rb-pre rb-log">`) for multi-line streaming output: a capped
+  16rem height with vertical scroll, wrapped lines instead of horizontal
+  scroll, and roomier line-height for dense text.
 
 This port carries nazuraki's original component set; the rackbops-specific
 `eyebrow`, `tabstrip`, `wordmark`, and `card--raised` surfaces are not part of it.

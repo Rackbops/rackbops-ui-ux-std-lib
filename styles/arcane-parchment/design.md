@@ -70,7 +70,7 @@ Class prefix `rb-`; the full arcane-obsidian inventory, styled identically from
 tokens: `.rb-wordmark` (+ `__spark`), `.rb-btn` (+ `--primary/--accent/--danger/--ghost`, `--sm` compact size, `.rb-icon-btn` icon-only square),
 `.rb-card` (+ `--raised`), `.rb-link`, the form set, `.rb-badge`, `.rb-alert`,
 `.rb-dialog`, `.rb-tabs`, `.rb-tabstrip`, `.rb-table` (+ `.rb-num`, `--interactive`),
-`.rb-progress` / `.rb-spinner`, `.rb-eyebrow`, `.rb-muted`, `.rb-pre`. See
+`.rb-progress` / `.rb-spinner`, `.rb-eyebrow`, `.rb-muted`, `.rb-pre` (+ `.rb-log`). See
 arcane-obsidian's `design.md` for the per-component notes — the behaviour is
 the same; only the palette is light.
 

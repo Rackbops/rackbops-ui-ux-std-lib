@@ -70,7 +70,7 @@ unclassed headlines, `--rb-space-3` margin on headings/paragraphs/lists, and
 Class prefix `rb-`; the full rackbops-studio inventory, styled identically from
 tokens — `.rb-btn` (+ `--sm` compact size, `.rb-icon-btn` icon-only square), `.rb-card` (+ `__tag`), `.rb-link`, the form set, `.rb-badge`,
 `.rb-alert`, `.rb-dialog`, `.rb-tabs`, `.rb-table` (+ `--interactive`), `.rb-progress`/`.rb-spinner`,
-`.rb-eyebrow`, `.rb-muted`, `.rb-pre` — plus the studio extras `.rb-rack` (equaliser panel; its panel palette
+`.rb-eyebrow`, `.rb-muted`, `.rb-pre` (+ `.rb-log`) — plus the studio extras `.rb-rack` (equaliser panel; its panel palette
 matches rackbops.com's dark-mode rack — a near-canvas block set off by its border), `.rb-principles`/
 `.rb-principle`, and `.rb-tags`/`.rb-tag`. See rackbops-studio's `design.md` for
 the per-component notes. The Boppy mascot asset ships with rackbops-studio

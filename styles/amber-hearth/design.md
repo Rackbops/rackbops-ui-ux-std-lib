@@ -118,7 +118,10 @@ Class prefix `rb-`; shared token/class contract with the other themes. No
   `color: var(--rb-text-faint)`, italic — fits this warm, hand-crafted,
   unhurried editorial voice.
 - **Pre / log block** `.rb-pre` — command/log `<pre>`; sunken background,
-  hairline border, radius, small mono, horizontal scroll.
+  hairline border, radius, small mono, horizontal scroll. Pair with `.rb-log`
+  (`<pre class="rb-pre rb-log">`) for multi-line streaming output: a capped
+  16rem height with vertical scroll, wrapped lines instead of horizontal
+  scroll, and roomier line-height for dense text.
 
 ## Dark counterpart
 

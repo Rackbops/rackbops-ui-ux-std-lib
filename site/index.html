@@ -147,6 +147,21 @@
           <pre class="rb-pre">$ pnpm --filter @rackbops/styles test
 ok 1 - manifest, package.json, and theme directories agree
 ok 12 - keyframe names are rb-prefixed and unique across all themes</pre>
+          <!-- rb-log: pairs with rb-pre for multi-line streaming output -- a
+               capped height with vertical scroll (scroll to see it clip and
+               scroll), wrapped long lines instead of rb-pre's horizontal
+               scroll. -->
+          <pre class="rb-pre rb-log">2026-09-02T21:58:41Z INFO  starting deploy of rackbops-ui-ux-std-lib@0.4.0 to production, triggered by roshne via workflow_dispatch
+2026-09-02T21:58:42Z INFO  resolving 12 theme packages: arcane-obsidian, arcane-parchment, rackbops-noir, rackbops-studio, luminous-precision, neon-butterfly, summer-cloud, concrete-signal, concrete-signal-light, amber-hearth, amber-ember, mono-field
+2026-09-02T21:58:44Z INFO  pnpm --filter @rackbops/styles test
+2026-09-02T21:58:44Z OK    111 passed, 0 failed
+2026-09-02T21:58:45Z INFO  pnpm --filter @rackbops/ui-react test
+2026-09-02T21:58:45Z OK    19 passed, 0 failed
+2026-09-02T21:58:46Z INFO  pnpm build
+2026-09-02T21:58:48Z OK    components/react build: Done
+2026-09-02T21:58:49Z INFO  publishing @rackbops/styles@0.4.0 and @rackbops/ui-react@0.4.0 to the public npm registry
+2026-09-02T21:58:52Z OK    published
+2026-09-02T21:58:52Z INFO  deploy complete</pre>
         </div>
       </section>
 

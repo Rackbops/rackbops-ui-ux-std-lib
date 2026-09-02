@@ -129,7 +129,10 @@ the baseline ten — no theme extras.
   `color: var(--rb-text-faint)` only, no italic — this theme's "close to zero
   visual flourish" rule rules out a decorative slant too.
 - **Pre / log block** `.rb-pre` — command/log `<pre>`; sunken background,
-  hairline border, radius, small mono, horizontal scroll.
+  hairline border, radius, small mono, horizontal scroll. Pair with `.rb-log`
+  (`<pre class="rb-pre rb-log">`) for multi-line streaming output: a capped
+  16rem height with vertical scroll, wrapped lines instead of horizontal
+  scroll, and roomier line-height for dense text.
 
 ## Scoping
 
