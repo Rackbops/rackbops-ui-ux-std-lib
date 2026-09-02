@@ -111,6 +111,9 @@ Class prefix `rb-`; shared token/class contract with the other themes.
 - **Card** `.rb-card` (+ `__tag`) — white panel, soft shadow, `-4px` hover lift.
 - **NavLink** `.rb-link` — mono header nav; hover fills to a surface pill; accent
   on the active route.
+- **Nav rail** `.rb-nav-rail` — the sidebar container: 14rem fixed-width flex
+  column, surface background, a hairline right edge. Composes with `.rb-link`
+  for items; introduces no active-state convention of its own.
 - **Form** `.rb-input` / `.rb-textarea` / `.rb-select` / `.rb-label` / `.rb-field`
   / `.rb-choice` / `.rb-checkbox` / `.rb-radio` / `.rb-switch` — white fields;
   focus is a vermillion border + wash ring.

@@ -92,6 +92,10 @@ Class prefix `rb-` (shared token/class contract with the other themes).
 - **Card** `.rb-card` — glass pane, 1rem radius, lit top edge.
 - **NavLink** `.rb-link` — glass list row; hover shifts to solid indigo and
   lights a 2px teal bar on the left edge.
+- **Nav rail** `.rb-nav-rail` — the sidebar container: 14rem fixed-width flex
+  column, the same glass panel + blur as `.rb-card`, a hairline right edge.
+  Composes with `.rb-link` for items; introduces no active-state convention
+  of its own.
 - **Button** `.rb-btn` — ghost by default; `--primary` is the one solid fill
   (orchid, dark text), `--accent` teal ghost, `--danger` rose ghost. `--sm` is
   the compact size for inline and table-row actions. `.rb-icon-btn` is a

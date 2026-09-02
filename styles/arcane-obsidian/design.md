@@ -89,6 +89,9 @@ Class prefix `rb-`; shared token/class contract with the other themes.
 - **Card** `.rb-card` (+ `--raised`) — solid panel, hairline border, shadow-sm.
 - **NavLink** `.rb-link` — tree/sidebar row; hover fills to surface-2 and lights a
   2px accent bar on the left edge; `--active` carries the accent wash.
+- **Nav rail** `.rb-nav-rail` — the sidebar container: 14rem fixed-width flex
+  column, surface background, a hairline right edge. Composes with `.rb-link`
+  for items; introduces no active-state convention of its own.
 - **Form** `.rb-input` / `.rb-textarea` / `.rb-select` / `.rb-label` / `.rb-field`
   / `.rb-choice` / `.rb-checkbox` / `.rb-radio` / `.rb-switch` — sunken fields;
   focus swaps to the accent border + wash ring; controls use `accent-color`.

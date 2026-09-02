@@ -101,6 +101,9 @@ the baseline ten — no theme extras.
 - **NavLink** `.rb-link` — sidebar/tree row; hover fills to surface-2 (the
   one non-white fill besides the alert) and lights a thin 2px accent bar on
   the left edge on hover/active.
+- **Nav rail** `.rb-nav-rail` — the sidebar container: 14rem fixed-width flex
+  column, surface background, a hairline right edge. Composes with `.rb-link`
+  for items; introduces no active-state convention of its own.
 - **Form** `.rb-input` / `.rb-textarea` / `.rb-select` / `.rb-label` /
   `.rb-field` / `.rb-choice` / `.rb-checkbox` / `.rb-radio` / `.rb-switch` —
   sunken fields; focus swaps to the accent border plus a barely-there wash
