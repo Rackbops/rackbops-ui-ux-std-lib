@@ -1,4 +1,4 @@
-import type { HTMLAttributes, ReactNode } from "react";
+import { forwardRef, type HTMLAttributes, type ReactNode, type RefAttributes } from "react";
 import { cx } from "./cx.js";
 import { NavLink } from "./NavLink.js";
 
@@ -9,7 +9,7 @@ export interface NavRailItem {
   href?: string;
 }
 
-export interface NavRailProps extends HTMLAttributes<HTMLElement> {
+export interface NavRailProps extends HTMLAttributes<HTMLElement>, RefAttributes<HTMLElement> {
   items: NavRailItem[];
   /** Id of the currently active item (mirrors NavLink's own `active` contract --
    * no second active-state convention). No item is marked active if it matches none. */
@@ -21,9 +21,12 @@ export interface NavRailProps extends HTMLAttributes<HTMLElement> {
  * Controlled by the caller via `activeId`, same as NavLink's own `active` prop --
  * this component owns no state of its own.
  */
-export function NavRail({ items, activeId, className, ...rest }: NavRailProps) {
+export const NavRail = forwardRef<HTMLElement, NavRailProps>(function NavRail(
+  { items, activeId, className, ...rest },
+  ref,
+) {
   return (
-    <nav className={cx("rb-nav-rail", className)} {...rest}>
+    <nav ref={ref} className={cx("rb-nav-rail", className)} {...rest}>
       {items.map((item) => (
         <NavLink key={item.id} href={item.href} active={item.id === activeId}>
           {item.label}
@@ -31,4 +34,5 @@ export function NavRail({ items, activeId, className, ...rest }: NavRailProps) {
       ))}
     </nav>
   );
-}
+});
+NavRail.displayName = "NavRail";

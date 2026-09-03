@@ -15,6 +15,7 @@ export {
   type TextareaProps,
   type SelectProps,
   type LabelProps,
+  type FieldProps,
   type ChoiceProps,
 } from "./form.js";
 export {
@@ -25,6 +26,7 @@ export {
   type BadgeProps,
   type AlertProps,
   type ProgressProps,
+  type SpinnerProps,
   type SemanticVariant,
 } from "./feedback.js";
 export { Dialog, type DialogProps } from "./Dialog.js";

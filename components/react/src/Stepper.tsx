@@ -1,4 +1,4 @@
-import type { OlHTMLAttributes, ReactNode } from "react";
+import { forwardRef, type OlHTMLAttributes, type ReactNode, type RefAttributes } from "react";
 import { cx } from "./cx.js";
 
 export interface StepperStep {
@@ -10,7 +10,9 @@ export interface StepperStep {
   icon?: ReactNode;
 }
 
-export interface StepperProps extends OlHTMLAttributes<HTMLOListElement> {
+export interface StepperProps
+  extends OlHTMLAttributes<HTMLOListElement>,
+    RefAttributes<HTMLOListElement> {
   steps: StepperStep[];
   /** 0-based index of the current step; steps before it read complete, after
    * it read upcoming. Drives each step's state -- and, through it, the
@@ -41,9 +43,12 @@ function CheckIcon() {
  * :first-child).rb-stepper--complete/--current::before`), so the rail fill
  * and the step states can never drift out of sync with each other.
  */
-export function Stepper({ steps, current, className, ...rest }: StepperProps) {
+export const Stepper = forwardRef<HTMLOListElement, StepperProps>(function Stepper(
+  { steps, current, className, ...rest },
+  ref,
+) {
   return (
-    <ol className={cx("rb-stepper", className)} {...rest}>
+    <ol ref={ref} className={cx("rb-stepper", className)} {...rest}>
       {steps.map((step, i) => {
         const state = i < current ? "complete" : i === current ? "current" : "upcoming";
         return (
@@ -61,4 +66,5 @@ export function Stepper({ steps, current, className, ...rest }: StepperProps) {
       })}
     </ol>
   );
-}
+});
+Stepper.displayName = "Stepper";

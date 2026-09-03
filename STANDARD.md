@@ -663,16 +663,16 @@ props to modifiers, and never branches on the theme.
 
 | Rule | Where it holds today |
 | --- | --- |
-| One export per shared component, from `src/index.ts`, with a named props type | `components/react/src/index.ts`; `Field` and `Spinner` take an inline `HTMLAttributes` today and SHOULD get named types |
+| One export per shared component, from `src/index.ts`, with a named props type | `components/react/src/index.ts` (`FieldProps`/`SpinnerProps` added by #30) |
 | Each prop that adds a class says so in JSDoc: "Maps to `.rb-btn--{variant}`" | `Button.tsx:5-13` |
 | The base class first, modifiers next, consumer `className` last, via `cx` | `Button.tsx:29-35`; tested in `Button.test.tsx:68-77` |
 | `...rest` spreads onto the root element so `id`, `data-*`, `aria-*`, handlers all reach it | every wrapper except `Dialog` and `Tabs` `[pending #31]`; a labelled `Checkbox`/`Radio`/`Switch` puts it on the inner `<input>`, not the `.rb-choice` wrapper (`form.tsx:44-55`, #42 overflow) |
-| `forwardRef`, with `RefAttributes<T>` on the props type | none today `[pending #30]` |
+| `forwardRef`, with `RefAttributes<T>` on the props type | every wrapper, since #30 (`Dialog` merges its own internal show/close ref with the forwarded one) |
 | Native semantics by default: `type="button"`, `aria-current="page"` on an active link, `role="alert"`, `role="status"` + `aria-label` on the spinner, native `<dialog>` with `aria-labelledby`, ARIA tablist with roving tabindex | `Button.tsx:20`, `NavLink.tsx:12`, `feedback.tsx:22,40-41`, `Dialog.tsx:26-31`, `Tabs.tsx:41-63` |
 | Controlled by the caller, no hidden state: `NavRail activeId`, `Dialog open` | `NavRail.tsx:14-16`; `Dialog` reconciles `open` on every render `[pending #31]`; `Tabs` MAY keep its selection until a controlled API is in scope |
 | No theme-specific class, no extra, no `style` that a theme would own. Structural layout a theme has no opinion on (a grid) MAY be inline, and says why in a comment | `LinksIndex.tsx:28-39` |
 | A prop that is a no-op in some theme MUST be a documented omission (section 5.3), not a bare JSDoc caveat | `Card.tsx`'s `raised` now is, for the three nazuraki ports (design.md + JSDoc + `contract.test.mjs`'s allowlist, #29); the formal `contract.json` entry is `[pending #47]` |
-| Tests render to static markup and assert the class list per prop, composition, and passthrough; the same renders feed the derived class set | `Button.test.tsx`, `NavRail.test.tsx`, `LinksIndex.test.tsx`, `Stepper.test.tsx`; `node:test` + `tsx` + `react-dom/server`; `[pending #48]` for the derivation |
+| Tests render to static markup and assert the class list per prop, composition, and passthrough; the same renders feed the derived class set | `Button.test.tsx`, `NavRail.test.tsx`, `LinksIndex.test.tsx`, `Stepper.test.tsx`; `node:test` + `tsx` + `react-dom/server`; `[pending #48]` for the derivation. `refs.test.tsx` (#30) is the one exception -- ref attachment only happens on a real commit, so it client-renders via `react-dom/client` + `jsdom` instead |
 
 ---
 
@@ -855,7 +855,7 @@ identity paragraph and the README table.
 | `rb-stepper` in every theme | #55 merged | live (no parity test; pending #47) |
 | `.rb-stepper--upcoming` styled or allowlisted; `[aria-current="step"]` paired | `contract.test.mjs` | pending #47 (0 of 12 today) |
 | `Dialog` / `Tabs` spread rest; `Dialog` reconciles `open` | React fix | pending #31 |
-| `forwardRef` on every wrapper | React fix | pending #30 |
+| `forwardRef` on every wrapper | `refs.test.tsx` | live (#30) |
 | SKILL.md matches the shipped contract | doc fix | pending #39 |
 | `design.md` counterpart and count claims true | doc fix | pending #40 |
 | `## Accessibility` section in every `design.md` | review | 1 of 12 (rackbops-studio) |
@@ -863,6 +863,6 @@ identity paragraph and the README table.
 | `.rb-link--active` paired with `[aria-current="page"]` | `contract.test.mjs` | pending #47 (1 of 12, summer-cloud) |
 | Choice controls use `accent-color` | review | 7 of 12 (concrete pair by design; ports hand-styled) |
 | Dialog backdrop blurs via `var(--rb-blur)` | `contract.test.mjs` | pending #47 (8 of 12; concrete pair `0px` by design; two ports hard-code `blur(4px)`, #42) |
-| `Field` / `Spinner` named props types | React fix | pending #30 |
+| `Field` / `Spinner` named props types | `index.ts` exports | live (#30) |
 | Existing docs conform to the section 11 template; SKILL.md carries section 15 | doc sweep | pending #56 |
 | Extras only in labelled showcase sections | review | out of contract (issue #39) |

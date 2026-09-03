@@ -1,4 +1,4 @@
-import type { CSSProperties, HTMLAttributes } from "react";
+import { forwardRef, type CSSProperties, type HTMLAttributes, type RefAttributes } from "react";
 import { Card } from "./Card.js";
 import { Badge } from "./feedback.js";
 
@@ -20,7 +20,9 @@ export interface LinkItem {
   host?: string;
   monitored?: boolean;
 }
-export interface LinksIndexProps extends HTMLAttributes<HTMLDivElement> {
+export interface LinksIndexProps
+  extends HTMLAttributes<HTMLDivElement>,
+    RefAttributes<HTMLDivElement> {
   categories: LinkCategory[];
   links: LinkItem[];
 }
@@ -91,12 +93,15 @@ function Group({ label, items }: { label: string; items: LinkItem[] }) {
  * of `rb-card`s; links whose `category` is not listed collect into a trailing "Other" group. No
  * router assumed -- external URLs open in a new tab. Themed by the consumer's `data-rb-style`.
  */
-export function LinksIndex({ categories, links, className, ...rest }: LinksIndexProps) {
+export const LinksIndex = forwardRef<HTMLDivElement, LinksIndexProps>(function LinksIndex(
+  { categories, links, className, ...rest },
+  ref,
+) {
   const known = new Set(categories.map((c) => c.id));
   const other = links.filter((l) => !known.has(l.category));
 
   return (
-    <div className={className} {...rest}>
+    <div ref={ref} className={className} {...rest}>
       {categories.map((cat) => {
         const items = links.filter((l) => l.category === cat.id);
         return items.length > 0 ? <Group key={cat.id} label={cat.label} items={items} /> : null;
@@ -104,4 +109,5 @@ export function LinksIndex({ categories, links, className, ...rest }: LinksIndex
       {other.length > 0 ? <Group label="Other" items={other} /> : null}
     </div>
   );
-}
+});
+LinksIndex.displayName = "LinksIndex";

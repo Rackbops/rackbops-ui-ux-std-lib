@@ -1,4 +1,12 @@
-import { useId, useRef, useState, type KeyboardEvent, type ReactNode } from "react";
+import {
+  forwardRef,
+  useId,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type ReactNode,
+  type RefAttributes,
+} from "react";
 import { cx } from "./cx.js";
 
 export interface TabItem {
@@ -7,14 +15,17 @@ export interface TabItem {
   content: ReactNode;
 }
 
-export interface TabsProps {
+export interface TabsProps extends RefAttributes<HTMLDivElement> {
   items: TabItem[];
   /** Initially active tab id; defaults to the first item. */
   defaultId?: string;
   className?: string;
 }
 
-export function Tabs({ items, defaultId, className }: TabsProps) {
+export const Tabs = forwardRef<HTMLDivElement, TabsProps>(function Tabs(
+  { items, defaultId, className },
+  ref,
+) {
   const base = useId();
   const [active, setActive] = useState<string | undefined>(defaultId ?? items[0]?.id);
   // Fall back to the first tab if `active` names no item, so exactly one tab is
@@ -37,7 +48,7 @@ export function Tabs({ items, defaultId, className }: TabsProps) {
   };
 
   return (
-    <div className={className}>
+    <div ref={ref} className={className}>
       <div className="rb-tabs" role="tablist">
         {items.map((t, idx) => {
           const selected = t.id === activeId;
@@ -82,4 +93,5 @@ export function Tabs({ items, defaultId, className }: TabsProps) {
       })}
     </div>
   );
-}
+});
+Tabs.displayName = "Tabs";
