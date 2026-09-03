@@ -1,0 +1,192 @@
+{
+  "contract": 1,
+  "tokens": [
+    "bg", "surface", "surface-2", "surface-sunken",
+    "text", "text-soft", "text-faint",
+    "border", "border-strong",
+    "accent", "accent-fg", "accent-wash", "accent-grad",
+    "info", "success", "warning", "danger",
+    "font-display", "font-body", "font-mono",
+    "font-weight", "font-weight-medium", "font-weight-bold",
+    "heading-tracking", "label-tracking", "text-sm",
+    "radius", "radius-lg", "radius-pill",
+    "shadow-sm", "shadow-lg", "blur", "transition",
+    "space-1", "space-2", "space-3", "space-4", "space-5"
+  ],
+  "components": {
+    "button": {
+      "react": "Button",
+      "classes": ["rb-btn", "rb-btn--primary", "rb-btn--accent", "rb-btn--danger", "rb-btn--ghost", "rb-btn--sm", "rb-icon-btn"],
+      "notes": "variants: primary, accent, danger, ghost; --sm compact size; .rb-icon-btn icon-only square"
+    },
+    "card": {
+      "react": "Card",
+      "classes": ["rb-card", "rb-card--raised"],
+      "notes": "raised prop; --raised is a documented no-op in the three nazuraki ports (section 5.3)"
+    },
+    "link": {
+      "react": "NavLink",
+      "classes": ["rb-link", "rb-link--active"],
+      "notes": "active prop; SHOULD also match [aria-current=\"page\"] (pending CSS sweep, #65)"
+    },
+    "nav-rail": {
+      "react": "NavRail",
+      "classes": ["rb-nav-rail"],
+      "notes": "composes .rb-link; owns no active convention"
+    },
+    "form": {
+      "react": ["Field", "Label", "Input", "Textarea", "Select", "Checkbox", "Radio", "Switch"],
+      "classes": ["rb-field", "rb-label", "rb-input", "rb-textarea", "rb-select", "rb-choice", "rb-checkbox", "rb-radio", "rb-switch"],
+      "notes": "pair with Field/Label; choice controls wrap in .rb-choice"
+    },
+    "badge": {
+      "react": "Badge",
+      "classes": ["rb-badge", "rb-badge--info", "rb-badge--success", "rb-badge--warning", "rb-badge--danger"],
+      "notes": "semantic variants"
+    },
+    "alert": {
+      "react": "Alert",
+      "classes": ["rb-alert", "rb-alert__title", "rb-alert--info", "rb-alert--success", "rb-alert--warning", "rb-alert--danger"],
+      "notes": "variant + optional title"
+    },
+    "dialog": {
+      "react": "Dialog",
+      "classes": ["rb-dialog", "rb-dialog__title", "rb-dialog__actions", "rb-dialog__body"],
+      "notes": "native <dialog>, open/onClose/actions; __body is a documented no-op in four themes (section 5.3)"
+    },
+    "tabs": {
+      "react": "Tabs",
+      "classes": ["rb-tabs", "rb-tab", "rb-tab--active", "rb-tabpanel"],
+      "notes": "items: {id, label, content}[]; --active SHOULD also match [aria-selected=\"true\"] (pending CSS sweep, #65)"
+    },
+    "table": {
+      "react": null,
+      "classes": ["rb-table", "rb-table--interactive", "rb-num"],
+      "notes": "style directly, no React wrapper"
+    },
+    "progress": {
+      "react": ["Progress", "Spinner"],
+      "classes": ["rb-progress", "rb-spinner"],
+      "notes": "native <progress> pseudo-element contract enforced separately (not class-based)"
+    },
+    "muted": {
+      "react": null,
+      "classes": ["rb-muted"],
+      "notes": "style directly, no React wrapper"
+    },
+    "pre": {
+      "react": null,
+      "classes": ["rb-pre"],
+      "notes": "style directly, no React wrapper"
+    },
+    "log": {
+      "react": null,
+      "classes": ["rb-log"],
+      "notes": "pairs with .rb-pre; style directly, no React wrapper"
+    },
+    "stepper": {
+      "react": "Stepper",
+      "classes": ["rb-stepper", "rb-stepper__step", "rb-stepper__node", "rb-stepper__label", "rb-stepper--complete", "rb-stepper--current", "rb-stepper--upcoming"],
+      "notes": "--upcoming is the resting state (allowlisted, no rule needed); --current SHOULD also match [aria-current=\"step\"] (pending CSS sweep, #65)"
+    }
+  },
+  "allowlist": [
+    { "theme": "luminous-precision", "class": "rb-card--raised", "reason": "nazuraki upstream has no second elevation tier for this port" },
+    { "theme": "neon-butterfly", "class": "rb-card--raised", "reason": "nazuraki upstream has no second elevation tier for this port" },
+    { "theme": "summer-cloud", "class": "rb-card--raised", "reason": "nazuraki upstream's second elevation tier is --floating, already carried over; --raised would just duplicate it" },
+    { "theme": "luminous-precision", "class": "rb-dialog__body", "reason": "pads .rb-dialog directly instead of a wrapper -- sanctioned by #42's verdict" },
+    { "theme": "mono-field", "class": "rb-dialog__body", "reason": "pads .rb-dialog directly instead of a wrapper -- sanctioned by #42's verdict" },
+    { "theme": "neon-butterfly", "class": "rb-dialog__body", "reason": "pads .rb-dialog directly instead of a wrapper -- sanctioned by #42's verdict" },
+    { "theme": "summer-cloud", "class": "rb-dialog__body", "reason": "pads .rb-dialog directly instead of a wrapper -- sanctioned by #42's verdict" },
+    { "theme": "amber-ember", "class": "rb-stepper--upcoming", "reason": "default/resting state -- falls through to the base node/label rule, no override needed" },
+    { "theme": "amber-hearth", "class": "rb-stepper--upcoming", "reason": "default/resting state -- falls through to the base node/label rule, no override needed" },
+    { "theme": "arcane-obsidian", "class": "rb-stepper--upcoming", "reason": "default/resting state -- falls through to the base node/label rule, no override needed" },
+    { "theme": "arcane-parchment", "class": "rb-stepper--upcoming", "reason": "default/resting state -- falls through to the base node/label rule, no override needed" },
+    { "theme": "concrete-signal", "class": "rb-stepper--upcoming", "reason": "default/resting state -- falls through to the base node/label rule, no override needed" },
+    { "theme": "concrete-signal-light", "class": "rb-stepper--upcoming", "reason": "default/resting state -- falls through to the base node/label rule, no override needed" },
+    { "theme": "luminous-precision", "class": "rb-stepper--upcoming", "reason": "default/resting state -- falls through to the base node/label rule, no override needed" },
+    { "theme": "mono-field", "class": "rb-stepper--upcoming", "reason": "default/resting state -- falls through to the base node/label rule, no override needed" },
+    { "theme": "neon-butterfly", "class": "rb-stepper--upcoming", "reason": "default/resting state -- falls through to the base node/label rule, no override needed" },
+    { "theme": "rackbops-noir", "class": "rb-stepper--upcoming", "reason": "default/resting state -- falls through to the base node/label rule, no override needed" },
+    { "theme": "rackbops-studio", "class": "rb-stepper--upcoming", "reason": "default/resting state -- falls through to the base node/label rule, no override needed" },
+    { "theme": "summer-cloud", "class": "rb-stepper--upcoming", "reason": "default/resting state -- falls through to the base node/label rule, no override needed" }
+  ],
+  "extras": {
+    "arcane-obsidian": ["rb-wordmark", "rb-wordmark__spark", "rb-tabstrip", "rb-tabstrip__tab", "rb-tabstrip__tab--active", "rb-eyebrow"],
+    "arcane-parchment": ["rb-wordmark", "rb-wordmark__spark", "rb-tabstrip", "rb-tabstrip__tab", "rb-tabstrip__tab--active", "rb-eyebrow"],
+    "rackbops-studio": ["rb-rack", "rb-rack__top", "rb-rack__live", "rb-rack__bars", "rb-rack__foot", "rb-principles", "rb-principle", "rb-principle__n", "rb-principle__body", "rb-tags", "rb-tag", "rb-card__tag", "rb-btn__arrow", "rb-eyebrow"],
+    "rackbops-noir": ["rb-rack", "rb-rack__top", "rb-rack__live", "rb-rack__bars", "rb-rack__foot", "rb-principles", "rb-principle", "rb-principle__n", "rb-principle__body", "rb-tags", "rb-tag", "rb-card__tag", "rb-btn__arrow", "rb-eyebrow"],
+    "luminous-precision": ["rb-badge--primary", "rb-bg", "rb-progress--accent"],
+    "neon-butterfly": ["rb-badge--primary", "rb-bg", "rb-progress--accent"],
+    "summer-cloud": ["rb-badge--primary", "rb-bg", "rb-progress--accent", "rb-chip", "rb-chip--selected", "rb-card--floating"],
+    "concrete-signal": [],
+    "concrete-signal-light": [],
+    "amber-hearth": [],
+    "amber-ember": [],
+    "mono-field": []
+  },
+  "ariaPairs": [
+    {
+      "component": "tabs",
+      "class": "rb-tab--active",
+      "attribute": "[aria-selected=\"true\"]",
+      "baseSelector": "rb-tab",
+      "exempt": [
+        { "theme": "arcane-obsidian", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
+        { "theme": "arcane-parchment", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
+        { "theme": "rackbops-studio", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
+        { "theme": "rackbops-noir", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
+        { "theme": "amber-hearth", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
+        { "theme": "amber-ember", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" }
+      ]
+    },
+    {
+      "component": "link",
+      "class": "rb-link--active",
+      "attribute": "[aria-current=\"page\"]",
+      "baseSelector": "rb-link",
+      "exempt": [
+        { "theme": "amber-ember", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
+        { "theme": "amber-hearth", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
+        { "theme": "arcane-obsidian", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
+        { "theme": "arcane-parchment", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
+        { "theme": "concrete-signal", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
+        { "theme": "concrete-signal-light", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
+        { "theme": "luminous-precision", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
+        { "theme": "mono-field", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
+        { "theme": "neon-butterfly", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
+        { "theme": "rackbops-noir", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
+        { "theme": "rackbops-studio", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" }
+      ]
+    },
+    {
+      "component": "stepper",
+      "class": "rb-stepper--current",
+      "attribute": "[aria-current=\"step\"]",
+      "baseSelector": "rb-stepper__step",
+      "exempt": [
+        { "theme": "amber-ember", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
+        { "theme": "amber-hearth", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
+        { "theme": "arcane-obsidian", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
+        { "theme": "arcane-parchment", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
+        { "theme": "concrete-signal", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
+        { "theme": "concrete-signal-light", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
+        { "theme": "luminous-precision", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
+        { "theme": "mono-field", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
+        { "theme": "neon-butterfly", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
+        { "theme": "rackbops-noir", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
+        { "theme": "rackbops-studio", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
+        { "theme": "summer-cloud", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" }
+      ]
+    }
+  ],
+  "dialogBackdropBlur": {
+    "token": "--rb-blur",
+    "exempt": [
+      { "theme": "concrete-signal", "reason": "flat scrim by design, no blur/glass anywhere in this theme", "permanent": true },
+      { "theme": "concrete-signal-light", "reason": "flat scrim by design, no blur/glass anywhere in this theme", "permanent": true },
+      { "theme": "neon-butterfly", "reason": "hard-codes blur(4px), pending CSS fix, tracked in #65" },
+      { "theme": "summer-cloud", "reason": "hard-codes blur(4px), pending CSS fix, tracked in #65" }
+    ]
+  }
+}
