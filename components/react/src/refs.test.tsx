@@ -1,38 +1,14 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createRef, type ReactElement } from "react";
-import { JSDOM } from "jsdom";
 
 // react-dom/client and react-dom (for flushSync) check for a browser
 // environment at import time -- renderToStaticMarkup (used by every other
 // *.test.tsx in this package) never runs a real commit phase, so it can't
 // prove a ref actually reaches the DOM. A real client render needs a real
-// `document`, which is why this is the one test file in the package that
-// needs jsdom, and needs it in place before react-dom loads (issue #30).
-const dom = new JSDOM("<!doctype html><body></body>", { url: "http://localhost/" });
-// Object.assign uses [[Set]], which throws on globals Node itself already
-// defines as getter-only (e.g. `navigator`, since Node 21). defineProperties
-// uses [[DefineOwnProperty]] instead, which replaces the descriptor outright.
-// `performance` and `queueMicrotask` are excluded: jsdom's implementations
-// of both resolve back through whatever object they're installed on, so
-// overwriting the globals with them here makes each call itself and blow the
-// stack. jsdom also has no MessageChannel, which is what React's scheduler
-// prefers for task scheduling in a browser-like environment -- without it,
-// the scheduler falls back to setTimeout, so jsdom's setTimeout/clearTimeout
-// (and interval siblings) are excluded too, on the same "resolves back
-// through its own installation" suspicion, since they're the same category
-// of global as the two known-recursive ones. Node's own native versions
-// (all React's scheduler needs from any of these) stay in place instead.
-const {
-  performance: _perf,
-  queueMicrotask: _qmt,
-  setTimeout: _setTimeout,
-  clearTimeout: _clearTimeout,
-  setInterval: _setInterval,
-  clearInterval: _clearInterval,
-  ...rest
-} = Object.getOwnPropertyDescriptors(dom.window);
-Object.defineProperties(globalThis, rest);
+// `document`, which is why this file needs jsdom in place before react-dom
+// loads (issue #30) -- see test-dom.ts for what installing it involves.
+await import("./test-dom.js");
 
 const { createRoot } = await import("react-dom/client");
 const { flushSync } = await import("react-dom");
