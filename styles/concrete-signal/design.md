@@ -82,8 +82,10 @@ gradient has no soft midpoint.
 
 ## Components
 
-Class prefix `rb-`; shared token/class contract with the other themes. Only
-the baseline ten — no theme-specific extras.
+Class prefix `rb-`; shared token/class contract with the other themes (the
+full required set is `styles/contract.json` / STANDARD.md 5.1 — not restated
+as a count here, since that count has drifted before) — no theme-specific
+extras.
 
 - **Button** `.rb-btn` — outlined ghost by default; `--primary` is a solid
   accent fill with the offset-shadow press interaction; `--accent` an
@@ -103,7 +105,11 @@ the baseline ten — no theme-specific extras.
   `.rb-field` / `.rb-choice` / `.rb-checkbox` / `.rb-radio` / `.rb-switch` —
   sunken square fields; focus swaps the border from 1px to 2px solid accent;
   checked checkbox/radio/switch states are a flat accent fill, not a tint
-  ring; labels are uppercase, tracked, weight 600.
+  ring; labels are uppercase, tracked, weight 600. Pair divergence:
+  `components/form.css`'s select-arrow SVG data-URI hardcodes its stroke
+  colour (`#8f8f8a`, matching this theme's `--rb-text-faint`) since an inline
+  SVG can't reference a CSS custom property; concrete-signal-light's icon
+  carries its own matching literal (`#5f5d58`) instead.
 - **Badge** `.rb-badge` — uppercase weight 700, near-square (`radius-pill`);
   a 16%-tint fill of its hue behind full-strength text, plus a 1px solid
   border of that same hue — badges carry a border here, unlike softer themes.
@@ -162,7 +168,9 @@ a poured-concrete off-white ground.
 | Gradient | `linear-gradient(90deg,#cc4611,#b8281f)` |
 
 See `concrete-signal-light`'s own `design.md` for its full color table and
-notes — the behaviour is identical; only the palette is light.
+notes — the behaviour is identical (the one exception is `components/form.css`'s
+select-arrow icon colour, its own literal per theme since SVG can't take a
+token); only the palette is otherwise light.
 
 ## Scoping
 

@@ -106,6 +106,11 @@ Class prefix `rb-`; shared token/class contract with the other themes. No
   colour.
 - **Dialog** `.rb-dialog` — native `<dialog>`, generously rounded panel,
   blurred backdrop (`backdrop-filter: blur(var(--rb-blur))`), serif bold title.
+  Pair divergence: `components/dialog.css`'s `::backdrop` scrim is a literal
+  `rgba(43, 31, 20, 0.4)` here (a warm, lighter-alpha wash suited to this
+  theme's cream ground); amber-ember's is a heavier `rgba(8, 5, 3, 0.6)`
+  near-black scrim for its espresso ground — both are permitted literal alpha
+  overlays per STANDARD.md 4.2, just tuned per theme rather than shared.
 - **Tabs** `.rb-tabs` / `.rb-tab` / `.rb-tabpanel` — normal-case text tabs; the
   active tab is accent-coloured, underlined with the theme's one rationed
   gradient — the only place `--rb-accent-grad` appears in this theme.

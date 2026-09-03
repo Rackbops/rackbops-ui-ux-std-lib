@@ -32,11 +32,13 @@
     "mono-field",
     "all.css",
     "manifest.json",
+    "contract.json",
     "css-side-effect.d.ts"
   ],
   "exports": {
     "./all": { "types": "./css-side-effect.d.ts", "default": "./all.css" },
     "./manifest": "./manifest.json",
+    "./contract": "./contract.json",
     "./arcane-obsidian": { "types": "./css-side-effect.d.ts", "default": "./arcane-obsidian/index.css" },
     "./arcane-obsidian/tokens": { "types": "./css-side-effect.d.ts", "default": "./arcane-obsidian/tokens.css" },
     "./arcane-obsidian/base": { "types": "./css-side-effect.d.ts", "default": "./arcane-obsidian/base.css" },

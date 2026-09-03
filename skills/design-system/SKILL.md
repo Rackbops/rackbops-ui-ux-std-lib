@@ -66,23 +66,38 @@ hardcoding a list. No-build apps can load the CSS from jsDelivr's npm mirror onc
 React exports (each renders the matching `rb-*` CSS class, usable directly in
 non-React apps):
 
+This table is generated from `styles/contract.json` — edit that file, then run
+`node scripts/generate-skill-table.mjs`, not this table directly
+(`scripts/generate-skill-table.test.mjs` fails the suite if they drift).
+
+<!-- contract-table:start -->
 | React | CSS class | Notes |
 | --- | --- | --- |
-| `Button` | `.rb-btn` | variants: `primary`, `accent`, `danger`, `ghost` |
-| `Card` | `.rb-card` | `raised` prop |
-| `NavLink` | `.rb-link` | `active` prop |
-| `Input`/`Textarea`/`Select` | `.rb-input` etc. | pair with `Field`/`Label` |
-| `Checkbox`/`Radio`/`Switch` | `.rb-checkbox` etc. | `label` prop wraps in `.rb-choice` |
+| `Button` | `.rb-btn` | variants: primary, accent, danger, ghost; --sm compact size; .rb-icon-btn icon-only square |
+| `Card` | `.rb-card` | raised prop; --raised is a documented no-op in the three nazuraki ports (section 5.3) |
+| `NavLink` | `.rb-link` | active prop; SHOULD also match [aria-current="page"] (pending CSS sweep, #65) |
+| `NavRail` | `.rb-nav-rail` | composes .rb-link; owns no active convention |
+| `Field`/`Label`/`Input`/`Textarea`/`Select`/`Checkbox`/`Radio`/`Switch` | `.rb-field` | pair with Field/Label; choice controls wrap in .rb-choice |
 | `Badge` | `.rb-badge` | semantic variants |
-| `Alert` | `.rb-alert` | `variant` + optional `title` |
-| `Dialog` | `.rb-dialog` | native `<dialog>`, `open`/`onClose`/`actions` |
-| `Tabs` | `.rb-tabs` | `items: {id, label, content}[]` |
-| `Progress`/`Spinner` | `.rb-progress`/`.rb-spinner` | |
-| — (CSS only) | `.rb-table`, `.rb-eyebrow` | style directly |
+| `Alert` | `.rb-alert` | variant + optional title |
+| `Dialog` | `.rb-dialog` | native <dialog>, open/onClose/actions; __body is a documented no-op in four themes (section 5.3) |
+| `Tabs` | `.rb-tabs` | items: {id, label, content}[]; --active SHOULD also match [aria-selected="true"] (pending CSS sweep, #65) |
+| — | `.rb-table` | style directly, no React wrapper |
+| `Progress`/`Spinner` | `.rb-progress` | native <progress> pseudo-element contract enforced separately (not class-based) |
+| — | `.rb-muted` | style directly, no React wrapper |
+| — | `.rb-pre` | style directly, no React wrapper |
+| — | `.rb-log` | pairs with .rb-pre; style directly, no React wrapper |
+| `Stepper` | `.rb-stepper` | --upcoming is the resting state (allowlisted, no rule needed); --current SHOULD also match [aria-current="step"] (pending CSS sweep, #65) |
+<!-- contract-table:end -->
 
-Theme-specific extras (styled only under that theme — check before using):
-`arcane-obsidian` adds `.rb-wordmark` and `.rb-tabstrip`; `rackbops-studio` adds
-`.rb-rack` (equaliser panel), `.rb-principles`/`.rb-principle`, and `.rb-tags`/`.rb-tag`.
+Theme-specific extras (styled only under that theme — check before using): the
+arcane pair adds `.rb-wordmark`, `.rb-tabstrip`, and `.rb-eyebrow`; the
+rackbops pair adds `.rb-rack` (equaliser panel), `.rb-principles`/`.rb-principle`,
+`.rb-tags`/`.rb-tag`, `.rb-btn__arrow`, `.rb-card__tag`, and `.rb-eyebrow` too;
+the three nazuraki ports (`luminous-precision`, `neon-butterfly`,
+`summer-cloud`) add `.rb-badge--primary`, `.rb-bg`, and `.rb-progress--accent`;
+`summer-cloud` additionally adds `.rb-chip` and `.rb-card--floating`. Full
+per-theme lists live in `styles/contract.json`'s `extras`.
 
 Visual reference: run `pnpm showcase` in the std-lib to render every component
 per theme with a switcher.

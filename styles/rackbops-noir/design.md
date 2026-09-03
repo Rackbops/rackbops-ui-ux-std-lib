@@ -76,6 +76,16 @@ matches rackbops.com's dark-mode rack — a near-canvas block set off by its bor
 the per-component notes. The Boppy mascot asset ships with rackbops-studio
 (`styles/rackbops-studio/assets/boppy.svg`) and is shared.
 
+Two components diverge beyond palette. `components/button.css`'s `--primary`
+label colour (`var(--rb-bg)`) and `--accent` hover/focus fill
+(`color-mix(in srgb, var(--rb-accent), var(--rb-text) 15%)`) are proper token
+expressions here; rackbops-studio's equivalents are pre-existing literal
+colours (`#f4f7f9`, `#c93c1c`) that predate STANDARD.md 4.2 and haven't been
+migrated yet (see its `design.md`). `components/rack.css` declares its own
+local `--rb-rack-panel`/`--rb-rack-line` values, tuned slightly darker here
+than rackbops-studio's to read correctly against this theme's already-dark
+canvas.
+
 ## Light counterpart
 
 `rackbops-studio` — the canonical light look. Same `--rb-*` baseline and `rb-*`

@@ -60,14 +60,20 @@ transitions.
 ## Components
 
 Identical to concrete-signal — see its `design.md` for per-component notes;
-behaviour is the same, only the palette differs. The full baseline twelve:
+behaviour is the same, only the palette differs (the full required set is
+`styles/contract.json` / STANDARD.md 5.1 — not restated as a count here,
+since that count has drifted before):
 `.rb-btn` (+ `--primary/--accent/--danger/--ghost`, `--sm` compact size, `.rb-icon-btn` icon-only square), `.rb-card` (+
 `--raised`), `.rb-link`, `.rb-nav-rail`, the form set (`.rb-input`/`.rb-textarea`/
 `.rb-select`/`.rb-label`/`.rb-field`/`.rb-choice`/`.rb-checkbox`/`.rb-radio`/
 `.rb-switch`), `.rb-badge`, `.rb-alert`, `.rb-dialog`, `.rb-tabs`/`.rb-tab`/
 `.rb-tabpanel`, `.rb-table` (+ `.rb-num`, `--interactive`), `.rb-progress`/`.rb-spinner`, `.rb-stepper`,
 `.rb-muted` (no italic — brutalism never softens with a slant), `.rb-pre` (+ `.rb-log`)
-(zero radius falls out of `--rb-radius` automatically).
+(zero radius falls out of `--rb-radius` automatically). One exception:
+`components/form.css`'s select-arrow SVG data-URI hardcodes its own stroke
+colour (`#5f5d58`, matching this theme's `--rb-text-faint`) since an inline
+SVG can't reference a CSS custom property; concrete-signal's icon carries its
+own matching literal (`#8f8f8a`) instead.
 
 ## Dark counterpart
 

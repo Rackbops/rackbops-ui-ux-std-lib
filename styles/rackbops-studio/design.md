@@ -107,7 +107,12 @@ Class prefix `rb-`; shared token/class contract with the other themes.
   vermillion, `--ghost` bordered outline, `--danger` rose outline; `.rb-btn__arrow`
   slides on hover. `--sm` is a compact size for inline/table-row actions — the
   arrow scales with it. `.rb-icon-btn` is a square icon-only hit target
-  (>=2rem), paired with `.rb-btn`.
+  (>=2rem), paired with `.rb-btn`. Pair divergence: `components/button.css`
+  carries two literal (non-token) colours here that predate the "tokens, not
+  literals" rule (STANDARD.md 4.2) and haven't been migrated yet — `--primary`'s
+  label colour (`#f4f7f9`) and `--accent`'s hover/focus fill (`#c93c1c`).
+  rackbops-noir's equivalents already use `var(--rb-bg)` and a `color-mix()`
+  formula respectively; bringing this theme in line is tracked separately.
 - **Card** `.rb-card` (+ `__tag`) — white panel, soft shadow, `-4px` hover lift.
   `--raised` makes that lift the resting state (a further `-6px` on hover).
 - **NavLink** `.rb-link` — mono header nav; hover fills to a surface pill; accent
@@ -152,7 +157,11 @@ Class prefix `rb-`; shared token/class contract with the other themes.
 
 - **Rack** `.rb-rack` (+ `__top` / `__live` / `__bars` / `__foot`) — the dark navy
   equaliser panel; a pulsing live dot and animated vermillion bars. Its inverted
-  panel palette is fixed dark regardless of the light canvas.
+  panel palette is fixed dark regardless of the light canvas. Pair divergence:
+  `components/rack.css` declares its own local `--rb-rack-panel`/`--rb-rack-line`
+  custom properties with theme-specific literal values (a mini palette scoped to
+  this extra, the same way tokens.css carries the baseline palette) — rackbops-noir
+  tunes both slightly darker to sit correctly against its already-dark canvas.
 - **Principles** `.rb-principles` / `.rb-principle` (+ `__n` / `__body`) — the
   numbered `/0N` "how we work" list.
 - **Tags** `.rb-tags` / `.rb-tag` — mono capability pills in a flex-wrap row.

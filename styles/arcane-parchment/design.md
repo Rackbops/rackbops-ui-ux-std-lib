@@ -72,7 +72,12 @@ tokens: `.rb-wordmark` (+ `__spark`), `.rb-btn` (+ `--primary/--accent/--danger/
 `.rb-dialog`, `.rb-tabs`, `.rb-tabstrip`, `.rb-table` (+ `.rb-num`, `--interactive`),
 `.rb-progress` / `.rb-spinner`, `.rb-stepper`, `.rb-eyebrow`, `.rb-muted`, `.rb-pre` (+ `.rb-log`). See
 arcane-obsidian's `design.md` for the per-component notes — the behaviour is
-the same; only the palette is light.
+the same, with one exception: `components/button.css`'s `--primary`
+hover/focus-visible fill darkens toward `--rb-text` here
+(`color-mix(in srgb, var(--rb-accent), var(--rb-text) 12%)`), rather than
+lightening toward white as arcane-obsidian does — lightening on this light
+ground would drop the label below AA (4.37:1; see the inline comment in that
+file). Otherwise only the palette is light.
 
 ## Code syntax
 

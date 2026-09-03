@@ -71,9 +71,9 @@ library. Every rule below descends from one of these.
    (section 14.4).
 10. **The contract is data; prose is derived from it.** Tokens, required
     classes, allowed omissions, and extras live in one machine-readable file
-    that the tests read and the docs are generated from or checked against
-    `[pending #47]`. A hand-maintained copy of the contract is a drift
-    waiting to happen (#39, #40 were exactly that).
+    (`styles/contract.json`) that the tests read and the docs are generated
+    from or checked against `[tested]`. A hand-maintained copy of the
+    contract is a drift waiting to happen (#39, #40 were exactly that).
 
 ---
 
@@ -87,7 +87,7 @@ A theme is a directory `styles/<theme-id>/` with exactly this layout:
 | --- | --- | --- |
 | `tokens.css` | One `:where([data-rb-style="<id>"]) { ... }` block: `color-scheme` plus every `--rb-*` token | MUST declare all 38 baseline tokens (section 4.1) and a `color-scheme` that matches the manifest `[tested]` |
 | `base.css` | Canvas rule, box-sizing reset, page-only body rule, bare-element typography, links, focus, selection | MUST carry the bare-element property set (section 6) `[tested]` |
-| `components/<name>.css` | One file per component: the shared set (section 5.1) plus any extras | MUST exist for every shared component `[pending #47]`; every selector guarded `[tested]` |
+| `components/<name>.css` | One file per component: the shared set (section 5.1) plus any extras | MUST exist for every shared component `[tested]`; every selector guarded `[tested]` |
 | `index.css` | `@import` of tokens, base, and every file in `components/` | MUST import every component file and contain no rules of its own `[tested]` |
 | `design.md` | The written spec (section 11) | MUST follow the template; every claim verified against the CSS `[reviewed]` |
 | `assets/` | Optional binaries (`rackbops-studio/assets/boppy.svg`, `neon-butterfly/assets/butterfly-circuit.png`) | MAY. Keep small: issue #42 measures the 1.3 MB PNG at 76% of the unpacked tarball |
@@ -118,9 +118,11 @@ and nothing else" tests in `styles/test/contract.test.mjs`):
    description.
 5. `NOTICE` -- for a ported theme, the directory listed under its upstream's
    licence block.
-6. `skills/design-system/SKILL.md` -- roster and extras updated
-   `[pending #39]`; generated from the contract file once #47 lands.
-7. `styles/contract.json` -- the theme's `extras` entry `[pending #47]`.
+6. `skills/design-system/SKILL.md` -- the component-inventory table is
+   generated from `contract.json` `[tested]`; the roster paragraph is still
+   hand-maintained and updated separately `[pending #39]`.
+7. `styles/contract.json` -- the theme's `extras` entry `[tested: closed-world
+   check]`.
 
 The showcase needs no change: it reads the manifest and injects any `fonts`
 URLs on switch (`site/index.html:314-328`, `340-351`). The scaffold in #53
@@ -208,10 +210,9 @@ Rules:
 ### 4.1 The baseline (38 tokens)
 
 Every theme MUST declare all of these on its canvas selector `[tested]`
-(`styles/test/contract.test.mjs` `REQUIRED_TOKENS`; moves to
-`styles/contract.json` with #47). Adding a name is a contract change:
-bump the contract integer, add the token to all twelve themes, update
-SKILL.md and this table.
+(`styles/contract.json`'s `tokens`, read by `styles/test/contract.test.mjs`'s
+`REQUIRED_TOKENS`). Adding a name is a contract change: bump the contract
+integer, add the token to all twelve themes, update SKILL.md and this table.
 
 **Canvas and surfaces**
 
@@ -299,8 +300,11 @@ is one more thing twelve themes must declare and document.
   declares both shadow tokens with values that read correctly, so a shared
   component that uses them is never broken.
 - A token that exists for a purpose is used for it: the dialog backdrop
-  blurs with `var(--rb-blur)`, not a literal (two ports hard-code
-  `blur(4px)` today -- #42) `[pending #47]`.
+  blurs with `var(--rb-blur)`, not a literal. Checked by `contract.test.mjs`
+  against `contract.json`'s `dialogBackdropBlur` (the concrete pair is
+  permanently exempt -- no blur/glass anywhere in that theme, by design);
+  two ports still hard-code `blur(4px)` today (#42) and are temporarily
+  exempt `[pending #65]`.
 
 ### 4.3 Extras
 
@@ -327,16 +331,18 @@ A theme MAY declare tokens beyond the baseline. Rules:
 
 `styles/contract.json` is the single source for the baseline token list, the
 required class list (5.1), the documented-omission allowlist (5.3), and each
-theme's extras (5.4) `[pending #47]`. The contract test reads it; SKILL.md's
-inventory is generated from it; the tables in this document are checked
-against it. `manifest.json`'s `contract` integer MUST equal the file's, and
-it bumps when a baseline token is added (every theme must then declare it)
-or when a token or class is removed, renamed, or changes meaning. Adding a
-required class is additive and does not bump -- `rb-nav-rail`, `rb-log`,
-`rb-icon-btn`, `rb-table--interactive`, and `rb-stepper` all landed at
-contract 1. A consumer that reads the manifest can refuse a contract it
-does not know. Until #47 lands, `REQUIRED_TOKENS` in `contract.test.mjs` is
-the token list and this document is the class list.
+theme's extras (5.4). The contract test reads it (`contract.test.mjs`
+asserts `manifest.contract === contract.json.contract` `[tested]`);
+SKILL.md's inventory table is generated from it, checked by
+`scripts/generate-skill-table.test.mjs` `[tested]`; the tables in this
+document are kept in sync by hand and should be treated as a rendering of
+`contract.json`, not an independent source. `manifest.json`'s `contract`
+integer MUST equal the file's, and it bumps when a baseline token is added
+(every theme must then declare it) or when a token or class is removed,
+renamed, or changes meaning. Adding a required class is additive and does
+not bump -- `rb-nav-rail`, `rb-log`, `rb-icon-btn`, `rb-table--interactive`,
+and `rb-stepper` all landed at contract 1. A consumer that reads the
+manifest can refuse a contract it does not know.
 
 ---
 
@@ -345,28 +351,29 @@ the token list and this document is the class list.
 ### 5.1 The shared component set
 
 Every theme MUST ship these files and style every selector in the "Required
-selectors" column `[tested today: .rb-btn--sm, .rb-icon-btn, --ghost,
-.rb-table--interactive, .rb-num, --active, --raised (7 classes, via
-REQUIRED_CLASSES); the full list pending #47]`. The React column is the
+selectors" column `[tested: the full class set per component, read from
+contract.json's components, via REQUIRED_CLASSES; every theme's CSS is also
+checked closed-world against (required classes) ∪ (that theme's contract.json
+extras), so an undocumented class fails too]`. The React column is the
 `@rackbops/ui-react` export that emits the class.
 
 | File | Required selectors | React | Notes |
 | --- | --- | --- | --- |
 | `button.css` | `.rb-btn`, `--primary`, `--accent`, `--danger`, `--ghost`, `--sm`, `:disabled`; `.rb-icon-btn` | `Button` | disabled buttons still take `:hover` in all twelve `[pending #37]` |
 | `card.css` | `.rb-card`, `--raised` | `Card` | `--raised` is a documented no-op in the three nazuraki ports (section 5.3, `contract.test.mjs`'s `CLASS_ALLOWLIST`): luminous-precision and neon-butterfly have no second elevation tier upstream at all; summer-cloud's upstream second tier is `--floating`, already carried over, so the port doesn't also add a near-duplicate `--raised` |
-| `link.css` | `.rb-link`, `--active` | `NavLink` | SHOULD also match `[aria-current="page"]` (one theme does) `[pending #47]` |
+| `link.css` | `.rb-link`, `--active` | `NavLink` | SHOULD also match `[aria-current="page"]`; checked by `contract.test.mjs` against `contract.json`'s `ariaPairs` (one theme does, eleven temporarily exempt) `[pending #65]` |
 | `nav-rail.css` | `.rb-nav-rail` | `NavRail` | Composes `.rb-link`; owns no active convention |
 | `form.css` | `.rb-field`, `.rb-label`, `.rb-input`, `.rb-textarea`, `.rb-select`, `.rb-choice`, `.rb-checkbox`, `.rb-radio`, `.rb-switch` | `Field`, `Label`, `Input`, `Textarea`, `Select`, `Checkbox`, `Radio`, `Switch` | Choice controls SHOULD use `accent-color` (seven themes do; the concrete pair draws checked states as a flat accent fill by design, `styles/concrete-signal/design.md:104-106`; the ports hand-style them) |
 | `badge.css` | `.rb-badge`, `--info`, `--success`, `--warning`, `--danger` | `Badge` | Status text is never colour-only: the label carries the meaning |
 | `alert.css` | `.rb-alert`, `__title`, `--info`, `--success`, `--warning`, `--danger` | `Alert` | |
-| `dialog.css` | `.rb-dialog`, `__title`, `__actions`; `__body` | `Dialog` | `__body` is a no-op in four themes that pad `.rb-dialog` instead -- sanctioned by #42's verdict, allowlisted once #47 lands (section 5.3) |
-| `tabs.css` | `.rb-tabs`, `.rb-tab`, `.rb-tab--active`, `.rb-tabpanel` | `Tabs` | SHOULD pair `--active` with `[aria-selected="true"]` (six themes do) `[pending #47]` |
+| `dialog.css` | `.rb-dialog`, `__title`, `__actions`; `__body` | `Dialog` | `__body` is a no-op in four themes that pad `.rb-dialog` instead -- sanctioned by #42's verdict, allowlisted in `contract.json` (section 5.3) `[tested]` |
+| `tabs.css` | `.rb-tabs`, `.rb-tab`, `.rb-tab--active`, `.rb-tabpanel` | `Tabs` | SHOULD pair `--active` with `[aria-selected="true"]`; checked by `contract.test.mjs` against `contract.json`'s `ariaPairs` (six themes do, six temporarily exempt) `[pending #65]` |
 | `table.css` | `.rb-table`, `--interactive`, `.rb-num` | -- | |
 | `progress.css` | `.rb-progress` on a native `<progress>` (`appearance: none`, `::-webkit-progress-bar`, `::-webkit-progress-value`, `::-moz-progress-bar`); `.rb-spinner` | `Progress`, `Spinner` | |
 | `muted.css` | `.rb-muted` | -- | |
 | `pre.css` | `.rb-pre` | -- | |
 | `log.css` | `.rb-log` (pairs with `.rb-pre`) | -- | |
-| `stepper.css` | `.rb-stepper`, `__step`, `__node`, `__label`, `--complete`, `--current` | `Stepper` | In all twelve since #55 (closes #18). `--upcoming` is emitted by `Stepper` as the resting state and no theme declares a rule for it -- allowlist as "default state" or add the rule `[pending #47]`; SHOULD match `[aria-current="step"]` (no theme does) `[pending #47]`; no parity test yet `[pending #47]` |
+| `stepper.css` | `.rb-stepper`, `__step`, `__node`, `__label`, `--complete`, `--current` | `Stepper` | In all twelve since #55 (closes #18). `--upcoming` is emitted by `Stepper` as the resting state and no theme declares a rule for it -- allowlisted in `contract.json` as "default state" `[tested]`; SHOULD match `[aria-current="step"]`; checked by `contract.test.mjs` against `contract.json`'s `ariaPairs` (no theme does yet, all twelve temporarily exempt) `[pending #65]` |
 
 Do not state the *count* of shared files in prose anywhere -- `design.md`
 files that said "the baseline ten" and "twelve" were both stale before #55
@@ -376,33 +383,42 @@ merged and are staler after it (issue #40). Link this table instead.
 
 The contract test MUST hold a `REQUIRED_CLASSES` list parallel to
 `REQUIRED_TOKENS`, read from `contract.json`, and check each theme's parsed
-selectors against it. A 7-class starter list lives inline in
-`contract.test.mjs` since #29; moving it to `contract.json` is `[pending
-#47]`. The full list MUST be derived from what `@rackbops/ui-react` actually
-emits -- every export rendered with every class-adding prop -- plus the
-CSS-only utilities `[pending #48]`, so the class contract cannot drift from
-what consumers get. A class in the list is
-either styled in every theme or entered in the allowlist below.
+selectors against it `[tested]`. The list is currently hand-transcribed from
+this document's 5.1 table (`contract.json`'s `components`); deriving it
+instead from what `@rackbops/ui-react` actually emits -- every export
+rendered with every class-adding prop -- plus the CSS-only utilities is
+`[pending #48]`, so the class contract cannot drift from what consumers get.
+A class in the list is either styled in every theme, entered in the
+allowlist below, or -- for the three ARIA-pairing checks and the dialog-blur
+check -- temporarily listed in that check's `exempt` array pending the CSS
+sweep tracked in #65. Every theme's CSS is also checked closed-world: a
+`.rb-*` class that is neither required nor in that theme's `contract.json`
+extras fails the suite `[tested]`.
 
 A light/dark pair MUST ship an identical component set: the two
 `components/` directories are byte-identical after normalising the guard
-string, or the differing file is named in both `design.md`s
-`[pending #47]`. Every pair's `design.md` already makes this claim.
+string and theme-specific keyframe names, or the differing file is named in
+both `design.md`s `[tested: styles/test/pair-parity.test.mjs]`. Comments are
+stripped before comparing (editorial voice, not behaviour); five files across
+the four pairs currently diverge beyond palette (an AA-tuned hover formula, a
+local `--rb-rack-panel`/`--rb-rack-line` custom-property pair tuned per
+theme, two pre-existing literal-colour buttons pending cleanup, an SVG icon
+colour that can't take a token, and a per-theme backdrop scrim alpha) and are
+named in both sides' `design.md` as required here.
 
 ### 5.3 Documented omissions
 
 A required class MAY be a deliberate no-op in one theme only when all three
 hold: the theme's `design.md` says so and why; the allowlist entry in
 `contract.json` names theme, class, and reason; and the React component's
-JSDoc or SKILL.md carries the caveat. At HEAD two cases meet the first and
-third but not the second, since `contract.json` doesn't exist yet:
-`.rb-dialog__body` in luminous-precision, mono-field, neon-butterfly, and
-summer-cloud (which pad `.rb-dialog`) is sanctioned only by #42's verdict, its
-formal allowlist entry pending #47; `.rb-card--raised` in the three nazuraki
-ports (luminous-precision, neon-butterfly, summer-cloud) is sanctioned by each
-port's `design.md`, `Card.tsx`'s JSDoc, and `contract.test.mjs`'s inline
-`CLASS_ALLOWLIST` (added by #29) -- that allowlist entry moves into
-`contract.json` once #47 lands too.
+JSDoc or SKILL.md carries the caveat. Three cases today: `.rb-dialog__body`
+in luminous-precision, mono-field, neon-butterfly, and summer-cloud (which pad
+`.rb-dialog` instead), sanctioned by #42's verdict; `.rb-card--raised` in the
+three nazuraki ports (luminous-precision, neon-butterfly, summer-cloud),
+sanctioned by each port's `design.md` and `Card.tsx`'s JSDoc; and
+`.rb-stepper--upcoming` in all twelve themes (the resting state, styled by
+falling through to the base node/label rule rather than an explicit
+override). All three are entered in `contract.json`'s `allowlist` `[tested]`.
 
 ### 5.4 Theme extras
 
@@ -411,9 +427,15 @@ A theme MAY ship classes beyond the shared set. Rules:
 - Guarded like any rule, in their own `components/<name>.css` -- or, for an
   opt-in page background only, in `base.css` (the ports' `.rb-bg`,
   `styles/summer-cloud/base.css:39`) -- imported by `index.css` `[tested]`.
-- Documented under `### Theme extras` in that theme's `design.md`, listed
-  under the theme in `contract.json` `[pending #47]`, and in SKILL.md's
-  extras list `[pending #39]`.
+- Documented under `### Theme extras` in that theme's `design.md` (most
+  themes fold this into their `## Components` prose instead -- only
+  rackbops-studio uses the literal heading today, tracked under #56's doc-
+  template sweep), listed under the theme in `contract.json`'s `extras`
+  `[tested: closed-world check]`, and in SKILL.md's extras list
+  `[partially closed by #47 -- the extras paragraph is now accurate and the
+  eyebrow mis-classification is fixed; the theme-roster paragraph, manifest-
+  fonts consumer guidance, and the add-theme recipe gaps #39 also names are
+  still open]`.
 - Never emitted by a shared React component. `LinksIndex` is the model: it
   composes `Card` and `Badge` and adds no class of its own
   (`components/react/src/LinksIndex.tsx:28-30`).
@@ -671,7 +693,7 @@ props to modifiers, and never branches on the theme.
 | Native semantics by default: `type="button"`, `aria-current="page"` on an active link, `role="alert"`, `role="status"` + `aria-label` on the spinner, native `<dialog>` with `aria-labelledby`, ARIA tablist with roving tabindex | `Button.tsx:20`, `NavLink.tsx:12`, `feedback.tsx:22,40-41`, `Dialog.tsx:26-31`, `Tabs.tsx:41-63` |
 | Controlled by the caller, no hidden state: `NavRail activeId`, `Dialog open` | `NavRail.tsx:14-16`; `Dialog` reconciles `open` on every render since #31 (no dependency array on the sync effect, since a native close can strand the prop without anything else changing to re-trigger it); `Tabs` MAY keep its selection until a controlled API is in scope |
 | No theme-specific class, no extra, no `style` that a theme would own. Structural layout a theme has no opinion on (a grid) MAY be inline, and says why in a comment | `LinksIndex.tsx:28-39` |
-| A prop that is a no-op in some theme MUST be a documented omission (section 5.3), not a bare JSDoc caveat | `Card.tsx`'s `raised` now is, for the three nazuraki ports (design.md + JSDoc + `contract.test.mjs`'s allowlist, #29); the formal `contract.json` entry is `[pending #47]` |
+| A prop that is a no-op in some theme MUST be a documented omission (section 5.3), not a bare JSDoc caveat | `Card.tsx`'s `raised` now is, for the three nazuraki ports (design.md + JSDoc + `contract.json`'s `allowlist`, #29) `[tested]` |
 | Tests render to static markup and assert the class list per prop, composition, and passthrough; the same renders feed the derived class set | `Button.test.tsx`, `NavRail.test.tsx`, `LinksIndex.test.tsx`, `Stepper.test.tsx`; `node:test` + `tsx` + `react-dom/server`; `[pending #48]` for the derivation. `refs.test.tsx` (#30) is the one exception -- ref attachment only happens on a real commit, so it client-renders via `react-dom/client` + `jsdom` instead |
 
 ---
@@ -718,8 +740,10 @@ The showcase is the library's visual acceptance test. It MUST:
      the obvious gap.
    - A ported theme is exempt: it ships the schemes its upstream ships, for
      fidelity.
-   - A pair is identical in everything but `tokens.css` and the values
-     `design.md` tables (5.2) `[pending #47]`.
+   - A pair is identical in everything but `tokens.css`, the values
+     `design.md` tables (5.2), comment prose (which is free to differ), and
+     any file named as a documented divergence in both `design.md`s
+     `[tested: styles/test/pair-parity.test.mjs]`.
 3. Scaffold with `pnpm new-theme <id> --scheme <s> --from <closest>`
    `[pending #53]`; until then copy the closest theme's layout, re-guard
    every selector, rename every keyframe, and fill all 38 tokens.
@@ -755,8 +779,7 @@ default state) follows the same list and bumps the contract.
 Bump the contract integer; update all twelve `tokens.css`, every
 `design.md` Color table, SKILL.md, section 4.1 of this document, and any
 React JSDoc that names it. Adding a baseline token is the same list plus
-the `contract.json` (today `REQUIRED_TOKENS`) entry. #54 is the worked
-example.
+`contract.json`'s `tokens` entry. #54 is the worked example.
 
 ### 14.4 The every-surface list
 
@@ -839,10 +862,10 @@ identity paragraph and the README table.
 | Every export type-checks under `noUncheckedSideEffectImports` | `types.test.mjs` | live |
 | React prop -> class mapping, composition, passthrough | `src/*.test.tsx` | live (Button, NavRail, LinksIndex, Stepper) |
 | `transition: all` absent | review (Grep: 0) | live |
-| Contract as data (`contract.json`), SKILL.md generated, pair parity | new test + generator | pending #47 |
-| Full `REQUIRED_CLASSES` parity (every shared component's full class set) + data-driven allowlist | `contract.test.mjs` | pending #47 |
+| Contract as data (`contract.json`), SKILL.md generated, pair parity | `contract.test.mjs`, `pair-parity.test.mjs`, `scripts/generate-skill-table.mjs` | live (#47) |
+| Full `REQUIRED_CLASSES` parity (every shared component's full class set) + data-driven allowlist + closed-world "no undocumented class" check | `contract.test.mjs` | live (#47) |
 | Required class set derived from React emissions | new test | pending #48 |
-| Every shared component file exists per theme | `contract.test.mjs` | pending #47 (only button/table opened by name today) |
+| Every shared component file exists per theme | `contract.test.mjs` | live (#47) |
 | Contrast ratios for the fixed token pairs | new test | pending #49 |
 | Showcase complete (warning alert, `aria-selected`) and photographed per theme | showcase + `pnpm visual` | pending #50 |
 | Every transition reduced under `prefers-reduced-motion` | token block | pending #51 (64 of 73 files today; nine port files have none) |
@@ -852,18 +875,18 @@ identity paragraph and the README table.
 | Native `<progress>` contract in all twelve | `contract.test.mjs` | live |
 | `:focus-visible` base rule in all twelve; `a` colour divergence documented | CSS fix + test | pending #36 (4 of 12) |
 | Disabled buttons take no hover | CSS fix | pending #37 |
-| `rb-stepper` in every theme | #55 merged | live (no parity test; pending #47) |
-| `.rb-stepper--upcoming` styled or allowlisted; `[aria-current="step"]` paired | `contract.test.mjs` | pending #47 (0 of 12 today) |
+| `rb-stepper` in every theme | #55 merged | live (parity now tested via #47) |
+| `.rb-stepper--upcoming` styled or allowlisted; `[aria-current="step"]` paired | `contract.test.mjs` | allowlisted: live (#47). Paired: mechanism live, 0 of 12 themes comply yet, all temporarily exempt -- pending #65 |
 | `Dialog` spreads rest, reconciles `open` | `Dialog.test.tsx` | live (#31) |
 | `Tabs` spreads rest; controlled `activeId`/`onChange` to match `NavRail` | React fix | pending (#42 overflow, not yet filed as its own issue) |
 | `forwardRef` on every wrapper | `refs.test.tsx` | live (#30) |
-| SKILL.md matches the shipped contract | doc fix | pending #39 |
-| `design.md` counterpart and count claims true | doc fix | pending #40 |
+| SKILL.md matches the shipped contract | doc fix | partially closed by #47 (inventory table now generated + tested, extras paragraph accurate, eyebrow mis-classification fixed); roster paragraph, manifest-fonts guidance, and the add-theme recipe's missing `all.css`/`NOTICE` steps still pending #39 |
+| `design.md` counterpart and count claims true | doc fix | partially closed by #47 (the concrete pair's contradicting "baseline ten"/"twelve" claims fixed; general sweep of remaining themes pending #40) |
 | `## Accessibility` section in every `design.md` | review | 1 of 12 (rackbops-studio) |
-| `.rb-tab--active` paired with `[aria-selected="true"]` | `contract.test.mjs` | pending #47 (6 of 12) |
-| `.rb-link--active` paired with `[aria-current="page"]` | `contract.test.mjs` | pending #47 (1 of 12, summer-cloud) |
+| `.rb-tab--active` paired with `[aria-selected="true"]` | `contract.test.mjs` | mechanism live (#47), 6 of 12 comply, six temporarily exempt -- pending #65 |
+| `.rb-link--active` paired with `[aria-current="page"]` | `contract.test.mjs` | mechanism live (#47), 1 of 12 comply (summer-cloud), eleven temporarily exempt -- pending #65 |
 | Choice controls use `accent-color` | review | 7 of 12 (concrete pair by design; ports hand-styled) |
-| Dialog backdrop blurs via `var(--rb-blur)` | `contract.test.mjs` | pending #47 (8 of 12; concrete pair `0px` by design; two ports hard-code `blur(4px)`, #42) |
+| Dialog backdrop blurs via `var(--rb-blur)` | `contract.test.mjs` | mechanism live (#47), 8 of 12 comply; concrete pair permanently exempt (`0px` by design); two ports hard-code `blur(4px)`, #42, temporarily exempt -- pending #65 |
 | `Field` / `Spinner` named props types | `index.ts` exports | live (#30) |
 | Existing docs conform to the section 11 template; SKILL.md carries section 15 | doc sweep | pending #56 |
 | Extras only in labelled showcase sections | review | out of contract (issue #39) |

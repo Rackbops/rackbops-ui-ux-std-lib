@@ -85,7 +85,11 @@ Class prefix `rb-`; shared token/class contract with the other themes.
   `--ghost` chromeless. `--sm` is a compact size — tighter padding, type down
   ~1px — for inline and table-row actions. `.rb-icon-btn` is a square icon-only
   hit target (>=2rem) — pair it with `.rb-btn` (+ an optional color variant)
-  for close/edit/delete glyph buttons.
+  for close/edit/delete glyph buttons. Pair divergence: `--primary`'s
+  hover/focus-visible fill lightens toward white
+  (`color-mix(in srgb, var(--rb-accent) 88%, #fff)`); the light "Parchment"
+  counterpart's `components/button.css` darkens toward `--rb-text` instead —
+  lightening on a light ground would drop the label below AA (STANDARD.md 5.2).
 - **Card** `.rb-card` (+ `--raised`) — solid panel, hairline border, shadow-sm.
 - **NavLink** `.rb-link` — tree/sidebar row; hover fills to surface-2 and lights a
   2px accent bar on the left edge; `--active` carries the accent wash.

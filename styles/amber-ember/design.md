@@ -63,7 +63,12 @@ tokens: `.rb-btn` (+ `--primary/--accent/--danger/--ghost`, `--sm` compact size,
 `.rb-dialog`, `.rb-tabs` / `.rb-tab` / `.rb-tabpanel`, `.rb-table` (+
 `.rb-num`, `--interactive`), `.rb-progress` / `.rb-spinner` (keyframe `rb-ember-spin`), `.rb-stepper`,
 `.rb-muted`, `.rb-pre` (+ `.rb-log`). See amber-hearth's `design.md` for the per-component
-notes — the behaviour is the same; only the palette is dark.
+notes — the behaviour is the same, with one exception:
+`components/dialog.css`'s `::backdrop` scrim is its own literal
+`rgba(8, 5, 3, 0.6)` here (a heavier, near-black wash for this espresso
+ground) rather than amber-hearth's lighter `rgba(43, 31, 20, 0.4)` — both are
+permitted literal alpha overlays per STANDARD.md 4.2. Otherwise only the
+palette is dark.
 
 ## Light counterpart
 
