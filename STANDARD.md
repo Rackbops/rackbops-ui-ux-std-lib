@@ -361,7 +361,7 @@ is the `@rackbops/ui-react` export that emits the class.
 | `dialog.css` | `.rb-dialog`, `__title`, `__actions`; `__body` | `Dialog` | `__body` is a no-op in four themes that pad `.rb-dialog` instead -- sanctioned by #42's verdict, allowlisted once #47 lands (section 5.3) |
 | `tabs.css` | `.rb-tabs`, `.rb-tab`, `.rb-tab--active`, `.rb-tabpanel` | `Tabs` | SHOULD pair `--active` with `[aria-selected="true"]` (six themes do) `[pending #47]` |
 | `table.css` | `.rb-table`, `--interactive`, `.rb-num` | -- | `.rb-num` unstyled in luminous-precision and neon-butterfly `[pending #29]` |
-| `progress.css` | `.rb-progress` on a native `<progress>` (`appearance: none`, `::-webkit-progress-bar`, `::-webkit-progress-value`, `::-moz-progress-bar`); `.rb-spinner` | `Progress`, `Spinner` | Six themes style a `div.rb-progress__bar` instead, which the React `Progress` can never render `[pending #28]` |
+| `progress.css` | `.rb-progress` on a native `<progress>` (`appearance: none`, `::-webkit-progress-bar`, `::-webkit-progress-value`, `::-moz-progress-bar`); `.rb-spinner` | `Progress`, `Spinner` | |
 | `muted.css` | `.rb-muted` | -- | |
 | `pre.css` | `.rb-pre` | -- | |
 | `log.css` | `.rb-log` (pairs with `.rb-pre`) | -- | |
@@ -417,10 +417,9 @@ Extras shipping today: `.rb-wordmark` (+ `__spark`), `.rb-tabstrip` (+
 also in the studio pair; `.rb-rack` (+ `__top`, `__live`, `__bars`,
 `__foot`), `.rb-principles`, `.rb-principle` (+ `__n`, `__body`), `.rb-tags`,
 `.rb-tag`, `.rb-card__tag`, `.rb-btn__arrow` -- studio pair;
-`.rb-badge--primary`, `.rb-bg`, `.rb-progress__bar--accent` -- the three
+`.rb-badge--primary`, `.rb-bg`, `.rb-progress--accent` -- the three
 ports; `.rb-chip` (+ `--selected`), `.rb-card--floating` -- summer-cloud.
-(`.rb-progress__bar` itself in six themes is the #28 contract split, not an
-extra.) `.rb-eyebrow` is in four themes, not the shared set, despite being
+`.rb-eyebrow` is in four themes, not the shared set, despite being
 listed as shared in SKILL.md and rendered unlabelled in the showcase
 (issue #39).
 
@@ -843,7 +842,7 @@ identity paragraph and the README table.
 | Shared structural base; per-theme `bundle.css` | CSS + build | pending #52 |
 | `pnpm new-theme` scaffold | script | pending #53 |
 | `--rb-focus-ring`, `--rb-ease` baseline; contract 2 | contract bump | pending #54 |
-| Native `<progress>` contract in all twelve | CSS fix | pending #28 |
+| Native `<progress>` contract in all twelve | `contract.test.mjs` | live |
 | `:focus-visible` base rule in all twelve; `a` colour divergence documented | CSS fix + test | pending #36 (4 of 12) |
 | Disabled buttons take no hover | CSS fix | pending #37 |
 | `rb-stepper` in every theme | #55 merged | live (no parity test; pending #29 / #47) |

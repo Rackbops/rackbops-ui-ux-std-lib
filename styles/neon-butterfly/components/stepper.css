@@ -12,7 +12,8 @@
  * A segment fills once its OWN step is reached (complete or current) -- the
  * same state class already on the <li>, not a second progress mechanism.
  * Elevation here is glow, not shadow: a filled segment and the current node
- * both take the same accent-glow box-shadow .rb-progress__bar already uses. */
+ * both take the same accent-glow box-shadow .rb-progress's value fill already
+ * uses. */
 :where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-stepper {
   display: flex;
   isolation: isolate;

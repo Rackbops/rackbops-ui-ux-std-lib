@@ -3,6 +3,7 @@
  * no glow. The spinner keeps the theme's zero-radius signature: a square
  * rotating frame rather than a soft circular arc. */
 :where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-progress {
+  appearance: none;
   display: block;
   width: 100%;
   height: 0.5rem;
@@ -11,10 +12,14 @@
   border-radius: var(--rb-radius);
   overflow: hidden;
 }
-:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-progress__bar {
-  height: 100%;
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-progress::-webkit-progress-bar {
+  background: var(--rb-surface-sunken);
+}
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-progress::-webkit-progress-value {
   background: var(--rb-accent);
-  transition: width var(--rb-transition);
+}
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-progress::-moz-progress-bar {
+  background: var(--rb-accent);
 }
 
 :where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-spinner {
@@ -33,9 +38,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-progress__bar {
-    transition: none;
-  }
   :where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-spinner {
     animation-duration: 2s;
   }

@@ -1,5 +1,6 @@
 /* summer-cloud — progress bar & spinner: glowing violet indicators */
 :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-progress {
+  appearance: none;
   display: block;
   width: 100%;
   height: 0.5rem;
@@ -7,14 +8,22 @@
   border-radius: var(--rb-radius-pill);
   overflow: hidden;
 }
-:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-progress__bar {
-  height: 100%;
-  background: var(--rb-accent);
-  border-radius: var(--rb-radius-pill);
-  box-shadow: 0 0 10px rgba(69, 0, 217, 0.5);
-  transition: width var(--rb-transition);
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-progress::-webkit-progress-bar {
+  background: var(--rb-bg-blend);
 }
-:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-progress__bar--accent {
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-progress::-webkit-progress-value {
+  background: var(--rb-accent);
+  box-shadow: 0 0 10px rgba(69, 0, 217, 0.5);
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-progress::-moz-progress-bar {
+  background: var(--rb-accent);
+  box-shadow: 0 0 10px rgba(69, 0, 217, 0.5);
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-progress--accent::-webkit-progress-value {
+  background: var(--rb-accent-2);
+  box-shadow: 0 0 10px rgba(12, 179, 255, 0.5);
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-progress--accent::-moz-progress-bar {
   background: var(--rb-accent-2);
   box-shadow: 0 0 10px rgba(12, 179, 255, 0.5);
 }
@@ -36,8 +45,5 @@
 @media (prefers-reduced-motion: reduce) {
   :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-spinner {
     animation-duration: 2s;
-  }
-  :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-progress__bar {
-    transition: none;
   }
 }

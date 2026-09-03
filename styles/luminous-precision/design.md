@@ -120,7 +120,7 @@ Class prefix `rb-` (shared token/class contract with the other themes).
   `--current` / `--upcoming`) — a milestone rail: complete nodes solid accent
   with a checkmark, current a surface-fill ring with an accent border, both
   the rail fill and the current node glowing with the same `--rb-accent-glow` box-shadow
-  `.rb-progress__bar` uses. Upcoming reads faint surface-2; rail track is
+  `.rb-progress`'s value fill uses. Upcoming reads faint surface-2; rail track is
   `surface-sunken`, and each connector segment picks up that same glow once
   its own step is reached (complete or current) -- no separate progress
   value to keep in sync with the step states.
