@@ -82,7 +82,10 @@ case "\${1:-} \${2:-}" in
       if [[ "\$prev" == "--notes-file" ]]; then notes_file="\$arg"; fi
       prev="\$arg"
     done
-    if [[ -n "\$notes_file" ]]; then cp "\$notes_file" "$state/last-notes"; fi
+    if [[ -n "\$notes_file" ]]; then
+      cp "\$notes_file" "$state/last-notes"
+      cp "\$notes_file" "$state/notes-\$tag"
+    fi
     if [[ -f "$state/fail-create-once" ]]; then
       rm -f "$state/fail-create-once"
       exit 1
@@ -284,7 +287,7 @@ test("scenario (b): tag pushed, release create failed once -- resumes without re
 
   const second = runRelease(repo);
   assert.equal(second.status, 0, second.stdout + second.stderr);
-  assert.match(second.stdout, /Resuming v0\.1\.1: tag exists, no GitHub release yet/);
+  assert.match(second.stdout, /Tag v0\.1\.1 has no GitHub release yet — backfilling it first\./);
   assert.ok(existsSync(join(repo.ghDir, "releases", "v0.1.1")));
 
   // Exactly one tag, one bump commit, two release-create attempts (the
@@ -298,6 +301,48 @@ test("scenario (b): tag pushed, release create failed once -- resumes without re
   assert.equal(calls(repo).filter((c) => c.startsWith("release create")).length, 2);
 });
 
+test("scenario (b), with a new commit landing before the retry, not an immediate rerun -- still backfills the stranded release", (t) => {
+  // The gap a plain "is HEAD our own bump commit" check can't see: once a
+  // genuinely new commit lands, HEAD moves past the stuck release entirely,
+  // so that check alone would treat the already-tagged version as the new
+  // base and move on -- stranding v0.1.1's release for good even though
+  // v0.1.1 (and now v0.1.2) both already reached npm via their tag pushes.
+  const repo = makeRepo(t);
+  addUnreleasedCommit(repo);
+  writeFileSync(join(repo.ghDir, "fail-create-once"), "");
+
+  const first = runRelease(repo);
+  assert.notEqual(first.status, 0, "gh release create should genuinely fail the first time");
+  assert.ok(tagExistsOnOrigin(repo, "v0.1.1"), "the tag push itself succeeded before the failure");
+
+  // A new, unrelated commit lands -- not a retry of the same HEAD.
+  writeFileSync(join(repo.repoDir, "styles", "CHANGE2.txt"), "another fix\n");
+  repo.run(["add", "."]);
+  repo.run(["commit", "-m", "fix(styles): something else"]);
+
+  const second = runRelease(repo);
+  assert.equal(second.status, 0, second.stdout + second.stderr);
+  assert.match(second.stdout, /Tag v0\.1\.1 has no GitHub release yet — backfilling it first\./);
+  assert.ok(existsSync(join(repo.ghDir, "releases", "v0.1.1")), "v0.1.1's release was backfilled");
+
+  // The new commit is also genuinely unreleased work, so this same run
+  // additionally cuts v0.1.2 for it -- both happen in one invocation.
+  assert.match(second.stdout, /Version: 0\.1\.1 -> 0\.1\.2/);
+  assert.ok(tagExistsOnOrigin(repo, "v0.1.2"));
+  assert.ok(existsSync(join(repo.ghDir, "releases", "v0.1.2")), "v0.1.2 was also released");
+
+  // Each tag's changelog reflects only its own commit, not the other's --
+  // the backfill range and the new-release range must not bleed together.
+  const notesV1 = readFileSync(join(repo.ghDir, "notes-v0.1.1"), "utf-8");
+  assert.match(notesV1, /something(?! else)/);
+  assert.doesNotMatch(notesV1, /something else/);
+  const notesV2 = readFileSync(join(repo.ghDir, "notes-v0.1.2"), "utf-8");
+  assert.match(notesV2, /something else/);
+
+  const pkg = JSON.parse(readFileSync(join(repo.repoDir, "styles", "package.json"), "utf-8"));
+  assert.equal(pkg.version, "0.1.2", "no double bump past the genuinely new version");
+});
+
 test("idle: already fully released -- exits cleanly without creating a second release", (t) => {
   const repo = makeRepo(t);
   addUnreleasedCommit(repo);
@@ -307,7 +352,8 @@ test("idle: already fully released -- exits cleanly without creating a second re
 
   const second = runRelease(repo);
   assert.equal(second.status, 0, second.stdout);
-  assert.match(second.stdout, /Already released v0\.1\.1\. Nothing to do\./);
+  assert.match(second.stdout, /No unreleased package changes since v0\.1\.1\. Nothing to do\./);
+  assert.doesNotMatch(second.stdout, /backfilling/, "the existing release must not be recreated");
   assert.equal(
     calls(repo).filter((c) => c.startsWith("release create")).length,
     callsAfterFirst,
