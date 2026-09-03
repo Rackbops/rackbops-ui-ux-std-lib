@@ -555,9 +555,9 @@ Transitions and animations:
   (mono-field, `styles/mono-field/design.md:7-9`; the amber pair). A
   departure within a theme is allowed only when stated: arcane's table
   header is body-sans normal case while its badge is mono uppercase
-  (`styles/arcane-obsidian/components/table.css:9-15`, `badge.css:10-14`),
-  but `styles/arcane-obsidian/design.md:52` claims mono uppercase for
-  table headers -- a fidelity defect, noted on #40. The studio badge is
+  (`styles/arcane-obsidian/components/table.css:9-15`, `badge.css:10-14`;
+  stated in `design.md:52-54`, and in `arcane-parchment/design.md` for its
+  counterpart -- fixed per #40). The studio badge is
   mono but not uppercase (`rackbops-studio/components/badge.css:11`);
   summer-cloud's form label is body font, normal case (`form.css:13`).
 - **Numerals.** Data that aligns in columns uses tabular numerals: `.rb-num`
@@ -880,7 +880,7 @@ identity paragraph and the README table.
 | `Tabs` spreads rest; controlled `activeId`/`onChange` to match `NavRail` | React fix | pending (#42 overflow, not yet filed as its own issue) |
 | `forwardRef` on every wrapper | `refs.test.tsx` | live (#30) |
 | SKILL.md matches the shipped contract | doc fix | partially closed by #47 (inventory table now generated + tested, extras paragraph accurate, eyebrow mis-classification fixed); roster paragraph, manifest-fonts guidance, and the add-theme recipe's missing `all.css`/`NOTICE` steps still pending #39 |
-| `design.md` counterpart and count claims true | doc fix | partially closed by #47 (the concrete pair's contradicting "baseline ten"/"twelve" claims fixed; general sweep of remaining themes pending #40) |
+| `design.md` counterpart and count claims true | doc fix | live (#47, #40 -- counterpart-shipped and stale-count claims fixed repo-wide) |
 | `## Accessibility` section in every `design.md` | review | 1 of 12 (rackbops-studio) |
 | `.rb-tab--active` paired with `[aria-selected="true"]` | `contract.test.mjs` | mechanism live (#47), 6 of 12 comply, six temporarily exempt -- pending #65 |
 | `.rb-link--active` paired with `[aria-current="page"]` | `contract.test.mjs` | mechanism live (#47), 1 of 12 comply (summer-cloud), eleven temporarily exempt -- pending #65 |

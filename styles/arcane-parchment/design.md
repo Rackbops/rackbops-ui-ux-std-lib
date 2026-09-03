@@ -45,7 +45,9 @@ hues appear. Muted-on-surface is tuned to clear WCAG AA (4.5:1) on every surface
 
 Identical to arcane-obsidian: monospace display voice (the wordmark, weight 600,
 tracking `-0.01em`) over a `system-ui` body (weight 400); `tabular-nums` wherever
-data is shown; mono uppercase labels tracked `0.06em`. Bare `h1`-`h6`/`p`/`ul`/`ol`
+data is shown; mono uppercase labels tracked `0.06em` (table headers are the
+one stated departure — body-sans, normal case, `components/table.css:9-15`).
+Bare `h1`-`h6`/`p`/`ul`/`ol`
 get the same treatment as arcane-obsidian too: unclassed headlines carry that
 same mono voice with `--rb-space-3` margin, and bare `ul`/`ol` add
 `--rb-space-4` marker indent with real disc/decimal markers.

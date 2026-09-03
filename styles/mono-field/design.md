@@ -87,8 +87,10 @@ and the accent itself is spent sparingly — never for decoration.
 
 ## Components
 
-Class prefix `rb-`; shared token/class contract with the other themes. Only
-the baseline ten — no theme extras.
+Class prefix `rb-`; shared token/class contract with the other themes (the
+full required set is `styles/contract.json` / STANDARD.md 5.1 — not restated
+as a count here, since that count has drifted before) — no theme-specific
+extras.
 
 - **Button** `.rb-btn` — plain bordered ghost on white by default;
   `--primary` is the one solid accent fill (barely-there shadow lift on

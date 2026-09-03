@@ -167,8 +167,8 @@ Class prefix `rb-`; shared token/class contract with the other themes.
 
 ## Dark counterpart
 
-The dark mode rackbops.com toggles into. Not shipped as a separate theme yet;
-documented so it can become one additively.
+The dark mode rackbops.com toggles into, shipped as its own theme:
+`rackbops-noir` (`styles/rackbops-noir/design.md`).
 
 | Role | Value |
 | --- | --- |
