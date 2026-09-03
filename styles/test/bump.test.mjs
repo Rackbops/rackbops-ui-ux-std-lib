@@ -3,6 +3,7 @@
 // styles/ is the repo's single test entrypoint.
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { test } from "node:test";
 import { fileURLToPath } from "node:url";
@@ -11,9 +12,16 @@ const SCRIPT = resolve(
   fileURLToPath(import.meta.url),
   "../../../.github/scripts/next-version.sh"
 );
+// Handed to bash as a -c string (never opened by path) so this doesn't care
+// which bash ends up on PATH -- e.g. on Windows, PowerShell can resolve
+// `bash` to the WSL App-Execution-alias stub, which can't translate a native
+// Windows path (see issue #35).
+const SCRIPT_SRC = readFileSync(SCRIPT, "utf8");
 
 function next(current, messages) {
-  return execFileSync("bash", [SCRIPT, current], { input: messages }).toString().trim();
+  return execFileSync("bash", ["-c", SCRIPT_SRC, "next-version.sh", current], { input: messages })
+    .toString()
+    .trim();
 }
 
 test("plain commits bump the patch", () => {
@@ -43,5 +51,12 @@ test("mixed log: one breaking commit is enough", () => {
 });
 
 test("rejects malformed versions", () => {
-  assert.throws(() => next("1.2", "fix: x"));
+  assert.throws(
+    () => next("1.2", "fix: x"),
+    (err) => {
+      assert.match(err.stderr.toString(), /unexpected version format/);
+      assert.equal(err.stdout.toString(), "");
+      return true;
+    }
+  );
 });
