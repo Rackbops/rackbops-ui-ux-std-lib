@@ -2,9 +2,9 @@
 # .github/scripts/release.sh
 #
 # Cut a release when publishable code changed since the last v* tag:
-#   1. Detect commits since the last release tag that touch styles/ or
-#      components/ (excluding docs) — site, skills, and CI changes don't
-#      warrant a package release.
+#   1. Detect commits since the last release tag that touch what each
+#      package actually ships (see PATHSPEC below) — site, skills, CI, and
+#      non-shipped test/config changes don't warrant a package release.
 #   2. Bump the version in both package.json files (kept in lockstep).
 #   3. Generate a changelog grouped by conventional-commit type.
 #   4. Commit the bump, tag vX.Y.Z, and create the GitHub release.
@@ -25,9 +25,25 @@ set -euo pipefail
 # Files that carry the release version, bumped in lockstep.
 VERSION_FILES=(styles/package.json components/react/package.json)
 
-# Only commits touching these paths (minus markdown docs) trigger a release
-# and appear in the changelog.
-PATHSPEC=(styles/ components/ ":(exclude,glob)styles/**/*.md" ":(exclude,glob)components/**/*.md")
+# Only commits touching what each package actually ships trigger a release
+# and appear in the changelog (issue #34):
+#  - styles/ ships whole theme directories -- design.md included -- plus its
+#    root manifest files (styles/package.json's "files"); styles/test/ isn't
+#    shipped.
+#  - components/react ships `dist`, built from `src/` (tsconfig.json's
+#    rootDir). `dist` itself is gitignored and can't be a git pathspec, so
+#    `src/` stands in for it, plus package.json (the published manifest --
+#    its "exports"/"peerDependencies" are shipped-relevant). Test files under
+#    src/ (tsconfig.build.json's excludes) aren't shipped.
+PATHSPEC=(
+  styles/
+  ":(exclude)styles/test/"
+  components/react/src/
+  components/react/package.json
+  ":(exclude,glob)components/react/src/**/*.test.ts"
+  ":(exclude,glob)components/react/src/**/*.test.tsx"
+  ":(exclude)components/react/src/test-dom.ts"
+)
 
 # Matches this script's own bump commit subject ("chore(release): vX.Y.Z"),
 # excluded from both the unreleased-change check and the changelog so a
