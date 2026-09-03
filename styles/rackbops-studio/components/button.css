@@ -41,7 +41,7 @@
 }
 :where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn--primary {
   background: var(--rb-text);
-  color: #f4f7f9;
+  color: var(--rb-bg);
 }
 :where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn--primary:hover,
 :where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn--primary:focus-visible {
@@ -54,7 +54,7 @@
 }
 :where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn--accent:hover,
 :where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn--accent:focus-visible {
-  background: #c93c1c;
+  background: color-mix(in srgb, var(--rb-accent), var(--rb-text) 15%);
 }
 :where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn--ghost {
   background: transparent;

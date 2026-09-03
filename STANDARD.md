@@ -399,12 +399,11 @@ A light/dark pair MUST ship an identical component set: the two
 `components/` directories are byte-identical after normalising the guard
 string and theme-specific keyframe names, or the differing file is named in
 both `design.md`s `[tested: styles/test/pair-parity.test.mjs]`. Comments are
-stripped before comparing (editorial voice, not behaviour); five files across
+stripped before comparing (editorial voice, not behaviour); four files across
 the four pairs currently diverge beyond palette (an AA-tuned hover formula, a
 local `--rb-rack-panel`/`--rb-rack-line` custom-property pair tuned per
-theme, two pre-existing literal-colour buttons pending cleanup, an SVG icon
-colour that can't take a token, and a per-theme backdrop scrim alpha) and are
-named in both sides' `design.md` as required here.
+theme, an SVG icon colour that can't take a token, and a per-theme backdrop
+scrim alpha) and are named in both sides' `design.md` as required here.
 
 ### 5.3 Documented omissions
 
