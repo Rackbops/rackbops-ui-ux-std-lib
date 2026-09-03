@@ -33,6 +33,15 @@ const RELEASE_SCRIPT = resolve(
   fileURLToPath(import.meta.url),
   "../../../.github/scripts/release.sh"
 );
+// Fed to `bash -s` over stdin (never opened by path, never passed as a -c
+// argv string) so this doesn't care which bash ends up on PATH -- e.g. on
+// Windows, PowerShell can resolve `bash` to the WSL App-Execution-alias stub,
+// which can't translate a native Windows path (see issue #35) -- and doesn't
+// depend on Node's Windows argv escaping surviving a script this size: a
+// giant multi-line `-c` argument was observed to come through corrupted
+// (spurious "unexpected EOF" quote errors) even though the identical text
+// runs fine as a real file or through a real shell's own `-c`.
+const RELEASE_SCRIPT_SRC = readFileSync(RELEASE_SCRIPT, "utf8");
 const NEXT_VERSION_SCRIPT = resolve(
   fileURLToPath(import.meta.url),
   "../../../.github/scripts/next-version.sh"
@@ -172,9 +181,10 @@ function bumpCommitAndPush(repo, newVersion) {
 
 function runRelease(repo) {
   try {
-    const stdout = execFileSync("bash", [RELEASE_SCRIPT], {
+    const stdout = execFileSync("bash", ["-s"], {
       cwd: repo.repoDir,
       env: repo.env,
+      input: RELEASE_SCRIPT_SRC,
     }).toString();
     return { status: 0, stdout };
   } catch (err) {
