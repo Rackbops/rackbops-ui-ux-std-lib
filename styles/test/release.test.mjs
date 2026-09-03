@@ -9,6 +9,18 @@
 // what it was called with and can be told to fail once, to reproduce both
 // failure shapes from the issue for real rather than asserting against the
 // script's source text.
+//
+// DANGER, learned the hard way: release.sh has no self-check on which repo
+// it's operating on -- it just runs `git`/`gh` against whatever directory it
+// was invoked from. Every real invocation below goes through runRelease(),
+// which passes an explicit `cwd: repo.repoDir` to execFileSync -- never a
+// bare shell `bash release.sh` after a `cd`. If you're reproducing something
+// from this file by hand (ad hoc, outside these helpers), do the same:
+// pass an explicit working directory to every invocation, don't rely on
+// having `cd`-ed there first. Running this script against a real checkout of
+// this actual repo pushes real commits and tags to the real origin and can
+// trigger a real npm publish via publish.yml -- this happened once, by
+// accident, during this file's own review.
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
