@@ -2,6 +2,7 @@
  * Sunken trough with a solid accent fill — no gradient here, it stays
  * rationed to the tabs underline only. */
 :where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-progress {
+  appearance: none;
   display: block;
   width: 100%;
   height: 0.5rem;
@@ -9,11 +10,14 @@
   border-radius: var(--rb-radius-pill);
   overflow: hidden;
 }
-:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-progress__bar {
-  height: 100%;
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-progress::-webkit-progress-bar {
+  background: var(--rb-surface-sunken);
+}
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-progress::-webkit-progress-value {
   background: var(--rb-accent);
-  border-radius: var(--rb-radius-pill);
-  transition: width var(--rb-transition);
+}
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-progress::-moz-progress-bar {
+  background: var(--rb-accent);
 }
 
 :where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-spinner {
@@ -34,8 +38,5 @@
 @media (prefers-reduced-motion: reduce) {
   :where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-spinner {
     animation-duration: 2s;
-  }
-  :where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-progress__bar {
-    transition: none;
   }
 }

@@ -125,7 +125,7 @@ the baseline ten — no theme extras.
   `--interactive` marks clickable rows: pointer cursor, plus a focus-visible
   ring (and the surface-2 wash) for a `tabindex` row or a row-wrapping
   button/link.
-- **Progress / Spinner** `.rb-progress` (+ `__bar`) / `.rb-spinner` — sunken
+- **Progress / Spinner** `.rb-progress` / `.rb-spinner` — sunken
   trough, solid accent fill (no gradient here — that stays rationed to tabs
   only).
 - **Stepper** `.rb-stepper` (+ `__step` / `__node` / `__label`, `--complete` /

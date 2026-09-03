@@ -13,7 +13,7 @@
  * same state class already on the <li>, not a second progress mechanism.
  * Unfilled track is --rb-bg-blend (the same token .rb-progress already uses
  * for its trough); a filled segment glows with --rb-accent-glow at the same
- * 10px blur .rb-progress__bar uses. The current node's lift is
+ * 10px blur .rb-progress's value fill uses. The current node's lift is
  * --rb-shadow-raised -- "nothing sits flat on the page". */
 :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-stepper {
   display: flex;

@@ -244,6 +244,28 @@ test("every theme's table.css declares a guarded .rb-table--interactive variant"
   }
 });
 
+test("every theme's progress.css styles the native <progress> pseudo-elements, not a .rb-progress__bar div", () => {
+  // The progress contract is native <progress> (both the React Progress and
+  // the showcase render one) styled via ::-webkit-progress-value /
+  // ::-moz-progress-bar -- never a div child, which can never appear inside
+  // a native <progress> and so silently loses its accent fill under every
+  // consumer (issue #28).
+  for (const theme of themeDirs) {
+    const file = join(ROOT, theme, "components", "progress.css");
+    const { selectors } = parseCss(readFileSync(file, "utf-8"));
+    const guard = `[data-rb-style="${theme}"]`;
+    const barDiv = selectors.filter((s) => /\.rb-progress__bar/.test(s));
+    assert.deepEqual(barDiv, [], `${theme}: progress.css still styles a .rb-progress__bar div`);
+    const webkitValue = selectors.filter((s) => /\.rb-progress::-webkit-progress-value(?![\w-])/.test(s));
+    const mozBar = selectors.filter((s) => /\.rb-progress::-moz-progress-bar(?![\w-])/.test(s));
+    assert.ok(webkitValue.length > 0, `${theme}: progress.css is missing a ::-webkit-progress-value rule`);
+    assert.ok(mozBar.length > 0, `${theme}: progress.css is missing a ::-moz-progress-bar rule`);
+    for (const sel of [...webkitValue, ...mozBar]) {
+      assert.ok(sel.includes(guard), `${theme}: unguarded progress fill selector: ${sel}`);
+    }
+  }
+});
+
 test("keyframe names are rb-prefixed and unique across all themes", () => {
   const seen = new Map();
   for (const theme of themeDirs) {

@@ -148,7 +148,7 @@ theme-agnostic). Variants use BEM-ish modifiers (`rb-btn--primary`).
   `--rb-shadow-raised` ("nothing sits flat on the page"), upcoming faint
   surface-2. Rail track is `--rb-bg-blend` (the same token `.rb-progress`
   itself uses); each connector segment glows with `--rb-accent-glow` at the
-  same 10px blur `.rb-progress__bar` uses once its own step is reached
+  same 10px blur `.rb-progress`'s value fill uses once its own step is reached
   (complete or current) -- no separate progress value to keep in sync with
   the step states.
 - **Muted text** `.rb-muted` — faint secondary/empty-state text;
