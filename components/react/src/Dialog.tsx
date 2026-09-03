@@ -1,7 +1,15 @@
-import { useEffect, useId, useRef, type ReactNode } from "react";
+import {
+  forwardRef,
+  useEffect,
+  useId,
+  useRef,
+  type ReactNode,
+  type Ref,
+  type RefAttributes,
+} from "react";
 import { cx } from "./cx.js";
 
-export interface DialogProps {
+export interface DialogProps extends RefAttributes<HTMLDialogElement> {
   open: boolean;
   onClose?: () => void;
   title?: ReactNode;
@@ -10,13 +18,27 @@ export interface DialogProps {
   className?: string;
 }
 
+/** Combines an internal ref this component needs with a consumer-supplied one,
+ * so both end up pointing at the same DOM node. */
+function mergeRefs<T>(...refs: Array<Ref<T> | undefined>) {
+  return (node: T | null) => {
+    for (const ref of refs) {
+      if (typeof ref === "function") ref(node);
+      else if (ref) (ref as { current: T | null }).current = node;
+    }
+  };
+}
+
 /** A native <dialog> driven by the `open` prop (showModal/close). */
-export function Dialog({ open, onClose, title, actions, children, className }: DialogProps) {
-  const ref = useRef<HTMLDialogElement>(null);
+export const Dialog = forwardRef<HTMLDialogElement, DialogProps>(function Dialog(
+  { open, onClose, title, actions, children, className },
+  forwardedRef,
+) {
+  const internalRef = useRef<HTMLDialogElement>(null);
   const titleId = useId();
 
   useEffect(() => {
-    const el = ref.current;
+    const el = internalRef.current;
     if (!el) return;
     if (open && !el.open) el.showModal();
     else if (!open && el.open) el.close();
@@ -24,7 +46,7 @@ export function Dialog({ open, onClose, title, actions, children, className }: D
 
   return (
     <dialog
-      ref={ref}
+      ref={mergeRefs(internalRef, forwardedRef)}
       className={cx("rb-dialog", className)}
       onClose={onClose}
       aria-labelledby={title !== undefined ? titleId : undefined}
@@ -40,4 +62,5 @@ export function Dialog({ open, onClose, title, actions, children, className }: D
       {actions !== undefined && <div className="rb-dialog__actions">{actions}</div>}
     </dialog>
   );
-}
+});
+Dialog.displayName = "Dialog";

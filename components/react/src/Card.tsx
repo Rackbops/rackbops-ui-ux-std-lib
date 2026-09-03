@@ -1,7 +1,7 @@
-import type { HTMLAttributes } from "react";
+import { forwardRef, type HTMLAttributes, type RefAttributes } from "react";
 import { cx } from "./cx.js";
 
-export interface CardProps extends HTMLAttributes<HTMLDivElement> {
+export interface CardProps extends HTMLAttributes<HTMLDivElement>, RefAttributes<HTMLDivElement> {
   /**
    * Raised elevation (.rb-card--raised). Falls back to the base card in the
    * three nazuraki ports: luminous-precision and neon-butterfly have no
@@ -12,6 +12,12 @@ export interface CardProps extends HTMLAttributes<HTMLDivElement> {
   raised?: boolean;
 }
 
-export function Card({ raised, className, ...rest }: CardProps) {
-  return <div className={cx("rb-card", raised && "rb-card--raised", className)} {...rest} />;
-}
+export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
+  { raised, className, ...rest },
+  ref,
+) {
+  return (
+    <div ref={ref} className={cx("rb-card", raised && "rb-card--raised", className)} {...rest} />
+  );
+});
+Card.displayName = "Card";
