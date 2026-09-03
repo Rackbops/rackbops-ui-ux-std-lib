@@ -91,13 +91,16 @@ Class prefix `rb-` (shared token/class contract with the other themes).
 
 - **Card** `.rb-card` — glass pane, 1rem radius, lit top edge.
 - **NavLink** `.rb-link` — glass list row; hover shifts to solid indigo and
-  lights a 2px teal bar on the left edge.
+  lights a 2px teal bar on the left edge; `--active` applies that same
+  treatment at rest, for the current route.
 - **Nav rail** `.rb-nav-rail` — the sidebar container: 14rem fixed-width flex
   column, the same glass panel + blur as `.rb-card`, a hairline right edge.
   Composes with `.rb-link` for items; introduces no active-state convention
   of its own.
-- **Button** `.rb-btn` — ghost by default; `--primary` is the one solid fill
-  (orchid, dark text), `--accent` teal ghost, `--danger` rose ghost. `--sm` is
+- **Button** `.rb-btn` — border-only by default (already reads ghost-like);
+  `--primary` is the one solid fill (orchid, dark text), `--accent` teal
+  ghost, `--danger` rose ghost, `--ghost` drops the border entirely until
+  hover reveals a surface fill — the lowest-emphasis tier. `--sm` is
   the compact size for inline and table-row actions. `.rb-icon-btn` is a
   square icon-only hit target (>=2rem), paired with `.rb-btn`.
 - **Form** `.rb-input`, `.rb-textarea`, `.rb-select`, `.rb-label`,
@@ -110,7 +113,7 @@ Class prefix `rb-` (shared token/class contract with the other themes).
   Sora title, blurred obsidian backdrop.
 - **Tabs** `.rb-tabs`/`.rb-tab`/`.rb-tabpanel` — active tab underlined in
   teal with text glow.
-- **Table** `.rb-table` — lit header rule; row hover shifts glass and lights
+- **Table** `.rb-table` (+ `.rb-num`) — lit header rule; row hover shifts glass and lights
   the teal left bar. `--interactive` marks clickable rows: pointer cursor,
   plus a focus-visible ring (and the same glass/teal-bar wash) for a
   `tabindex` row or a row-wrapping button/link.
@@ -134,10 +137,13 @@ Class prefix `rb-` (shared token/class contract with the other themes).
   scroll, and roomier line-height for dense text.
 
 This port carries nazuraki's original component set; the rackbops-specific
-`eyebrow`, `tabstrip`, `wordmark`, and `card--raised` surfaces are not part of
-it. It also keeps nazuraki's `.rb-badge--primary` variant (orchid pill), which
-the other rackbops themes don't define — a `@rackbops/ui-react` `Badge` never
-emits it, so it is a theme extra, harmless where unused.
+`eyebrow`, `tabstrip`, and `wordmark` surfaces are not part of it.
+`.rb-card--raised` is also absent: nazuraki's own card never had a second
+elevation tier, so the port doesn't invent one — `Card raised` is a
+documented no-op here (see `contract.test.mjs`'s allowlist). It also keeps
+nazuraki's `.rb-badge--primary` variant (orchid pill), which the other
+rackbops themes don't define — a `@rackbops/ui-react` `Badge` never emits it,
+so it is a theme extra, harmless where unused.
 
 ## Code syntax
 

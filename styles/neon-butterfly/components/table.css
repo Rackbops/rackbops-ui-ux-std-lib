@@ -19,6 +19,10 @@
   padding: var(--rb-space-2) var(--rb-space-3);
   border-bottom: 1px solid var(--rb-border);
 }
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-table .rb-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
 :where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-table tbody tr {
   transition: background var(--rb-transition);
 }

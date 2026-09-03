@@ -52,6 +52,17 @@
   border-color: var(--rb-danger);
   color: var(--rb-danger);
 }
+/* ghost: minimal-emphasis variant — no border/fill until hover reveals the glass surface */
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-btn--ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--rb-text-soft);
+}
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-btn--ghost:hover,
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-btn--ghost:focus-visible {
+  background: var(--rb-surface-glass);
+}
+
 :where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;

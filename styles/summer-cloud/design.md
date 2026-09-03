@@ -163,8 +163,12 @@ theme-agnostic). Variants use BEM-ish modifiers (`rb-btn--primary`).
   scroll, and roomier line-height for dense text.
 
 This port carries nazuraki's original component set (plus its `.rb-chip` and
-`.rb-card--floating` extras); the rackbops-specific `eyebrow`, `tabstrip`,
-`wordmark`, and `card--raised` surfaces are not part of it.
+`.rb-card--floating` extras); the rackbops-specific `eyebrow`, `tabstrip`, and
+`wordmark` surfaces are not part of it. `.rb-card--raised` is also absent:
+nazuraki's own card never had a second elevation tier either (`--floating` is
+its closest analog, and that's already carried over), so the port doesn't
+invent a separate `--raised` — `Card raised` is a documented no-op here (see
+`contract.test.mjs`'s allowlist).
 
 ## Deviations from the Stitch source
 

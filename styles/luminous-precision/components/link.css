@@ -28,6 +28,14 @@
     inset 2px 0 0 0 var(--rb-accent-2),
     0 0 12px var(--rb-accent-2-glow);
 }
+/* --active: the current route, styled as the resting version of :hover */
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-link--active {
+  background: var(--rb-surface);
+  color: var(--rb-accent-2);
+  box-shadow:
+    inset 2px 0 0 0 var(--rb-accent-2),
+    0 0 12px var(--rb-accent-2-glow);
+}
 
 @keyframes rb-lp-pulse-glow {
   0%,
