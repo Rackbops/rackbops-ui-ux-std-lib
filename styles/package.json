@@ -1,6 +1,6 @@
 {
   "name": "@rackbops/styles",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Rackbops design-system styles: tokens, base styles, and component classes per theme.",
   "license": "MIT",
   "repository": {
