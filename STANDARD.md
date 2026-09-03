@@ -303,8 +303,7 @@ is one more thing twelve themes must declare and document.
   blurs with `var(--rb-blur)`, not a literal. Checked by `contract.test.mjs`
   against `contract.json`'s `dialogBackdropBlur` (the concrete pair is
   permanently exempt -- no blur/glass anywhere in that theme, by design);
-  two ports still hard-code `blur(4px)` today (#42) and are temporarily
-  exempt `[pending #65]`.
+  every other theme complies `[tested]`.
 
 ### 4.3 Extras
 
@@ -361,19 +360,19 @@ extras), so an undocumented class fails too]`. The React column is the
 | --- | --- | --- | --- |
 | `button.css` | `.rb-btn`, `--primary`, `--accent`, `--danger`, `--ghost`, `--sm`, `:disabled`; `.rb-icon-btn` | `Button` | disabled buttons still take `:hover` in all twelve `[pending #37]` |
 | `card.css` | `.rb-card`, `--raised` | `Card` | `--raised` is a documented no-op in the three nazuraki ports (section 5.3, `contract.test.mjs`'s `CLASS_ALLOWLIST`): luminous-precision and neon-butterfly have no second elevation tier upstream at all; summer-cloud's upstream second tier is `--floating`, already carried over, so the port doesn't also add a near-duplicate `--raised` |
-| `link.css` | `.rb-link`, `--active` | `NavLink` | SHOULD also match `[aria-current="page"]`; checked by `contract.test.mjs` against `contract.json`'s `ariaPairs` (one theme does, eleven temporarily exempt) `[pending #65]` |
+| `link.css` | `.rb-link`, `--active` | `NavLink` | SHOULD also match `[aria-current="page"]`; checked by `contract.test.mjs` against `contract.json`'s `ariaPairs`, all twelve comply `[tested]` |
 | `nav-rail.css` | `.rb-nav-rail` | `NavRail` | Composes `.rb-link`; owns no active convention |
 | `form.css` | `.rb-field`, `.rb-label`, `.rb-input`, `.rb-textarea`, `.rb-select`, `.rb-choice`, `.rb-checkbox`, `.rb-radio`, `.rb-switch` | `Field`, `Label`, `Input`, `Textarea`, `Select`, `Checkbox`, `Radio`, `Switch` | Choice controls SHOULD use `accent-color` (seven themes do; the concrete pair draws checked states as a flat accent fill by design, `styles/concrete-signal/design.md:104-106`; the ports hand-style them) |
 | `badge.css` | `.rb-badge`, `--info`, `--success`, `--warning`, `--danger` | `Badge` | Status text is never colour-only: the label carries the meaning |
 | `alert.css` | `.rb-alert`, `__title`, `--info`, `--success`, `--warning`, `--danger` | `Alert` | |
 | `dialog.css` | `.rb-dialog`, `__title`, `__actions`; `__body` | `Dialog` | `__body` is a no-op in four themes that pad `.rb-dialog` instead -- sanctioned by #42's verdict, allowlisted in `contract.json` (section 5.3) `[tested]` |
-| `tabs.css` | `.rb-tabs`, `.rb-tab`, `.rb-tab--active`, `.rb-tabpanel` | `Tabs` | SHOULD pair `--active` with `[aria-selected="true"]`; checked by `contract.test.mjs` against `contract.json`'s `ariaPairs` (six themes do, six temporarily exempt) `[pending #65]` |
+| `tabs.css` | `.rb-tabs`, `.rb-tab`, `.rb-tab--active`, `.rb-tabpanel` | `Tabs` | SHOULD pair `--active` with `[aria-selected="true"]`; checked by `contract.test.mjs` against `contract.json`'s `ariaPairs`, all twelve comply `[tested]` |
 | `table.css` | `.rb-table`, `--interactive`, `.rb-num` | -- | |
 | `progress.css` | `.rb-progress` on a native `<progress>` (`appearance: none`, `::-webkit-progress-bar`, `::-webkit-progress-value`, `::-moz-progress-bar`); `.rb-spinner` | `Progress`, `Spinner` | |
 | `muted.css` | `.rb-muted` | -- | |
 | `pre.css` | `.rb-pre` | -- | |
 | `log.css` | `.rb-log` (pairs with `.rb-pre`) | -- | |
-| `stepper.css` | `.rb-stepper`, `__step`, `__node`, `__label`, `--complete`, `--current` | `Stepper` | In all twelve since #55 (closes #18). `--upcoming` is emitted by `Stepper` as the resting state and no theme declares a rule for it -- allowlisted in `contract.json` as "default state" `[tested]`; SHOULD match `[aria-current="step"]`; checked by `contract.test.mjs` against `contract.json`'s `ariaPairs` (no theme does yet, all twelve temporarily exempt) `[pending #65]` |
+| `stepper.css` | `.rb-stepper`, `__step`, `__node`, `__label`, `--complete`, `--current` | `Stepper` | In all twelve since #55 (closes #18). `--upcoming` is emitted by `Stepper` as the resting state and no theme declares a rule for it -- allowlisted in `contract.json` as "default state" `[tested]`; SHOULD match `[aria-current="step"]`; checked by `contract.test.mjs` against `contract.json`'s `ariaPairs`, all twelve comply `[tested]` |
 
 Do not state the *count* of shared files in prose anywhere -- `design.md`
 files that said "the baseline ten" and "twelve" were both stale before #55
@@ -390,8 +389,9 @@ rendered with every class-adding prop -- plus the CSS-only utilities is
 `[pending #48]`, so the class contract cannot drift from what consumers get.
 A class in the list is either styled in every theme, entered in the
 allowlist below, or -- for the three ARIA-pairing checks and the dialog-blur
-check -- temporarily listed in that check's `exempt` array pending the CSS
-sweep tracked in #65. Every theme's CSS is also checked closed-world: a
+check -- listed in that check's `exempt` array (only the concrete pair's
+permanent dialog-blur exemption remains as of #65). Every theme's CSS is
+also checked closed-world: a
 `.rb-*` class that is neither required nor in that theme's `contract.json`
 extras fails the suite `[tested]`.
 
@@ -875,17 +875,17 @@ identity paragraph and the README table.
 | `:focus-visible` base rule in all twelve; `a` colour divergence documented | CSS fix + test | pending #36 (4 of 12) |
 | Disabled buttons take no hover | CSS fix | pending #37 |
 | `rb-stepper` in every theme | #55 merged | live (parity now tested via #47) |
-| `.rb-stepper--upcoming` styled or allowlisted; `[aria-current="step"]` paired | `contract.test.mjs` | allowlisted: live (#47). Paired: mechanism live, 0 of 12 themes comply yet, all temporarily exempt -- pending #65 |
+| `.rb-stepper--upcoming` styled or allowlisted; `[aria-current="step"]` paired | `contract.test.mjs` | allowlisted: live (#47). Paired: live, 12 of 12 themes comply (#65) |
 | `Dialog` spreads rest, reconciles `open` | `Dialog.test.tsx` | live (#31) |
 | `Tabs` spreads rest; controlled `activeId`/`onChange` to match `NavRail` | React fix | pending (#42 overflow, not yet filed as its own issue) |
 | `forwardRef` on every wrapper | `refs.test.tsx` | live (#30) |
 | SKILL.md matches the shipped contract | doc fix | partially closed by #47 (inventory table now generated + tested, extras paragraph accurate, eyebrow mis-classification fixed); roster paragraph, manifest-fonts guidance, and the add-theme recipe's missing `all.css`/`NOTICE` steps still pending #39 |
 | `design.md` counterpart and count claims true | doc fix | live (#47, #40 -- counterpart-shipped and stale-count claims fixed repo-wide) |
 | `## Accessibility` section in every `design.md` | review | 1 of 12 (rackbops-studio) |
-| `.rb-tab--active` paired with `[aria-selected="true"]` | `contract.test.mjs` | mechanism live (#47), 6 of 12 comply, six temporarily exempt -- pending #65 |
-| `.rb-link--active` paired with `[aria-current="page"]` | `contract.test.mjs` | mechanism live (#47), 1 of 12 comply (summer-cloud), eleven temporarily exempt -- pending #65 |
+| `.rb-tab--active` paired with `[aria-selected="true"]` | `contract.test.mjs` | live, 12 of 12 comply (#65) |
+| `.rb-link--active` paired with `[aria-current="page"]` | `contract.test.mjs` | live, 12 of 12 comply (#65) |
 | Choice controls use `accent-color` | review | 7 of 12 (concrete pair by design; ports hand-styled) |
-| Dialog backdrop blurs via `var(--rb-blur)` | `contract.test.mjs` | mechanism live (#47), 8 of 12 comply; concrete pair permanently exempt (`0px` by design); two ports hard-code `blur(4px)`, #42, temporarily exempt -- pending #65 |
+| Dialog backdrop blurs via `var(--rb-blur)` | `contract.test.mjs` | live, 10 of 12 comply; concrete pair permanently exempt (`0px` by design) (#65) |
 | `Field` / `Spinner` named props types | `index.ts` exports | live (#30) |
 | Existing docs conform to the section 11 template; SKILL.md carries section 15 | doc sweep | pending #56 |
 | Extras only in labelled showcase sections | review | out of contract (issue #39) |
