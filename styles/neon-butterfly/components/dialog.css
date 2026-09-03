@@ -12,7 +12,7 @@
 }
 :where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-dialog::backdrop {
   background: rgba(11, 19, 38, 0.7);
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(var(--rb-blur));
 }
 :where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-dialog__title {
   margin: 0 0 var(--rb-space-3);
