@@ -42,6 +42,44 @@ const REQUIRED_TOKENS = [
   "space-1", "space-2", "space-3", "space-4", "space-5",
 ].map((n) => `--rb-${n}`);
 
+// Classes the shared @rackbops/ui-react components (or the showcase) actually
+// emit, that every theme must style -- parallel to REQUIRED_TOKENS. Not the
+// full class set of every shared component (dialog's __title, alert's
+// --info, ...) -- that comprehensive, data-driven version is #47/#48's job.
+// This list is deliberately scoped to what issue #29's review found unguarded
+// in some themes, plus the bespoke single-class tests it replaces.
+const REQUIRED_CLASSES = [
+  { file: "button.css", class: "rb-btn--sm" },
+  { file: "button.css", class: "rb-icon-btn" },
+  { file: "button.css", class: "rb-btn--ghost" },
+  { file: "table.css", class: "rb-table--interactive" },
+  { file: "table.css", class: "rb-num" },
+  { file: "link.css", class: "rb-link--active" },
+  { file: "card.css", class: "rb-card--raised" },
+];
+
+// Documented omissions (STANDARD.md 5.3): a theme, a required class it
+// deliberately doesn't style, and why. Lives here rather than a
+// styles/contract.json allowlist file until #47 gives the contract a
+// data-driven home for it.
+const CLASS_ALLOWLIST = [
+  {
+    theme: "luminous-precision",
+    class: "rb-card--raised",
+    reason: "nazuraki upstream has no second elevation tier for this port",
+  },
+  {
+    theme: "neon-butterfly",
+    class: "rb-card--raised",
+    reason: "nazuraki upstream has no second elevation tier for this port",
+  },
+  {
+    theme: "summer-cloud",
+    class: "rb-card--raised",
+    reason: "nazuraki upstream's second elevation tier is --floating, already carried over; --raised would just duplicate it",
+  },
+];
+
 /** Split a selector list on top-level commas (commas inside () and [] don't count). */
 function splitSelectors(prelude) {
   const parts = [];
@@ -197,52 +235,35 @@ for (const theme of themeDirs) {
   });
 }
 
-test("every theme's button.css declares a guarded .rb-btn--sm compact variant", () => {
-  // The compact size is part of the button contract: every theme must carry it
-  // so a screen keeps its inline/table-row actions when it swaps data-rb-style.
-  for (const theme of themeDirs) {
-    const file = join(ROOT, theme, "components", "button.css");
-    const { selectors } = parseCss(readFileSync(file, "utf-8"));
-    const guard = `[data-rb-style="${theme}"]`;
-    const sm = selectors.filter((s) => /\.rb-btn--sm(?![\w-])/.test(s));
-    assert.ok(sm.length > 0, `${theme}: button.css is missing a .rb-btn--sm rule`);
-    for (const sel of sm) {
-      assert.ok(sel.includes(guard), `${theme}: unguarded .rb-btn--sm selector: ${sel}`);
+for (const { file, class: cls } of REQUIRED_CLASSES) {
+  test(`every theme's ${file} declares a guarded .${cls} rule (or is allowlisted)`, () => {
+    // Class parity: every theme must style every class the shared React
+    // components (or the showcase) actually emit, so a screen keeps its
+    // affordances when it swaps data-rb-style -- unless that theme has a
+    // documented reason not to (CLASS_ALLOWLIST, STANDARD.md 5.3).
+    const escaped = cls.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const re = new RegExp(`\\.${escaped}(?![\\w-])`);
+    for (const theme of themeDirs) {
+      const allowed = CLASS_ALLOWLIST.find((a) => a.theme === theme && a.class === cls);
+      const guard = `[data-rb-style="${theme}"]`;
+      const cssFile = join(ROOT, theme, "components", file);
+      const { selectors } = parseCss(readFileSync(cssFile, "utf-8"));
+      const matches = selectors.filter((s) => re.test(s));
+      if (allowed) {
+        assert.deepEqual(
+          matches,
+          [],
+          `${theme}: .${cls} is allowlisted as absent but a rule now exists -- update or drop the allowlist entry`
+        );
+        continue;
+      }
+      assert.ok(matches.length > 0, `${theme}: ${file} is missing a .${cls} rule`);
+      for (const sel of matches) {
+        assert.ok(sel.includes(guard), `${theme}: unguarded .${cls} selector: ${sel}`);
+      }
     }
-  }
-});
-
-test("every theme's button.css declares a guarded .rb-icon-btn variant", () => {
-  // The icon-only square hit target is part of the button contract: every
-  // theme must carry it so a screen keeps its icon-only affordances (close,
-  // edit, delete glyphs) when it swaps data-rb-style.
-  for (const theme of themeDirs) {
-    const file = join(ROOT, theme, "components", "button.css");
-    const { selectors } = parseCss(readFileSync(file, "utf-8"));
-    const guard = `[data-rb-style="${theme}"]`;
-    const iconBtn = selectors.filter((s) => /\.rb-icon-btn(?![\w-])/.test(s));
-    assert.ok(iconBtn.length > 0, `${theme}: button.css is missing a .rb-icon-btn rule`);
-    for (const sel of iconBtn) {
-      assert.ok(sel.includes(guard), `${theme}: unguarded .rb-icon-btn selector: ${sel}`);
-    }
-  }
-});
-
-test("every theme's table.css declares a guarded .rb-table--interactive variant", () => {
-  // The clickable/interactive row modifier is part of the table contract: every
-  // theme must carry it so a screen keeps its clickable-row affordance (hover,
-  // cursor, focus-visible ring) when it swaps data-rb-style.
-  for (const theme of themeDirs) {
-    const file = join(ROOT, theme, "components", "table.css");
-    const { selectors } = parseCss(readFileSync(file, "utf-8"));
-    const guard = `[data-rb-style="${theme}"]`;
-    const interactive = selectors.filter((s) => /\.rb-table--interactive(?![\w-])/.test(s));
-    assert.ok(interactive.length > 0, `${theme}: table.css is missing a .rb-table--interactive rule`);
-    for (const sel of interactive) {
-      assert.ok(sel.includes(guard), `${theme}: unguarded .rb-table--interactive selector: ${sel}`);
-    }
-  }
-});
+  });
+}
 
 test("every theme's progress.css styles the native <progress> pseudo-elements, not a .rb-progress__bar div", () => {
   // The progress contract is native <progress> (both the React Progress and

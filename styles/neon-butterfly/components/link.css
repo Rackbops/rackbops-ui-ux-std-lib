@@ -34,6 +34,16 @@
   color: var(--rb-accent-2);
   text-shadow: 0 0 5px var(--rb-accent-2-glow);
 }
+/* --active: the current route — the hover color/glow, resting, without the
+ * hover-only slide (that's a click-me cue; an active item is already "here"). */
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-link--active {
+  border-color: var(--rb-accent-border);
+  color: var(--rb-accent);
+}
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-link--active::before {
+  color: var(--rb-accent-2);
+  text-shadow: 0 0 5px var(--rb-accent-2-glow);
+}
 
 @keyframes rb-nb-pulse-glow {
   0%,

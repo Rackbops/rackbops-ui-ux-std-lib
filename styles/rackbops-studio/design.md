@@ -109,6 +109,7 @@ Class prefix `rb-`; shared token/class contract with the other themes.
   arrow scales with it. `.rb-icon-btn` is a square icon-only hit target
   (>=2rem), paired with `.rb-btn`.
 - **Card** `.rb-card` (+ `__tag`) — white panel, soft shadow, `-4px` hover lift.
+  `--raised` makes that lift the resting state (a further `-6px` on hover).
 - **NavLink** `.rb-link` — mono header nav; hover fills to a surface pill; accent
   on the active route.
 - **Nav rail** `.rb-nav-rail` — the sidebar container: 14rem fixed-width flex

@@ -345,27 +345,28 @@ the token list and this document is the class list.
 ### 5.1 The shared component set
 
 Every theme MUST ship these files and style every selector in the "Required
-selectors" column `[tested today: .rb-btn--sm, .rb-icon-btn,
-.rb-table--interactive; the full list pending #29 / #47]`. The React column
-is the `@rackbops/ui-react` export that emits the class.
+selectors" column `[tested today: .rb-btn--sm, .rb-icon-btn, --ghost,
+.rb-table--interactive, .rb-num, --active, --raised (7 classes, via
+REQUIRED_CLASSES); the full list pending #47]`. The React column is the
+`@rackbops/ui-react` export that emits the class.
 
 | File | Required selectors | React | Notes |
 | --- | --- | --- | --- |
-| `button.css` | `.rb-btn`, `--primary`, `--accent`, `--danger`, `--ghost`, `--sm`, `:disabled`; `.rb-icon-btn` | `Button` | `--ghost` unstyled in luminous-precision and neon-butterfly `[pending #29]`; disabled buttons still take `:hover` in all twelve `[pending #37]` |
-| `card.css` | `.rb-card`, `--raised` | `Card` | `--raised` unstyled in five themes `[pending #29]` |
-| `link.css` | `.rb-link`, `--active` | `NavLink` | `--active` unstyled in luminous-precision and neon-butterfly `[pending #29]`; SHOULD also match `[aria-current="page"]` (one theme does) `[pending #47]` |
+| `button.css` | `.rb-btn`, `--primary`, `--accent`, `--danger`, `--ghost`, `--sm`, `:disabled`; `.rb-icon-btn` | `Button` | disabled buttons still take `:hover` in all twelve `[pending #37]` |
+| `card.css` | `.rb-card`, `--raised` | `Card` | `--raised` is a documented no-op in the three nazuraki ports (section 5.3, `contract.test.mjs`'s `CLASS_ALLOWLIST`): luminous-precision and neon-butterfly have no second elevation tier upstream at all; summer-cloud's upstream second tier is `--floating`, already carried over, so the port doesn't also add a near-duplicate `--raised` |
+| `link.css` | `.rb-link`, `--active` | `NavLink` | SHOULD also match `[aria-current="page"]` (one theme does) `[pending #47]` |
 | `nav-rail.css` | `.rb-nav-rail` | `NavRail` | Composes `.rb-link`; owns no active convention |
 | `form.css` | `.rb-field`, `.rb-label`, `.rb-input`, `.rb-textarea`, `.rb-select`, `.rb-choice`, `.rb-checkbox`, `.rb-radio`, `.rb-switch` | `Field`, `Label`, `Input`, `Textarea`, `Select`, `Checkbox`, `Radio`, `Switch` | Choice controls SHOULD use `accent-color` (seven themes do; the concrete pair draws checked states as a flat accent fill by design, `styles/concrete-signal/design.md:104-106`; the ports hand-style them) |
 | `badge.css` | `.rb-badge`, `--info`, `--success`, `--warning`, `--danger` | `Badge` | Status text is never colour-only: the label carries the meaning |
 | `alert.css` | `.rb-alert`, `__title`, `--info`, `--success`, `--warning`, `--danger` | `Alert` | |
 | `dialog.css` | `.rb-dialog`, `__title`, `__actions`; `__body` | `Dialog` | `__body` is a no-op in four themes that pad `.rb-dialog` instead -- sanctioned by #42's verdict, allowlisted once #47 lands (section 5.3) |
 | `tabs.css` | `.rb-tabs`, `.rb-tab`, `.rb-tab--active`, `.rb-tabpanel` | `Tabs` | SHOULD pair `--active` with `[aria-selected="true"]` (six themes do) `[pending #47]` |
-| `table.css` | `.rb-table`, `--interactive`, `.rb-num` | -- | `.rb-num` unstyled in luminous-precision and neon-butterfly `[pending #29]` |
+| `table.css` | `.rb-table`, `--interactive`, `.rb-num` | -- | |
 | `progress.css` | `.rb-progress` on a native `<progress>` (`appearance: none`, `::-webkit-progress-bar`, `::-webkit-progress-value`, `::-moz-progress-bar`); `.rb-spinner` | `Progress`, `Spinner` | |
 | `muted.css` | `.rb-muted` | -- | |
 | `pre.css` | `.rb-pre` | -- | |
 | `log.css` | `.rb-log` (pairs with `.rb-pre`) | -- | |
-| `stepper.css` | `.rb-stepper`, `__step`, `__node`, `__label`, `--complete`, `--current` | `Stepper` | In all twelve since #55 (closes #18). `--upcoming` is emitted by `Stepper` as the resting state and no theme declares a rule for it -- allowlist as "default state" or add the rule `[pending #47]`; SHOULD match `[aria-current="step"]` (no theme does) `[pending #47]`; no parity test yet `[pending #29]` |
+| `stepper.css` | `.rb-stepper`, `__step`, `__node`, `__label`, `--complete`, `--current` | `Stepper` | In all twelve since #55 (closes #18). `--upcoming` is emitted by `Stepper` as the resting state and no theme declares a rule for it -- allowlist as "default state" or add the rule `[pending #47]`; SHOULD match `[aria-current="step"]` (no theme does) `[pending #47]`; no parity test yet `[pending #47]` |
 
 Do not state the *count* of shared files in prose anywhere -- `design.md`
 files that said "the baseline ten" and "twelve" were both stale before #55
@@ -375,10 +376,12 @@ merged and are staler after it (issue #40). Link this table instead.
 
 The contract test MUST hold a `REQUIRED_CLASSES` list parallel to
 `REQUIRED_TOKENS`, read from `contract.json`, and check each theme's parsed
-selectors against it `[pending #29 / #47]`. The list is derived from what
-`@rackbops/ui-react` actually emits -- every export rendered with every
-class-adding prop -- plus the CSS-only utilities `[pending #48]`, so the
-class contract cannot drift from what consumers get. A class in the list is
+selectors against it. A 7-class starter list lives inline in
+`contract.test.mjs` since #29; moving it to `contract.json` is `[pending
+#47]`. The full list MUST be derived from what `@rackbops/ui-react` actually
+emits -- every export rendered with every class-adding prop -- plus the
+CSS-only utilities `[pending #48]`, so the class contract cannot drift from
+what consumers get. A class in the list is
 either styled in every theme or entered in the allowlist below.
 
 A light/dark pair MUST ship an identical component set: the two
@@ -391,11 +394,15 @@ string, or the differing file is named in both `design.md`s
 A required class MAY be a deliberate no-op in one theme only when all three
 hold: the theme's `design.md` says so and why; the allowlist entry in
 `contract.json` names theme, class, and reason; and the React component's
-JSDoc or SKILL.md carries the caveat. At HEAD no case meets all three:
+JSDoc or SKILL.md carries the caveat. At HEAD two cases meet the first and
+third but not the second, since `contract.json` doesn't exist yet:
 `.rb-dialog__body` in luminous-precision, mono-field, neon-butterfly, and
-summer-cloud (which pad `.rb-dialog`) is sanctioned only by #42's verdict;
-its allowlist entry, `design.md` sentence, and JSDoc caveat land with #47
-and #29.
+summer-cloud (which pad `.rb-dialog`) is sanctioned only by #42's verdict, its
+formal allowlist entry pending #47; `.rb-card--raised` in the three nazuraki
+ports (luminous-precision, neon-butterfly, summer-cloud) is sanctioned by each
+port's `design.md`, `Card.tsx`'s JSDoc, and `contract.test.mjs`'s inline
+`CLASS_ALLOWLIST` (added by #29) -- that allowlist entry moves into
+`contract.json` once #47 lands too.
 
 ### 5.4 Theme extras
 
@@ -664,7 +671,7 @@ props to modifiers, and never branches on the theme.
 | Native semantics by default: `type="button"`, `aria-current="page"` on an active link, `role="alert"`, `role="status"` + `aria-label` on the spinner, native `<dialog>` with `aria-labelledby`, ARIA tablist with roving tabindex | `Button.tsx:20`, `NavLink.tsx:12`, `feedback.tsx:22,40-41`, `Dialog.tsx:26-31`, `Tabs.tsx:41-63` |
 | Controlled by the caller, no hidden state: `NavRail activeId`, `Dialog open` | `NavRail.tsx:14-16`; `Dialog` reconciles `open` on every render `[pending #31]`; `Tabs` MAY keep its selection until a controlled API is in scope |
 | No theme-specific class, no extra, no `style` that a theme would own. Structural layout a theme has no opinion on (a grid) MAY be inline, and says why in a comment | `LinksIndex.tsx:28-39` |
-| A prop that is a no-op in some theme is a contract gap, not a JSDoc caveat | `Card.tsx:5` today; closes with #29 / #48 |
+| A prop that is a no-op in some theme MUST be a documented omission (section 5.3), not a bare JSDoc caveat | `Card.tsx`'s `raised` now is, for the three nazuraki ports (design.md + JSDoc + `contract.test.mjs`'s allowlist, #29); the formal `contract.json` entry is `[pending #47]` |
 | Tests render to static markup and assert the class list per prop, composition, and passthrough; the same renders feed the derived class set | `Button.test.tsx`, `NavRail.test.tsx`, `LinksIndex.test.tsx`, `Stepper.test.tsx`; `node:test` + `tsx` + `react-dom/server`; `[pending #48]` for the derivation |
 
 ---
@@ -827,13 +834,13 @@ identity paragraph and the README table.
 | manifest / package.json / dirs / all.css agree | `contract.test.mjs` | live |
 | `index.css` imports every component file, no rules | `contract.test.mjs` | live |
 | Keyframes `rb-`-prefixed, unique | `contract.test.mjs` | live |
-| `.rb-btn--sm`, `.rb-icon-btn`, `.rb-table--interactive` in every theme | `contract.test.mjs` | live |
+| `REQUIRED_CLASSES` parity (7 classes: `--sm`, `.rb-icon-btn`, `--ghost`, `--interactive`, `.rb-num`, `--active`, `--raised`) + `CLASS_ALLOWLIST` | `contract.test.mjs` | live |
 | Bare h1-h6 / p / ul,ol property names | `base-typography.test.mjs` | live |
 | Every export type-checks under `noUncheckedSideEffectImports` | `types.test.mjs` | live |
 | React prop -> class mapping, composition, passthrough | `src/*.test.tsx` | live (Button, NavRail, LinksIndex, Stepper) |
 | `transition: all` absent | review (Grep: 0) | live |
 | Contract as data (`contract.json`), SKILL.md generated, pair parity | new test + generator | pending #47 |
-| Full `REQUIRED_CLASSES` parity + allowlist | `contract.test.mjs` | pending #29 / #47 |
+| Full `REQUIRED_CLASSES` parity (every shared component's full class set) + data-driven allowlist | `contract.test.mjs` | pending #47 |
 | Required class set derived from React emissions | new test | pending #48 |
 | Every shared component file exists per theme | `contract.test.mjs` | pending #47 (only button/table opened by name today) |
 | Contrast ratios for the fixed token pairs | new test | pending #49 |
@@ -845,7 +852,7 @@ identity paragraph and the README table.
 | Native `<progress>` contract in all twelve | `contract.test.mjs` | live |
 | `:focus-visible` base rule in all twelve; `a` colour divergence documented | CSS fix + test | pending #36 (4 of 12) |
 | Disabled buttons take no hover | CSS fix | pending #37 |
-| `rb-stepper` in every theme | #55 merged | live (no parity test; pending #29 / #47) |
+| `rb-stepper` in every theme | #55 merged | live (no parity test; pending #47) |
 | `.rb-stepper--upcoming` styled or allowlisted; `[aria-current="step"]` paired | `contract.test.mjs` | pending #47 (0 of 12 today) |
 | `Dialog` / `Tabs` spread rest; `Dialog` reconciles `open` | React fix | pending #31 |
 | `forwardRef` on every wrapper | React fix | pending #30 |

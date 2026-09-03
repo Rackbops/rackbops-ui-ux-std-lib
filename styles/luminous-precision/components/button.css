@@ -76,6 +76,16 @@
   color: var(--rb-danger);
 }
 
+/* ghost: minimal-emphasis variant — no border until hover reveals a surface fill */
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn--ghost {
+  border-color: transparent;
+  color: var(--rb-text-soft);
+}
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn--ghost:hover,
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn--ghost:focus-visible {
+  background: var(--rb-surface-2);
+}
+
 :where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;

@@ -81,21 +81,24 @@ token stack falls back to `ui-monospace`.
 Class prefix `rb-`. Variants use BEM-ish modifiers (`rb-btn--accent`).
 
 - **Card** `.rb-card` — frosted glass panel.
-- **NavLink** `.rb-link` — the switchboard link: `>` chevron turns lime on hover.
+- **NavLink** `.rb-link` — the switchboard link: `>` chevron turns lime on
+  hover; `--active` applies that same color/glow at rest, without the
+  hover-only slide, for the current route.
 - **Nav rail** `.rb-nav-rail` — the sidebar container: 14rem fixed-width flex
   column, the same glass panel + blur as `.rb-card`, a hairline right edge.
   Composes with `.rb-link` for items; introduces no active-state convention
   of its own.
-- **Button** `.rb-btn` — `--primary`, `--accent`, `--danger` variants; `--sm`
-  compact size for inline/table-row actions; `.rb-icon-btn` a square icon-only
-  hit target (>=2rem), paired with `.rb-btn`.
+- **Button** `.rb-btn` — `--primary`, `--accent`, `--danger` variants; `--ghost`
+  drops the glass fill and border until hover reveals it — the lowest-emphasis
+  tier; `--sm` compact size for inline/table-row actions; `.rb-icon-btn` a
+  square icon-only hit target (>=2rem), paired with `.rb-btn`.
 - **Form** `.rb-input`, `.rb-textarea`, `.rb-select`, `.rb-label`, `.rb-field`,
   `.rb-checkbox`, `.rb-radio`, `.rb-switch`, `.rb-choice` — checked states glow lime.
 - **Badge** `.rb-badge` + semantic modifiers.
 - **Alert** `.rb-alert` — left accent bar carries the semantic color.
 - **Dialog** `.rb-dialog` — native `<dialog>`, lilac border + glow, blurred backdrop.
 - **Tabs** `.rb-tabs`/`.rb-tab`/`.rb-tabpanel` — active tab underlined in lilac with text glow.
-- **Table** `.rb-table` — lilac header rule, glass row hover. `--interactive`
+- **Table** `.rb-table` (+ `.rb-num`) — lilac header rule, glass row hover. `--interactive`
   marks clickable rows: pointer cursor, plus a focus-visible ring (and the
   same glass wash) for a `tabindex` row or a row-wrapping button/link.
 - **Progress** `.rb-progress`, **Spinner** `.rb-spinner` — glowing lilac indicators.
@@ -118,7 +121,10 @@ Class prefix `rb-`. Variants use BEM-ish modifiers (`rb-btn--accent`).
   scroll, and roomier line-height for dense text.
 
 This port carries nazuraki's original component set; the rackbops-specific
-`eyebrow`, `tabstrip`, `wordmark`, and `card--raised` surfaces are not part of it.
+`eyebrow`, `tabstrip`, and `wordmark` surfaces are not part of it.
+`.rb-card--raised` is also absent: nazuraki's own card never had a second
+elevation tier, so the port doesn't invent one — `Card raised` is a
+documented no-op here (see `contract.test.mjs`'s allowlist).
 
 ## Code syntax
 
