@@ -8,8 +8,8 @@
  * The :where() keeps specificity at zero, so any consumer rule overrides.
  *
  * This theme ships its canonical, primary look (light); the dark counterpart
- * that rackbops.com toggles into is documented in design.md and can become its
- * own theme later. Every theme declares the same baseline token set (styles/test
+ * that rackbops.com toggles into ships as its own theme, rackbops-noir (see
+ * design.md). Every theme declares the same baseline token set (styles/test
  * enforces parity); names marked (extra) are additions this theme's own
  * component CSS may rely on.
  */

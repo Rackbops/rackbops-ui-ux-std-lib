@@ -49,8 +49,9 @@ Muted-on-surface is tuned to clear WCAG AA (4.5:1) on every surface; the light
   weight 600, tight tracking (`-0.01em`). Monospace *is* the display voice.
 - **Body & UI:** `system-ui, -apple-system, "Segoe UI", Roboto, …`, weight 400.
 - **Numerals:** `font-variant-numeric: tabular-nums` everywhere data is shown.
-- **Labels** (eyebrows, badges, table headers): mono, uppercase, ~11px, tracked
-  `0.06em`.
+- **Labels** (eyebrows, badges): mono, uppercase, ~11px, tracked `0.06em`.
+  Table headers are the one stated departure — body-sans, normal case
+  (`components/table.css:9-15`; badges stay mono uppercase, `badge.css:10-14`).
 - **Bare tags:** unclassed `h1`-`h6` pick up the mono display voice directly —
   weight 600, tracking `-0.01em`, `--rb-space-3` margin below. `.rb-card`
   renders a bare `<h3>` and gets this treatment too, since `card.css` declares
@@ -140,8 +141,8 @@ voices reused, never new decorative hues.
 
 ## Light counterpart — "Parchment"
 
-The AA-tuned light secondary. Not shipped as a separate theme yet; documented so
-it can become one additively.
+The AA-tuned light secondary, shipped as its own theme: `arcane-parchment`
+(`styles/arcane-parchment/design.md`).
 
 | Role | Value |
 | --- | --- |

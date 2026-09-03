@@ -11,8 +11,8 @@
  * Every theme declares the same baseline token set (styles/test enforces
  * parity); names marked (extra) are additions beyond it that only this
  * theme's own component CSS may rely on. This theme ships its dark, primary
- * look ("Obsidian"); its AA-tuned light counterpart ("Parchment") is
- * documented in design.md and can become its own theme later.
+ * look ("Obsidian"); its AA-tuned light counterpart ("Parchment") ships as
+ * its own theme, arcane-parchment (see design.md).
  */
 :where([data-rb-style="arcane-obsidian"]) {
   color-scheme: dark;
