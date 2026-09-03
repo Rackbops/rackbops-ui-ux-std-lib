@@ -76,7 +76,7 @@ const CLASS_ALLOWLIST = [
   {
     theme: "summer-cloud",
     class: "rb-card--raised",
-    reason: "nazuraki upstream has no second elevation tier for this port",
+    reason: "nazuraki upstream's second elevation tier is --floating, already carried over; --raised would just duplicate it",
   },
 ];
 

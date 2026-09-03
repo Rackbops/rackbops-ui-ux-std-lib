@@ -353,7 +353,7 @@ REQUIRED_CLASSES); the full list pending #47]`. The React column is the
 | File | Required selectors | React | Notes |
 | --- | --- | --- | --- |
 | `button.css` | `.rb-btn`, `--primary`, `--accent`, `--danger`, `--ghost`, `--sm`, `:disabled`; `.rb-icon-btn` | `Button` | disabled buttons still take `:hover` in all twelve `[pending #37]` |
-| `card.css` | `.rb-card`, `--raised` | `Card` | `--raised` is a documented no-op in the three nazuraki ports (luminous-precision, neon-butterfly, summer-cloud) -- matches upstream, which has no second elevation tier (section 5.3, `contract.test.mjs`'s `CLASS_ALLOWLIST`) |
+| `card.css` | `.rb-card`, `--raised` | `Card` | `--raised` is a documented no-op in the three nazuraki ports (section 5.3, `contract.test.mjs`'s `CLASS_ALLOWLIST`): luminous-precision and neon-butterfly have no second elevation tier upstream at all; summer-cloud's upstream second tier is `--floating`, already carried over, so the port doesn't also add a near-duplicate `--raised` |
 | `link.css` | `.rb-link`, `--active` | `NavLink` | SHOULD also match `[aria-current="page"]` (one theme does) `[pending #47]` |
 | `nav-rail.css` | `.rb-nav-rail` | `NavRail` | Composes `.rb-link`; owns no active convention |
 | `form.css` | `.rb-field`, `.rb-label`, `.rb-input`, `.rb-textarea`, `.rb-select`, `.rb-choice`, `.rb-checkbox`, `.rb-radio`, `.rb-switch` | `Field`, `Label`, `Input`, `Textarea`, `Select`, `Checkbox`, `Radio`, `Switch` | Choice controls SHOULD use `accent-color` (seven themes do; the concrete pair draws checked states as a flat accent fill by design, `styles/concrete-signal/design.md:104-106`; the ports hand-style them) |
