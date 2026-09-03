@@ -1,0 +1,4 @@
+Fixture for serve.test.mjs: a real file whose name starts with ".." but has
+no path separator after it, so it must NOT be treated as a traversal segment
+(unlike a real "../" segment). Exercises the rel.startsWith(".." + sep)
+precision in resolveSafePath, rather than a cruder rel.startsWith("..").

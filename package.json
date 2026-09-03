@@ -5,7 +5,7 @@
   "description": "UX/design-standards library for roshne's apps: CSS themes + React components, one --rb-* contract with swappable themes.",
   "scripts": {
     "build": "pnpm -r build",
-    "test": "pnpm -r test",
+    "test": "pnpm -r test && node --test site/serve.test.mjs",
     "showcase": "node site/serve.mjs"
   }
 }
