@@ -103,17 +103,27 @@ build_changelog() {
   printf '%s' "$notes"
 }
 
+# $notes_file is script-scoped, not local to publish_release() below: the
+# EXIT trap needs to see whichever file is currently in flight, since a run
+# can call publish_release() twice (once to backfill, once for a new
+# release) and `gh release create` failing is the exact failure mode this
+# script exists to survive -- set -e means that failure skips any cleanup
+# written to run *after* the call, so only a trap (which fires regardless
+# of how the script exits) actually guarantees the file doesn't leak.
+notes_file=""
+trap 'rm -f "$notes_file"' EXIT
+
 # Writes $1 (changelog text) to a fresh temp file and creates the GitHub
-# release named $2 from it. The temp file is removed immediately after —
-# not deferred to a script-wide trap, since this can run twice in one
-# invocation (once to backfill, once for a new release) and each call's
-# file is done with as soon as `gh release create` returns.
+# release named $2 from it, then clears $notes_file back out on success so
+# the EXIT trap has nothing left to do for this call by the time the next
+# one (if any) starts.
 publish_release() {
-  local notes="$1" tag="$2" notes_file
+  local notes="$1" tag="$2"
   notes_file=$(mktemp)
   printf '%s' "$notes" > "$notes_file"
   gh release create "$tag" --title "$tag" --notes-file "$notes_file"
   rm -f "$notes_file"
+  notes_file=""
 }
 
 # ── Version ────────────────────────────────────────────────────────────────

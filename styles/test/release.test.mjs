@@ -265,8 +265,19 @@ test("scenario (a), via a genuine rejected push: tag push fails for real, then a
   assert.equal(pkgAfterFirst.version, "0.1.1");
 
   rmSync(join(repo.bareDir, "reject-tags"));
+  // The rejected push still left a real LOCAL tag behind (git tag itself
+  // succeeded before the push failed) -- this repo reuses one working
+  // directory across both runs, unlike real CI's fresh checkout per run,
+  // which would never have fetched a tag that was never pushed. Left as-is,
+  // the second run's own backfill check (not the resume path this test is
+  // named for) would see that local tag and paper over the gap on its own,
+  // making this test pass without actually exercising resume at all.
+  // Deleting it restores the fresh-checkout precondition the resume check
+  // is meant to run under.
+  repo.run(["tag", "-d", "v0.1.1"]);
   const second = runRelease(repo);
   assert.equal(second.status, 0, second.stdout + second.stderr);
+  assert.match(second.stdout, /Resuming v0\.1\.1: bump committed, not yet tagged\./);
   assert.ok(tagExistsOnOrigin(repo, "v0.1.1"));
   assert.equal(calls(repo).filter((c) => c.startsWith("release create")).length, 1);
 
