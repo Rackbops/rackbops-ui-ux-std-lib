@@ -42,7 +42,8 @@
   transition: background-color var(--rb-transition);
 }
 :where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-stepper__step:not(:first-child).rb-stepper--complete::before,
-:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-stepper__step:not(:first-child).rb-stepper--current::before {
+:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-stepper__step:not(:first-child).rb-stepper--current::before,
+:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-stepper__step[aria-current="step"]::before {
   background: var(--rb-accent);
 }
 :where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-stepper__node {
@@ -69,13 +70,15 @@
 :where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-stepper--complete .rb-stepper__label {
   color: var(--rb-text);
 }
-:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-stepper--current .rb-stepper__node {
+:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-stepper--current .rb-stepper__node,
+:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-stepper__step[aria-current="step"] .rb-stepper__node {
   background: var(--rb-surface);
   border-color: var(--rb-accent);
   color: var(--rb-accent);
   box-shadow: var(--rb-shadow-lg);
 }
-:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-stepper--current .rb-stepper__label {
+:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-stepper--current .rb-stepper__label,
+:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-stepper__step[aria-current="step"] .rb-stepper__label {
   color: var(--rb-accent);
   font-weight: var(--rb-font-weight-medium);
 }
