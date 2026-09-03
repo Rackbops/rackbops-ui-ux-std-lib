@@ -24,3 +24,5 @@ jobs:
       - run: pnpm --filter @rackbops/ui-react build
       # React component render tests (node:test + tsx + react-dom/server).
       - run: pnpm --filter @rackbops/ui-react test
+      # Local dev server containment/.git-exclusion regression tests (node:test).
+      - run: node --test site/serve.test.mjs
