@@ -108,7 +108,7 @@ on the box, the same pattern rackbops.com uses.
 pnpm install
 pnpm build                              # tsc the React package
 pnpm --filter @rackbops/styles test       # theme contract + release-bump tests
-pnpm --filter @rackbops/ui-react test     # typecheck + render-to-string component tests
+pnpm --filter @rackbops/ui-react test     # typecheck + render-to-string component tests + ref-forwarding (jsdom)
 ```
 
 The contract test (`styles/test/contract.test.mjs`) enforces the theme rules:

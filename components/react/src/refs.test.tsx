@@ -16,10 +16,22 @@ const dom = new JSDOM("<!doctype html><body></body>", { url: "http://localhost/"
 // `performance` and `queueMicrotask` are excluded: jsdom's implementations
 // of both resolve back through whatever object they're installed on, so
 // overwriting the globals with them here makes each call itself and blow the
-// stack. Node's own native versions (all React's scheduler needs from
-// either) stay in place instead.
-const { performance: _perf, queueMicrotask: _qmt, ...rest } =
-  Object.getOwnPropertyDescriptors(dom.window);
+// stack. jsdom also has no MessageChannel, which is what React's scheduler
+// prefers for task scheduling in a browser-like environment -- without it,
+// the scheduler falls back to setTimeout, so jsdom's setTimeout/clearTimeout
+// (and interval siblings) are excluded too, on the same "resolves back
+// through its own installation" suspicion, since they're the same category
+// of global as the two known-recursive ones. Node's own native versions
+// (all React's scheduler needs from any of these) stay in place instead.
+const {
+  performance: _perf,
+  queueMicrotask: _qmt,
+  setTimeout: _setTimeout,
+  clearTimeout: _clearTimeout,
+  setInterval: _setInterval,
+  clearInterval: _clearInterval,
+  ...rest
+} = Object.getOwnPropertyDescriptors(dom.window);
 Object.defineProperties(globalThis, rest);
 
 const { createRoot } = await import("react-dom/client");
