@@ -18,13 +18,21 @@ concurrency:
 
 jobs:
   release:
-    # Skip the bump commit re-releasing itself. (The `secrets` context is NOT
-    # available in a job-level `if` — only github/needs/vars/inputs — so the
-    # "inert until RELEASE_TOKEN exists" gate lives in the release step below,
-    # which reads the token from step-level env where secrets ARE available.)
+    # Skip the bump commit re-releasing itself, and refuse a workflow_dispatch
+    # from any branch but main (issue #33) — a manual dispatch supplies no
+    # branch filter of its own the way `on.push.branches` does, so without
+    # this the job would check out, bump, tag, and publish whatever branch
+    # was dispatched. `github.ref` is the dispatched ref for workflow_dispatch
+    # and is already guaranteed to be main for push (the `on.push.branches`
+    # filter above), so this one check covers both trigger types. (The
+    # `secrets` context is NOT available in a job-level `if` — only
+    # github/needs/vars/inputs — so the "inert until RELEASE_TOKEN exists"
+    # gate lives in the release step below, which reads the token from
+    # step-level env where secrets ARE available.)
     if: >-
-      ${{ github.event_name == 'workflow_dispatch' ||
-      !startsWith(github.event.head_commit.message, 'chore(release):') }}
+      ${{ github.ref == 'refs/heads/main' &&
+      (github.event_name == 'workflow_dispatch' ||
+      !startsWith(github.event.head_commit.message, 'chore(release): v')) }}
     runs-on: ubuntu-latest
 
     steps:

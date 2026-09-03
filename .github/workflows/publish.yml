@@ -23,12 +23,49 @@ jobs:
           scope: "@rackbops"
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
+
+      # A tag pushed by anything other than release.sh (a stray hand-pushed
+      # tag, or one on a commit whose package.json doesn't match) must not
+      # publish under a version the code doesn't actually carry (issue #33).
+      # release.sh keeps both packages' versions in lockstep, but that's a
+      # property of what release.sh does, not something enforced by this
+      # workflow -- check both files against the tag explicitly rather than
+      # trusting one to stand in for the other, since it's each package's own
+      # publish step below that reads its own package.json version.
+      - name: Verify the tag matches both packages' versions
+        run: |
+          for pkg_json in styles/package.json components/react/package.json; do
+            version="$(node -p "require('./${pkg_json}').version")"
+            if [ "v${version}" != "${GITHUB_REF_NAME}" ]; then
+              echo "Tag ${GITHUB_REF_NAME} does not match ${pkg_json}'s version (v${version}) -- refusing to publish." >&2
+              exit 1
+            fi
+          done
+
       # --access public: a scoped package publishes as restricted by default.
-      - run: npm publish --access public
+      # Skip a package already on the registry at this version, so a rerun
+      # after a partial failure (one package published, the other didn't)
+      # completes the missing half instead of aborting on a 403 "cannot
+      # publish over previously published versions" (issue #33).
+      - name: Publish styles
         working-directory: styles
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          if npm view "@rackbops/styles@${version}" version >/dev/null 2>&1; then
+            echo "@rackbops/styles@${version} is already published. Skipping."
+          else
+            npm publish --access public
+          fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - run: npm publish --access public
+      - name: Publish ui-react
         working-directory: components/react
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          if npm view "@rackbops/ui-react@${version}" version >/dev/null 2>&1; then
+            echo "@rackbops/ui-react@${version} is already published. Skipping."
+          else
+            npm publish --access public
+          fi
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
