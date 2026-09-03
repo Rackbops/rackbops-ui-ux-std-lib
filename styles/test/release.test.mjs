@@ -394,3 +394,78 @@ test("no unreleased package changes -- exits cleanly, no bump attempted", (t) =>
   const pkg = JSON.parse(readFileSync(join(repo.repoDir, "styles", "package.json"), "utf-8"));
   assert.equal(pkg.version, "0.1.0");
 });
+
+// PATHSPEC (issue #34): the trigger must match what each package actually
+// ships, not just its top-level directory. These reproduce the issue's own
+// examples directly against the real script.
+
+test("PATHSPEC: unshipped styles/test and components/react config/test-only changes don't trigger a release", (t) => {
+  const repo = makeRepo(t);
+
+  mkdirSync(join(repo.repoDir, "styles", "test"), { recursive: true });
+  writeFileSync(join(repo.repoDir, "styles", "test", "scratch.test.mjs"), "// scratch\n");
+  repo.run(["add", "."]);
+  repo.run(["commit", "-m", "test(styles): scratch"]);
+
+  writeFileSync(join(repo.repoDir, "components", "react", "tsconfig.build.json"), "{}\n");
+  repo.run(["add", "."]);
+  repo.run(["commit", "-m", "chore(react): tweak tsconfig"]);
+
+  mkdirSync(join(repo.repoDir, "components", "react", "src"), { recursive: true });
+  writeFileSync(join(repo.repoDir, "components", "react", "src", "Foo.test.tsx"), "// test\n");
+  repo.run(["add", "."]);
+  repo.run(["commit", "-m", "test(react): scratch"]);
+
+  // A .test.ts (non-JSX) file, distinct from the .test.tsx case above --
+  // tsconfig.build.json excludes both extensions from the build, so PATHSPEC
+  // must exclude both too.
+  writeFileSync(join(repo.repoDir, "components", "react", "src", "cx.test.ts"), "// test\n");
+  repo.run(["add", "."]);
+  repo.run(["commit", "-m", "test(react): cx"]);
+
+  // test-dom.ts is tsconfig.build.json's third exclude -- its own scenario,
+  // not covered by the .test.ts/.test.tsx cases above.
+  writeFileSync(join(repo.repoDir, "components", "react", "src", "test-dom.ts"), "// test setup\n");
+  repo.run(["add", "."]);
+  repo.run(["commit", "-m", "test(react): test-dom setup"]);
+
+  const result = runRelease(repo);
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+  assert.match(result.stdout, /Nothing to do/);
+});
+
+test("PATHSPEC: a shipped design.md fix triggers a release, and so does shipped react src", (t) => {
+  const repo = makeRepo(t);
+
+  mkdirSync(join(repo.repoDir, "styles", "arcane-obsidian"), { recursive: true });
+  writeFileSync(join(repo.repoDir, "styles", "arcane-obsidian", "design.md"), "# fix\n");
+  repo.run(["add", "."]);
+  repo.run(["commit", "-m", "fix(styles): correct design.md claim"]);
+
+  const first = runRelease(repo);
+  assert.equal(first.status, 0, first.stdout + first.stderr);
+  assert.match(first.stdout, /Version: 0\.1\.0 -> 0\.1\.1/);
+
+  mkdirSync(join(repo.repoDir, "components", "react", "src"), { recursive: true });
+  writeFileSync(join(repo.repoDir, "components", "react", "src", "Foo.ts"), "export const foo = 1;\n");
+  repo.run(["add", "."]);
+  repo.run(["commit", "-m", "feat(react): add Foo"]);
+
+  const second = runRelease(repo);
+  assert.equal(second.status, 0, second.stdout + second.stderr);
+  assert.match(second.stdout, /Version: 0\.1\.1 -> 0\.1\.2/);
+
+  // components/react/package.json itself is the published manifest (its
+  // "exports"/"peerDependencies" are shipped-relevant) -- a non-version edit
+  // to it, on its own, must also trigger a release.
+  const reactPkgPath = join(repo.repoDir, "components", "react", "package.json");
+  const reactPkg = JSON.parse(readFileSync(reactPkgPath, "utf-8"));
+  reactPkg.description = "added";
+  writeFileSync(reactPkgPath, JSON.stringify(reactPkg, null, 2) + "\n");
+  repo.run(["add", "."]);
+  repo.run(["commit", "-m", "chore(react): describe the package"]);
+
+  const third = runRelease(repo);
+  assert.equal(third.status, 0, third.stdout + third.stderr);
+  assert.match(third.stdout, /Version: 0\.1\.2 -> 0\.1\.3/);
+});
