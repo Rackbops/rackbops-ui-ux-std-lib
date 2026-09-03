@@ -58,11 +58,25 @@ test("onCancel reaches the native <dialog> and can preventDefault() the close", 
 });
 
 test("reopens via the open prop after a native close strands it out of sync (issue #31)", () => {
-  const { container, rerender, cleanup } = mount(
-    <Dialog open title="First">
+  // Every prop VALUE is identical between the two renders below, including
+  // `open` itself -- but each is its own JSX element (not the same object
+  // reused), since React bails out of even calling a component's render
+  // function again when the exact same element reference is passed to
+  // render() twice, which would make this pass for the wrong reason (never
+  // re-rendering at all) rather than the right one (re-rendering but
+  // reconciling regardless of what changed). A narrower fix that lists
+  // `open` (plus whatever else happened to change) as a dependency would
+  // also pass a test whose re-render changes some other prop alongside
+  // `open` staying stuck -- that dependency array would just as validly
+  // re-fire. Only a fix with no dependency array at all -- reconciling on
+  // literally every render, not just one where some listed value changed --
+  // passes when no observable prop value changed either.
+  const renderDialog = () => (
+    <Dialog open title="Same">
       Body
-    </Dialog>,
+    </Dialog>
   );
+  const { container, rerender, cleanup } = mount(renderDialog());
   const el = container.querySelector("dialog");
   assert.equal(el?.open, true, "showModal ran on mount");
 
@@ -74,15 +88,35 @@ test("reopens via the open prop after a native close strands it out of sync (iss
   el!.dispatchEvent(new Event("close"));
   assert.equal(el?.open, false, "native close took effect; the open prop is untouched");
 
-  // The parent re-renders with `open` still true, for an unrelated reason
-  // (here, `title` changing). Before #31 the sync effect's dependency array
+  // The parent re-renders for some unrelated reason -- nothing Dialog
+  // receives is different. Before #31 the sync effect's dependency array
   // was `[open]`, so an unchanged `open` value meant it never re-ran and the
   // dialog stayed closed no matter how many more times the parent rendered.
-  rerender(
-    <Dialog open title="Second">
+  rerender(renderDialog());
+  assert.equal(
+    el?.open,
+    true,
+    "re-synced and reopened even though no prop value Dialog received changed at all",
+  );
+  cleanup();
+});
+
+test("closing via the open prop calls the native close(), firing onClose", () => {
+  let closed = false;
+  const { container, rerender, cleanup } = mount(
+    <Dialog open onClose={() => (closed = true)}>
       Body
     </Dialog>,
   );
-  assert.equal(el?.open, true, "re-synced and reopened on the very next render");
+  const el = container.querySelector("dialog");
+  assert.equal(el?.open, true, "showModal ran on mount");
+
+  rerender(
+    <Dialog open={false} onClose={() => (closed = true)}>
+      Body
+    </Dialog>,
+  );
+  assert.equal(el?.open, false, "the sync effect called the native close()");
+  assert.ok(closed, "close() firing a real close event reached onClose");
   cleanup();
 });
