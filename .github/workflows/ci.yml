@@ -26,3 +26,5 @@ jobs:
       - run: pnpm --filter @rackbops/ui-react test
       # Local dev server containment/.git-exclusion regression tests (node:test).
       - run: node --test site/serve.test.mjs
+      # SKILL.md's generated component table stays in sync with styles/contract.json (node:test).
+      - run: node --test scripts/generate-skill-table.test.mjs
