@@ -20,7 +20,8 @@
   color: var(--rb-text);
   background: var(--rb-surface-2);
 }
-:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-link.rb-link--active {
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-link.rb-link--active,
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-link[aria-current="page"] {
   color: var(--rb-accent);
 }
 

@@ -29,7 +29,8 @@
     0 0 12px var(--rb-accent-2-glow);
 }
 /* --active: the current route, styled as the resting version of :hover */
-:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-link--active {
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-link--active,
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-link[aria-current="page"] {
   background: var(--rb-surface);
   color: var(--rb-accent-2);
   box-shadow:

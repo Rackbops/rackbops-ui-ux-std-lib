@@ -36,11 +36,13 @@
 }
 /* --active: the current route — the hover color/glow, resting, without the
  * hover-only slide (that's a click-me cue; an active item is already "here"). */
-:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-link--active {
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-link--active,
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-link[aria-current="page"] {
   border-color: var(--rb-accent-border);
   color: var(--rb-accent);
 }
-:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-link--active::before {
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-link--active::before,
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-link[aria-current="page"]::before {
   color: var(--rb-accent-2);
   text-shadow: 0 0 5px var(--rb-accent-2-glow);
 }
