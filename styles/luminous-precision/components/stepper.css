@@ -43,7 +43,8 @@
   transition: background-color var(--rb-transition), box-shadow var(--rb-transition);
 }
 :where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-stepper__step:not(:first-child).rb-stepper--complete::before,
-:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-stepper__step:not(:first-child).rb-stepper--current::before {
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-stepper__step:not(:first-child).rb-stepper--current::before,
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-stepper__step[aria-current="step"]::before {
   background: var(--rb-accent);
   box-shadow: 0 0 8px var(--rb-accent-glow);
 }
@@ -71,13 +72,15 @@
 :where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-stepper--complete .rb-stepper__label {
   color: var(--rb-text);
 }
-:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-stepper--current .rb-stepper__node {
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-stepper--current .rb-stepper__node,
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-stepper__step[aria-current="step"] .rb-stepper__node {
   background: var(--rb-surface);
   border-color: var(--rb-accent);
   color: var(--rb-accent);
   box-shadow: 0 0 8px var(--rb-accent-glow);
 }
-:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-stepper--current .rb-stepper__label {
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-stepper--current .rb-stepper__label,
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-stepper__step[aria-current="step"] .rb-stepper__label {
   color: var(--rb-accent);
   font-weight: var(--rb-font-weight-medium);
 }

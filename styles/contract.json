@@ -27,7 +27,7 @@
     "link": {
       "react": "NavLink",
       "classes": ["rb-link", "rb-link--active"],
-      "notes": "active prop; SHOULD also match [aria-current=\"page\"] (pending CSS sweep, #65)"
+      "notes": "active prop; also matches [aria-current=\"page\"] in every theme"
     },
     "nav-rail": {
       "react": "NavRail",
@@ -57,7 +57,7 @@
     "tabs": {
       "react": "Tabs",
       "classes": ["rb-tabs", "rb-tab", "rb-tab--active", "rb-tabpanel"],
-      "notes": "items: {id, label, content}[]; --active SHOULD also match [aria-selected=\"true\"] (pending CSS sweep, #65)"
+      "notes": "items: {id, label, content}[]; --active also matches [aria-selected=\"true\"] in every theme"
     },
     "table": {
       "react": null,
@@ -87,7 +87,7 @@
     "stepper": {
       "react": "Stepper",
       "classes": ["rb-stepper", "rb-stepper__step", "rb-stepper__node", "rb-stepper__label", "rb-stepper--complete", "rb-stepper--current", "rb-stepper--upcoming"],
-      "notes": "--upcoming is the resting state (allowlisted, no rule needed); --current SHOULD also match [aria-current=\"step\"] (pending CSS sweep, #65)"
+      "notes": "--upcoming is the resting state (allowlisted, no rule needed); --current also matches [aria-current=\"step\"] in every theme"
     }
   },
   "allowlist": [
@@ -131,62 +131,28 @@
       "class": "rb-tab--active",
       "attribute": "[aria-selected=\"true\"]",
       "baseSelector": "rb-tab",
-      "exempt": [
-        { "theme": "arcane-obsidian", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
-        { "theme": "arcane-parchment", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
-        { "theme": "rackbops-studio", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
-        { "theme": "rackbops-noir", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
-        { "theme": "amber-hearth", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
-        { "theme": "amber-ember", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" }
-      ]
+      "exempt": []
     },
     {
       "component": "link",
       "class": "rb-link--active",
       "attribute": "[aria-current=\"page\"]",
       "baseSelector": "rb-link",
-      "exempt": [
-        { "theme": "amber-ember", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
-        { "theme": "amber-hearth", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
-        { "theme": "arcane-obsidian", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
-        { "theme": "arcane-parchment", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
-        { "theme": "concrete-signal", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
-        { "theme": "concrete-signal-light", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
-        { "theme": "luminous-precision", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
-        { "theme": "mono-field", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
-        { "theme": "neon-butterfly", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
-        { "theme": "rackbops-noir", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
-        { "theme": "rackbops-studio", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" }
-      ]
+      "exempt": []
     },
     {
       "component": "stepper",
       "class": "rb-stepper--current",
       "attribute": "[aria-current=\"step\"]",
       "baseSelector": "rb-stepper__step",
-      "exempt": [
-        { "theme": "amber-ember", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
-        { "theme": "amber-hearth", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
-        { "theme": "arcane-obsidian", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
-        { "theme": "arcane-parchment", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
-        { "theme": "concrete-signal", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
-        { "theme": "concrete-signal-light", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
-        { "theme": "luminous-precision", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
-        { "theme": "mono-field", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
-        { "theme": "neon-butterfly", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
-        { "theme": "rackbops-noir", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
-        { "theme": "rackbops-studio", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" },
-        { "theme": "summer-cloud", "reason": "pending ARIA-pairing CSS sweep, tracked in #65" }
-      ]
+      "exempt": []
     }
   ],
   "dialogBackdropBlur": {
     "token": "--rb-blur",
     "exempt": [
       { "theme": "concrete-signal", "reason": "flat scrim by design, no blur/glass anywhere in this theme", "permanent": true },
-      { "theme": "concrete-signal-light", "reason": "flat scrim by design, no blur/glass anywhere in this theme", "permanent": true },
-      { "theme": "neon-butterfly", "reason": "hard-codes blur(4px), pending CSS fix, tracked in #65" },
-      { "theme": "summer-cloud", "reason": "hard-codes blur(4px), pending CSS fix, tracked in #65" }
+      { "theme": "concrete-signal-light", "reason": "flat scrim by design, no blur/glass anywhere in this theme", "permanent": true }
     ]
   }
 }

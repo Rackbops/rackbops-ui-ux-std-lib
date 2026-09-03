@@ -32,10 +32,12 @@
   transition: background var(--rb-transition);
 }
 :where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-link:hover::before,
-:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-link.rb-link--active::before {
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-link.rb-link--active::before,
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-link[aria-current="page"]::before {
   background: var(--rb-accent);
 }
-:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-link.rb-link--active {
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-link.rb-link--active,
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-link[aria-current="page"] {
   background: var(--rb-accent-wash);
   color: var(--rb-accent);
 }

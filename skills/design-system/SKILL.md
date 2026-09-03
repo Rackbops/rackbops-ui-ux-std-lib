@@ -75,19 +75,19 @@ This table is generated from `styles/contract.json` — edit that file, then run
 | --- | --- | --- |
 | `Button` | `.rb-btn` | variants: primary, accent, danger, ghost; --sm compact size; .rb-icon-btn icon-only square |
 | `Card` | `.rb-card` | raised prop; --raised is a documented no-op in the three nazuraki ports (section 5.3) |
-| `NavLink` | `.rb-link` | active prop; SHOULD also match [aria-current="page"] (pending CSS sweep, #65) |
+| `NavLink` | `.rb-link` | active prop; also matches [aria-current="page"] in every theme |
 | `NavRail` | `.rb-nav-rail` | composes .rb-link; owns no active convention |
 | `Field`/`Label`/`Input`/`Textarea`/`Select`/`Checkbox`/`Radio`/`Switch` | `.rb-field` | pair with Field/Label; choice controls wrap in .rb-choice |
 | `Badge` | `.rb-badge` | semantic variants |
 | `Alert` | `.rb-alert` | variant + optional title |
 | `Dialog` | `.rb-dialog` | native <dialog>, open/onClose/actions; __body is a documented no-op in four themes (section 5.3) |
-| `Tabs` | `.rb-tabs` | items: {id, label, content}[]; --active SHOULD also match [aria-selected="true"] (pending CSS sweep, #65) |
+| `Tabs` | `.rb-tabs` | items: {id, label, content}[]; --active also matches [aria-selected="true"] in every theme |
 | — | `.rb-table` | style directly, no React wrapper |
 | `Progress`/`Spinner` | `.rb-progress` | native <progress> pseudo-element contract enforced separately (not class-based) |
 | — | `.rb-muted` | style directly, no React wrapper |
 | — | `.rb-pre` | style directly, no React wrapper |
 | — | `.rb-log` | pairs with .rb-pre; style directly, no React wrapper |
-| `Stepper` | `.rb-stepper` | --upcoming is the resting state (allowlisted, no rule needed); --current SHOULD also match [aria-current="step"] (pending CSS sweep, #65) |
+| `Stepper` | `.rb-stepper` | --upcoming is the resting state (allowlisted, no rule needed); --current also matches [aria-current="step"] in every theme |
 <!-- contract-table:end -->
 
 Theme-specific extras (styled only under that theme — check before using): the
