@@ -47,7 +47,7 @@
 }
 
 :where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *):where(a) {
-  color: inherit;
+  color: var(--rb-accent);
 }
 
 :where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *):where(:focus-visible) {

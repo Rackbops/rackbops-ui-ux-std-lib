@@ -85,6 +85,10 @@ consumers can compensate rather than discover it:
   kicker tag, the `/0N` principle markers, and the active nav link — all
   reproduced here. Treat accent-coloured text as decorative; never set body copy
   or the sole label of an interactive control in `--rb-accent`.
+- **Bare (unclassed) `<a>` uses `color: inherit`, not `--rb-accent`** — for the
+  same reason above: accent-as-text is decorative-only here, and a bare link is
+  ordinary body copy, not a decorative flourish. `.rb-link`'s nav component
+  still carries its own accent-driven active state.
 - **`--rb-text-faint` (#8091a1) is below AA on white** — use it only for
   genuinely secondary meta (as the source does for footnotes), never for
   essential text. The shared `.rb-table` header therefore uses `--rb-text-soft`,
