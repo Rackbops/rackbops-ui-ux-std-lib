@@ -6,3 +6,9 @@ _dist/
 .DS_Store
 styles/test/.tmp-types-*
 .env
+# Copied in at pack/publish time by scripts/copy-license.mjs from the root
+# LICENSE/NOTICE -- not a second source of truth, so not tracked here.
+/styles/LICENSE
+/styles/NOTICE
+/components/react/LICENSE
+/components/react/NOTICE

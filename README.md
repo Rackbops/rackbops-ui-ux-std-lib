@@ -138,7 +138,7 @@ The two steps are gated by separate secrets:
 - **`publish`** needs an `NPM_TOKEN` (a granular token scoped to `@rackbops`)
   to authenticate to npm. That secret **is configured and live** — pushing a
   `v*` tag publishes both packages to public npm. The `v0.1.0` tag that
-  shipped [#9](https://github.com/roshne/rackbops-ui-ux-std-lib/pull/9) was
+  shipped [#9](https://github.com/Rackbops/rackbops-ui-ux-std-lib/pull/9) was
   pushed this way, and both packages are published under the `@rackbops`
   scope.
 
