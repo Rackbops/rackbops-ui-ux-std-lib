@@ -5,13 +5,14 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/roshne/rackbops-ui-ux-std-lib.git",
+    "url": "git+https://github.com/Rackbops/rackbops-ui-ux-std-lib.git",
     "directory": "styles"
   },
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
+    "prepack": "node ../scripts/copy-license.mjs",
     "test": "node --test"
   },
   "devDependencies": {
@@ -33,7 +34,9 @@
     "all.css",
     "manifest.json",
     "contract.json",
-    "css-side-effect.d.ts"
+    "css-side-effect.d.ts",
+    "LICENSE",
+    "NOTICE"
   ],
   "exports": {
     "./all": { "types": "./css-side-effect.d.ts", "default": "./all.css" },

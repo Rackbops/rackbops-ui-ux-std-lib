@@ -479,3 +479,20 @@ test("PATHSPEC: a shipped design.md fix triggers a release, and so does shipped 
   assert.equal(third.status, 0, third.stdout + third.stderr);
   assert.match(third.stdout, /Version: 0\.1\.2 -> 0\.1\.3/);
 });
+
+test("PATHSPEC: a change to only scripts/copy-license.mjs triggers a release (issue #38)", (t) => {
+  // scripts/copy-license.mjs lives outside both package directories but is
+  // shipped-relevant -- it's the prepack step that puts LICENSE/NOTICE in
+  // each tarball -- so a fix to it alone must not fall through PATHSPEC the
+  // way pre-#34 components/react changes once did.
+  const repo = makeRepo(t);
+
+  mkdirSync(join(repo.repoDir, "scripts"), { recursive: true });
+  writeFileSync(join(repo.repoDir, "scripts", "copy-license.mjs"), "// copy license files\n");
+  repo.run(["add", "."]);
+  repo.run(["commit", "-m", "fix(scripts): correct copy-license.mjs"]);
+
+  const result = runRelease(repo);
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+  assert.match(result.stdout, /Version: 0\.1\.0 -> 0\.1\.1/);
+});

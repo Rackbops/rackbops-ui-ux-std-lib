@@ -5,7 +5,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/roshne/rackbops-ui-ux-std-lib.git",
+    "url": "git+https://github.com/Rackbops/rackbops-ui-ux-std-lib.git",
     "directory": "components/react"
   },
   "publishConfig": {
@@ -13,7 +13,9 @@
   },
   "type": "module",
   "files": [
-    "dist"
+    "dist",
+    "LICENSE",
+    "NOTICE"
   ],
   "exports": {
     ".": {
@@ -22,6 +24,7 @@
     }
   },
   "scripts": {
+    "prepack": "node ../../scripts/copy-license.mjs",
     "build": "tsc -p tsconfig.build.json",
     "test": "tsc -p tsconfig.json --noEmit && node --import tsx --test \"src/**/*.test.tsx\""
   },

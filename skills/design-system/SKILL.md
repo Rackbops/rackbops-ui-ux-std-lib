@@ -6,7 +6,7 @@ description: Use the rackbops ui/ux std-lib design system when building or resty
 # Using the rackbops design system
 
 roshne's apps standardize their UX on `rackbops-ui-ux-std-lib`
-(github.com/roshne/rackbops-ui-ux-std-lib). Never write ad-hoc colors, fonts, or
+(github.com/Rackbops/rackbops-ui-ux-std-lib). Never write ad-hoc colors, fonts, or
 component styles in an app that has adopted a theme — consume the system.
 
 ## Rules

@@ -35,6 +35,10 @@ VERSION_FILES=(styles/package.json components/react/package.json)
 #    `src/` stands in for it, plus package.json (the published manifest --
 #    its "exports"/"peerDependencies" are shipped-relevant). Test files under
 #    src/ (tsconfig.build.json's excludes) aren't shipped.
+#  - scripts/copy-license.mjs is shipped-relevant even though it lives outside
+#    both package directories: it's the prepack step that copies LICENSE/
+#    NOTICE into each tarball (issue #38), so a fix to it alone must still
+#    trigger a release -- same gap as issue #34, now closed for this script.
 PATHSPEC=(
   styles/
   ":(exclude)styles/test/"
@@ -43,6 +47,7 @@ PATHSPEC=(
   ":(exclude,glob)components/react/src/**/*.test.ts"
   ":(exclude,glob)components/react/src/**/*.test.tsx"
   ":(exclude)components/react/src/test-dom.ts"
+  scripts/copy-license.mjs
 )
 
 # Matches this script's own bump commit subject ("chore(release): vX.Y.Z"),

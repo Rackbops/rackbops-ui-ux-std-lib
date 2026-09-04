@@ -28,3 +28,5 @@ jobs:
       - run: node --test site/serve.test.mjs
       # SKILL.md's generated component table stays in sync with styles/contract.json (node:test).
       - run: node --test scripts/generate-skill-table.test.mjs
+      # LICENSE/NOTICE packaging (copy-license.mjs) stays wired into both packages (node:test).
+      - run: node --test scripts/copy-license.test.mjs
