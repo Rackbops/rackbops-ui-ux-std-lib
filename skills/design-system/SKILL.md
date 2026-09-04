@@ -31,12 +31,17 @@ mount container to theme one subtree (embed-safe: the CSS is inert everywhere
 else, and the `:where()` guards are zero-specificity so any consumer rule
 overrides). Several themes can load together; swapping is an attribute flip.
 
-Themes come as light/dark pairs: `arcane-obsidian` (dark) / `arcane-parchment`
-(light) — the artifact-console developer console; and `rackbops-studio` (light) /
-`rackbops-noir` (dark) — the rackbops editorial studio. All declare the same
-`--rb-*` baseline and the same `rb-*` classes, so changing the attribute restyles
-the app without touching markup. Fonts are system stacks for the app themes; the
-ported themes (e.g. `luminous-precision`) declare webfont URLs in the manifest.
+The full roster is 12 themes. Two pairs are reverse-documented from roshne's
+own apps: `arcane-obsidian` (dark) / `arcane-parchment` (light) — the
+artifact-console developer console; and `rackbops-studio` (light) /
+`rackbops-noir` (dark) — the rackbops editorial studio. Three are ported
+(credited) from nazuraki/ui-std-lib: `luminous-precision`, `neon-butterfly`,
+`summer-cloud`. The remaining five are original: `concrete-signal` (dark) /
+`concrete-signal-light` (light), `amber-hearth` (light) / `amber-ember` (dark),
+and standalone `mono-field` (light, no dark sibling yet). All 12 declare the
+same `--rb-*` baseline and the same `rb-*` classes, so changing the attribute
+restyles the app without touching markup. Fonts are system stacks everywhere
+except the three ported themes, which declare webfont URLs in the manifest.
 
 The packages publish to **public npm** under `@rackbops` — no auth needed:
 
@@ -56,9 +61,14 @@ import { Button, Card, Dialog, Tabs, Field, Input, Alert } from "@rackbops/ui-re
 <html data-rb-style="arcane-obsidian">
 ```
 
-`@rackbops/styles/manifest` is the machine-readable roster — theme names and
-scheme (`dark`/`light`). Validate configured theme names from it rather than
-hardcoding a list. No-build apps can load the CSS from jsDelivr's npm mirror once published, e.g.
+`@rackbops/styles/manifest` is the machine-readable roster — theme names,
+scheme (`dark`/`light`), and `fonts` (webfont stylesheet URLs, empty for
+system-font themes). Validate configured theme names from it rather than
+hardcoding a list. A theme with a non-empty `fonts` array needs each URL
+injected as a `<link rel="stylesheet">` yourself on theme switch — no
+`@rackbops/ui-react` helper does this yet; `site/`'s showcase in the std-lib
+repo is the reference implementation. No-build apps can load the CSS from
+jsDelivr's npm mirror once published, e.g.
 `https://cdn.jsdelivr.net/npm/@rackbops/styles/<theme>/index.css`.
 
 ## Component inventory
@@ -90,6 +100,12 @@ This table is generated from `styles/contract.json` — edit that file, then run
 | `Stepper` | `.rb-stepper` | --upcoming is the resting state (allowlisted, no rule needed); --current also matches [aria-current="step"] in every theme |
 <!-- contract-table:end -->
 
+`LinksIndex` (React only, no CSS class of its own) composes `Card`/`Badge` into
+a data-driven grouped index of links/apps — grouped by category with an
+"Other" fallback, external URLs opening in a new tab. It carries no theme
+obligation (just the primitives above), so it isn't in the table above — check
+here before building a links/app index page from scratch.
+
 Theme-specific extras (styled only under that theme — check before using): the
 arcane pair adds `.rb-wordmark`, `.rb-tabstrip`, and `.rb-eyebrow`; the
 rackbops pair adds `.rb-rack` (equaliser panel), `.rb-principles`/`.rb-principle`,
@@ -111,7 +127,12 @@ Copy the `styles/arcane-obsidian/` layout: `tokens.css` (the full baseline
 
 1. `styles/manifest.json` — name, scheme, fonts (empty for a system-font theme).
 2. `styles/package.json` — add the directory to `files` and its four `exports`.
-3. `README.md` — the themes table.
+3. `styles/all.css` — add `@import "./<name>/index.css";`.
+4. `README.md` — the themes table.
 
-Run `pnpm --filter @rackbops/styles test` — the contract test enforces all of the
-above and is the definition of done.
+Porting from nazuraki/ui-std-lib instead of designing an original theme? Also
+credit it in `NOTICE`.
+
+Run `pnpm --filter @rackbops/styles test` — the contract test enforces steps 1-3
+(plus the CSS layout above); README.md and NOTICE aren't test-checked, so
+double-check those by hand.
