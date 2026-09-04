@@ -36,7 +36,7 @@
   justify-content: center;
   line-height: 1;
 }
-:where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-btn:hover,
+:where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-btn:not(:disabled):hover,
 :where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-btn:focus-visible {
   border-color: var(--rb-accent);
   outline: none;
@@ -46,7 +46,7 @@
   border-color: var(--rb-accent);
   color: var(--rb-accent-fg);
 }
-:where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-btn--primary:hover,
+:where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-btn--primary:not(:disabled):hover,
 :where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-btn--primary:focus-visible {
   background: color-mix(in srgb, var(--rb-accent) 88%, #fff);
   border-color: color-mix(in srgb, var(--rb-accent) 88%, #fff);
@@ -61,7 +61,7 @@
   border-color: color-mix(in srgb, var(--rb-danger) 40%, var(--rb-border));
   color: var(--rb-danger);
 }
-:where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-btn--danger:hover,
+:where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-btn--danger:not(:disabled):hover,
 :where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-btn--danger:focus-visible {
   border-color: var(--rb-danger);
 }
@@ -70,7 +70,7 @@
   border-color: transparent;
   color: var(--rb-text-soft);
 }
-:where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-btn--ghost:hover,
+:where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-btn--ghost:not(:disabled):hover,
 :where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-btn--ghost:focus-visible {
   background: var(--rb-surface-2);
   border-color: var(--rb-border);

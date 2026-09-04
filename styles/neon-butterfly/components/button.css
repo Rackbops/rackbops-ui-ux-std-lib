@@ -33,7 +33,7 @@
   justify-content: center;
   line-height: 1;
 }
-:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-btn:hover,
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-btn:not(:disabled):hover,
 :where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-btn:focus-visible {
   border-color: var(--rb-accent-border);
   color: var(--rb-accent);
@@ -58,7 +58,7 @@
   border-color: transparent;
   color: var(--rb-text-soft);
 }
-:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-btn--ghost:hover,
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-btn--ghost:not(:disabled):hover,
 :where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-btn--ghost:focus-visible {
   background: var(--rb-surface-glass);
 }
@@ -73,7 +73,7 @@
   :where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-btn {
     transition: none;
   }
-  :where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-btn:hover,
+  :where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-btn:not(:disabled):hover,
   :where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-btn:focus-visible {
     animation: none;
   }

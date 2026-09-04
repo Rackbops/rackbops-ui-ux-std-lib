@@ -39,7 +39,7 @@
   justify-content: center;
   line-height: 1;
 }
-:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-btn:hover {
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-btn:not(:disabled):hover {
   border-color: var(--rb-border-strong);
 }
 :where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-btn:focus-visible {
@@ -54,7 +54,7 @@
   color: var(--rb-accent-fg);
   box-shadow: var(--rb-shadow-sm);
 }
-:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-btn--primary:hover {
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-btn--primary:not(:disabled):hover {
   box-shadow: var(--rb-shadow-lg);
 }
 
@@ -64,7 +64,7 @@
   border-color: transparent;
   color: var(--rb-accent);
 }
-:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-btn--accent:hover {
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-btn--accent:not(:disabled):hover {
   border-color: var(--rb-accent);
 }
 
@@ -74,7 +74,7 @@
   border-color: var(--rb-border);
   color: var(--rb-danger);
 }
-:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-btn--danger:hover {
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-btn--danger:not(:disabled):hover {
   border-color: var(--rb-danger);
 }
 
@@ -84,7 +84,7 @@
   border-color: transparent;
   color: var(--rb-text-soft);
 }
-:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-btn--ghost:hover {
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-btn--ghost:not(:disabled):hover {
   border-color: transparent;
   color: var(--rb-text);
 }

@@ -34,7 +34,7 @@
   justify-content: center;
   line-height: 1;
 }
-:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn:hover,
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn:not(:disabled):hover,
 :where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn:focus-visible {
   border-color: var(--rb-accent-border);
   color: var(--rb-accent);
@@ -48,7 +48,7 @@
   border-color: var(--rb-accent);
   color: var(--rb-accent-fg);
 }
-:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn--primary:hover,
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn--primary:not(:disabled):hover,
 :where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn--primary:focus-visible {
   border-color: var(--rb-accent);
   color: var(--rb-accent-fg);
@@ -59,7 +59,7 @@
   border-color: var(--rb-accent-2);
   color: var(--rb-accent-2);
 }
-:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn--accent:hover,
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn--accent:not(:disabled):hover,
 :where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn--accent:focus-visible {
   border-color: var(--rb-accent-2);
   color: var(--rb-accent-2);
@@ -70,7 +70,7 @@
   border-color: var(--rb-danger);
   color: var(--rb-danger);
 }
-:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn--danger:hover,
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn--danger:not(:disabled):hover,
 :where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn--danger:focus-visible {
   border-color: var(--rb-danger);
   color: var(--rb-danger);
@@ -81,7 +81,7 @@
   border-color: transparent;
   color: var(--rb-text-soft);
 }
-:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn--ghost:hover,
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn--ghost:not(:disabled):hover,
 :where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn--ghost:focus-visible {
   background: var(--rb-surface-2);
 }
@@ -106,7 +106,7 @@
   :where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn {
     transition: none;
   }
-  :where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn:hover,
+  :where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn:not(:disabled):hover,
   :where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn:focus-visible {
     animation: none;
   }

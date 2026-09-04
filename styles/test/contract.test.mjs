@@ -266,6 +266,27 @@ for (const theme of themeDirs) {
       `${theme}: class(es) not in any contract.json component or this theme's extras: ${undocumented.join(", ")}`
     );
   });
+
+  test(`${theme}: .rb-btn hover rules don't override :disabled (issue #37)`, () => {
+    // A disabled button still matches :hover in real browsers (confirmed via
+    // the showcase), so every hover selector touching .rb-btn/.rb-icon-btn
+    // must scope itself with :not(:disabled) or a disabled button's
+    // border/background/shadow/transform keeps reacting to the pointer.
+    // :focus-visible/:active need no such scoping -- disabled elements can't
+    // be focused or activated.
+    const file = join(ROOT, theme, "components", "button.css");
+    const { selectors } = parseCss(readFileSync(file, "utf-8"));
+    const hoverSelectors = selectors.filter(
+      (s) => /:hover\b/.test(s) && /\.rb-(btn|icon-btn)\b/.test(s)
+    );
+    assert.ok(hoverSelectors.length > 0, `${theme}: expected at least one .rb-btn hover selector`);
+    for (const sel of hoverSelectors) {
+      assert.ok(
+        sel.includes(":not(:disabled)"),
+        `${theme}: hover selector must scope out :disabled: ${sel}`
+      );
+    }
+  });
 }
 
 for (const { file, class: cls } of REQUIRED_CLASSES) {

@@ -358,7 +358,7 @@ extras), so an undocumented class fails too]`. The React column is the
 
 | File | Required selectors | React | Notes |
 | --- | --- | --- | --- |
-| `button.css` | `.rb-btn`, `--primary`, `--accent`, `--danger`, `--ghost`, `--sm`, `:disabled`; `.rb-icon-btn` | `Button` | disabled buttons still take `:hover` in all twelve `[pending #37]` |
+| `button.css` | `.rb-btn`, `--primary`, `--accent`, `--danger`, `--ghost`, `--sm`, `:disabled`; `.rb-icon-btn` | `Button` | disabled buttons take no `:hover` response in all twelve (hover rules scoped `:not(:disabled)`, #37) |
 | `card.css` | `.rb-card`, `--raised` | `Card` | `--raised` is a documented no-op in the three nazuraki ports (section 5.3, `contract.test.mjs`'s `CLASS_ALLOWLIST`): luminous-precision and neon-butterfly have no second elevation tier upstream at all; summer-cloud's upstream second tier is `--floating`, already carried over, so the port doesn't also add a near-duplicate `--raised` |
 | `link.css` | `.rb-link`, `--active` | `NavLink` | SHOULD also match `[aria-current="page"]`; checked by `contract.test.mjs` against `contract.json`'s `ariaPairs`, all twelve comply `[tested]` |
 | `nav-rail.css` | `.rb-nav-rail` | `NavRail` | Composes `.rb-link`; owns no active convention |
@@ -517,7 +517,7 @@ each looks is the theme's voice; that it exists is the contract.
 | Hover | A visible change (fill, border, or lift) that is never the only affordance -- the resting state must already read as interactive |
 | `:focus-visible` | Visible, accent-based, on every focusable element. A component MAY replace the base outline (buttons swap it for an accent border, `styles/arcane-obsidian/components/button.css:39-43`) but MUST NOT remove it without a replacement |
 | Active / selected | `--active` (links, tabs), `--current` (stepper); paired with the ARIA state where one exists |
-| Disabled | `opacity` + `cursor: not-allowed`, and no hover response: hover rules are scoped `:not(:disabled)` `[pending #37]` |
+| Disabled | `opacity` + `cursor: not-allowed`, and no hover response: hover rules are scoped `:not(:disabled)` (#37) |
 | Press | MAY dip or scale (the studio's 1 px dip); MUST respect reduced motion |
 
 Transitions and animations:
@@ -873,7 +873,7 @@ identity paragraph and the README table.
 | `--rb-focus-ring`, `--rb-ease` baseline; contract 2 | contract bump | pending #54 |
 | Native `<progress>` contract in all twelve | `contract.test.mjs` | live |
 | `:focus-visible` base rule in all twelve; `a` colour divergence documented | CSS fix + test | pending #36 (4 of 12) |
-| Disabled buttons take no hover | CSS fix | pending #37 |
+| Disabled buttons take no hover | CSS fix | live (#37) |
 | `rb-stepper` in every theme | #55 merged | live (parity now tested via #47) |
 | `.rb-stepper--upcoming` styled or allowlisted; `[aria-current="step"]` paired | `contract.test.mjs` | allowlisted: live (#47). Paired: live, 12 of 12 themes comply (#65) |
 | `Dialog` spreads rest, reconciles `open` | `Dialog.test.tsx` | live (#31) |

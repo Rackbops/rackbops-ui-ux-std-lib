@@ -43,7 +43,7 @@
   background: var(--rb-text);
   color: var(--rb-bg);
 }
-:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn--primary:hover,
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn--primary:not(:disabled):hover,
 :where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn--primary:focus-visible {
   background: var(--rb-accent);
   color: var(--rb-accent-fg);
@@ -52,7 +52,7 @@
   background: var(--rb-accent);
   color: var(--rb-accent-fg);
 }
-:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn--accent:hover,
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn--accent:not(:disabled):hover,
 :where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn--accent:focus-visible {
   background: color-mix(in srgb, var(--rb-accent), var(--rb-text) 15%);
 }
@@ -61,7 +61,7 @@
   color: var(--rb-text);
   border-color: var(--rb-border-strong);
 }
-:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn--ghost:hover,
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn--ghost:not(:disabled):hover,
 :where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn--ghost:focus-visible {
   border-color: var(--rb-text);
   background: var(--rb-surface-2);
@@ -71,7 +71,7 @@
   color: var(--rb-danger);
   border-color: color-mix(in srgb, var(--rb-danger) 45%, var(--rb-border));
 }
-:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn--danger:hover,
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn--danger:not(:disabled):hover,
 :where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn--danger:focus-visible {
   border-color: var(--rb-danger);
 }
@@ -82,7 +82,7 @@
 :where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn__arrow {
   transition: transform var(--rb-transition) ease;
 }
-:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn:hover .rb-btn__arrow {
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn:not(:disabled):hover .rb-btn__arrow {
   transform: translateX(3px);
 }
 
