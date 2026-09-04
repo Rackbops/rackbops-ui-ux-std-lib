@@ -64,6 +64,11 @@
   color: var(--rb-accent);
 }
 
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *):where(:focus-visible) {
+  outline: 2px solid var(--rb-accent);
+  outline-offset: 2px;
+}
+
 :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *)::selection {
   background: var(--rb-accent);
   color: #fff;
