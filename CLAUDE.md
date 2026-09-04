@@ -68,5 +68,6 @@ or nazuraki's upstream CSS) before writing them.
 ## Adding a theme
 
 Copy `styles/arcane-obsidian/`, re-namespace the guard, fill the baseline tokens,
-write `design.md`, then register in `manifest.json`, `styles/package.json`, and
-the README table. The contract test is the gate.
+write `design.md`, then register in `manifest.json`, `styles/package.json`,
+`styles/all.css` (`@import` the new theme), and the README table. The contract
+test gates the first three; README isn't test-checked.
