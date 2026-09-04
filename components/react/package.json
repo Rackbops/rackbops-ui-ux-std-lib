@@ -1,6 +1,6 @@
 {
   "name": "@rackbops/ui-react",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "React components styled by @rackbops/styles rackbops themes.",
   "license": "MIT",
   "repository": {
