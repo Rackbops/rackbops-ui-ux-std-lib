@@ -130,11 +130,17 @@ registry (`registry.npmjs.org`).
 The two steps are gated by separate secrets:
 
 - **`release`** needs a `RELEASE_TOKEN` (a PAT that can push past branch
-  protection) to create the bump commit and tag. That secret is **not
-  currently configured**, so the workflow runs on every merge to `main` and
-  no-ops (`RELEASE_TOKEN not set — release/publish is inert. Skipping.`).
-  Cut a release by running `.github/scripts/release.sh` locally and pushing
-  the resulting commit and tag yourself.
+  protection, and whose tag push actually triggers `publish.yml` below —
+  a plain `GITHUB_TOKEN` push wouldn't) to create the bump commit and tag.
+  That secret **is configured and live** — the workflow runs automatically
+  on qualifying merges to `main`, unattended; `v0.1.9` and `v0.1.10` were
+  both cut this way. If the secret were ever unset, the workflow no-ops
+  instead (`RELEASE_TOKEN not set — release/publish is inert. Skipping.`),
+  and a release can still be cut by running `.github/scripts/release.sh`
+  locally as a fallback — it commits the version bump, pushes it to
+  `main`, tags, pushes the tag, and creates the GitHub release itself, so
+  there's nothing left to push by hand afterward. It needs push rights to
+  the repo and an authenticated `gh` CLI.
 - **`publish`** needs an `NPM_TOKEN` (a granular token scoped to `@rackbops`)
   to authenticate to npm. That secret **is configured and live** — pushing a
   `v*` tag publishes both packages to public npm. The `v0.1.0` tag that
