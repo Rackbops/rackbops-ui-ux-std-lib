@@ -4,6 +4,13 @@
  * active tab underline are the only two places the gradient is spent. */
 :where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-wordmark {
   display: inline-flex;
+  /* Sizes to its own content, never to a flex/grid ancestor's cross-axis stretch (e.g. a
+     column-flex parent with default align-items) -- without this, the box widens far past the
+     visible glyphs, so the gradient below spends most of its span on empty space and the text
+     only ever samples its first, near-uniform violet stretch instead of sweeping through orchid
+     and gold. inline-flex alone does not protect against this: it governs this element's OWN
+     children's layout, not how the element itself is sized within its parent. */
+  width: fit-content;
   align-items: baseline;
   gap: 0.4em;
   margin: 0;
