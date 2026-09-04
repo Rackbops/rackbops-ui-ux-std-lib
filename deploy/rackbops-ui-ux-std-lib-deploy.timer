@@ -1,0 +1,21 @@
+# rackbops-ui-ux-std-lib auto-deploy -- polls GitHub for showcase updates by firing the paired
+# .service on a schedule. Installed on nucbox as a SYSTEM unit under /etc/systemd/system/.
+#
+# Adapted from https://github.com/Rackbops/rackbops-web-deploy-template's
+# servers/nginx-static/publish/deploy-pull.timer.example.
+
+[Unit]
+Description=rackbops-ui-ux-std-lib -- poll GitHub for showcase updates
+
+[Timer]
+# Explicit Unit=, not the default same-stem pairing, so this file states which service it fires.
+Unit=rackbops-ui-ux-std-lib-deploy.service
+# Runs 2 min after boot, then every 5 min after each run. Keep BOTH: OnUnitActiveSec= alone is
+# measured from the last activation, so after a reboot it would never fire until something started
+# the service by hand.
+OnBootSec=2min
+OnUnitActiveSec=5min
+Persistent=true
+
+[Install]
+WantedBy=timers.target

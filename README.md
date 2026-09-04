@@ -98,9 +98,10 @@ pnpm install
 pnpm showcase   # http://localhost:5177/site/
 ```
 
-Renders every component under a theme switcher. It runs locally (above); a hosted
-showcase is parked (repo issue #2) — `site/` can be served behind Cloudflare Access
-on the box, the same pattern rackbops.com uses.
+Renders every component under a theme switcher. It runs locally (above), and is also
+hosted at `styles.rackbops.com` behind Cloudflare Access — see `deploy/README.md` for
+the hosting setup (a per-app tunnel + pull-model auto-deploy, not the pattern
+rackbops.com uses).
 
 ## Developing
 
@@ -157,7 +158,9 @@ styles/                    @rackbops/styles
   rackbops-studio/         same layout + assets/boppy.svg + studio extras
   test/                    contract + release-bump tests (node:test)
 components/react/          @rackbops/ui-react (tsc -> dist/)
-site/                      local showcase (index.html + serve.mjs, no build)
+site/                      showcase (index.html + serve.mjs, no build)
+deploy/                    hosted-showcase auto-deploy: pull script + systemd timer + README
+compose.yaml, nginx.conf   the hosted-showcase compose stack (repo root -- see deploy/README.md)
 skills/design-system/      agent skill for consuming the system
 ```
 

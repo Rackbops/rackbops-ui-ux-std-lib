@@ -1,0 +1,26 @@
+# rackbops-ui-ux-std-lib auto-deploy -- oneshot service that runs deploy-pull.sh once.
+#
+# Installed on nucbox as a SYSTEM unit under /etc/systemd/system/ (paired with the .timer). It
+# drops to a real user via User= below -- systemd.exec's SetLoginEnvironment= sets $HOME from that
+# automatically, so no explicit Environment=HOME= line is needed. The service body stays
+# privilege-light: no docker, no sudo -- it only pulls and logs.
+#
+# TimeoutStartSec= matters because Type=oneshot disables systemd's start timeout by default: without
+# it a hung `git pull` could park this unit running forever. On timeout systemd marks the unit
+# failed and kills its cgroup, letting the timer's next cycle try again.
+#
+# Adapted from https://github.com/Rackbops/rackbops-web-deploy-template's
+# servers/nginx-static/publish/deploy-pull.service.example -- see that file's header for the full
+# reasoning (TimeoutStartSec sizing, what a killed run leaves behind, recovery via
+# `git reset --hard @{u}`); not restated here.
+
+[Unit]
+Description=rackbops-ui-ux-std-lib -- pull the latest showcase from GitHub
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+TimeoutStartSec=4min
+User=roshne
+ExecStart=/bin/bash /opt/stacks/rackbops-ui-ux-std-lib/deploy/deploy-pull.sh
