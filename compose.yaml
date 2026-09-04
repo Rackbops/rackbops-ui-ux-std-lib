@@ -1,0 +1,37 @@
+# rackbops-ui-ux-std-lib -- gated hosted showcase, served by a stock nginx:alpine container with
+# a dedicated Cloudflare Tunnel sidecar. No host port is published at all: the sidecar reaches
+# `web` by its compose service name over the project's own network, and Cloudflare Access gates
+# the tunnel hostname in front of it. Adapted from:
+#   server: https://github.com/Rackbops/rackbops-web-deploy-template/blob/main/servers/nginx-static/README.md
+#   sidecar shape: Rackbops/Tooling's docs/per-app-cloudflare-access-tunnel.md (per-app token
+#     tunnel, not the box's shared locally-managed tunnel -- keeps this app's blast radius
+#     confined to this compose project; see deploy/README.md).
+#
+# Managed as a Dockge stack at /opt/stacks/rackbops-ui-ux-std-lib/ on nucbox. Pull-model auto-deploy
+# (see deploy/deploy-pull.sh): the box's clone of this repo IS the stack dir, so `web`'s repo-root
+# mount below reaches this file's siblings directly.
+
+services:
+  web:
+    image: nginx:alpine
+    container_name: rackbops-ui-ux-std-lib-web
+    restart: unless-stopped
+    volumes:
+      # Repo-root mount, not ./site -- site/index.html does `import "../styles/all.css"`, a
+      # sibling of site/, so nginx must serve the whole repo root for that import to resolve.
+      # nginx.conf's deny blocks keep .git/, this file, and deploy/ unreadable despite the mount.
+      - .:/usr/share/nginx/html:ro
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    # No ports: block -- deliberately unreachable except in-network by the cloudflared sidecar
+    # below. There is no loopback-bound host port here to check with `ss -ltnp`; the security
+    # floor is "nothing published" rather than "published to loopback only".
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: rackbops-ui-ux-std-lib-cloudflared
+    command: tunnel --no-autoupdate run
+    environment:
+      - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
+    restart: unless-stopped
+    depends_on:
+      - web   # so the origin is up before the tunnel starts routing to it
