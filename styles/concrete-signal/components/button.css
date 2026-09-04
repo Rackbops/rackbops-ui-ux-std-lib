@@ -40,7 +40,7 @@
   justify-content: center;
   line-height: 1;
 }
-:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-btn:hover,
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-btn:not(:disabled):hover,
 :where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-btn:focus-visible {
   border-color: var(--rb-accent);
   color: var(--rb-accent);
@@ -55,7 +55,7 @@
     transform var(--rb-transition),
     box-shadow var(--rb-transition);
 }
-:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-btn--primary:hover,
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-btn--primary:not(:disabled):hover,
 :where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-btn--primary:focus-visible,
 :where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-btn--primary:active {
   border-color: var(--rb-accent);
@@ -79,7 +79,7 @@
   border-color: transparent;
   color: var(--rb-text-soft);
 }
-:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-btn--ghost:hover,
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-btn--ghost:not(:disabled):hover,
 :where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-btn--ghost:focus-visible {
   background: var(--rb-surface-2);
   border-color: var(--rb-border);

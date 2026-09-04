@@ -38,7 +38,7 @@
   justify-content: center;
   line-height: 1;
 }
-:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-btn:hover,
+:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-btn:not(:disabled):hover,
 :where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-btn:focus-visible {
   border-color: var(--rb-border-strong);
   outline: none;
@@ -49,7 +49,7 @@
   color: var(--rb-accent-fg);
   box-shadow: var(--rb-shadow-sm);
 }
-:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-btn--primary:hover,
+:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-btn--primary:not(:disabled):hover,
 :where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-btn--primary:focus-visible {
   box-shadow: var(--rb-shadow-lg);
 }
@@ -63,7 +63,7 @@
   border-color: color-mix(in srgb, var(--rb-danger) 40%, var(--rb-border));
   color: var(--rb-danger);
 }
-:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-btn--danger:hover,
+:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-btn--danger:not(:disabled):hover,
 :where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-btn--danger:focus-visible {
   border-color: var(--rb-danger);
 }
@@ -72,7 +72,7 @@
   border-color: transparent;
   color: var(--rb-text-soft);
 }
-:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-btn--ghost:hover,
+:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-btn--ghost:not(:disabled):hover,
 :where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-btn--ghost:focus-visible {
   background: var(--rb-surface-2);
   border-color: var(--rb-border);

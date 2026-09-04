@@ -37,7 +37,7 @@
   justify-content: center;
   line-height: 1;
 }
-:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn:hover,
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn:not(:disabled):hover,
 :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn:focus-visible {
   background: rgba(255, 255, 255, 0.6);
   border-color: var(--rb-accent-border);
@@ -60,7 +60,7 @@
   font-weight: var(--rb-font-weight-bold);
   box-shadow: var(--rb-shadow-raised);
 }
-:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn--primary:hover {
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn--primary:not(:disabled):hover {
   background: var(--rb-accent-bright);
   color: #fff;
   box-shadow: var(--rb-shadow-raised-hover);
@@ -76,7 +76,7 @@
   border-color: var(--rb-accent-2);
   color: var(--rb-accent-2-deep);
 }
-:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn--accent:hover,
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn--accent:not(:disabled):hover,
 :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn--accent:focus-visible {
   color: var(--rb-accent-2-deep);
   box-shadow: 0 0 0 4px var(--rb-accent-2-glow);
@@ -88,7 +88,7 @@
   border-color: transparent;
   box-shadow: none;
 }
-:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn--ghost:hover,
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn--ghost:not(:disabled):hover,
 :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn--ghost:focus-visible {
   background: var(--rb-sky-tint);
 }
@@ -100,7 +100,7 @@
   font-weight: var(--rb-font-weight-bold);
   box-shadow: 0 4px 14px rgba(204, 31, 31, 0.39);
 }
-:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn--danger:hover,
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn--danger:not(:disabled):hover,
 :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn--danger:focus-visible {
   background: var(--rb-danger);
   color: #4a0000;
@@ -118,7 +118,7 @@
   :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn {
     transition: background var(--rb-transition), color var(--rb-transition);
   }
-  :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn:hover,
+  :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn:not(:disabled):hover,
   :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn:focus-visible,
   :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn:active {
     transform: none;
