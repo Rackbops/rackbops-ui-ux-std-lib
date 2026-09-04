@@ -61,6 +61,11 @@
   color: var(--rb-accent);
 }
 
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *):where(:focus-visible) {
+  outline: 2px solid var(--rb-accent);
+  outline-offset: 2px;
+}
+
 :where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *)::selection {
   background: var(--rb-accent);
   color: var(--rb-bg);

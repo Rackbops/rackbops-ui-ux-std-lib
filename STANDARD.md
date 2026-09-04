@@ -280,7 +280,7 @@ marks. They are never used as a second accent.
 
 | Token | Role |
 | --- | --- |
-| `--rb-focus-ring` | The `outline` value for `:focus-visible`; one place a theme says what focus looks like (today four base files and a handful of component files each hard-code their own, and eight base files have none -- #36) |
+| `--rb-focus-ring` | The `outline` value for `:focus-visible`; one place a theme says what focus looks like (today all twelve base files hard-code their own -- ten at `2px solid var(--rb-accent)`, the rackbops pair at `2.5px`/`3px` offset/radius -- plus a handful of component files each hard-coding theirs too) |
 | `--rb-ease` | The `transition-timing-function`; `ease` by default, the ports' bounce where they want it (summer-cloud already carries `--rb-ease-bounce` as an extra) |
 
 Deliberately not added: a type scale, z-index tokens, a density axis,
@@ -480,8 +480,12 @@ the React layer and the showcase emit.
 
 `base.css` styles bare elements so that a markdown render, a docs page, or
 an unclassed prototype is already on-theme. The property *set* is shared;
-the values are the theme's own `[tested: styles/test/base-typography.test.mjs
-checks the property names of the h1-h6, p, and ul/ol rules]`.
+the values are the theme's own except where a shared structural token is
+required `[tested: styles/test/base-typography.test.mjs checks the h1-h6, p,
+ul/ol, a, :focus-visible, and ::selection rules -- property presence for all,
+plus that margin/padding-inline-start/outline/::selection-background actually
+reference the structural token, not just a same-named property with any
+value]`.
 
 | Rule | Required declarations |
 | --- | --- |
@@ -490,14 +494,14 @@ checks the property names of the h1-h6, p, and ul/ol rules]`.
 | `:where(html[data-rb-style="x"]) body` | `margin: 0`, `min-height: 100vh`, plus the canvas set |
 | `h1`-`h6` (all six listed explicitly) | `margin` (`0 0 var(--rb-space-3)`), `font-family` (display), `font-weight`, `letter-spacing`, `line-height` `[tested]`; `text-wrap: balance` (in all twelve, not tested) |
 | `p` | `margin: 0 0 var(--rb-space-3)` `[tested]` |
-| `ul`, `ol` | `margin`, `padding-inline-start: var(--rb-space-4)` `[tested: property names]`; real markers, not stripped |
-| `a` | `color: var(--rb-accent)`. The studio pair uses `inherit` (`styles/rackbops-studio/base.css:49-50`) -- a documented departure it MUST state in `design.md` `[pending #36]` |
-| `:focus-visible` | `outline: 2px solid var(--rb-accent)`, `outline-offset: 2px` (`var(--rb-focus-ring)` after #54) -- present in four of twelve today, the studio pair at 2.5 px / 3 px offset `[pending #36]` |
+| `ul`, `ol` | `margin`, `padding-inline-start: var(--rb-space-4)` `[tested]`; real markers, not stripped |
+| `a` | `color: var(--rb-accent)` in eleven themes. `rackbops-studio` alone uses `inherit` (`styles/rackbops-studio/base.css:49-50`) -- a documented departure stated in that theme's `design.md` Accessibility section (accent-as-text is below AA there); property presence `[tested]`, the value itself is not pinned since the divergence is legitimate |
+| `:focus-visible` | `outline: 2px solid var(--rb-accent)`, `outline-offset: 2px` (`var(--rb-focus-ring)` after #54) -- present in all twelve `[tested]`; the rackbops pair alone uses their own 2.5 px / 3 px-offset / 3px-radius variant, tied to that pair's documented soft-shadow identity |
 | `::selection` | `background: var(--rb-accent)`; `color` is the ink that reads on it (`--rb-accent-fg` in seven themes, `#fff` or `--rb-bg` in the other five) |
 
 The box-sizing reset is identical in every theme modulo the guard;
-`:focus-visible` (where present) and `::selection` differ only in values
-that `--rb-focus-ring` (#54) and `--rb-accent-fg` absorb. All three move to
+`:focus-visible` and `::selection` differ only in values that
+`--rb-focus-ring` (#54) and `--rb-accent-fg` absorb. All three move to
 one shared structural file each `index.css` imports first `[pending #52]`,
 leaving `base.css` with the values that are genuinely per theme.
 
@@ -872,7 +876,7 @@ identity paragraph and the README table.
 | `pnpm new-theme` scaffold | script | pending #53 |
 | `--rb-focus-ring`, `--rb-ease` baseline; contract 2 | contract bump | pending #54 |
 | Native `<progress>` contract in all twelve | `contract.test.mjs` | live |
-| `:focus-visible` base rule in all twelve; `a` colour divergence documented | CSS fix + test | pending #36 (4 of 12) |
+| `:focus-visible` base rule in all twelve; `a` colour divergence limited to one theme and documented | CSS fix + test | live (#36) |
 | Disabled buttons take no hover | CSS fix | live (#37) |
 | `rb-stepper` in every theme | #55 merged | live (parity now tested via #47) |
 | `.rb-stepper--upcoming` styled or allowlisted; `[aria-current="step"]` paired | `contract.test.mjs` | allowlisted: live (#47). Paired: live, 12 of 12 themes comply (#65) |
