@@ -165,7 +165,7 @@ test("Spinner forwards ref to the <span>", () => {
 
 test("Dialog forwards ref to the <dialog>, alongside its own internal show/close ref", () => {
   const ref = createRef<HTMLDialogElement>();
-  const cleanup = mount(<Dialog ref={ref} open={false} />);
+  const cleanup = mount(<Dialog ref={ref} open={false} onClose={() => {}} />);
   assert.ok(ref.current instanceof HTMLDialogElement);
   cleanup();
 });

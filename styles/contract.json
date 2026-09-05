@@ -52,7 +52,7 @@
     "dialog": {
       "react": "Dialog",
       "classes": ["rb-dialog", "rb-dialog__title", "rb-dialog__actions", "rb-dialog__body"],
-      "notes": "native <dialog>, open/onClose/actions; __body is a documented no-op in four themes (section 5.3)"
+      "notes": "native <dialog>; required open + onClose (onClose keeps the parent in sync after a native Escape close, so it must set open=false to reopen); optional actions; __body is a documented no-op in four themes (section 5.3)"
     },
     "tabs": {
       "react": "Tabs",

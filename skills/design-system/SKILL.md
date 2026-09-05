@@ -96,7 +96,7 @@ This table is generated from `styles/contract.json` — edit that file, then run
 | `Field`/`Label`/`Input`/`Textarea`/`Select`/`Checkbox`/`Radio`/`Switch` | `.rb-field` | pair with Field/Label; choice controls wrap in .rb-choice |
 | `Badge` | `.rb-badge` | semantic variants |
 | `Alert` | `.rb-alert` | variant + optional title |
-| `Dialog` | `.rb-dialog` | native <dialog>, open/onClose/actions; __body is a documented no-op in four themes (section 5.3) |
+| `Dialog` | `.rb-dialog` | native <dialog>; required open + onClose (onClose keeps the parent in sync after a native Escape close, so it must set open=false to reopen); optional actions; __body is a documented no-op in four themes (section 5.3) |
 | `Tabs` | `.rb-tabs` | items: {id, label, content}[]; --active also matches [aria-selected="true"] in every theme |
 | — | `.rb-table` | style directly, no React wrapper |
 | `Progress`/`Spinner` | `.rb-progress` | native <progress> pseudo-element contract enforced separately (not class-based) |

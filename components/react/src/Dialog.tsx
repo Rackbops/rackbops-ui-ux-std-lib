@@ -2,10 +2,10 @@ import {
   forwardRef,
   useEffect,
   useId,
+  useImperativeHandle,
   useRef,
   type DialogHTMLAttributes,
   type ReactNode,
-  type Ref,
   type RefAttributes,
 } from "react";
 import { cx } from "./cx.js";
@@ -14,20 +14,9 @@ export interface DialogProps
   extends Omit<DialogHTMLAttributes<HTMLDialogElement>, "open" | "title" | "onClose">,
     RefAttributes<HTMLDialogElement> {
   open: boolean;
-  onClose?: () => void;
+  onClose: () => void;
   title?: ReactNode;
   actions?: ReactNode;
-}
-
-/** Combines an internal ref this component needs with a consumer-supplied one,
- * so both end up pointing at the same DOM node. */
-function mergeRefs<T>(...refs: Array<Ref<T> | undefined>) {
-  return (node: T | null) => {
-    for (const ref of refs) {
-      if (typeof ref === "function") ref(node);
-      else if (ref) (ref as { current: T | null }).current = node;
-    }
-  };
 }
 
 /** A native <dialog> driven by the `open` prop (showModal/close). */
@@ -38,20 +27,30 @@ export const Dialog = forwardRef<HTMLDialogElement, DialogProps>(function Dialog
   const internalRef = useRef<HTMLDialogElement>(null);
   const titleId = useId();
 
-  // No dependency array: a native close (Escape, or a method="dialog" form)
-  // flips el.open out from under the `open` prop with nothing to reconcile
-  // them, so a stranded open=true re-render must re-sync too, not just a
-  // render where `open` itself changed (issue #31).
+  // Expose the same <dialog> node this component drives to a forwarded ref,
+  // instead of a fresh callback-ref identity per render. A per-render merge
+  // callback re-attaches every render and never runs a React 19 cleanup-style
+  // consumer ref's cleanup; `useImperativeHandle` with [] deps attaches once
+  // and detaches (running that cleanup) on unmount (issue #83).
+  useImperativeHandle(forwardedRef, () => internalRef.current!, []);
+
+  // `onClose` is required, so the parent is always told when the platform
+  // closes the dialog (Escape, a method="dialog" form) and keeps `open` in
+  // sync -- `open` is the single source of truth. That makes `[open]` the
+  // correct, complete dependency: reconcile only when the desired state
+  // changes, which reopens on a real false->true transition without the
+  // spontaneous reopens a dependency-less effect caused on unrelated renders
+  // (issue #83, completing #31).
   useEffect(() => {
     const el = internalRef.current;
     if (!el) return;
     if (open && !el.open) el.showModal();
     else if (!open && el.open) el.close();
-  });
+  }, [open]);
 
   return (
     <dialog
-      ref={mergeRefs(internalRef, forwardedRef)}
+      ref={internalRef}
       className={cx("rb-dialog", className)}
       onClose={onClose}
       aria-labelledby={title !== undefined ? titleId : undefined}
