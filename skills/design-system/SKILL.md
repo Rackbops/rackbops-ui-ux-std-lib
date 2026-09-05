@@ -12,8 +12,14 @@ component styles in an app that has adopted a theme — consume the system.
 ## Rules
 
 1. **Tokens, not literals.** Use `--rb-*` custom properties for every color,
-   font, radius, and spacing value. If a needed token doesn't exist, propose
-   adding it to the std-lib rather than hardcoding.
+   font, radius, and spacing value in component and layout styling. If a needed
+   token doesn't exist, propose adding it to the std-lib rather than hardcoding.
+   *Exception — illustration assets.* A self-contained illustration (a mascot,
+   logo, or decorative SVG whose palette is fixed by the approved artwork) is
+   art, not themeable styling: its literal `fill`/`stroke` colors may stay
+   hardcoded. Use `currentColor` or tokens for any part genuinely meant to
+   follow the theme, but don't force a fixed-palette illustration onto tokens
+   just to satisfy this rule.
 2. **Existing components first.** Before building UI, check the component
    inventory below. App-local components are only for genuinely app-specific
    composites — and should still be built from `rb-*` classes.
