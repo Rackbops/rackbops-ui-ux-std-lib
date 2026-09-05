@@ -127,7 +127,7 @@ release. Pushing a `v*` tag triggers `publish.yml`, which runs
 `npm publish --access public` for both packages against the public npm
 registry (`registry.npmjs.org`).
 
-The two steps are gated by separate secrets:
+The two steps authenticate differently:
 
 - **`release`** needs a `RELEASE_TOKEN` (a PAT that can push past branch
   protection, and whose tag push actually triggers `publish.yml` below —
@@ -141,12 +141,20 @@ The two steps are gated by separate secrets:
   `main`, tags, pushes the tag, and creates the GitHub release itself, so
   there's nothing left to push by hand afterward. It needs push rights to
   the repo and an authenticated `gh` CLI.
-- **`publish`** needs an `NPM_TOKEN` (a granular token scoped to `@rackbops`)
-  to authenticate to npm. That secret **is configured and live** — pushing a
-  `v*` tag publishes both packages to public npm. The `v0.1.0` tag that
-  shipped [#9](https://github.com/Rackbops/rackbops-ui-ux-std-lib/pull/9) was
-  pushed this way, and both packages are published under the `@rackbops`
-  scope.
+- **`publish`** uses **OIDC trusted publishing** — no stored npm token.
+  `publish.yml` requests a short-lived `id-token` (its `permissions:` grant
+  `id-token: write`), and npm exchanges it against the trusted publisher that
+  must be configured on npmjs.com **for each package** — organization
+  `Rackbops`, repository `rackbops-ui-ux-std-lib`, workflow `publish.yml`, with
+  the optional **Environment** field left blank (the workflow declares no
+  GitHub environment — filling it in would break the OIDC match). npm also
+  generates and publishes provenance attestations automatically on every
+  publish (the repo is public, which provenance requires). Because there is no
+  token to fall back on, a `v*` tag pushed **before** both `@rackbops/styles`
+  and `@rackbops/ui-react` have that trusted publisher configured fails to
+  publish — set it up on npm first. setup-node intentionally omits
+  `registry-url` so it doesn't write an empty `_authToken` line that would make
+  npm skip the OIDC exchange ([actions/setup-node#1551](https://github.com/actions/setup-node/issues/1551)).
 
 ## Agent skill
 

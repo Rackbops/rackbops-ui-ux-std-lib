@@ -5,10 +5,22 @@ on:
     tags:
       - "v*"
 
-# Public npm publish. Auth is the NPM_TOKEN secret (a granular read+write token
-# on the @rackbops scope); Actions itself only needs to read the repo.
+# Public npm publish via OIDC trusted publishing -- no long-lived npm token.
+# GitHub mints a short-lived OIDC id-token (hence `id-token: write`); npm
+# exchanges it against the trusted publisher configured on npmjs.com for each
+# package (organization Rackbops / repository rackbops-ui-ux-std-lib / workflow
+# publish.yml), and provenance attestations are generated automatically on
+# every publish. `contents: read` is only for the checkout.
+#
+# setup-node deliberately does NOT set `registry-url` below: that makes it write
+# a `//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}` line into .npmrc, and
+# with no token secret that line is an empty `_authToken=` -- npm then assumes
+# auth is already configured and skips the OIDC exchange, failing with ENEEDAUTH
+# (actions/setup-node#1551). The default registry (registry.npmjs.org) is the
+# publish target with no registry-url set, so nothing is lost by omitting it.
 permissions:
   contents: read
+  id-token: write
 
 jobs:
   publish:
@@ -16,11 +28,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
+      # No registry-url / scope here -- see the header comment: setting
+      # registry-url writes an empty _authToken into .npmrc and breaks OIDC.
       - uses: actions/setup-node@v4
         with:
           node-version: 24
-          registry-url: https://registry.npmjs.org
-          scope: "@rackbops"
+      # Trusted publishing requires npm CLI >= 11.5.1 (and Node >= 22.14).
+      # Upgrade explicitly rather than depend on whatever npm the pinned Node
+      # bundles. Pinned to the 11.x line (>= 11.5.1) so an unattended release
+      # (release.yml pushes the tag) can't break on a surprise npm major that
+      # raises its own Node floor above the runner's.
+      - run: npm install -g npm@^11.5.1
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
 
@@ -64,5 +82,3 @@ jobs:
               (cd "$path" && npm publish --access public)
             fi
           done < /tmp/publishable-packages.tsv
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
