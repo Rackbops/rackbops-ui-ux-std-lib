@@ -93,7 +93,18 @@ echo "$*" >> "$state/calls.log"
 case "\${1:-} \${2:-}" in
   "release view")
     tag="\$3"
-    [[ -f "$state/releases/\$tag" ]]
+    # A transient outage: exit non-zero but WITHOUT "release not found", the
+    # shape release.sh must not misread as a missing release (issue #87).
+    if [[ -f "$state/fail-view-transient" ]]; then
+      echo "HTTP 503: gh is having a bad day" >&2
+      exit 1
+    fi
+    # Genuinely missing: match real gh, which prints exactly "release not
+    # found" to stderr and exits 1 (verified against the installed gh).
+    if [[ ! -f "$state/releases/\$tag" ]]; then
+      echo "release not found" >&2
+      exit 1
+    fi
     ;;
   "release create")
     tag="\$3"
@@ -409,7 +420,7 @@ test("no unreleased package changes -- exits cleanly, no bump attempted", (t) =>
 // ships, not just its top-level directory. These reproduce the issue's own
 // examples directly against the real script.
 
-test("PATHSPEC: unshipped styles/test and components/react config/test-only changes don't trigger a release", (t) => {
+test("PATHSPEC: unshipped styles/test and components/react test-only changes don't trigger a release", (t) => {
   const repo = makeRepo(t);
 
   mkdirSync(join(repo.repoDir, "styles", "test"), { recursive: true });
@@ -417,10 +428,9 @@ test("PATHSPEC: unshipped styles/test and components/react config/test-only chan
   repo.run(["add", "."]);
   repo.run(["commit", "-m", "test(styles): scratch"]);
 
-  writeFileSync(join(repo.repoDir, "components", "react", "tsconfig.build.json"), "{}\n");
-  repo.run(["add", "."]);
-  repo.run(["commit", "-m", "chore(react): tweak tsconfig"]);
-
+  // NB: tsconfig.json / tsconfig.build.json are NOT tested here -- they DO
+  // trigger a release (they govern the emitted dist bytes); see the dedicated
+  // "build config triggers a release" test below (issue #87).
   mkdirSync(join(repo.repoDir, "components", "react", "src"), { recursive: true });
   writeFileSync(join(repo.repoDir, "components", "react", "src", "Foo.test.tsx"), "// test\n");
   repo.run(["add", "."]);
@@ -495,4 +505,138 @@ test("PATHSPEC: a change to only scripts/copy-license.mjs triggers a release (is
   const result = runRelease(repo);
   assert.equal(result.status, 0, result.stdout + result.stderr);
   assert.match(result.stdout, /Version: 0\.1\.0 -> 0\.1\.1/);
+});
+
+// ── Issue #87 ────────────────────────────────────────────────────────────────
+// Four ways release.sh could skip a release, base one on the wrong tag, or
+// fail spuriously. Each test below reproduces one against the real script and
+// fails on the pre-#87 code.
+
+test("#87 bump-grep: a real change whose BODY quotes 'chore(release): v' still triggers a release", (t) => {
+  // git log --grep matches the WHOLE message, so the old --invert-grep filter
+  // dropped this commit entirely: "Nothing to do", and the fix never shipped.
+  // The fix filters bump commits by subject only.
+  const repo = makeRepo(t);
+  writeFileSync(join(repo.repoDir, "styles", "REALFIX.txt"), "a real fix\n");
+  repo.run(["add", "."]);
+  repo.run([
+    "commit",
+    "-m",
+    "fix(styles): a genuine change",
+    "-m",
+    "chore(release): v0.1.10 shipped before this landed, per the changelog",
+  ]);
+
+  const result = runRelease(repo);
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+  assert.match(result.stdout, /Version: 0\.1\.0 -> 0\.1\.1/);
+  assert.ok(tagExistsOnOrigin(repo, "v0.1.1"));
+
+  // The real subject makes the changelog; the body's quoted bump line neither
+  // drops it nor leaks into the notes.
+  const notes = readFileSync(join(repo.ghDir, "last-notes"), "utf-8");
+  assert.match(notes, /a genuine change/);
+});
+
+test("#87 PATHSPEC: a change to only root NOTICE triggers a release", (t) => {
+  // copy-license.mjs copies root LICENSE/NOTICE into every tarball and both
+  // package "files" arrays list them, so a NOTICE-only change (e.g. crediting
+  // a newly ported theme) alters what ships and must cut a release.
+  const repo = makeRepo(t);
+  writeFileSync(join(repo.repoDir, "NOTICE"), "Portions (c) contributors.\n");
+  repo.run(["add", "."]);
+  repo.run(["commit", "-m", "docs(license): credit a ported theme in NOTICE"]);
+
+  const result = runRelease(repo);
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+  assert.match(result.stdout, /Version: 0\.1\.0 -> 0\.1\.1/);
+});
+
+test("#87 PATHSPEC: a change to only root LICENSE triggers a release", (t) => {
+  const repo = makeRepo(t);
+  writeFileSync(join(repo.repoDir, "LICENSE"), "License text, updated.\n");
+  repo.run(["add", "."]);
+  repo.run(["commit", "-m", "docs(license): clarify LICENSE"]);
+
+  const result = runRelease(repo);
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+  assert.match(result.stdout, /Version: 0\.1\.0 -> 0\.1\.1/);
+});
+
+test("#87 PATHSPEC: a build-config change (tsconfig.json) triggers a release", (t) => {
+  // The tsconfigs govern the emitted dist bytes (target/module/jsx) and which
+  // files are emitted (exclude list), so a build-config change alone must cut
+  // a release -- reversing the pre-#87 assertion that it must not.
+  const repo = makeRepo(t);
+  writeFileSync(
+    join(repo.repoDir, "components", "react", "tsconfig.json"),
+    '{ "compilerOptions": { "target": "ES2017" } }\n'
+  );
+  repo.run(["add", "."]);
+  repo.run(["commit", "-m", "build(react): lower the compile target"]);
+
+  const result = runRelease(repo);
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+  assert.match(result.stdout, /Version: 0\.1\.0 -> 0\.1\.1/);
+});
+
+test("#87 PATHSPEC: a build-config change (tsconfig.build.json) triggers a release", (t) => {
+  const repo = makeRepo(t);
+  writeFileSync(
+    join(repo.repoDir, "components", "react", "tsconfig.build.json"),
+    '{ "extends": "./tsconfig.json", "exclude": [] }\n'
+  );
+  repo.run(["add", "."]);
+  repo.run(["commit", "-m", "build(react): widen what the build emits"]);
+
+  const result = runRelease(repo);
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+  assert.match(result.stdout, /Version: 0\.1\.0 -> 0\.1\.1/);
+});
+
+test("#87 tag glob: pre-release and unrelated v-tags don't become the release base", (t) => {
+  // git tag -l "v*" | sort -V | tail -1 would pick vendor-snapshot (or
+  // v0.2.0-rc1) over v0.1.0, then backfill or base the changelog on a
+  // non-release. The fix keeps only strict vX.Y.Z tags.
+  const repo = makeRepo(t);
+  repo.run(["tag", "v0.2.0-rc1"]); // outranks v0.1.0 under sort -V, not a release
+  repo.run(["tag", "v2-experiment"]);
+  repo.run(["tag", "vendor-snapshot"]);
+  addUnreleasedCommit(repo);
+
+  const result = runRelease(repo);
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+  // Based on the real latest release (v0.1.0): next is 0.1.1, with no attempt
+  // to backfill a rc/junk tag's "missing" release.
+  assert.match(result.stdout, /Version: 0\.1\.0 -> 0\.1\.1/);
+  assert.doesNotMatch(result.stdout, /backfilling/);
+  assert.ok(tagExistsOnOrigin(repo, "v0.1.1"));
+  // gh was never asked about a non-release tag.
+  const viewCalls = calls(repo).filter((c) => c.startsWith("release view"));
+  assert.ok(
+    viewCalls.every((c) => !/rc1|experiment|vendor/.test(c)),
+    `release view must not touch non-release tags, saw:\n${viewCalls.join("\n")}`
+  );
+});
+
+test("#87 gh view: a transient release-view failure aborts accurately, no spurious backfill", (t) => {
+  // A non-404 gh failure (5xx / rate-limit / auth) must NOT read as "no
+  // release exists". The old code backfilled, hit a 422 on the existing
+  // release, and aborted blaming the wrong step. The fix distinguishes a real
+  // "release not found" from every other failure.
+  const repo = makeRepo(t);
+  addUnreleasedCommit(repo);
+  writeFileSync(join(repo.ghDir, "fail-view-transient"), "");
+
+  const result = runRelease(repo);
+  assert.notEqual(result.status, 0, "a transient view failure must fail the run");
+  assert.match(result.stderr, /gh release view v0\.1\.0 failed/);
+  // Stopped at the view check: no spurious backfill create, version untouched.
+  assert.equal(
+    calls(repo).filter((c) => c.startsWith("release create")).length,
+    0,
+    "no release create attempted after a transient view failure"
+  );
+  const pkg = JSON.parse(readFileSync(join(repo.repoDir, "styles", "package.json"), "utf-8"));
+  assert.equal(pkg.version, "0.1.0", "version not bumped when the view check fails");
 });
