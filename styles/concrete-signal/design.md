@@ -67,8 +67,13 @@ gradient has no soft midpoint.
   `--rb-shadow-lg` (`4px 4px 0`) for dialogs and raised cards. `--rb-blur` is
   `0px` — this theme never applies `backdrop-filter` or any soft blur.
   Dialog backdrops are a flat `rgba(0,0,0,.6)` scrim.
-  Focus is a hard border-weight change (1px to 2px solid accent), never a
-  soft wash ring or glow.
+  Focus is a hard border-weight change (1px to 2px solid accent) on form
+  controls, never a soft wash ring or glow. Buttons instead keep the theme's
+  base hard 2px accent outline offset from the button (also hard-edged, no wash
+  or glow), so keyboard focus reads distinctly from a pointer hover; the
+  accent-fill `--primary` in particular relies on it, since a border-weight
+  change is invisible against its own fill, and it stays distinct from the
+  press translate.
 - Primary buttons carry the theme's signature interaction: the offset shadow
   disappears and the button translates by the shadow's own offset on
   hover/active (`transform: translate(2px, 2px); box-shadow: none;`) — the

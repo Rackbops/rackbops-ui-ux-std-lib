@@ -133,6 +133,16 @@ function parseCss(css) {
   return { selectors, ruleGroups, keyframes, imports };
 }
 
+/** The declaration body of the first rule whose selector list contains
+ * `selectorSubstr`, or null. `css` must be comment-stripped; these simple
+ * `:disabled` blocks never nest braces, so an innermost-brace scan is enough. */
+function ruleBodyFor(css, selectorSubstr) {
+  for (const m of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+    if (m[1].includes(selectorSubstr)) return m[2];
+  }
+  return null;
+}
+
 function themeCssFiles(theme) {
   const dir = join(ROOT, theme);
   const files = ["tokens.css", "base.css"];
@@ -306,25 +316,53 @@ for (const theme of themeDirs) {
     );
   });
 
-  test(`${theme}: .rb-btn hover rules don't override :disabled (issue #37)`, () => {
-    // A disabled button still matches :hover in real browsers (confirmed via
-    // the showcase), so every hover selector touching .rb-btn/.rb-icon-btn
-    // must scope itself with :not(:disabled) or a disabled button's
-    // border/background/shadow/transform keeps reacting to the pointer.
-    // :focus-visible/:active need no such scoping -- disabled elements can't
-    // be focused or activated.
-    const file = join(ROOT, theme, "components", "button.css");
-    const { selectors } = parseCss(readFileSync(file, "utf-8"));
-    const hoverSelectors = selectors.filter(
-      (s) => /:hover\b/.test(s) && /\.rb-(btn|icon-btn)\b/.test(s)
-    );
-    assert.ok(hoverSelectors.length > 0, `${theme}: expected at least one .rb-btn hover selector`);
-    for (const sel of hoverSelectors) {
-      assert.ok(
-        sel.includes(":not(:disabled)"),
-        `${theme}: hover selector must scope out :disabled: ${sel}`
-      );
+  test(`${theme}: button-backed hover rules scope out :disabled, and every disableable class dims (issues #37, #85)`, () => {
+    // Generalizes #37 beyond .rb-btn to every <button>-backed class. A disabled
+    // element still matches :hover in real browsers (confirmed via the
+    // showcase), so every hover selector touching one of these classes must
+    // scope itself :not(:disabled) or a disabled tab/chip/button keeps reacting
+    // to the pointer; and every such base class must carry a disabled dim
+    // (opacity + cursor: not-allowed) per STANDARD.md 7. :focus-visible/:active
+    // need no scoping -- disabled elements can't be focused or activated.
+    const BACKED = /\.rb-(btn|icon-btn|tab|tabstrip__tab|chip)\b/;
+    // Base classes that must define their OWN :disabled dim. .rb-icon-btn and
+    // the --variants compose with .rb-btn and inherit its dim, so they don't.
+    const DIM_BASES = ["rb-btn", "rb-tab", "rb-tabstrip__tab", "rb-chip"];
+    let sawHover = false;
+    for (const file of themeCssFiles(theme)) {
+      const src = readFileSync(file, "utf-8");
+      const stripped = stripComments(src);
+      const { selectors } = parseCss(src);
+      // (a) Hover scoping.
+      for (const sel of selectors) {
+        if (/:hover\b/.test(sel) && BACKED.test(sel)) {
+          sawHover = true;
+          assert.ok(
+            sel.includes(":not(:disabled)"),
+            `${file}: button-backed hover selector must scope out :disabled: ${sel}`
+          );
+        }
+      }
+      // (b) Disabled dim -- required in any file where a base class has a hover
+      // rule (i.e. the file that styles that interactive class).
+      for (const base of DIM_BASES) {
+        const baseRe = new RegExp(`\\.${base}\\b`);
+        const hasHover = selectors.some((s) => /:hover\b/.test(s) && baseRe.test(s));
+        if (!hasHover) continue;
+        const disSel = `.${base}:disabled`;
+        assert.ok(
+          selectors.some((s) => s.includes(disSel)),
+          `${file}: missing ${disSel} dim rule (STANDARD.md 7 Disabled)`
+        );
+        const body = ruleBodyFor(stripped, disSel);
+        assert.ok(body && /\bopacity\s*:/.test(body), `${file}: ${disSel} must set opacity`);
+        assert.ok(
+          body && /\bcursor\s*:\s*not-allowed\b/.test(body),
+          `${file}: ${disSel} must set cursor: not-allowed`
+        );
+      }
     }
+    assert.ok(sawHover, `${theme}: expected at least one button-backed hover selector`);
   });
 }
 

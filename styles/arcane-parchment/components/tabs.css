@@ -18,8 +18,12 @@
   cursor: pointer;
   transition: color var(--rb-transition);
 }
-:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-tab:hover {
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-tab:not(:disabled):hover {
   color: var(--rb-text);
+}
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-tab:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 :where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-tab.rb-tab--active,
 :where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-tab[aria-selected="true"] {

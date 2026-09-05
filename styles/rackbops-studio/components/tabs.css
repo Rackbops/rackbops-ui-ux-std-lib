@@ -18,8 +18,12 @@
   cursor: pointer;
   transition: color var(--rb-transition);
 }
-:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-tab:hover {
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-tab:not(:disabled):hover {
   color: var(--rb-text);
+}
+:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-tab:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 :where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-tab.rb-tab--active,
 :where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-tab[aria-selected="true"] {

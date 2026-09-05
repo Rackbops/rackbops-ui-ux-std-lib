@@ -42,9 +42,11 @@
 }
 :where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-btn:not(:disabled):hover,
 :where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-btn:focus-visible {
+  /* Hover and focus both firm the border/text to accent; focus additionally
+     keeps the base hard accent outline (base.css) -- hard-edged, no wash or
+     glow -- so keyboard focus stays distinct from a pointer hover. */
   border-color: var(--rb-accent);
   color: var(--rb-accent);
-  outline: none;
 }
 :where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-btn--primary {
   background: var(--rb-accent);
@@ -56,13 +58,22 @@
     box-shadow var(--rb-transition);
 }
 :where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-btn--primary:not(:disabled):hover,
-:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-btn--primary:focus-visible,
 :where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-btn--primary:active {
   border-color: var(--rb-accent);
   color: var(--rb-accent-fg);
   outline: none;
   transform: translate(2px, 2px);
   box-shadow: none;
+}
+/* Focus: a 1->2px border-weight change is invisible on the accent fill
+   (border == fill), so focus is a hard 2px accent outline offset from the
+   button -- hard-edged, not a soft wash ring or glow -- distinct from the
+   hover/active press. Text stays --accent-fg so it doesn't inherit the default
+   .rb-btn:focus-visible accent color against the accent fill. */
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-btn--primary:focus-visible {
+  color: var(--rb-accent-fg);
+  outline: 2px solid var(--rb-accent);
+  outline-offset: 2px;
 }
 :where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-btn--accent {
   background: var(--rb-accent-wash);
