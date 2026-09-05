@@ -56,18 +56,18 @@
 :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn--primary {
   background: var(--rb-accent);
   border-color: transparent;
-  color: #fff;
+  color: var(--rb-accent-fg);
   font-weight: var(--rb-font-weight-bold);
   box-shadow: var(--rb-shadow-raised);
 }
 :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn--primary:not(:disabled):hover {
   background: var(--rb-accent-bright);
-  color: #fff;
+  color: var(--rb-accent-fg);
   box-shadow: var(--rb-shadow-raised-hover);
 }
 :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn--primary:focus-visible {
   background: var(--rb-accent-bright);
-  color: #fff;
+  color: var(--rb-accent-fg);
   box-shadow: var(--rb-shadow-raised-hover), 0 0 0 4px var(--rb-accent-glow);
 }
 
@@ -96,7 +96,7 @@
 :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn--danger {
   background: var(--rb-danger-deep);
   border-color: transparent;
-  color: #fff;
+  color: var(--rb-accent-fg);
   font-weight: var(--rb-font-weight-bold);
   box-shadow: 0 4px 14px rgba(204, 31, 31, 0.39);
 }

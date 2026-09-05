@@ -105,7 +105,9 @@ Class prefix `rb-` (shared token/class contract with the other themes).
   square icon-only hit target (>=2rem), paired with `.rb-btn`.
 - **Form** `.rb-input`, `.rb-textarea`, `.rb-select`, `.rb-label`,
   `.rb-field`, `.rb-checkbox`, `.rb-radio`, `.rb-switch`, `.rb-choice` —
-  checked/focus states glow teal.
+  checked/focus states glow teal. The `.rb-select` arrow is an inline data-URI
+  SVG, so its stroke is a literal (`#958e9b`, matching `--rb-text-faint`) — an
+  inline SVG can't reference a custom property.
 - **Badge** `.rb-badge` — pill chip: 15% tint of its hue behind
   full-saturation text (+ semantic modifiers).
 - **Alert** `.rb-alert` — glass, 3px left bar carries the semantic color.

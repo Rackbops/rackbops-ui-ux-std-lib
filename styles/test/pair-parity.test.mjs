@@ -8,8 +8,10 @@
 // this compares across two themes rather than checking one theme in
 // isolation.
 //
-// Component CSS is token-only (STANDARD.md 4.2 — no literal colours), so a
-// pair's component files really can be identical modulo the theme name:
+// Component CSS is token-driven (STANDARD.md 4.2 — the few permitted literals
+// are allowlisted; rackbops' rack.css is a documented pair divergence, and
+// summer-cloud is unpaired so its literal files never enter this comparison),
+// so a pair's component files really can be identical modulo the theme name:
 // the palette lives in tokens.css, not components/*.css. The one thing that
 // legitimately differs beyond the guard is a keyframe name, which embeds a
 // theme-specific word for global uniqueness (e.g.

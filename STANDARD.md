@@ -185,12 +185,23 @@ Every selector in every theme file contains its own guard
 
 Rules:
 
-- Component rules are exactly one class deep, (0,1,0). A consumer overrides
-  one with any later selector of equal or higher specificity. Do not call
-  component rules "zero specificity" -- only the base layer is (issue #42
-  flags README and SKILL.md for that over-claim).
-- MUST NOT nest: element and modifier rules are `.rb-block__el` /
-  `.rb-block--mod`, never `.rb-block .rb-block__el`.
+- Component rules are one class deep, `(0,1,0)`, by default -- a consumer's own
+  rule of equal specificity overrides one. A rule MAY reach deeper only to
+  (a) style a semantic child element the markup can't class (`.rb-table td`,
+  `.rb-rack__bars > i`); (b) style a child from its parent's state or variant
+  (`.rb-stepper--complete .rb-stepper__node`, `.rb-alert--info
+  .rb-alert__title`, `.rb-btn:not(:disabled):hover .rb-btn__arrow`); or
+  (c) scope a shared utility class or a sibling block under a container
+  (`.rb-table .rb-num`, `.rb-principles > .rb-principle`) -- kept as shallow as
+  the structure needs. Such a rule carries `(0,2,0)` or deeper specificity (up
+  to `(0,4,0)` for the button arrow), so a consumer overriding it needs a
+  selector of matching specificity. Do not call component rules "zero
+  specificity" -- only the base layer is.
+- MUST NOT chain a block to its OWN element class with no state marker
+  (`.rb-block .rb-block__el`, where `.rb-block__el` alone would do and the chain
+  only raises specificity); element (`.rb-block__el`) and modifier
+  (`.rb-block--mod`) rules stand alone. `[tested:
+  styles/test/contract.test.mjs]`
 - MUST NOT use `!important`.
 - The attribute goes on `<html>` for a page the app owns, or on a mount
   container for an island; the canvas rule styles whichever element carries
@@ -289,10 +300,20 @@ is one more thing twelve themes must declare and document.
 
 ### 4.2 Rules of use
 
-- **Tokens, not literals.** Component CSS MUST take every colour, font,
-  radius, shadow, and spacing value from a token. Permitted literals: alpha
-  overlays and scrims (`rgba(0,0,0,.3)` on a backdrop), `color-mix()`
-  derivations of a token, and `#fff`/`#000` inside such a mix.
+- **Tokens, not literals.** Component CSS draws its colours, fonts, radii,
+  shadows, and shared spacing from a token. Permitted literals: alpha overlays
+  and scrims -- a low-alpha wash of black or of a hue (`rgba(0,0,0,.3)` on a
+  backdrop, a badge's `rgba(<hue>,.15)` tint); `color-mix()` derivations of a
+  token, with `#fff`/`#000` inside such a mix; a colour inside an inline
+  data-URI SVG, which cannot reference a custom property (the `<select>` chevron
+  strokes -- each mirrors a token and is named in its theme's `design.md`);
+  a hand-tuned ink that sits AA on a semantic or brand fill, documented per
+  theme (summer-cloud's alert-title and badge inks); a local literal
+  custom-property palette for a fixed-scheme sub-unit (the rackbops rack
+  panels, §5.2); and component-specific structural `px` for sizes off the
+  `--rb-space-*` / type / radius scale. Every literal hex colour outside a
+  `color-mix()` is one of these, allowlisted in `contract.json`'s
+  `permittedLiterals` `[tested: styles/test/contract.test.mjs]`.
 - `--rb-shadow-sm` is resting and `--rb-shadow-lg` is lifted. A theme MAY
   invert or flatten that (summer-cloud wears `lg` at rest by design,
   `styles/summer-cloud/design.md:33-37`) only if its `design.md` says so.
