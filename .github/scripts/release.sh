@@ -30,31 +30,48 @@ VERSION_FILES=(styles/package.json components/react/package.json)
 #  - styles/ ships whole theme directories -- design.md included -- plus its
 #    root manifest files (styles/package.json's "files"); styles/test/ isn't
 #    shipped.
-#  - components/react ships `dist`, built from `src/` (tsconfig.json's
-#    rootDir). `dist` itself is gitignored and can't be a git pathspec, so
-#    `src/` stands in for it, plus package.json (the published manifest --
-#    its "exports"/"peerDependencies" are shipped-relevant). Test files under
-#    src/ (tsconfig.build.json's excludes) aren't shipped.
-#  - scripts/copy-license.mjs is shipped-relevant even though it lives outside
-#    both package directories: it's the prepack step that copies LICENSE/
-#    NOTICE into each tarball (issue #38), so a fix to it alone must still
-#    trigger a release -- same gap as issue #34, now closed for this script.
+#  - components/react ships `dist`, built by `tsc -p tsconfig.build.json`
+#    (which extends tsconfig.json). `dist` itself is gitignored and can't be a
+#    git pathspec, so its build inputs stand in for it: `src/` (tsconfig.json's
+#    rootDir), plus package.json (the published manifest -- its
+#    "exports"/"peerDependencies" are shipped-relevant), plus BOTH tsconfig
+#    files. The tsconfigs govern every emitted byte and which files are emitted
+#    -- compilerOptions (target/module/jsx/declaration) and the exclude list --
+#    so a build-config change alone changes what ships and must trigger a
+#    release (issue #87; e.g. flipping target to ES2017 rewrites most of dist).
+#    Test files under src/ (tsconfig.build.json's excludes) aren't shipped and
+#    are excluded below; the tsconfig FILE listing them still is, since editing
+#    that list changes the output.
+#  - scripts/copy-license.mjs, and the root LICENSE/NOTICE it copies, are
+#    shipped-relevant even though they live outside both package directories:
+#    copy-license.mjs is the prepack step that puts LICENSE/NOTICE into each
+#    tarball (issue #38), and both package "files" allowlists include them, so
+#    a change to any of the three alters what is published and must trigger a
+#    release -- same gap as issue #34 (a package's "files" reach stops at its
+#    own directory), now closed for this script (issue #87 for LICENSE/NOTICE).
 PATHSPEC=(
   styles/
   ":(exclude)styles/test/"
   components/react/src/
   components/react/package.json
+  components/react/tsconfig.json
+  components/react/tsconfig.build.json
   ":(exclude,glob)components/react/src/**/*.test.ts"
   ":(exclude,glob)components/react/src/**/*.test.tsx"
   ":(exclude)components/react/src/test-dom.ts"
   scripts/copy-license.mjs
+  LICENSE
+  NOTICE
 )
 
-# Matches this script's own bump commit subject ("chore(release): vX.Y.Z"),
-# excluded from both the unreleased-change check and the changelog so a
-# resumed run doesn't mistake its own past bump for new work. Not a regex
-# special char here: git log --grep uses basic regex by default, where "("
-# and ")" are already literal.
+# Matches this script's own bump commit SUBJECT ("chore(release): vX.Y.Z"),
+# excluded from the unreleased-change check and the changelog so a resumed run
+# doesn't mistake its own past bump for new work. Applied with `grep` over a
+# --pretty=%s stream (subjects only), NOT `git log --grep`, which matches the
+# WHOLE message: a genuine commit that merely quotes "chore(release): vX" in
+# its body would otherwise be dropped -- skipping its release, mis-scoping the
+# changelog, or hiding a breaking marker (issue #87). "(" and ")" need no
+# escaping: grep's basic regex treats them as literal.
 BUMP_GREP='^chore(release): v'
 
 # ── Commit-type display config ────────────────────────────────────────────────
@@ -83,7 +100,7 @@ declare -A COMMIT_TYPE_NAMES=(
 build_changelog() {
   local range="$1"
   local commit_log
-  commit_log=$(git log "$range" --invert-grep --grep="$BUMP_GREP" --pretty=format:"%s" -- "${PATHSPEC[@]}" || true)
+  commit_log=$(git log "$range" --pretty=format:"%s" -- "${PATHSPEC[@]}" | grep -v "$BUMP_GREP" || true)
 
   local -A type_entries
   local t
@@ -147,6 +164,18 @@ publish_release() {
   notes_file=""
 }
 
+# Lists this repo's release tags (strict vX.Y.Z only), version-sorted
+# ascending. `git tag -l "v*"` alone also matches pre-release tags
+# (v0.2.0-rc1) and unrelated v-prefixed tags (vendor-snapshot, v2-experiment),
+# any of which `sort -V` can rank ABOVE a real release -- basing a release on
+# one skips or mis-scopes the next real one (issue #87). The anchored grep is
+# load-bearing: the glob "v[0-9]*.[0-9]*.[0-9]*" is not enough on its own, its
+# trailing wildcard still admits v0.2.0-rc1. The `|| true` keeps an empty tag
+# set (grep matching nothing) from failing the pipe under `set -o pipefail`.
+list_release_tags() {
+  git tag -l 'v[0-9]*' | { grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' || true; } | sort -V
+}
+
 # ── Version ────────────────────────────────────────────────────────────────
 # All packages share one version; read it from the first file and verify the
 # rest agree.
@@ -173,18 +202,32 @@ current_tag="v${current_version}"
 # stranding the missing release for good. This only ever fires for the tag
 # right before whatever this run goes on to do below, since a release is
 # always created (or backfilled) before the next bump ever happens.
-latest_tag=$(git tag -l "v*" | sort -V | tail -1 || true)
+latest_tag=$(list_release_tags | tail -1 || true)
 
-if [[ -n "$latest_tag" ]] && ! gh release view "$latest_tag" >/dev/null 2>&1; then
-  echo "Tag ${latest_tag} has no GitHub release yet — backfilling it first."
-  # A harmless no-op if the tag already reached origin (the expected case on
-  # a fresh checkout, since a tag can only exist locally if it was fetched
-  # from there); otherwise exactly what still needs to happen for it.
-  git push origin "$latest_tag"
-  prior_tag=$(git tag -l "v*" | grep -Fxv "$latest_tag" | sort -V | tail -1 || true)
-  backfill_range="$latest_tag"
-  [[ -n "$prior_tag" ]] && backfill_range="${prior_tag}..${latest_tag}"
-  publish_release "$(build_changelog "$backfill_range")" "$latest_tag"
+if [[ -n "$latest_tag" ]]; then
+  # gh exits 1 for ANY failure, so a bare `! gh release view` reads a transient
+  # 5xx / rate-limit / auth blip as "no release exists": it then backfills,
+  # `gh release create` hits the already-existing release with a 422, and
+  # set -e aborts the run before the genuinely new version is ever bumped --
+  # blaming the wrong step (issue #87). Distinguish a real 404 ("release not
+  # found" on stderr, exactly what gh prints) from every other failure, which
+  # is fatal here rather than silently treated as a missing release.
+  if release_view_err=$(gh release view "$latest_tag" 2>&1 >/dev/null); then
+    : # the release already exists -- nothing to backfill
+  elif [[ "$release_view_err" == *"release not found"* ]]; then
+    echo "Tag ${latest_tag} has no GitHub release yet — backfilling it first."
+    # A harmless no-op if the tag already reached origin (the expected case on
+    # a fresh checkout, since a tag can only exist locally if it was fetched
+    # from there); otherwise exactly what still needs to happen for it.
+    git push origin "$latest_tag"
+    prior_tag=$(list_release_tags | grep -Fxv "$latest_tag" | tail -1 || true)
+    backfill_range="$latest_tag"
+    [[ -n "$prior_tag" ]] && backfill_range="${prior_tag}..${latest_tag}"
+    publish_release "$(build_changelog "$backfill_range")" "$latest_tag"
+  else
+    echo "ERROR: gh release view ${latest_tag} failed, and not with 'release not found' — refusing to assume the release is missing: ${release_view_err}" >&2
+    exit 1
+  fi
 fi
 
 # ── Resume state ───────────────────────────────────────────────────────────
@@ -205,16 +248,16 @@ fi
 # already exist, and the base must stay the release BEFORE this one — the
 # same base the original, now-resumed run computed.
 if [[ "$skip_bump" == true ]]; then
-  last_tag=$(git tag -l "v*" | grep -Fxv "$current_tag" | sort -V | tail -1 || true)
+  last_tag=$(list_release_tags | grep -Fxv "$current_tag" | tail -1 || true)
 else
-  last_tag=$(git tag -l "v*" | sort -V | tail -1 || true)
+  last_tag=$(list_release_tags | tail -1 || true)
 fi
 
 # ── Detect unreleased changes ─────────────────────────────────────────────────
 
 range="HEAD"
 [[ -n "$last_tag" ]] && range="${last_tag}..HEAD"
-commit_log=$(git log "$range" --invert-grep --grep="$BUMP_GREP" --pretty=format:"%s" -- "${PATHSPEC[@]}" || true)
+commit_log=$(git log "$range" --pretty=format:"%s" -- "${PATHSPEC[@]}" | grep -v "$BUMP_GREP" || true)
 
 if [[ -z "$commit_log" ]] && [[ "$skip_bump" == false ]]; then
   echo "No unreleased package changes since ${last_tag:-the beginning}. Nothing to do."
@@ -228,7 +271,14 @@ fi
 # already committed) by the run this one is resuming.
 
 if [[ "$skip_bump" == false ]]; then
-  commit_bodies=$(git log "$range" --invert-grep --grep="$BUMP_GREP" --pretty=format:"%B" -- "${PATHSPEC[@]}" || true)
+  # Full bodies (not just subjects) so next-version.sh sees BREAKING CHANGE:
+  # footers. No bump-commit filtering here, unlike the changelog/unreleased
+  # checks above: this script creates its own bump commits as a single
+  # `git commit -m "chore(release): vX"` (below) with no "!" subject and no
+  # footer, so re-including one can never change the computed level -- whereas
+  # a `git log --grep` filter would risk dropping a real commit's breaking
+  # marker by matching its body (issue #87).
+  commit_bodies=$(git log "$range" --pretty=format:"%B" -- "${PATHSPEC[@]}" || true)
   new_version=$(.github/scripts/next-version.sh "$current_version" <<< "$commit_bodies")
 
   for f in "${VERSION_FILES[@]}"; do
