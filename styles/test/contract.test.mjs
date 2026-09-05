@@ -69,6 +69,26 @@ function splitSelectors(prelude) {
   return parts;
 }
 
+/** Strip CSS block comments so a commented-out declaration or selector is not
+ * mistaken for a live one. */
+function stripComments(css) {
+  return css.replace(/\/\*[\s\S]*?\*\//g, "");
+}
+
+/** The --rb-* custom properties actually declared (as `--rb-x:`) in a
+ * tokens.css, comments stripped so a commented-out token is not counted as
+ * present -- otherwise a dropped baseline token could ship green. */
+function declaredTokens(css) {
+  return new Set(stripComments(css).match(/--rb-[\w-]+(?=\s*:)/g));
+}
+
+/** The color-scheme (dark|light) a tokens.css declares, comments stripped so a
+ * commented-out color-scheme is not read as the theme's scheme -- otherwise a
+ * theme could be mis-reported against the manifest. */
+function declaredScheme(css) {
+  return stripComments(css).match(/color-scheme:\s*(dark|light)/)?.[1];
+}
+
 /**
  * Selectors (flat), rule groups (selectors grouped by the rule they came
  * from — needed to check that two selectors are paired in the same rule,
@@ -76,7 +96,7 @@ function splitSelectors(prelude) {
  * top-level @imports of one CSS file.
  */
 function parseCss(css) {
-  css = css.replace(/\/\*[\s\S]*?\*\//g, "");
+  css = stripComments(css);
   const selectors = [];
   const ruleGroups = [];
   const keyframes = [];
@@ -204,6 +224,24 @@ test("all.css imports every theme and nothing else", () => {
   assert.deepEqual(imported, [...themeDirs].sort());
 });
 
+test("declaredTokens ignores commented-out tokens (issue #42 overflow)", () => {
+  // The per-theme baseline-token check reads the raw tokens.css; without
+  // stripping comments a commented-out `/* --rb-x: … */` would count as
+  // declared and a dropped baseline token could ship green.
+  const css = '/* --rb-commented: red; */\n:where([data-rb-style="x"]) { --rb-live: 1; }';
+  const declared = declaredTokens(css);
+  assert.ok(!declared.has("--rb-commented"), "a commented-out token must not count as declared");
+  assert.ok(declared.has("--rb-live"), "a live token must count as declared");
+});
+
+test("declaredScheme ignores a commented-out color-scheme (issue #42 overflow)", () => {
+  // Guards declaredScheme() -- the helper the per-theme "color-scheme matches
+  // the manifest" check uses -- so reverting its stripComments fails HERE, not
+  // silently green because no real theme happens to carry a commented scheme.
+  const css = '/* color-scheme: light; */\n:where([data-rb-style="x"]) { color-scheme: dark; }';
+  assert.equal(declaredScheme(css), "dark", "the live color-scheme must win over a commented-out one");
+});
+
 for (const theme of themeDirs) {
   const guard = `[data-rb-style="${theme}"]`;
 
@@ -229,17 +267,18 @@ for (const theme of themeDirs) {
   });
 
   test(`${theme}: declares the full baseline token set and a color-scheme`, () => {
-    const tokens = readFileSync(join(ROOT, theme, "tokens.css"), "utf-8");
-    const declared = new Set(tokens.match(/--rb-[\w-]+(?=\s*:)/g));
+    const raw = readFileSync(join(ROOT, theme, "tokens.css"), "utf-8");
+    const declared = declaredTokens(raw);
     const missing = REQUIRED_TOKENS.filter((t) => !declared.has(t));
     assert.deepEqual(missing, [], `${theme} misses baseline tokens`);
-    assert.match(tokens, /color-scheme:\s*(dark|light)\s*;/);
+    // Presence only (raw is fine -- a live declaration always satisfies this);
+    // the value is validated against the manifest via declaredScheme below.
+    assert.match(raw, /color-scheme:\s*(dark|light)\s*;/);
   });
 
   test(`${theme}: color-scheme matches the manifest`, () => {
-    const tokens = readFileSync(join(ROOT, theme, "tokens.css"), "utf-8");
-    const scheme = tokens.match(/color-scheme:\s*(dark|light)/)?.[1];
-    assert.equal(scheme, manifest.themes[theme].scheme);
+    const raw = readFileSync(join(ROOT, theme, "tokens.css"), "utf-8");
+    assert.equal(declaredScheme(raw), manifest.themes[theme].scheme);
   });
 
   test(`${theme}: every .rb-* class in its CSS is either required or listed under extras`, () => {

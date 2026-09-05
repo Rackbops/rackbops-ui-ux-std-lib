@@ -37,8 +37,26 @@
  * the gradient is the signature — the theme reads as "airy" only against it.
  * Apply to <body>, or to the attributed container itself. */
 :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-bg {
+  position: relative;
+  isolation: isolate;
+  background: var(--rb-bg);
+}
+
+/* The gradient rides a viewport-fixed ::before underlay rather than
+ * background-attachment: fixed, which iOS Safari silently ignores — there it
+ * would scroll with the page and leave the backdrop-filter cards compositing
+ * over a moving ground. A position: fixed pseudo pins to the viewport (or the
+ * nearest transformed/filtered ancestor, if any). z-index: -1 keeps it behind
+ * the container's own content; isolation: isolate contains it so it never
+ * slips under siblings. Apply .rb-bg to the page root — on a sub-viewport
+ * container the underlay still fills the viewport, not the element's box. */
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-bg::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
   background: linear-gradient(135deg, var(--rb-sky-start) 0%, var(--rb-sky-end) 100%);
-  background-attachment: fixed;
+  pointer-events: none;
 }
 
 :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *):where(h1, h2, h3, h4, h5, h6) {

@@ -51,6 +51,13 @@ function typecheck(source) {
       ],
       { encoding: "utf-8", stdio: ["ignore", "pipe", "pipe"] }
     );
+  } catch (err) {
+    // tsc writes its diagnostics to stdout, but execFileSync's thrown error
+    // puts only stderr in .message (here just "Command failed"). Rethrow with
+    // stdout/stderr attached so a TS regression names the file, theme, and TS
+    // code instead of surfacing an opaque "Command failed".
+    const detail = [err.stdout, err.stderr].filter(Boolean).join("\n").trim();
+    throw new Error(detail ? `tsc failed:\n${detail}` : err.message);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
@@ -58,4 +65,16 @@ function typecheck(source) {
 
 test("every theme export type-checks clean under noUncheckedSideEffectImports", () => {
   assert.doesNotThrow(() => typecheck(consumerSource()));
+});
+
+test("typecheck surfaces tsc diagnostics on failure, not an opaque 'Command failed'", () => {
+  // Guards the catch in typecheck(): a deliberate type error must reach the
+  // assertion as a tsc diagnostic (error TSxxxx), not "Command failed" with
+  // the real message swallowed on err.stdout -- otherwise a real TS2882
+  // regression fails with no file/theme/code to act on.
+  assert.throws(
+    () => typecheck('const wrong: number = "not a number";\n'),
+    /error TS\d+/,
+    "typecheck must rethrow with the tsc diagnostic text in the message"
+  );
 });
