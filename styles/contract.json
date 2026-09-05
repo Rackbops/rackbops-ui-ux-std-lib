@@ -154,5 +154,13 @@
       { "theme": "concrete-signal", "reason": "flat scrim by design, no blur/glass anywhere in this theme", "permanent": true },
       { "theme": "concrete-signal-light", "reason": "flat scrim by design, no blur/glass anywhere in this theme", "permanent": true }
     ]
+  },
+  "permittedLiterals": {
+    "//": "Hex colours permitted outside color-mix (STANDARD.md 4.2, issue #94): documented per-theme literals no token expresses -- hand-tuned AA inks on a semantic fill (summer-cloud) and the rack panels' fixed-dark local palette (rackbops pair). Each is named in that theme's design.md. Data-URI SVG chevron strokes are %23-encoded and so never match the hex scan.",
+    "summer-cloud/alert.css": ["#1a7a1a", "#594400", "#93000a"],
+    "summer-cloud/badge.css": ["#004261", "#0a2e0a", "#241a00", "#4a0000"],
+    "summer-cloud/button.css": ["#4a0000"],
+    "rackbops-noir/rack.css": ["#0a121a", "#e7eef4", "#7d90a2", "#1e2b37"],
+    "rackbops-studio/rack.css": ["#101a24", "#e7eef4", "#7d90a2", "#26333f"]
   }
 }

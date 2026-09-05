@@ -127,7 +127,7 @@
   width: calc(1.75rem - 6px);
   height: calc(1.75rem - 6px);
   border-radius: 50%;
-  background: #fff;
+  background: var(--rb-surface);
   box-shadow: 0 2px 6px rgba(93, 43, 255, 0.2);
   transition: transform var(--rb-transition) var(--rb-ease-bounce);
 }

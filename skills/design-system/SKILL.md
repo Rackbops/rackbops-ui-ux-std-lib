@@ -34,8 +34,11 @@ component styles in an app that has adopted a theme — consume the system.
 Every rule is scoped: nothing applies until an element carries
 `data-rb-style="<theme>"`. Put it on `<html>` for a page the app owns, or on a
 mount container to theme one subtree (embed-safe: the CSS is inert everywhere
-else, and the `:where()` guards are zero-specificity so any consumer rule
-overrides). Several themes can load together; swapping is an attribute flip.
+else, and the `:where()` guards add no specificity, so a consumer rule overrides
+a base component rule at equal weight -- a few state-driven rules reach
+`(0,2,0)` or deeper (up to `(0,4,0)`), which your override then matches).
+Several themes can load together;
+swapping is an attribute flip.
 
 The full roster is 12 themes. Two pairs are reverse-documented from roshne's
 own apps: `arcane-obsidian` (dark) / `arcane-parchment` (light) — the

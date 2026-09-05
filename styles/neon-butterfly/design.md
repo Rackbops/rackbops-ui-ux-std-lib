@@ -94,6 +94,9 @@ Class prefix `rb-`. Variants use BEM-ish modifiers (`rb-btn--accent`).
   square icon-only hit target (>=2rem), paired with `.rb-btn`.
 - **Form** `.rb-input`, `.rb-textarea`, `.rb-select`, `.rb-label`, `.rb-field`,
   `.rb-checkbox`, `.rb-radio`, `.rb-switch`, `.rb-choice` — checked states glow lime.
+  The `.rb-select` arrow is an inline data-URI SVG whose stroke is a literal
+  (`#958da1`, matching `--rb-text-faint`) — an inline SVG can't reference a
+  custom property.
 - **Badge** `.rb-badge` + semantic modifiers.
 - **Alert** `.rb-alert` — left accent bar carries the semantic color.
 - **Dialog** `.rb-dialog` — native `<dialog>`, lilac border + glow, blurred backdrop.

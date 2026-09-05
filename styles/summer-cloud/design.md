@@ -129,8 +129,15 @@ theme-agnostic). Variants use BEM-ish modifiers (`rb-btn--primary`).
 - **Form** `.rb-input`, `.rb-textarea`, `.rb-select`, `.rb-label`, `.rb-field`,
   `.rb-checkbox`, `.rb-radio`, `.rb-switch`, `.rb-choice` — sunken fields, no
   resting border, sky-blue ring on focus. The switch is the oversized
-  "cloud-toggle": squishy, and green when live.
-- **Badge** `.rb-badge` + semantic modifiers — solid pills, mono uppercase.
+  "cloud-toggle": squishy, and green when live. The `.rb-select` arrow is an
+  inline data-URI SVG, so its stroke is a literal (`#484457`, matching
+  `--rb-text-faint`); an inline SVG can't reference a custom property.
+- **Badge** `.rb-badge` + semantic modifiers — solid pills, mono uppercase. The
+  dark ink on each semantic fill (`#004261`/`#0a2e0a`/`#241a00`/`#4a0000`), and
+  the alert titles (`#1a7a1a`/`#594400`/`#93000a`), are hand-tuned per-theme
+  literals chosen to read AA on that specific fill — a separate decision from
+  the fill's semantic token, so they don't track `--rb-success`/`--rb-danger`/
+  etc. (a permitted literal, STANDARD.md §4.2; allowlisted in `contract.json`).
   **Chip** `.rb-chip` — outlined filter chip; `--selected` fills violet (a
   summer-cloud extra, beyond the shared component set).
 - **Alert** `.rb-alert` — glass card with a 4px semantic left rule.

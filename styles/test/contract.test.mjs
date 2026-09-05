@@ -157,6 +157,85 @@ function reEscape(s) {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+// -- Component-selector nesting (STANDARD.md 4.1, issue #94) -----------------
+// Base component rules are one class deep. A rule MAY reach deeper only to
+// style a semantic child element the markup can't class (`.rb-table td`), or a
+// child from its parent's state/variant (`.rb-stepper--complete
+// .rb-stepper__node`). The forbidden shape is chaining a block to ITS OWN
+// element class with no state marker (`.rb-card .rb-card__title`), where the
+// element class alone would do. Cross-block scoping (`.rb-table .rb-num`) is
+// allowed.
+const NEST_UTILITY_CLASSES = new Set(["rb-num"]);
+
+/** Strip the leading zero-specificity `:where(...)` guard from a selector. */
+function stripGuard(sel) {
+  const m = sel.match(/^:where\([^)]*\)/);
+  return m ? sel.slice(m[0].length) : sel;
+}
+
+/** Split a selector into combinator-joined compounds (top level only -- commas
+ * and combinators inside () and [] don't split). */
+function splitCompounds(sel) {
+  const compounds = [];
+  let depth = 0;
+  let buf = "";
+  for (const ch of sel) {
+    if (ch === "(" || ch === "[") depth++;
+    else if (ch === ")" || ch === "]") depth--;
+    if (depth === 0 && (ch === " " || ch === ">" || ch === "+" || ch === "~")) {
+      if (buf.trim()) compounds.push(buf.trim());
+      buf = "";
+    } else buf += ch;
+  }
+  if (buf.trim()) compounds.push(buf.trim());
+  return compounds;
+}
+
+/** The `rb-*` classes in a compound, each with its BEM block (before __ or --). */
+function rbClasses(compound) {
+  return [...compound.matchAll(/\.(rb-[\w-]+)/g)].map((m) => ({
+    cls: m[1],
+    block: m[1].split("__")[0].split("--")[0],
+  }));
+}
+
+/** A compound carries a state marker: a modifier class, an attribute selector,
+ * or a genuine state pseudo-class. The logical pseudos (`:not`/`:is`/`:has`)
+ * are deliberately excluded -- they're containers, not state, and a no-op
+ * `:not(.x)` must not launder a gratuitous nest past the check (the real
+ * state->child selectors all carry a `:hover`/`--mod`/`[aria-*]` besides). */
+function hasStateMarker(compound) {
+  return (
+    /--/.test(compound) ||
+    /\[[^\]]+\]/.test(compound) ||
+    /:(hover|focus|focus-visible|focus-within|active|checked|disabled|indeterminate|placeholder-shown|target|visited)\b/.test(
+      compound
+    )
+  );
+}
+
+/** If `bodySel` (guard already stripped) is a forbidden nest, return the
+ * reason; else null. Exported for the synthetic unit test. */
+export function forbiddenNest(bodySel) {
+  const compounds = splitCompounds(bodySel);
+  if (compounds.length <= 1) return null;
+  for (let i = 1; i < compounds.length; i++) {
+    for (const { cls, block } of rbClasses(compounds[i])) {
+      if (NEST_UTILITY_CLASSES.has(cls)) continue;
+      let sharedAncestor = false;
+      let stateInChain = false;
+      for (let j = 0; j < i; j++) {
+        if (hasStateMarker(compounds[j])) stateInChain = true;
+        if (rbClasses(compounds[j]).some((a) => a.block === block)) sharedAncestor = true;
+      }
+      if (sharedAncestor && !stateInChain) {
+        return `.${cls} is reached from its own block with no state marker -- flatten to .${cls}, or add a --modifier/[aria-*]/state to the ancestor: ${bodySel}`;
+      }
+    }
+  }
+  return null;
+}
+
 // Every CSS-only export resolves "types" to this one shared side-effect stub
 // (see css-side-effect.d.ts) -- required so TypeScript's stricter side-effect
 // import checking (moduleResolution: "bundler"/"node16",
@@ -469,6 +548,98 @@ for (const pair of contract.ariaPairs) {
     }
   });
 }
+
+for (const theme of themeDirs) {
+  test(`${theme}: component rules don't nest a block into its own element without a state (STANDARD.md 4.1, #94)`, () => {
+    for (const file of themeCssFiles(theme)) {
+      // tokens.css/base.css hold canvas + bare-element rules, not component rules.
+      if (!/[\\/]components[\\/]/.test(file)) continue;
+      const { selectors } = parseCss(readFileSync(file, "utf-8"));
+      for (const sel of selectors) {
+        const reason = forbiddenNest(stripGuard(sel));
+        assert.equal(reason, null, `${file}: ${reason}`);
+      }
+    }
+  });
+}
+
+test("forbiddenNest: flags a block reaching its own element without a state, permits the legitimate patterns (#94)", () => {
+  // Banned: a block chained to its own element class, no state marker -- the
+  // element class alone would do, and the chain just raises specificity.
+  assert.ok(forbiddenNest(".rb-card .rb-card__title"), "redundant same-block nest must flag");
+  assert.ok(forbiddenNest(".rb-card__head .rb-card__title"), "element->same-block element must flag");
+  assert.ok(
+    forbiddenNest(".rb-card:not(.x) .rb-card__title"),
+    "a no-op :not() on the ancestor must not launder a same-block nest"
+  );
+  // Permitted: state/variant -> child (the parent's state drives the child).
+  assert.equal(forbiddenNest(".rb-stepper--complete .rb-stepper__node"), null);
+  assert.equal(forbiddenNest('.rb-stepper__step[aria-current="step"] .rb-stepper__node'), null);
+  assert.equal(forbiddenNest(".rb-btn:not(:disabled):hover .rb-btn__arrow"), null);
+  // Permitted: class -> semantic element, cross-block scoping, and the rb-num utility.
+  assert.equal(forbiddenNest(".rb-table td"), null);
+  assert.equal(forbiddenNest(".rb-table .rb-num"), null);
+  assert.equal(forbiddenNest(".rb-rack__bars > i:nth-child(1)"), null);
+  // A single compound (a base rule, even with a modifier/attribute) is not a nest.
+  assert.equal(forbiddenNest(".rb-tab.rb-tab--active"), null);
+});
+
+// -- Literal colours (STANDARD.md 4.2, issue #94) ---------------------------
+/** Remove balanced `color-mix(...)` spans so a permitted token / `#fff` / `#000`
+ * inside a mix isn't seen by the literal-hex scan below. */
+function removeColorMix(css) {
+  const lower = css.toLowerCase(); // CSS function names are case-insensitive
+  let out = "";
+  let i = 0;
+  while (i < css.length) {
+    const idx = lower.indexOf("color-mix(", i);
+    if (idx === -1) {
+      out += css.slice(i);
+      break;
+    }
+    out += css.slice(i, idx);
+    let depth = 0;
+    let j = idx + "color-mix".length;
+    for (; j < css.length; j++) {
+      if (css[j] === "(") depth++;
+      else if (css[j] === ")") {
+        depth--;
+        if (depth === 0) {
+          j++;
+          break;
+        }
+      }
+    }
+    i = j;
+  }
+  return out;
+}
+
+for (const theme of themeDirs) {
+  test(`${theme}: component CSS has no literal hex colour outside color-mix (STANDARD.md 4.2, #94)`, () => {
+    const permitted = contract.permittedLiterals ?? {};
+    for (const file of themeCssFiles(theme)) {
+      if (!/[\\/]components[\\/]/.test(file)) continue;
+      const rel = `${theme}/${file.split(/[\\/]/).pop()}`;
+      const allowed = new Set((permitted[rel] ?? []).map((h) => h.toLowerCase()));
+      const css = removeColorMix(stripComments(readFileSync(file, "utf-8")));
+      // Data-URI SVG strokes are %23-encoded and never match this; #fff/#000
+      // inside a mix are stripped above.
+      for (const m of css.matchAll(/#[0-9a-fA-F]{3,8}\b/g)) {
+        assert.ok(
+          allowed.has(m[0].toLowerCase()),
+          `${file}: literal hex ${m[0]} outside color-mix -- draw it from a token, or (if it's an unavoidable per-theme literal) add it to contract.json permittedLiterals["${rel}"] with a design.md note (STANDARD.md 4.2)`
+        );
+      }
+    }
+  });
+}
+
+test("hex-literal scan: sees a literal outside color-mix, ignores one inside it (#94)", () => {
+  assert.match(removeColorMix(".x { color: #123456; }"), /#123456/);
+  const inside = removeColorMix(".x { color: color-mix(in srgb, var(--a) 88%, #fff); }");
+  assert.ok(!/#fff/.test(inside), "a #fff inside color-mix must be stripped before the scan");
+});
 
 test("dialog backdrop blurs with var(--rb-blur), not a literal (or is exempt, see #65)", () => {
   const token = contract.dialogBackdropBlur.token;

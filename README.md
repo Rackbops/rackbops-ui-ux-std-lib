@@ -73,9 +73,11 @@ npm install @rackbops/styles @rackbops/ui-react
 
 Everything is scoped: nothing applies until an element carries
 `data-rb-style="<theme>"` — put it on `<html>` for a page or on any container to
-theme just that subtree (embed-safe; the `:where()` guards are zero-specificity
-so your own rules override). Several themes can load at once and swapping is one
-attribute flip.
+theme just that subtree (embed-safe; the `:where()` guards add no specificity,
+so a rule of yours overrides a base component rule at equal weight — a few
+state-driven rules reach `(0,2,0)` or deeper (up to `(0,4,0)`), which your
+override then needs to match).
+Several themes can load at once and swapping is one attribute flip.
 
 No-build apps can load a theme's CSS from a CDN — jsDelivr mirrors public npm,
 e.g. `https://cdn.jsdelivr.net/npm/@rackbops/styles/luminous-precision/index.css`
