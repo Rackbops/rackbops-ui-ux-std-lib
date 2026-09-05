@@ -37,9 +37,14 @@ export function renderedTableBlock(contract) {
 
 export function replaceTable(skillMd, block) {
   const startIdx = skillMd.indexOf(START);
-  const endIdx = skillMd.indexOf(END);
-  if (startIdx === -1 || endIdx === -1) {
-    throw new Error(`SKILL.md is missing the ${START} / ${END} markers`);
+  if (startIdx === -1) {
+    throw new Error(`SKILL.md is missing the ${START} marker`);
+  }
+  // Search for END *after* START, so a stray END above START can't slice the
+  // region backwards and duplicate the body (each run growing the file).
+  const endIdx = skillMd.indexOf(END, startIdx + START.length);
+  if (endIdx === -1) {
+    throw new Error(`SKILL.md is missing the ${END} marker after ${START}`);
   }
   return skillMd.slice(0, startIdx) + block + skillMd.slice(endIdx + END.length);
 }

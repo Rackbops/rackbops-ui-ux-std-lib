@@ -1,7 +1,10 @@
 // A light/dark pair MUST ship an identical component set (STANDARD.md 5.2):
 // the two components/ directories are byte-identical after normalising the
 // theme-specific guard string and keyframe names, or the differing file is
-// named in both design.md's. Kept separate from contract.test.mjs because
+// documented as a deliberate divergence in both design.md's -- as an exact
+// backticked `components/<file>` reference, not a bare filename mention or a
+// line-numbered citation like `components/table.css:9-15`. Kept separate from
+// contract.test.mjs because
 // this compares across two themes rather than checking one theme in
 // isolation.
 //
@@ -78,6 +81,22 @@ function firstDiffContext(a, b) {
   };
 }
 
+/**
+ * A pair member documents a component as a deliberate divergence when its
+ * design.md carries the exact backticked `components/<file>` reference -- the
+ * bare form the four real divergence notes use (arcane `components/button.css`,
+ * rackbops `components/rack.css`, concrete `components/form.css`, amber
+ * `components/dialog.css`). A line-numbered citation such as
+ * `components/table.css:9-15` (the backtick closes after the range) does NOT
+ * count, and neither does a bare-filename substring -- the old
+ * `design.includes(file)` was true for `dialog.css`.includes(`log.css`) and
+ * for any `components/<file>:lines` citation, silently exempting parity for
+ * two files that don't actually diverge.
+ */
+function documentsDivergence(designMd, file) {
+  return designMd.includes(`\`components/${file}\``);
+}
+
 for (const [themeA, themeB] of PAIRS) {
   test(`${themeA} / ${themeB}: identical component set (or divergence documented in both design.md's)`, () => {
     const filesA = new Set(componentFiles(themeA));
@@ -92,7 +111,8 @@ for (const [themeA, themeB] of PAIRS) {
       const inB = filesB.has(file);
 
       if (!inA || !inB) {
-        const documented = designA.includes(file) && designB.includes(file);
+        const documented =
+          documentsDivergence(designA, file) && documentsDivergence(designB, file);
         assert.ok(
           documented,
           `${themeA}/${themeB}: components/${file} exists in only one theme and isn't named in both design.md's`
@@ -106,7 +126,8 @@ for (const [themeA, themeB] of PAIRS) {
       const normB = normalize(rawB, themeB);
 
       if (normA !== normB) {
-        const documented = designA.includes(file) && designB.includes(file);
+        const documented =
+          documentsDivergence(designA, file) && documentsDivergence(designB, file);
         if (documented) continue;
         const { a: ctxA, b: ctxB } = firstDiffContext(normA, normB);
         assert.fail(
@@ -118,3 +139,17 @@ for (const [themeA, themeB] of PAIRS) {
     }
   });
 }
+
+test("documentsDivergence: exact backticked components/<file> token, not a substring or citation (#92)", () => {
+  // The bare backticked path is the form the four real divergence notes use;
+  // a possessive suffix after the closing backtick still counts.
+  assert.ok(documentsDivergence("the AA hover formula in `components/button.css` here", "button.css"));
+  assert.ok(documentsDivergence("`components/form.css`'s select-arrow data-URI", "form.css"));
+  // A line-numbered citation does NOT (the backtick closes after the range).
+  assert.ok(!documentsDivergence("see `components/table.css:9-15` for the table", "table.css"));
+  // A different file whose name is a substring does NOT (the `dialog.css` ⊃
+  // `log.css` bug the old designA.includes(file) fell for).
+  assert.ok(!documentsDivergence("the `components/dialog.css` scrim is literal", "log.css"));
+  // No reference at all.
+  assert.ok(!documentsDivergence("no mention of it anywhere", "table.css"));
+});
