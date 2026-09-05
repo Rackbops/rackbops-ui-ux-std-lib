@@ -31,12 +31,35 @@
 }
 
 /* Opt-in page background: the butterfly circuit artwork blended into the navy.
- * Matches the switchboard landing page. Apply to <body>, or to the attributed
- * container itself. */
+ * Matches the switchboard landing page. Apply .rb-bg to <body> or the page
+ * root; on a sub-viewport container the underlay still fills the viewport (see
+ * the ::before note below). */
 :where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-bg {
-  background: var(--rb-bg) url("./assets/butterfly-circuit.png") center / cover fixed;
-  background-blend-mode: luminosity;
+  position: relative;
+  isolation: isolate;
+  background: var(--rb-bg-blend);
+}
+
+/* The artwork rides a viewport-fixed ::before rather than the `fixed` keyword
+ * of the background shorthand (i.e. background-attachment: fixed), which iOS
+ * Safari silently ignores — there it would scroll with the page and leave the
+ * backdrop-filter glass surfaces compositing over a moving ground. A
+ * position: fixed pseudo pins to the viewport (or the nearest
+ * transformed/filtered ancestor, if any); z-index: -1 keeps it behind the
+ * container's own content; isolation: isolate contains it so it never slips
+ * under siblings. The luminosity blend of the artwork over --rb-bg-blend is
+ * preserved on the pseudo. */
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-bg::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
   background-color: var(--rb-bg-blend);
+  background-image: url("./assets/butterfly-circuit.png");
+  background-position: center;
+  background-size: cover;
+  background-blend-mode: luminosity;
+  pointer-events: none;
 }
 
 :where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *):where(h1, h2, h3, h4, h5, h6) {

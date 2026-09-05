@@ -35,11 +35,29 @@
  * obsidian base — the "luminous underlay" treatment. Apply to <body>, or to
  * the attributed container itself. */
 :where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-bg {
+  position: relative;
+  isolation: isolate;
+  background: var(--rb-bg);
+}
+
+/* The radial underlays ride a viewport-fixed ::before rather than
+ * background-attachment: fixed, which iOS Safari silently ignores — there it
+ * would scroll with the page and leave the backdrop-filter cards compositing
+ * over a moving ground. A position: fixed pseudo pins to the viewport (or the
+ * nearest transformed/filtered ancestor, if any). z-index: -1 keeps it behind
+ * the container's own content; isolation: isolate contains it so it never
+ * slips under siblings. Apply .rb-bg to the page root — on a sub-viewport
+ * container the underlay still fills the viewport, not the element's box. */
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-bg::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
   background:
     radial-gradient(50rem 30rem at 12% -5%, rgba(198, 165, 255, 0.08), transparent 70%),
     radial-gradient(55rem 35rem at 90% 105%, rgba(0, 245, 255, 0.05), transparent 70%),
     var(--rb-bg);
-  background-attachment: fixed;
+  pointer-events: none;
 }
 
 :where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *):where(h1, h2, h3, h4, h5, h6) {

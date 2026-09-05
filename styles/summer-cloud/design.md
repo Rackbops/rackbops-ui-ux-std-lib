@@ -40,7 +40,7 @@ here; that is intended, not a bug.
 
 | Role | Value | Usage |
 | --- | --- | --- |
-| Background | `#f6fafe` | Flat page ground; the `.rb-bg` sky gradient runs `--rb-sky-start` `#f0f4f8` → `--rb-sky-end` `#c9e6ff` at 135°, `fixed` |
+| Background | `#f6fafe` | Flat page ground; the `.rb-bg` sky gradient runs `--rb-sky-start` `#f0f4f8` → `--rb-sky-end` `#c9e6ff` at 135°, pinned to the viewport by a `position: fixed` `::before` underlay (not `background-attachment: fixed`, which iOS Safari ignores) |
 | Surface | `#ffffff` | Dialogs and fully opaque panels |
 | Surface sunken | `#f0f4f8` | Inset form fields |
 | Surface glass | `rgba(255,255,255,0.6)` + 12px blur | Cards, alerts (Level 1) |
