@@ -38,8 +38,10 @@
 }
 :where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-btn:not(:disabled):hover,
 :where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-btn:focus-visible {
+  /* Keep the base :focus-visible accent outline (base.css) as the focus
+     indicator -- "interactive elements take a 2px accent outline" (design.md);
+     hover shares the accent border but not the outline (it isn't focus). */
   border-color: var(--rb-accent);
-  outline: none;
 }
 :where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-btn--primary {
   background: var(--rb-accent);

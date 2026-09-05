@@ -519,9 +519,9 @@ each looks is the theme's voice; that it exists is the contract.
 | --- | --- |
 | Rest | The token-driven default |
 | Hover | A visible change (fill, border, or lift) that is never the only affordance -- the resting state must already read as interactive |
-| `:focus-visible` | Visible, accent-based, on every focusable element. A component MAY replace the base outline (buttons swap it for an accent border, `styles/arcane-obsidian/components/button.css:39-43`) but MUST NOT remove it without a replacement |
+| `:focus-visible` | Visible, accent-based, and distinguishable from `:hover`, on every focusable element -- most components keep the base accent outline (`base.css`), which a pointer hover never draws, so focus doesn't collapse into the hover look. A component MAY replace it with an equally perceptible accent indicator (concrete-signal's accent-fill `--primary` takes a hard offset accent outline, `styles/concrete-signal/components/button.css`, where a border-weight change would be invisible on the fill; concrete's form controls swap to a 1px→2px accent border) but MUST NOT remove it without a replacement (#85). Two themes still suppress the base button outline on `:focus-visible` with no distinct replacement, so focus reads like hover there (`luminous-precision`, `neon-butterfly`) `[pending #64]` |
 | Active / selected | `--active` (links, tabs), `--current` (stepper); paired with the ARIA state where one exists |
-| Disabled | `opacity` + `cursor: not-allowed`, and no hover response: hover rules are scoped `:not(:disabled)` (#37) |
+| Disabled | `opacity` + `cursor: not-allowed`, and no hover response: hover rules are scoped `:not(:disabled)` (#37, generalized in #85 to every `<button>`-backed class -- `.rb-btn`/`.rb-icon-btn`/`.rb-tab`/`.rb-tabstrip__tab`/`.rb-chip`) |
 | Press | MAY dip or scale (the studio's 1 px dip); MUST respect reduced motion |
 
 Transitions and animations:

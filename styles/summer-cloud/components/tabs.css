@@ -19,9 +19,13 @@
   transition: color var(--rb-transition), background var(--rb-transition),
     border-color var(--rb-transition);
 }
-:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-tab:hover {
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-tab:not(:disabled):hover {
   background: var(--rb-sky-tint);
   color: var(--rb-accent);
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-tab:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-tab:focus-visible {
   outline: none;

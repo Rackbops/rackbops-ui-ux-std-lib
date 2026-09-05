@@ -53,7 +53,9 @@ tables.
 Identical to concrete-signal — see its `design.md` for per-component notes;
 behaviour is the same, only the palette differs. Zero radius everywhere
 (save the near-square `--rb-radius-pill` used by badges), hard offset
-shadows instead of blur, a hard border-weight focus change, the theme's one
+shadows instead of blur, a hard border-weight focus change on form controls
+(buttons keep an offset accent outline instead, per concrete-signal's
+`design.md`), the theme's one
 rationed gradient on the active-tab underline only, and `0.1s` snap
 transitions.
 

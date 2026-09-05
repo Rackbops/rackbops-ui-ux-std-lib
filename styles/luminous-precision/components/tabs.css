@@ -19,8 +19,12 @@
   cursor: pointer;
   transition: color var(--rb-transition), border-color var(--rb-transition);
 }
-:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-tab:hover {
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-tab:not(:disabled):hover {
   color: var(--rb-text);
+}
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-tab:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 :where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-tab--active,
 :where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-tab[aria-selected="true"] {

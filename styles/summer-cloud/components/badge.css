@@ -38,8 +38,12 @@
   transition: background var(--rb-transition), color var(--rb-transition),
     border-color var(--rb-transition);
 }
-:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-chip:hover {
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-chip:not(:disabled):hover {
   background: var(--rb-sky-tint);
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-chip:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-chip--selected,
 :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-chip[aria-pressed="true"] {

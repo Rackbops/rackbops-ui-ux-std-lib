@@ -40,8 +40,10 @@
 }
 :where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-btn:not(:disabled):hover,
 :where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-btn:focus-visible {
+  /* Hover firms the border; focus additionally keeps the base accent outline
+     (base.css) -- "Focus is the accent" -- so keyboard focus reads distinctly
+     and accent-based, not just a neutral border shift. */
   border-color: var(--rb-border-strong);
-  outline: none;
 }
 :where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-btn--primary {
   background: var(--rb-accent);
