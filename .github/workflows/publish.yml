@@ -5,19 +5,26 @@ on:
     tags:
       - "v*"
 
-# Public npm publish via OIDC trusted publishing -- no long-lived npm token.
-# GitHub mints a short-lived OIDC id-token (hence `id-token: write`); npm
-# exchanges it against the trusted publisher configured on npmjs.com for each
-# package (organization Rackbops / repository rackbops-ui-ux-std-lib / workflow
-# publish.yml), and provenance attestations are generated automatically on
-# every publish. `contents: read` is only for the checkout.
+# Public npm publish. The DEFAULT path is OIDC trusted publishing -- no
+# long-lived token: GitHub mints a short-lived OIDC id-token (hence
+# `id-token: write`) and npm exchanges it against the trusted publisher
+# configured on npmjs.com for each package (organization Rackbops / repository
+# rackbops-ui-ux-std-lib / workflow publish.yml), generating provenance
+# attestations automatically. `contents: read` is only for the checkout.
 #
-# setup-node deliberately does NOT set `registry-url` below: that makes it write
-# a `//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}` line into .npmrc, and
-# with no token secret that line is an empty `_authToken=` -- npm then assumes
-# auth is already configured and skips the OIDC exchange, failing with ENEEDAUTH
-# (actions/setup-node#1551). The default registry (registry.npmjs.org) is the
-# publish target with no registry-url set, so nothing is lost by omitting it.
+# BREAK-GLASS FALLBACK: if an `NPM_TOKEN` secret is set, the preflight step uses
+# it for classic token auth instead and OIDC is bypassed -- a manual escape
+# hatch for when the trusted publisher isn't configured yet or npm's OIDC is
+# down. Leave the secret UNSET for normal operation; the preflight then requires
+# the OIDC prerequisites. Token auth does not emit provenance.
+#
+# setup-node deliberately does NOT set `registry-url`: that makes it write a
+# `//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}` line into .npmrc, and
+# in the (default) no-token case that line is an empty `_authToken=` -- npm then
+# assumes auth is already configured and skips the OIDC exchange, failing with
+# ENEEDAUTH (actions/setup-node#1551). The token fallback instead writes that
+# auth line itself, only when a token actually exists. The default registry
+# (registry.npmjs.org) is the publish target with no registry-url set.
 permissions:
   contents: read
   id-token: write
@@ -40,22 +47,39 @@ jobs:
       # raises its own Node floor above the runner's.
       - run: npm install -g npm@^11.5.1
 
-      # Fail fast, with an actionable message, when a prerequisite for OIDC
-      # trusted publishing is missing -- otherwise `npm publish` bails out two
-      # steps later (after install + build) with a bare ENEEDAUTH, which npm
-      # emits for every auth problem, a missing/mismatched trusted publisher
-      # included (npm/cli#9088). The three conditions below are knowable up
-      # front; the remaining one -- the trusted publisher genuinely not being
-      # set up on npmjs.com -- can only surface at exchange time and is reframed
-      # by the publish step's error trap.
-      - name: Preflight -- OIDC trusted publishing is usable
+      # Decide the auth path and fail fast, with an actionable message, when its
+      # prerequisites are missing -- otherwise `npm publish` bails out two steps
+      # later (after install + build) with a bare ENEEDAUTH, which npm emits for
+      # every auth problem, a missing/mismatched trusted publisher included
+      # (npm/cli#9088). The mode chosen here is exported for the publish step so
+      # its error trap can name the right cause.
+      #
+      # NODE_AUTH_TOKEN comes from the optional NPM_TOKEN secret (empty when
+      # unset -- the secrets context isn't allowed in `if:`, so the branch is in
+      # the shell, matching release.yml's RELEASE_TOKEN gate).
+      - name: Preflight -- verify publish auth
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
+          # BREAK-GLASS: a set NPM_TOKEN switches to classic token auth. Write
+          # the auth line ourselves (only now that a token exists, so the empty-
+          # token trap can't bite), record the mode, and let the publish step's
+          # trap report a bad/expired token. No provenance in this mode.
+          if [ -n "${NODE_AUTH_TOKEN:-}" ]; then
+            echo "NPM_TOKEN is set -- using classic token auth; OIDC trusted publishing is bypassed."
+            npm config set //registry.npmjs.org/:_authToken "${NODE_AUTH_TOKEN}" --location=user
+            echo "PUBLISH_AUTH_MODE=token" >> "$GITHUB_ENV"
+            exit 0
+          fi
+
+          echo "No NPM_TOKEN -- using OIDC trusted publishing."
+          echo "PUBLISH_AUTH_MODE=oidc" >> "$GITHUB_ENV"
           fail=0
 
           # (1) id-token: write must be in effect, or npm has no token to
           # exchange. GitHub exposes the mint endpoint via these two vars.
           if [ -z "${ACTIONS_ID_TOKEN_REQUEST_URL:-}" ] || [ -z "${ACTIONS_ID_TOKEN_REQUEST_TOKEN:-}" ]; then
-            echo "::error::OIDC id-token unavailable -- the job is missing 'permissions: id-token: write' (or it was overridden). Trusted publishing cannot authenticate."
+            echo "::error::OIDC id-token unavailable -- the job is missing 'permissions: id-token: write' (or it was overridden). Trusted publishing cannot authenticate. Set an NPM_TOKEN secret to fall back to token auth."
             fail=1
           fi
 
@@ -123,14 +147,17 @@ jobs:
               echo "${name}@${version} is already published. Skipping."
               continue
             fi
-            # Capture output so an auth failure can be reframed. With id-token,
-            # npm version, and the _authToken trap already cleared by preflight,
-            # a bare ENEEDAUTH/E401/E404 here means this package's trusted
-            # publisher is missing or its fields don't match (npm/cli#9088).
+            # Capture output so an auth failure can be reframed to the actual
+            # cause for the mode preflight chose (npm reports every auth problem
+            # as a bare ENEEDAUTH/E401/E404 -- npm/cli#9088).
             if ! out="$(cd "$path" && npm publish --access public 2>&1)"; then
               printf '%s\n' "${out}" >&2
               if printf '%s' "${out}" | grep -Eq 'ENEEDAUTH|E401|E404|need auth|Unable to authenticate'; then
-                echo "::error::${name}@${version} could not authenticate for publish. Configure a trusted publisher for ${name} on npmjs.com -- organization Rackbops / repository rackbops-ui-ux-std-lib / workflow publish.yml / Environment blank (all case-sensitive) -- then re-run this workflow."
+                if [ "${PUBLISH_AUTH_MODE:-oidc}" = "token" ]; then
+                  echo "::error::${name}@${version} failed to authenticate with NPM_TOKEN -- the token is expired, malformed, or lacks publish rights to ${name}. Rotate the secret or unset it to use OIDC."
+                else
+                  echo "::error::${name}@${version} could not authenticate for publish. Configure a trusted publisher for ${name} on npmjs.com -- organization Rackbops / repository rackbops-ui-ux-std-lib / workflow publish.yml / Environment blank (all case-sensitive) -- then re-run this workflow. (Or set an NPM_TOKEN secret to fall back to token auth.)"
+                fi
               fi
               exit 1
             fi

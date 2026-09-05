@@ -149,12 +149,21 @@ The two steps authenticate differently:
   the optional **Environment** field left blank (the workflow declares no
   GitHub environment — filling it in would break the OIDC match). npm also
   generates and publishes provenance attestations automatically on every
-  publish (the repo is public, which provenance requires). Because there is no
-  token to fall back on, a `v*` tag pushed **before** both `@rackbops/styles`
-  and `@rackbops/ui-react` have that trusted publisher configured fails to
-  publish — set it up on npm first. setup-node intentionally omits
-  `registry-url` so it doesn't write an empty `_authToken` line that would make
-  npm skip the OIDC exchange ([actions/setup-node#1551](https://github.com/actions/setup-node/issues/1551)).
+  publish (the repo is public, which provenance requires). A `v*` tag pushed
+  **before** both `@rackbops/styles` and `@rackbops/ui-react` have that trusted
+  publisher configured fails to publish — set it up on npm first. setup-node
+  intentionally omits `registry-url` so it doesn't write an empty `_authToken`
+  line that would make npm skip the OIDC exchange
+  ([actions/setup-node#1551](https://github.com/actions/setup-node/issues/1551)).
+  A **preflight step** checks these prerequisites up front and, on failure,
+  prints exactly which one is missing instead of the bare `ENEEDAUTH` npm emits
+  for any auth problem.
+  - **Break-glass token fallback.** Setting an `NPM_TOKEN` secret (a granular
+    read+write token on the `@rackbops` scope) switches `publish.yml` to classic
+    token auth and bypasses OIDC — an escape hatch for when the trusted
+    publisher isn't configured yet or npm's OIDC is down. It's **unset by
+    default** (OIDC is the intended path); token-auth publishes carry no
+    provenance. Unset the secret to return to OIDC.
 
 ## Agent skill
 
