@@ -41,7 +41,7 @@ const REQUIRED_TOKENS = contract.tokens.map((n) => `--rb-${n}`);
 // {component, file, class} — parallel to REQUIRED_TOKENS, sourced from
 // contract.json's `components` map instead of a hand-written list.
 const REQUIRED_CLASSES = Object.entries(contract.components).flatMap(([name, def]) =>
-  def.classes.map((cls) => ({ component: name, file: `${name}.css`, class: cls }))
+  def.classes.map((cls) => ({ file: `${name}.css`, class: cls }))
 );
 
 // The union of every required class name, used by the closed-world
@@ -180,9 +180,7 @@ test("manifest, package.json, and theme directories agree", () => {
     assertCssExport(`./${theme}`, `./${theme}/index.css`);
     assertCssExport(`./${theme}/tokens`, `./${theme}/tokens.css`);
     assertCssExport(`./${theme}/base`, `./${theme}/base.css`);
-    const componentsEntry = pkg.exports[`./${theme}/components/*`];
-    assert.equal(componentsEntry?.types, TYPES_STUB, `package.json exports[./${theme}/components/*].types`);
-    assert.equal(componentsEntry?.default, `./${theme}/components/*.css`);
+    assertCssExport(`./${theme}/components/*`, `./${theme}/components/*.css`);
   }
   assertCssExport("./all", "./all.css");
   assert.equal(pkg.exports["./manifest"], "./manifest.json");
@@ -396,6 +394,47 @@ for (const { file, class: cls } of REQUIRED_CLASSES) {
   });
 }
 
+/**
+ * Evaluate an ARIA modifier/attribute pairing over a file's rule groups.
+ * `allPaired` — EVERY rule group bearing the modifier class also carries the
+ * attribute scoped to the same base element (the positive check; one paired
+ * group must not mask an unpaired sibling, issue #92). `anyPaired` — the class
+ * is paired in at least one group (the exempt-staleness check). Extracted so
+ * the .every()/.some() distinction is unit-testable on synthetic groups, not
+ * only via the live themes (whose clean state gives .some and .every the same
+ * verdict). `classGroups.length > 0` keeps `.every()` from passing vacuously
+ * when the class is absent.
+ */
+export function evalAriaPairing(ruleGroups, classRe, baseRe, attribute) {
+  const classGroups = ruleGroups.filter((g) => g.some((s) => classRe.test(s)));
+  const groupPaired = (g) => g.some((s) => s.includes(attribute) && baseRe.test(s));
+  return {
+    allPaired: classGroups.length > 0 && classGroups.every(groupPaired),
+    anyPaired: classGroups.some(groupPaired),
+  };
+}
+
+test("evalAriaPairing: .every() rejects an unpaired sibling that .some() would mask (#92)", () => {
+  const classRe = /\.rb-tab--active(?![\w-])/;
+  const baseRe = /\.rb-tab(?![\w-])/;
+  const attr = '[aria-selected="true"]';
+  // Two groups bear the modifier class: the first paired, the second not.
+  const mixed = [
+    ['.rb-tab.rb-tab--active', '.rb-tab[aria-selected="true"]'],
+    ['.rb-tab.rb-tab--active::after'],
+  ];
+  const r = evalAriaPairing(mixed, classRe, baseRe, attr);
+  assert.equal(r.allPaired, false, ".every() must reject the unpaired ::after sibling");
+  assert.equal(r.anyPaired, true, "first group is paired -- the old .some() check would pass here");
+  // Fully paired -> passes.
+  assert.equal(
+    evalAriaPairing([["a.rb-tab--active", 'a.rb-tab[aria-selected="true"]']], classRe, baseRe, attr).allPaired,
+    true
+  );
+  // Class absent -> not vacuously true.
+  assert.equal(evalAriaPairing([[".rb-btn:hover"]], classRe, baseRe, attr).allPaired, false);
+});
+
 for (const pair of contract.ariaPairs) {
   const file = `${pair.component}.css`;
   const classRe = new RegExp(`\\.${reEscape(pair.class)}(?![\\w-])`);
@@ -406,24 +445,26 @@ for (const pair of contract.ariaPairs) {
       const exempt = pair.exempt.find((e) => e.theme === theme);
       const cssFile = join(ROOT, theme, "components", file);
       const { ruleGroups } = parseCss(readFileSync(cssFile, "utf-8"));
-      const classGroups = ruleGroups.filter((g) => g.some((s) => classRe.test(s)));
       // The attribute selector must be scoped to the same base element
       // (.rb-tab, .rb-link, .rb-stepper__step) as the modifier class -- not
       // merely co-occur in the same rule group, which an unrelated selector
       // (e.g. a shared hover/focus rule) could otherwise satisfy.
-      const paired = classGroups.some((g) =>
-        g.some((s) => s.includes(pair.attribute) && baseRe.test(s))
-      );
+      const { allPaired, anyPaired } = evalAriaPairing(ruleGroups, classRe, baseRe, pair.attribute);
       if (exempt) {
+        // Staleness guard: if the theme pairs the class in ANY group, the
+        // exempt entry is stale (anyPaired, not allPaired -- one paired
+        // occurrence already makes "deliberately unpaired" untrue).
         assert.ok(
-          !paired,
+          !anyPaired,
           `${theme}: .${pair.class} is now paired with ${pair.attribute} -- remove the stale exempt entry ("${exempt.reason}")`
         );
         continue;
       }
+      // EVERY occurrence of the modifier class must pair with the attribute --
+      // one paired rule no longer masks an unpaired sibling (issues #92, #65).
       assert.ok(
-        paired,
-        `${theme}: .${pair.class} in ${file} is not paired with a selector containing ${pair.attribute} in the same rule`
+        allPaired,
+        `${theme}: .${pair.class} in ${file} has an occurrence not paired with a selector containing ${pair.attribute} in the same rule`
       );
     }
   });

@@ -397,13 +397,17 @@ extras fails the suite `[tested]`.
 
 A light/dark pair MUST ship an identical component set: the two
 `components/` directories are byte-identical after normalising the guard
-string and theme-specific keyframe names, or the differing file is named in
-both `design.md`s `[tested: styles/test/pair-parity.test.mjs]`. Comments are
+string and theme-specific keyframe names, or the differing file is documented
+as a deliberate divergence in both `design.md`s -- as an exact backticked
+`` `components/<file>` `` reference, not a bare filename mention or a
+line-numbered citation like `` `components/table.css:9-15` ``
+`[tested: styles/test/pair-parity.test.mjs]`. Comments are
 stripped before comparing (editorial voice, not behaviour); four files across
 the four pairs currently diverge beyond palette (an AA-tuned hover formula, a
 local `--rb-rack-panel`/`--rb-rack-line` custom-property pair tuned per
 theme, an SVG icon colour that can't take a token, and a per-theme backdrop
-scrim alpha) and are named in both sides' `design.md` as required here.
+scrim alpha) and each carries an exact backticked `` `components/<file>` ``
+reference in both sides' `design.md` as required here.
 
 ### 5.3 Documented omissions
 
@@ -745,7 +749,8 @@ The showcase is the library's visual acceptance test. It MUST:
      fidelity.
    - A pair is identical in everything but `tokens.css`, the values
      `design.md` tables (5.2), comment prose (which is free to differ), and
-     any file named as a documented divergence in both `design.md`s
+     any file documented as a deliberate divergence -- an exact backticked
+     `` `components/<file>` `` reference -- in both `design.md`s
      `[tested: styles/test/pair-parity.test.mjs]`.
 3. Scaffold with `pnpm new-theme <id> --scheme <s> --from <closest>`
    `[pending #53]`; until then copy the closest theme's layout, re-guard
