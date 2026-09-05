@@ -1,5 +1,5 @@
 {
-  "contract": 1,
+  "contract": 2,
   "tokens": [
     "bg", "surface", "surface-2", "surface-sunken",
     "text", "text-soft", "text-faint",
@@ -8,7 +8,8 @@
     "info", "success", "warning", "danger",
     "font-display", "font-body", "font-mono",
     "font-weight", "font-weight-medium", "font-weight-bold",
-    "heading-tracking", "label-tracking", "text-sm",
+    "heading-tracking", "label-tracking",
+    "text-xs", "text-sm", "text-md", "text-lg", "text-xl", "text-2xl",
     "radius", "radius-lg", "radius-pill",
     "shadow-sm", "shadow-lg", "blur", "transition",
     "space-1", "space-2", "space-3", "space-4", "space-5"

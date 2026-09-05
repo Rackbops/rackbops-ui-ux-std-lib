@@ -55,7 +55,12 @@
   --rb-font-weight-bold: 800; /* headlines are heavy — the studio signature */
   --rb-heading-tracking: -0.02em;
   --rb-label-tracking: 0.18em; /* the mono eyebrow's wide tracking */
+  --rb-text-xs: 12px;
   --rb-text-sm: 13.5px;
+  --rb-text-md: 16px;
+  --rb-text-lg: 20px;
+  --rb-text-xl: 24px;
+  --rb-text-2xl: 32px;
 
   /* shape & effects — soft two-step shadow depth, roomy editorial radii */
   --rb-radius: 0.6875rem; /* 11px — buttons, inputs */

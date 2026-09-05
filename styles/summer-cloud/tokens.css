@@ -78,7 +78,12 @@
   --rb-font-weight-bold: 700;
   --rb-heading-tracking: -0.02em; /* display sizes */
   --rb-label-tracking: 0.05em;
+  --rb-text-xs: 12px;
   --rb-text-sm: 14px;
+  --rb-text-md: 16px;
+  --rb-text-lg: 20px;
+  --rb-text-xl: 24px;
+  --rb-text-2xl: 32px;
 
   /* shape & effects — big soft radii, primary-tinted soft shadows */
   --rb-radius: 1rem;

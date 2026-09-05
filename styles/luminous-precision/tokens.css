@@ -69,7 +69,12 @@
   --rb-font-weight-bold: 700;
   --rb-heading-tracking: -0.01em;
   --rb-label-tracking: 0.05em; /* uppercase labels, buttons, tabs */
+  --rb-text-xs: 12px;
   --rb-text-sm: 14px;
+  --rb-text-md: 16px;
+  --rb-text-lg: 20px;
+  --rb-text-xl: 24px;
+  --rb-text-2xl: 32px;
 
   /* shape & effects — light-first depth; glow over drop shadow */
   --rb-radius: 0.5rem; /* buttons, inputs */

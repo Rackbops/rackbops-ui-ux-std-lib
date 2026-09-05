@@ -56,7 +56,12 @@
   --rb-font-weight-bold: 600; /* this theme never goes past 600 — part of the quiet voice */
   --rb-heading-tracking: -0.005em;
   --rb-label-tracking: 0.02em;
+  --rb-text-xs: 12px;
   --rb-text-sm: 13px;
+  --rb-text-md: 16px;
+  --rb-text-lg: 20px;
+  --rb-text-xl: 24px;
+  --rb-text-2xl: 32px;
 
   /* shape & effects — small tight radii, barely-there shadows, no glass, no glow */
   --rb-radius: 0.25rem;
