@@ -169,10 +169,10 @@ ok 12 - keyframe names are rb-prefixed and unique across all themes</pre>
         <h2 class="sc-title">Nav rail / Tabstrip</h2>
         <div class="row" style="gap: 2rem; align-items: flex-start">
           <nav class="rb-nav-rail">
-            <a class="rb-link rb-link--active">Overview</a>
-            <a class="rb-link">Artifacts</a>
-            <a class="rb-link">Issues</a>
-            <a class="rb-link">Admin</a>
+            <a class="rb-link rb-link--active" href="#overview" aria-current="page">Overview</a>
+            <a class="rb-link" href="#artifacts">Artifacts</a>
+            <a class="rb-link" href="#issues">Issues</a>
+            <a class="rb-link" href="#admin">Admin</a>
           </nav>
           <div class="rb-tabstrip">
             <button class="rb-tabstrip__tab rb-tabstrip__tab--active">Overview</button>
@@ -186,11 +186,13 @@ ok 12 - keyframe names are rb-prefixed and unique across all themes</pre>
         <h2 class="sc-title">Tabs</h2>
         <div>
           <div class="rb-tabs" role="tablist">
-            <button class="rb-tab rb-tab--active">First</button>
-            <button class="rb-tab">Second</button>
-            <button class="rb-tab">Third</button>
+            <button class="rb-tab rb-tab--active" type="button" role="tab" id="sc-tab-1" aria-selected="true" aria-controls="sc-panel-1" tabindex="0">First</button>
+            <button class="rb-tab" type="button" role="tab" id="sc-tab-2" aria-selected="false" aria-controls="sc-panel-2" tabindex="-1">Second</button>
+            <button class="rb-tab" type="button" role="tab" id="sc-tab-3" aria-selected="false" aria-controls="sc-panel-3" tabindex="-1">Third</button>
           </div>
-          <div class="rb-tabpanel">The first panel's content sits here.</div>
+          <div class="rb-tabpanel" role="tabpanel" id="sc-panel-1" aria-labelledby="sc-tab-1" tabindex="0">The first panel's content sits here.</div>
+          <div class="rb-tabpanel" role="tabpanel" id="sc-panel-2" aria-labelledby="sc-tab-2" tabindex="0" hidden>The second panel's content sits here.</div>
+          <div class="rb-tabpanel" role="tabpanel" id="sc-panel-3" aria-labelledby="sc-tab-3" tabindex="0" hidden>The third panel's content sits here.</div>
         </div>
       </section>
 
@@ -198,16 +200,16 @@ ok 12 - keyframe names are rb-prefixed and unique across all themes</pre>
         <h2 class="sc-title">Form</h2>
         <div class="stack">
           <div class="rb-field">
-            <label class="rb-label">Project name</label>
-            <input class="rb-input" placeholder="artifact-console" />
+            <label class="rb-label" for="sc-project">Project name</label>
+            <input class="rb-input" id="sc-project" placeholder="artifact-console" />
           </div>
           <div class="rb-field">
-            <label class="rb-label">Notes</label>
-            <textarea class="rb-textarea" placeholder="What are we building?"></textarea>
+            <label class="rb-label" for="sc-notes">Notes</label>
+            <textarea class="rb-textarea" id="sc-notes" placeholder="What are we building?"></textarea>
           </div>
           <div class="rb-field">
-            <label class="rb-label">Tier</label>
-            <select class="rb-select"><option>Service</option><option>User app</option></select>
+            <label class="rb-label" for="sc-tier">Tier</label>
+            <select class="rb-select" id="sc-tier"><option>Service</option><option>User app</option></select>
           </div>
           <label class="rb-choice"><input type="checkbox" class="rb-checkbox" checked /> Ship it</label>
           <label class="rb-choice"><input type="radio" class="rb-radio" name="r" checked /> Option A</label>
@@ -364,7 +366,11 @@ ok 12 - keyframe names are rb-prefixed and unique across all themes</pre>
       }
 
       async function loadThemes() {
-        let themes = ["arcane-obsidian", "rackbops-studio"];
+        // Fall back to the theme the page already loaded with (the <html>
+        // data-rb-style), never a hard-coded roster that silently goes stale;
+        // and surface why the manifest didn't load rather than swallowing it.
+        const htmlDefault = root.getAttribute("data-rb-style");
+        let themes = [htmlDefault];
         try {
           const res = await fetch("../styles/manifest.json");
           if (res.ok) {
@@ -373,8 +379,12 @@ ok 12 - keyframe names are rb-prefixed and unique across all themes</pre>
             themeFonts = Object.fromEntries(
               Object.entries(roster).map(([name, entry]) => [name, entry.fonts || []])
             );
+          } else {
+            console.error(`showcase: manifest.json returned HTTP ${res.status}; theme picker limited to ${htmlDefault}`);
           }
-        } catch {}
+        } catch (err) {
+          console.error(`showcase: manifest.json fetch failed; theme picker limited to ${htmlDefault}`, err);
+        }
         select.innerHTML = "";
         for (const t of themes) {
           const opt = document.createElement("option");
@@ -384,7 +394,14 @@ ok 12 - keyframe names are rb-prefixed and unique across all themes</pre>
         }
         let saved = null;
         try { saved = localStorage.getItem(KEY); } catch {}
-        const initial = themes.includes(saved) ? saved : themes[0];
+        // Prefer the saved theme; else the page's initial data-rb-style so the
+        // dropdown matches what's already on screen regardless of manifest key
+        // order (removing the undocumented coupling with <html>); else the first.
+        const initial = themes.includes(saved)
+          ? saved
+          : themes.includes(htmlDefault)
+            ? htmlDefault
+            : themes[0];
         select.value = initial;
         setTheme(initial);
       }
