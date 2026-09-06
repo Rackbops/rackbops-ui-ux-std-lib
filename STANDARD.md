@@ -403,11 +403,16 @@ merged and are staler after it (issue #40). Link this table instead.
 
 The contract test MUST hold a `REQUIRED_CLASSES` list parallel to
 `REQUIRED_TOKENS`, read from `contract.json`, and check each theme's parsed
-selectors against it `[tested]`. The list is currently hand-transcribed from
-this document's 5.1 table (`contract.json`'s `components`); deriving it
-instead from what `@rackbops/ui-react` actually emits -- every export
-rendered with every class-adding prop -- plus the CSS-only utilities is
-`[pending #48]`, so the class contract cannot drift from what consumers get.
+selectors against it `[tested]`. `contract.json`'s React-backed class set is
+in turn reconciled against what `@rackbops/ui-react` emits: a test renders
+every export across a matrix of its class-adding props and asserts the emitted
+`rb-*` set equals that class set in both directions -- no emission missing from
+the contract, no contract entry unrendered
+`[tested: components/react/src/contract-classes.test.tsx, #48]`. The matrix is
+maintained by hand, so a class reachable only through a prop it does not cover
+is caught not there but by the closed-world check below, once any theme styles
+it. The CSS-only utilities (no React wrapper) stay listed in `contract.json`
+and are covered by the theme-parity check alone.
 A class in the list is either styled in every theme, entered in the
 allowlist below, or -- for the three ARIA-pairing checks and the dialog-blur
 check -- listed in that check's `exempt` array (only the concrete pair's
@@ -722,7 +727,7 @@ props to modifiers, and never branches on the theme.
 | Controlled by the caller, no hidden state: `NavRail activeId`, `Dialog open` | `NavRail.tsx:14-16`; `Dialog` reconciles `open` when it changes (`[open]` dependency on the sync effect) and REQUIRES `onClose`, so the parent is always told of a native close and keeps `open` in sync -- `open` is the single source of truth (#83, completing #31); `Tabs` MAY keep its selection until a controlled API is in scope |
 | No theme-specific class, no extra, no `style` that a theme would own. Structural layout a theme has no opinion on (a grid) MAY be inline, and says why in a comment | `LinksIndex.tsx:28-39` |
 | A prop that is a no-op in some theme MUST be a documented omission (section 5.3), not a bare JSDoc caveat | `Card.tsx`'s `raised` now is, for the three nazuraki ports (design.md + JSDoc + `contract.json`'s `allowlist`, #29) `[tested]` |
-| Tests render to static markup and assert the class list per prop, composition, and passthrough; the same renders feed the derived class set | `Button.test.tsx`, `NavRail.test.tsx`, `LinksIndex.test.tsx`, `Stepper.test.tsx`; `node:test` + `tsx` + `react-dom/server`; `[pending #48]` for the derivation. `refs.test.tsx` (#30) is the one exception -- ref attachment only happens on a real commit, so it client-renders via `react-dom/client` + `jsdom` instead |
+| Tests render to static markup and assert the class list per prop, composition, and passthrough; the same renders feed the derived class set | `Button.test.tsx`, `NavRail.test.tsx`, `LinksIndex.test.tsx`, `Stepper.test.tsx`; `node:test` + `tsx` + `react-dom/server`; the derived class set is `contract-classes.test.tsx` (#48) `[tested]`. `refs.test.tsx` (#30) is the one exception -- ref attachment only happens on a real commit, so it client-renders via `react-dom/client` + `jsdom` instead |
 
 ---
 
@@ -886,14 +891,13 @@ identity paragraph and the README table.
 | manifest / package.json / dirs / all.css agree | `contract.test.mjs` | live |
 | `index.css` imports every component file, no rules | `contract.test.mjs` | live |
 | Keyframes `rb-`-prefixed, unique | `contract.test.mjs` | live |
-| `REQUIRED_CLASSES` parity (7 classes: `--sm`, `.rb-icon-btn`, `--ghost`, `--interactive`, `.rb-num`, `--active`, `--raised`) + `CLASS_ALLOWLIST` | `contract.test.mjs` | live |
 | Bare h1-h6 / p / ul,ol property names | `base-typography.test.mjs` | live |
 | Every export type-checks under `noUncheckedSideEffectImports` | `types.test.mjs` | live |
 | React prop -> class mapping, composition, passthrough | `src/*.test.tsx` | live (Button, NavRail, LinksIndex, Stepper) |
 | `transition: all` absent | review (Grep: 0) | live |
 | Contract as data (`contract.json`), SKILL.md generated, pair parity | `contract.test.mjs`, `pair-parity.test.mjs`, `scripts/generate-skill-table.mjs` | live (#47) |
 | Full `REQUIRED_CLASSES` parity (every shared component's full class set) + data-driven allowlist + closed-world "no undocumented class" check | `contract.test.mjs` | live (#47) |
-| Required class set derived from React emissions | new test | pending #48 |
+| Required class set derived from React emissions (emitted `rb-*` set == `contract.json`'s React-backed classes) | `components/react/src/contract-classes.test.tsx` | live (#48) |
 | Every shared component file exists per theme | `contract.test.mjs` | live (#47) |
 | Contrast ratios for the fixed token pairs | new test | pending #49 |
 | Showcase complete (warning alert, `aria-selected`) and photographed per theme | showcase + `pnpm visual` | pending #50 |
