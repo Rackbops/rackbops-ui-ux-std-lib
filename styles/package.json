@@ -12,7 +12,7 @@
     "access": "public"
   },
   "scripts": {
-    "prepack": "node ../scripts/copy-license.mjs",
+    "prepack": "node ../scripts/copy-license.mjs && node ../scripts/bundle-css.mjs",
     "test": "node --test"
   },
   "devDependencies": {
@@ -32,6 +32,7 @@
     "amber-ember",
     "mono-field",
     "all.css",
+    "all.bundle.css",
     "manifest.json",
     "contract.json",
     "css-side-effect.d.ts",
@@ -39,56 +40,255 @@
     "NOTICE"
   ],
   "exports": {
-    "./all": { "types": "./css-side-effect.d.ts", "default": "./all.css" },
+    "./all": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./all.css"
+    },
     "./manifest": "./manifest.json",
     "./contract": "./contract.json",
-    "./arcane-obsidian": { "types": "./css-side-effect.d.ts", "default": "./arcane-obsidian/index.css" },
-    "./arcane-obsidian/tokens": { "types": "./css-side-effect.d.ts", "default": "./arcane-obsidian/tokens.css" },
-    "./arcane-obsidian/base": { "types": "./css-side-effect.d.ts", "default": "./arcane-obsidian/base.css" },
-    "./arcane-obsidian/components/*": { "types": "./css-side-effect.d.ts", "default": "./arcane-obsidian/components/*.css" },
-    "./arcane-parchment": { "types": "./css-side-effect.d.ts", "default": "./arcane-parchment/index.css" },
-    "./arcane-parchment/tokens": { "types": "./css-side-effect.d.ts", "default": "./arcane-parchment/tokens.css" },
-    "./arcane-parchment/base": { "types": "./css-side-effect.d.ts", "default": "./arcane-parchment/base.css" },
-    "./arcane-parchment/components/*": { "types": "./css-side-effect.d.ts", "default": "./arcane-parchment/components/*.css" },
-    "./rackbops-studio": { "types": "./css-side-effect.d.ts", "default": "./rackbops-studio/index.css" },
-    "./rackbops-studio/tokens": { "types": "./css-side-effect.d.ts", "default": "./rackbops-studio/tokens.css" },
-    "./rackbops-studio/base": { "types": "./css-side-effect.d.ts", "default": "./rackbops-studio/base.css" },
-    "./rackbops-studio/components/*": { "types": "./css-side-effect.d.ts", "default": "./rackbops-studio/components/*.css" },
-    "./rackbops-noir": { "types": "./css-side-effect.d.ts", "default": "./rackbops-noir/index.css" },
-    "./rackbops-noir/tokens": { "types": "./css-side-effect.d.ts", "default": "./rackbops-noir/tokens.css" },
-    "./rackbops-noir/base": { "types": "./css-side-effect.d.ts", "default": "./rackbops-noir/base.css" },
-    "./rackbops-noir/components/*": { "types": "./css-side-effect.d.ts", "default": "./rackbops-noir/components/*.css" },
-    "./luminous-precision": { "types": "./css-side-effect.d.ts", "default": "./luminous-precision/index.css" },
-    "./luminous-precision/tokens": { "types": "./css-side-effect.d.ts", "default": "./luminous-precision/tokens.css" },
-    "./luminous-precision/base": { "types": "./css-side-effect.d.ts", "default": "./luminous-precision/base.css" },
-    "./luminous-precision/components/*": { "types": "./css-side-effect.d.ts", "default": "./luminous-precision/components/*.css" },
-    "./neon-butterfly": { "types": "./css-side-effect.d.ts", "default": "./neon-butterfly/index.css" },
-    "./neon-butterfly/tokens": { "types": "./css-side-effect.d.ts", "default": "./neon-butterfly/tokens.css" },
-    "./neon-butterfly/base": { "types": "./css-side-effect.d.ts", "default": "./neon-butterfly/base.css" },
-    "./neon-butterfly/components/*": { "types": "./css-side-effect.d.ts", "default": "./neon-butterfly/components/*.css" },
-    "./summer-cloud": { "types": "./css-side-effect.d.ts", "default": "./summer-cloud/index.css" },
-    "./summer-cloud/tokens": { "types": "./css-side-effect.d.ts", "default": "./summer-cloud/tokens.css" },
-    "./summer-cloud/base": { "types": "./css-side-effect.d.ts", "default": "./summer-cloud/base.css" },
-    "./summer-cloud/components/*": { "types": "./css-side-effect.d.ts", "default": "./summer-cloud/components/*.css" },
-    "./concrete-signal": { "types": "./css-side-effect.d.ts", "default": "./concrete-signal/index.css" },
-    "./concrete-signal/tokens": { "types": "./css-side-effect.d.ts", "default": "./concrete-signal/tokens.css" },
-    "./concrete-signal/base": { "types": "./css-side-effect.d.ts", "default": "./concrete-signal/base.css" },
-    "./concrete-signal/components/*": { "types": "./css-side-effect.d.ts", "default": "./concrete-signal/components/*.css" },
-    "./concrete-signal-light": { "types": "./css-side-effect.d.ts", "default": "./concrete-signal-light/index.css" },
-    "./concrete-signal-light/tokens": { "types": "./css-side-effect.d.ts", "default": "./concrete-signal-light/tokens.css" },
-    "./concrete-signal-light/base": { "types": "./css-side-effect.d.ts", "default": "./concrete-signal-light/base.css" },
-    "./concrete-signal-light/components/*": { "types": "./css-side-effect.d.ts", "default": "./concrete-signal-light/components/*.css" },
-    "./amber-hearth": { "types": "./css-side-effect.d.ts", "default": "./amber-hearth/index.css" },
-    "./amber-hearth/tokens": { "types": "./css-side-effect.d.ts", "default": "./amber-hearth/tokens.css" },
-    "./amber-hearth/base": { "types": "./css-side-effect.d.ts", "default": "./amber-hearth/base.css" },
-    "./amber-hearth/components/*": { "types": "./css-side-effect.d.ts", "default": "./amber-hearth/components/*.css" },
-    "./amber-ember": { "types": "./css-side-effect.d.ts", "default": "./amber-ember/index.css" },
-    "./amber-ember/tokens": { "types": "./css-side-effect.d.ts", "default": "./amber-ember/tokens.css" },
-    "./amber-ember/base": { "types": "./css-side-effect.d.ts", "default": "./amber-ember/base.css" },
-    "./amber-ember/components/*": { "types": "./css-side-effect.d.ts", "default": "./amber-ember/components/*.css" },
-    "./mono-field": { "types": "./css-side-effect.d.ts", "default": "./mono-field/index.css" },
-    "./mono-field/tokens": { "types": "./css-side-effect.d.ts", "default": "./mono-field/tokens.css" },
-    "./mono-field/base": { "types": "./css-side-effect.d.ts", "default": "./mono-field/base.css" },
-    "./mono-field/components/*": { "types": "./css-side-effect.d.ts", "default": "./mono-field/components/*.css" }
+    "./all-bundle": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./all.bundle.css"
+    },
+    "./arcane-obsidian/bundle": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./arcane-obsidian/bundle.css"
+    },
+    "./arcane-parchment/bundle": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./arcane-parchment/bundle.css"
+    },
+    "./rackbops-studio/bundle": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./rackbops-studio/bundle.css"
+    },
+    "./rackbops-noir/bundle": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./rackbops-noir/bundle.css"
+    },
+    "./luminous-precision/bundle": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./luminous-precision/bundle.css"
+    },
+    "./neon-butterfly/bundle": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./neon-butterfly/bundle.css"
+    },
+    "./summer-cloud/bundle": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./summer-cloud/bundle.css"
+    },
+    "./concrete-signal/bundle": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./concrete-signal/bundle.css"
+    },
+    "./concrete-signal-light/bundle": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./concrete-signal-light/bundle.css"
+    },
+    "./amber-hearth/bundle": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./amber-hearth/bundle.css"
+    },
+    "./amber-ember/bundle": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./amber-ember/bundle.css"
+    },
+    "./mono-field/bundle": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./mono-field/bundle.css"
+    },
+    "./arcane-obsidian": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./arcane-obsidian/index.css"
+    },
+    "./arcane-obsidian/tokens": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./arcane-obsidian/tokens.css"
+    },
+    "./arcane-obsidian/base": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./arcane-obsidian/base.css"
+    },
+    "./arcane-obsidian/components/*": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./arcane-obsidian/components/*.css"
+    },
+    "./arcane-parchment": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./arcane-parchment/index.css"
+    },
+    "./arcane-parchment/tokens": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./arcane-parchment/tokens.css"
+    },
+    "./arcane-parchment/base": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./arcane-parchment/base.css"
+    },
+    "./arcane-parchment/components/*": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./arcane-parchment/components/*.css"
+    },
+    "./rackbops-studio": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./rackbops-studio/index.css"
+    },
+    "./rackbops-studio/tokens": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./rackbops-studio/tokens.css"
+    },
+    "./rackbops-studio/base": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./rackbops-studio/base.css"
+    },
+    "./rackbops-studio/components/*": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./rackbops-studio/components/*.css"
+    },
+    "./rackbops-noir": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./rackbops-noir/index.css"
+    },
+    "./rackbops-noir/tokens": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./rackbops-noir/tokens.css"
+    },
+    "./rackbops-noir/base": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./rackbops-noir/base.css"
+    },
+    "./rackbops-noir/components/*": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./rackbops-noir/components/*.css"
+    },
+    "./luminous-precision": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./luminous-precision/index.css"
+    },
+    "./luminous-precision/tokens": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./luminous-precision/tokens.css"
+    },
+    "./luminous-precision/base": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./luminous-precision/base.css"
+    },
+    "./luminous-precision/components/*": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./luminous-precision/components/*.css"
+    },
+    "./neon-butterfly": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./neon-butterfly/index.css"
+    },
+    "./neon-butterfly/tokens": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./neon-butterfly/tokens.css"
+    },
+    "./neon-butterfly/base": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./neon-butterfly/base.css"
+    },
+    "./neon-butterfly/components/*": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./neon-butterfly/components/*.css"
+    },
+    "./summer-cloud": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./summer-cloud/index.css"
+    },
+    "./summer-cloud/tokens": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./summer-cloud/tokens.css"
+    },
+    "./summer-cloud/base": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./summer-cloud/base.css"
+    },
+    "./summer-cloud/components/*": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./summer-cloud/components/*.css"
+    },
+    "./concrete-signal": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./concrete-signal/index.css"
+    },
+    "./concrete-signal/tokens": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./concrete-signal/tokens.css"
+    },
+    "./concrete-signal/base": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./concrete-signal/base.css"
+    },
+    "./concrete-signal/components/*": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./concrete-signal/components/*.css"
+    },
+    "./concrete-signal-light": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./concrete-signal-light/index.css"
+    },
+    "./concrete-signal-light/tokens": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./concrete-signal-light/tokens.css"
+    },
+    "./concrete-signal-light/base": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./concrete-signal-light/base.css"
+    },
+    "./concrete-signal-light/components/*": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./concrete-signal-light/components/*.css"
+    },
+    "./amber-hearth": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./amber-hearth/index.css"
+    },
+    "./amber-hearth/tokens": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./amber-hearth/tokens.css"
+    },
+    "./amber-hearth/base": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./amber-hearth/base.css"
+    },
+    "./amber-hearth/components/*": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./amber-hearth/components/*.css"
+    },
+    "./amber-ember": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./amber-ember/index.css"
+    },
+    "./amber-ember/tokens": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./amber-ember/tokens.css"
+    },
+    "./amber-ember/base": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./amber-ember/base.css"
+    },
+    "./amber-ember/components/*": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./amber-ember/components/*.css"
+    },
+    "./mono-field": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./mono-field/index.css"
+    },
+    "./mono-field/tokens": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./mono-field/tokens.css"
+    },
+    "./mono-field/base": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./mono-field/base.css"
+    },
+    "./mono-field/components/*": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./mono-field/components/*.css"
+    }
   }
 }

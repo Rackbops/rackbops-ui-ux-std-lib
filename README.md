@@ -79,9 +79,15 @@ state-driven rules reach `(0,2,0)` or deeper (up to `(0,4,0)`), which your
 override then needs to match).
 Several themes can load at once and swapping is one attribute flip.
 
-No-build apps can load a theme's CSS from a CDN — jsDelivr mirrors public npm,
-e.g. `https://cdn.jsdelivr.net/npm/@rackbops/styles/luminous-precision/index.css`
-(once the package is published).
+No-build apps can load a theme from a CDN — jsDelivr mirrors public npm. Prefer
+the flattened **bundle**, which inlines every `@import` into one request (vs
+18–22 for `index.css`) and is self-contained for vendoring:
+`https://cdn.jsdelivr.net/npm/@rackbops/styles/luminous-precision/bundle.css`
+— or `.../all.bundle.css` for every theme in one file. Both are generated when
+the package is published; `index.css` still resolves too, as its own `@import`
+tree. The bundle carries CSS only: a webfont theme (luminous-precision,
+neon-butterfly, summer-cloud) still needs its font `<link>` from the manifest,
+exactly as `index.css` does.
 
 ### React components
 
@@ -196,8 +202,9 @@ app repo by symlinking or copying into `.claude/skills/design-system/`.
 ```
 styles/                    @rackbops/styles
   manifest.json            theme roster: name, scheme, fonts
-  all.css                  every theme in one import
+  all.css                  every theme in one import (+ generated all.bundle.css)
   arcane-obsidian/         tokens.css, base.css, components/*.css, index.css, design.md
+                           publish also emits a flattened bundle.css (gitignored)
   rackbops-studio/         same layout + assets/boppy.svg + studio extras
   test/                    contract + release-bump tests (node:test)
 components/react/          @rackbops/ui-react (tsc -> dist/)

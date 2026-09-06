@@ -21,12 +21,13 @@ function sampleComponent(theme) {
 }
 
 function consumerSource() {
-  const lines = ['import "@rackbops/styles/all";'];
+  const lines = ['import "@rackbops/styles/all";', 'import "@rackbops/styles/all-bundle";'];
   for (const theme of themes) {
     lines.push(
       `import "@rackbops/styles/${theme}";`,
       `import "@rackbops/styles/${theme}/tokens";`,
       `import "@rackbops/styles/${theme}/base";`,
+      `import "@rackbops/styles/${theme}/bundle";`,
       `import "@rackbops/styles/${theme}/components/${sampleComponent(theme)}";`
     );
   }

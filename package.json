@@ -10,6 +10,7 @@
     "visual": "node scripts/visual.mjs"
   },
   "devDependencies": {
+    "lightningcss": "^1.33.0",
     "pixelmatch": "^7.2.0",
     "playwright-core": "1.63.0",
     "pngjs": "^7.0.0"

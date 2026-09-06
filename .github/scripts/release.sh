@@ -49,6 +49,11 @@ VERSION_FILES=(styles/package.json components/react/package.json)
 #    a change to any of the three alters what is published and must trigger a
 #    release -- same gap as issue #34 (a package's "files" reach stops at its
 #    own directory), now closed for this script (issue #87 for LICENSE/NOTICE).
+#  - scripts/bundle-css.mjs is the other prepack step (issue #52): it flattens
+#    each theme's index.css into the shipped <theme>/bundle.css + all.bundle.css,
+#    so editing it rewrites every published bundle and must trigger a release,
+#    the same way copy-license.mjs does. The generated bundles are gitignored and
+#    never appear in the log, so the generator stands in for them here.
 PATHSPEC=(
   styles/
   ":(exclude)styles/test/"
@@ -60,6 +65,7 @@ PATHSPEC=(
   ":(exclude,glob)components/react/src/**/*.test.tsx"
   ":(exclude)components/react/src/test-dom.ts"
   scripts/copy-license.mjs
+  scripts/bundle-css.mjs
   LICENSE
   NOTICE
 )
