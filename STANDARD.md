@@ -737,9 +737,11 @@ The showcase is the library's visual acceptance test. It MUST:
 
 - render every required selector in section 5.1 in every state the CSS
   defines (rest, hover-able, disabled, active, every semantic variant,
-  `--sm`, icon-only, interactive rows, a streaming log). Today it renders
-  no `.rb-alert--warning` (`site/index.html:232-234`) and no
-  `[aria-selected="true"]` on the active tab `[pending #50]`;
+  `--sm`, icon-only, interactive rows, a streaming log). The nav links, tab
+  list, and form fields carry their full ARIA (`aria-current`, `role="tab"` /
+  `aria-selected` / `role="tabpanel"`, label `for`) after #91; the Alerts
+  section still renders no `.rb-alert--warning` (info/success/danger only)
+  `[pending #50]`;
 - put theme extras only in sections labelled as extras
   (`site/index.html:288`), never in a generic section (the wordmark and
   eyebrow at lines 50-54 and the `rb-btn__arrow`, `rb-card__tag` in generic
@@ -900,7 +902,8 @@ identity paragraph and the README table.
 | Required class set derived from React emissions (emitted `rb-*` set == `contract.json`'s React-backed classes) | `components/react/src/contract-classes.test.tsx` | live (#48) |
 | Every shared component file exists per theme | `contract.test.mjs` | live (#47) |
 | Contrast ratios for the fixed token pairs (computed from `tokens.css`) | `contrast.test.mjs` | live (#49) |
-| Showcase complete (warning alert, `aria-selected`) and photographed per theme | showcase + `pnpm visual` | pending #50 |
+| Showcase renders full ARIA (nav `aria-current`, tab/tabpanel roles + `aria-selected`, label `for`) | showcase | live (#91) |
+| Showcase complete (`.rb-alert--warning`) and photographed per theme | showcase + `pnpm visual` | pending #50 |
 | Every transition reduced under `prefers-reduced-motion` | token block | pending #51 (64 of 73 files today; nine port files have none) |
 | Shared structural base; per-theme `bundle.css` | CSS + build | pending #52 |
 | `pnpm new-theme` scaffold | script | pending #53 |
