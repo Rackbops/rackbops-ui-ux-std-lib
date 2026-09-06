@@ -112,7 +112,25 @@ pnpm install
 pnpm build                              # tsc the React package
 pnpm --filter @rackbops/styles test       # theme contract + release-bump tests
 pnpm --filter @rackbops/ui-react test     # typecheck + render-to-string component tests + ref-forwarding (jsdom)
+pnpm visual                             # visual regression: screenshot the showcase per theme, diff vs baselines
 ```
+
+`pnpm visual` is a **separate** browser-based check (Playwright/Chromium) and is
+deliberately not part of `pnpm test`, so the text suites stay fast and
+dependency-free. It screenshots every showcase section under all twelve themes
+and compares to the committed baselines in `site/__screenshots__/<theme>/`,
+writing a `*.diff.png` beside any tile that regressed. It catches what text
+parsing can't -- a lost `::-webkit-progress-value` fill, an unstyled class, a
+disabled control still taking hover.
+
+Screenshots are pixel-sensitive to the OS/font rendering, so **baselines are
+generated in CI**, in the same Playwright container the `visual` job compares
+in. Never commit baselines shot on your own machine -- they'd fail CI on
+antialiasing alone. To (re)generate them after an intentional visual change or
+a new theme, run the **`update-visual-baselines`** workflow (Actions tab, or
+`gh workflow run update-visual-baselines --ref <branch>`); it runs
+`pnpm visual --update` in that container and commits the baselines back to the
+branch. Review the resulting image diff in the PR like any other change.
 
 The contract test (`styles/test/contract.test.mjs`) enforces the theme rules:
 every selector guarded by its `data-rb-style`, keyframe names `rb-`-prefixed and

@@ -64,7 +64,9 @@ export async function resolveSafePath(pathname) {
   return realFilePath;
 }
 
-const server = createServer(async (req, res) => {
+// Exported so the visual-regression script (scripts/visual.mjs, #50) can start
+// this same server in-process on an OS-assigned port rather than shelling out.
+export const server = createServer(async (req, res) => {
   try {
     const pathname = decodePathname(req.url);
     const filePath = await resolveSafePath(pathname);

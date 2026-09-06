@@ -1,0 +1,48 @@
+name: update-visual-baselines
+
+# (Re)generate the committed showcase screenshot baselines inside the SAME
+# Playwright container the `visual` CI job compares against -- so rendering
+# matches byte-for-byte -- and push them to the triggering branch. The `visual`
+# job only ever COMPARES; this workflow is the only place baselines change
+# (issue #50).
+#
+# Run it after an intentional visual change or a new theme:
+#   - manually via workflow_dispatch (once this file is on the default branch), or
+#   - by pushing a commit whose message contains [gen-baselines] (used to
+#     bootstrap before it reaches the default branch, where the dispatch API
+#     can't yet see it).
+on:
+  workflow_dispatch:
+  push:
+    branches-ignore: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[gen-baselines]')
+    runs-on: ubuntu-latest
+    container:
+      # Pin to the playwright-core version in package.json so the bundled
+      # Chromium build matches -- a mismatch re-renders every tile.
+      image: mcr.microsoft.com/playwright:v1.63.0-jammy
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.RELEASE_TOKEN }}
+      - uses: pnpm/action-setup@v4
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm visual --update
+      - name: Commit and push baselines
+        run: |
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add site/__screenshots__
+          if git diff --cached --quiet; then
+            echo "baselines unchanged"
+          else
+            git commit -m "chore(visual): update showcase baselines"
+            git push origin HEAD:"${GITHUB_REF_NAME}"
+          fi
