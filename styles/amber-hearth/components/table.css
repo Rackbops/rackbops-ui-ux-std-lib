@@ -42,9 +42,3 @@
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
-
-@media (prefers-reduced-motion: reduce) {
-  :where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-table td {
-    transition: none;
-  }
-}

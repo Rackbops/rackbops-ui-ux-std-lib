@@ -563,11 +563,19 @@ Transitions and animations:
 - Every `transition` and `animation` MUST be neutralised under
   `@media (prefers-reduced-motion: reduce)`. Transitions collapse through
   the token -- one block per theme in `tokens.css` sets `--rb-transition:
-  0s` `[pending #51]`; today that is a per-file block, and nine port files
-  that transition have none (listed in #51). Keyframe animations keep an
-  explicit per-file override, set to `none` or a slow, non-essential
-  fallback (the spinner slows to 2 s rather than stopping,
-  `styles/arcane-obsidian/components/progress.css:36-40`).
+  0s`, so a component file carries no per-file transition override, and every
+  component `transition` MUST read its duration from `var(--rb-transition)`,
+  never a literal like `0.16s`, or the token cannot collapse it
+  `[tested: styles/test/contract.test.mjs, #51]`. Keyframe animations keep an
+  explicit per-file override, set to `none` or a slow, non-essential fallback
+  (the spinner slows to 2 s rather than stopping,
+  `styles/arcane-obsidian/components/progress.css`); a test asserts every
+  applied keyframe has one where it runs. The token collapses a transition's
+  *tween*, not a transform's *end-state*: a theme that wants a decorative
+  hover/press transform gone (not merely instant) also keeps a per-file
+  `transform: none` override for it -- summer-cloud drops its card lift, link
+  slide and button scale this way -- while a functional transform, the switch
+  thumb's checked-position offset, is kept and simply snaps.
 
 ---
 
@@ -906,7 +914,7 @@ identity paragraph and the README table.
 | Contrast ratios for the fixed token pairs (computed from `tokens.css`) | `contrast.test.mjs` | live (#49) |
 | Showcase renders full ARIA (nav `aria-current`, tab/tabpanel roles + `aria-selected`, label `for`) | showcase | live (#91) |
 | Showcase complete (`.rb-alert--warning`) and photographed per theme | showcase + `pnpm visual` (`scripts/visual.mjs`) | live (#50) |
-| Every transition reduced under `prefers-reduced-motion` | token block | pending #51 (64 of 73 files today; nine port files have none) |
+| Transitions reduced by one `--rb-transition: 0s` token block per theme, with every component transition reading the token (never a literal duration); every applied keyframe has a reduced-motion override | `contract.test.mjs` | live (#51) |
 | Shared structural base; per-theme `bundle.css` | CSS + build | pending #52 |
 | `pnpm new-theme` scaffold | script | pending #53 |
 | `--rb-focus-ring`, `--rb-ease` baseline; contract 2 | contract bump | pending #54 |

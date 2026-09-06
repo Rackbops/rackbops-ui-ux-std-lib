@@ -75,3 +75,9 @@
   --rb-space-4: 1.5rem;
   --rb-space-5: 2.25rem;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  :where([data-rb-style="rackbops-studio"]) {
+    --rb-transition: 0s;
+  }
+}

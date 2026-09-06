@@ -60,11 +60,3 @@
 :where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-switch {
   width: 2.2rem;
 }
-
-@media (prefers-reduced-motion: reduce) {
-  :where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-input,
-  :where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-textarea,
-  :where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-select {
-    transition: none;
-  }
-}

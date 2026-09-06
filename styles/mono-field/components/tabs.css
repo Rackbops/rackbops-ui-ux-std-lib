@@ -44,9 +44,3 @@
 :where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-tabpanel {
   padding: var(--rb-space-4) 0;
 }
-
-@media (prefers-reduced-motion: reduce) {
-  :where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-tab {
-    transition: none;
-  }
-}

@@ -43,9 +43,3 @@
 :where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-tabpanel {
   padding: var(--rb-space-4) 0;
 }
-
-@media (prefers-reduced-motion: reduce) {
-  :where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-tab {
-    transition: none;
-  }
-}

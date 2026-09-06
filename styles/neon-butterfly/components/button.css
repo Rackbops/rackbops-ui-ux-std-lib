@@ -70,9 +70,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-btn {
-    transition: none;
-  }
   :where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-btn:not(:disabled):hover,
   :where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-btn:focus-visible {
     animation: none;

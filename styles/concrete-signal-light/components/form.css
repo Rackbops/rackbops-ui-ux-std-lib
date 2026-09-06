@@ -124,15 +124,3 @@
   outline: none;
   border: 2px solid var(--rb-accent);
 }
-
-@media (prefers-reduced-motion: reduce) {
-  :where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-input,
-  :where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-textarea,
-  :where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-select,
-  :where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-checkbox,
-  :where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-radio,
-  :where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-switch,
-  :where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-switch::after {
-    transition: none;
-  }
-}

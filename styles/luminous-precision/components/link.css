@@ -47,9 +47,3 @@
     box-shadow: 0 0 20px var(--rb-accent-glow);
   }
 }
-
-@media (prefers-reduced-motion: reduce) {
-  :where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-link {
-    transition: none;
-  }
-}

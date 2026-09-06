@@ -107,7 +107,10 @@ family.
 - Focus is a 4px sky-blue ring (`0 0 0 4px rgba(12,179,255,0.2)`), never an
   outline suppression without a replacement.
 - Spacing is strictly multiples of 8px. When in doubt, add 8.
-- Respect `prefers-reduced-motion` — every transform is dropped.
+- Respect `prefers-reduced-motion` — the decorative transforms (card lift,
+  link slide, button/link scale) drop to `none` and every transition collapses
+  via the token; the switch thumb keeps its checked position, snapping rather
+  than sliding.
 
 ## Accessibility
 

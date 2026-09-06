@@ -60,11 +60,3 @@
 :where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-switch {
   width: 2rem;
 }
-
-@media (prefers-reduced-motion: reduce) {
-  :where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-input,
-  :where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-textarea,
-  :where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-select {
-    transition: none;
-  }
-}

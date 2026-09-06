@@ -24,9 +24,3 @@
 :where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-link[aria-current="page"] {
   color: var(--rb-accent);
 }
-
-@media (prefers-reduced-motion: reduce) {
-  :where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-link {
-    transition: none;
-  }
-}

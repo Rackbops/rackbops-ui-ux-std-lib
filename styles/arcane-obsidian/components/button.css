@@ -82,9 +82,3 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
-
-@media (prefers-reduced-motion: reduce) {
-  :where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-btn {
-    transition: none;
-  }
-}

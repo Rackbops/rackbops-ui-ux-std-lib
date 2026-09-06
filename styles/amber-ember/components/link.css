@@ -41,9 +41,3 @@
   background: var(--rb-accent-wash);
   color: var(--rb-accent);
 }
-
-@media (prefers-reduced-motion: reduce) {
-  :where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-link {
-    transition: none;
-  }
-}

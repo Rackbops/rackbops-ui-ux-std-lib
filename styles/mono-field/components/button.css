@@ -93,9 +93,3 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
-
-@media (prefers-reduced-motion: reduce) {
-  :where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-btn {
-    transition: none;
-  }
-}

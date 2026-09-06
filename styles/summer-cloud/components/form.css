@@ -138,9 +138,3 @@
 :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-switch:checked::after {
   transform: translateX(1.25rem);
 }
-
-@media (prefers-reduced-motion: reduce) {
-  :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-switch::after {
-    transition: none;
-  }
-}
