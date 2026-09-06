@@ -14,15 +14,7 @@
   font-weight: var(--rb-font-weight);
 }
 
-:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *),
-:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *)::before,
-:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *)::after {
-  box-sizing: border-box;
-}
-
 :where(html[data-rb-style="concrete-signal-light"]) body {
-  margin: 0;
-  min-height: 100vh;
   background-color: var(--rb-bg);
   color: var(--rb-text);
   font-family: var(--rb-font-body);

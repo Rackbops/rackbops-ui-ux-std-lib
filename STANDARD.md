@@ -86,9 +86,10 @@ A theme is a directory `styles/<theme-id>/` with exactly this layout:
 | File | Contents | Rule |
 | --- | --- | --- |
 | `tokens.css` | One `:where([data-rb-style="<id>"]) { ... }` block: `color-scheme` plus every `--rb-*` token | MUST declare all 38 baseline tokens (section 4.1) and a `color-scheme` that matches the manifest `[tested]` |
-| `base.css` | Canvas rule, box-sizing reset, page-only body rule, bare-element typography, links, focus, selection | MUST carry the bare-element property set (section 6) `[tested]` |
+| `base.css` | Canvas rule, page-only body canvas, bare-element typography, links, focus, selection (the box-sizing reset and body `margin`/`min-height` moved to `_shared/structure.css`) | MUST carry the bare-element property set (section 6) `[tested]` |
+| `_shared/structure.css` | The box-sizing reset and the page body reset (`margin`/`min-height`), guarded by the bare `[data-rb-style]` and imported by every `index.css` | Theme-agnostic; the one place the bare-attribute guard is allowed (#52) `[tested]` |
 | `components/<name>.css` | One file per component: the shared set (section 5.1) plus any extras | MUST exist for every shared component `[tested]`; every selector guarded `[tested]` |
-| `index.css` | `@import` of tokens, base, and every file in `components/` | MUST import every component file and contain no rules of its own `[tested]` |
+| `index.css` | `@import` of the shared structure, tokens, base, and every file in `components/` | MUST import the shared structure and every component file, and contain no rules of its own `[tested]` |
 | `design.md` | The written spec (section 11) | MUST follow the template; every claim verified against the CSS `[reviewed]` |
 | `assets/` | Optional binaries (`rackbops-studio/assets/boppy.svg`, `neon-butterfly/assets/butterfly-circuit.png`) | MAY. Keep small: issue #42 measures the 1.3 MB PNG at 76% of the unpacked tarball |
 
@@ -212,9 +213,9 @@ Rules:
   attribute write. The showcase suppresses transitions during the flip
   (`site/index.html:36-39`); an app that switches at runtime SHOULD do the
   same.
-- A shared structural file (#52) is guarded by the bare attribute
-  `[data-rb-style]` -- any theme, still nothing outside one -- and is the
-  only place that guard shape is allowed `[pending #52]`.
+- The shared structural file `_shared/structure.css` (#52) is guarded by the
+  bare attribute `[data-rb-style]` -- any theme, still nothing outside one --
+  and is the only place that guard shape is allowed `[tested]`.
 
 ---
 
@@ -522,8 +523,8 @@ value]`.
 | Rule | Required declarations |
 | --- | --- |
 | Canvas `:where([data-rb-style="x"])` | `background-color`, `color`, `font-family`, `font-weight`; MAY add `font-variant-numeric: tabular-nums` (the arcane pair does) |
-| Box-sizing reset on `*`, `::before`, `::after` | `box-sizing: border-box` |
-| `:where(html[data-rb-style="x"]) body` | `margin: 0`, `min-height: 100vh`, plus the canvas set |
+| Box-sizing reset on `*`, `::before`, `::after` (in `_shared/structure.css`) | `box-sizing: border-box` |
+| body (page-only): `margin`/`min-height` in `_shared/structure.css`, the canvas set in `base.css` | `margin: 0`, `min-height: 100vh`, plus the canvas set |
 | `h1`-`h6` (all six listed explicitly) | `margin` (`0 0 var(--rb-space-3)`), `font-family` (display), `font-weight`, `letter-spacing`, `line-height` `[tested]`; `text-wrap: balance` (in all twelve, not tested) |
 | `p` | `margin: 0 0 var(--rb-space-3)` `[tested]` |
 | `ul`, `ol` | `margin`, `padding-inline-start: var(--rb-space-4)` `[tested]`; real markers, not stripped |
@@ -531,11 +532,15 @@ value]`.
 | `:focus-visible` | `outline: 2px solid var(--rb-accent)`, `outline-offset: 2px` (`var(--rb-focus-ring)` after #54) -- present in all twelve `[tested]`; the rackbops pair alone uses their own 2.5 px / 3 px-offset / 3px-radius variant, tied to that pair's documented soft-shadow identity |
 | `::selection` | `background: var(--rb-accent)`; `color` is the ink that reads on it (`--rb-accent-fg` in seven themes, `#fff` or `--rb-bg` in the other five) |
 
-The box-sizing reset is identical in every theme modulo the guard;
-`:focus-visible` and `::selection` differ only in values that
-`--rb-focus-ring` (#54) and `--rb-accent-fg` absorb. All three move to
-one shared structural file each `index.css` imports first `[pending #52]`,
-leaving `base.css` with the values that are genuinely per theme.
+The box-sizing reset and the page body reset are byte-identical in every theme
+and exception-free, so they move to `_shared/structure.css`, which each
+`index.css` imports `[tested]`. `:focus-visible` and `::selection` stay
+per-theme in `base.css`: they carry per-theme values (the rackbops pair's
+thicker focus ring; each theme's own selection ink), and a bare shared rule
+would clobber a theme's own override under `@rackbops/styles/all` -- twelve
+themes at once, the shared rule re-imported per theme and deduped to last, so at
+equal `:where()` specificity it wins by source order -- so sharing them safely
+awaits `--rb-focus-ring` (#54) or a cascade layer, not this file.
 
 A theme MAY add an opt-in page background class (`summer-cloud`'s `.rb-bg`
 sky gradient) as an extra; the flat `--rb-bg` MUST remain correct without it.
@@ -918,7 +923,7 @@ identity paragraph and the README table.
 | Showcase complete (`.rb-alert--warning`) and photographed per theme | showcase + `pnpm visual` (`scripts/visual.mjs`) | live (#50) |
 | Transitions reduced by one `--rb-transition: 0s` token block per theme, with every component transition reading the token (never a literal duration); every applied keyframe has a reduced-motion override | `contract.test.mjs` | live (#51) |
 | Per-theme flattened `bundle.css` (+ `all.bundle.css`) generated at publish | `bundle.test.mjs` | live (#52) |
-| Shared structural base file (`_shared/structure.css`) | CSS + build | pending #52 |
+| Shared structural base file (`_shared/structure.css`): box-sizing + page body reset | `base-typography.test.mjs` + `contract.test.mjs` | live (#52) |
 | `pnpm new-theme` scaffold | script | pending #53 |
 | `--rb-focus-ring`, `--rb-ease` baseline; contract 2 | contract bump | pending #54 |
 | Native `<progress>` contract in all twelve | `contract.test.mjs` | live |

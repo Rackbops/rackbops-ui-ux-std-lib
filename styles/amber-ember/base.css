@@ -14,15 +14,7 @@
   font-weight: var(--rb-font-weight);
 }
 
-:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *),
-:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *)::before,
-:where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *)::after {
-  box-sizing: border-box;
-}
-
 :where(html[data-rb-style="amber-ember"]) body {
-  margin: 0;
-  min-height: 100vh;
   background-color: var(--rb-bg);
   color: var(--rb-text);
   font-family: var(--rb-font-body);

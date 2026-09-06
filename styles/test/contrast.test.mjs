@@ -25,7 +25,7 @@ import { fileURLToPath } from "node:url";
 const ROOT = resolve(fileURLToPath(import.meta.url), "../..");
 const contract = JSON.parse(readFileSync(join(ROOT, "contract.json"), "utf-8"));
 const themeDirs = readdirSync(ROOT, { withFileTypes: true })
-  .filter((e) => e.isDirectory() && e.name !== "test" && e.name !== "node_modules")
+  .filter((e) => e.isDirectory() && e.name !== "test" && e.name !== "node_modules" && !e.name.startsWith("_"))
   .map((e) => e.name);
 
 /** Strip CSS block comments so an inline `/* ... *​/` after a token value (or a

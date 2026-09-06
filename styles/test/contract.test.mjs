@@ -29,7 +29,7 @@ const manifest = JSON.parse(readFileSync(join(ROOT, "manifest.json"), "utf-8"));
 const pkg = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf-8"));
 const contract = JSON.parse(readFileSync(join(ROOT, "contract.json"), "utf-8"));
 const themeDirs = readdirSync(ROOT, { withFileTypes: true })
-  .filter((e) => e.isDirectory() && e.name !== "test" && e.name !== "node_modules")
+  .filter((e) => e.isDirectory() && e.name !== "test" && e.name !== "node_modules" && !e.name.startsWith("_"))
   .map((e) => e.name);
 
 // Baseline token set every theme must declare, from contract.json. Additions
@@ -329,6 +329,26 @@ test("declaredScheme ignores a commented-out color-scheme (issue #42 overflow)",
   assert.equal(declaredScheme(css), "dark", "the live color-scheme must win over a commented-out one");
 });
 
+// -- shared structural base (_shared/structure.css, issue #52) ---------------
+test("_shared/structure.css is guarded by the bare attribute, never a theme value (#52)", () => {
+  // The shared file applies under every theme, so its selectors use the bare
+  // `[data-rb-style]` (any value) -- the one place that guard shape is allowed.
+  // It must still never pin a specific theme value, or it would stop being shared.
+  const { selectors } = parseCss(readFileSync(join(ROOT, "_shared", "structure.css"), "utf-8"));
+  assert.ok(selectors.length > 0, "_shared/structure.css has no rules");
+  for (const sel of selectors) {
+    assert.ok(sel.includes("[data-rb-style]"), `structure.css: unguarded selector: ${sel}`);
+    assert.ok(
+      !sel.includes('[data-rb-style="'),
+      `structure.css: selector pins a theme value (must stay theme-agnostic): ${sel}`
+    );
+  }
+});
+
+test('_shared ships in package.json "files" so the index.css import resolves (#52)', () => {
+  assert.ok(pkg.files.includes("_shared"), 'package.json "files" must include "_shared"');
+});
+
 for (const theme of themeDirs) {
   const guard = `[data-rb-style="${theme}"]`;
 
@@ -341,12 +361,18 @@ for (const theme of themeDirs) {
     }
   });
 
-  test(`${theme}: index.css pulls tokens, base, and every component file`, () => {
+  test(`${theme}: index.css pulls the shared structure, tokens, base, and every component file`, () => {
     const { imports, selectors } = parseCss(
       readFileSync(join(ROOT, theme, "index.css"), "utf-8")
     );
     assert.deepEqual(selectors, []);
-    const names = imports.map((i) => i.match(/"\.\/(.+)\.css"/)?.[1]);
+    // The shared structural file is imported first (issue #52); it resolves out
+    // of the theme dir, so it isn't one of the ./ theme files matched below.
+    assert.ok(
+      imports.some((i) => i.includes("../_shared/structure.css")),
+      `${theme}: index.css must import ../_shared/structure.css`
+    );
+    const names = imports.map((i) => i.match(/"\.\/(.+)\.css"/)?.[1]).filter(Boolean);
     const expected = themeCssFiles(theme).map((f) =>
       f.slice(join(ROOT, theme).length + 1).replace(/\.css$/, "").split("\\").join("/")
     );

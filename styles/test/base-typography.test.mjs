@@ -19,8 +19,11 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = resolve(fileURLToPath(import.meta.url), "../..");
 const themeDirs = readdirSync(ROOT, { withFileTypes: true })
-  .filter((e) => e.isDirectory() && e.name !== "test" && e.name !== "node_modules")
+  .filter((e) => e.isDirectory() && e.name !== "test" && e.name !== "node_modules" && !e.name.startsWith("_"))
   .map((e) => e.name);
+// box-sizing + the page body reset moved here (issue #52); base.css keeps the
+// rest, incl. the per-theme focus/selection this file already checks.
+const structureCss = readFileSync(join(ROOT, "_shared", "structure.css"), "utf-8");
 
 /** The declaration block (without braces) of the first rule whose selector
  * list contains `token`, or null if no such rule exists. A plain word token
@@ -93,7 +96,7 @@ const RULES = [
     },
   },
   {
-    // color intentionally unconstrained: var(--rb-accent) in ten themes,
+    // color intentionally unconstrained: var(--rb-accent) in eleven themes,
     // color: inherit in rackbops-studio -- both are documented, deliberate
     // choices (see that theme's design.md Accessibility section), not drift.
     name: "a",
@@ -144,4 +147,22 @@ for (const theme of themeDirs) {
       }
     });
   }
+
+  test(`${theme}: index.css imports the shared structural file (#52)`, () => {
+    const index = readFileSync(join(ROOT, theme, "index.css"), "utf-8");
+    assert.match(
+      index,
+      /@import\s+"\.\.\/_shared\/structure\.css"/,
+      `${theme}/index.css must import ../_shared/structure.css`
+    );
+  });
 }
+
+test("_shared/structure.css declares the box-sizing reset and the page body reset (#52)", () => {
+  assert.match(structureCss, /box-sizing:\s*border-box/, "structure.css misses the box-sizing reset");
+  const body = findRuleBlock(structureCss, "body");
+  assert.ok(body, "structure.css has no body rule");
+  const v = declaredValues(body);
+  assert.equal(v.get("margin"), "0", "structure.css body rule misses margin: 0");
+  assert.ok(v.has("min-height"), "structure.css body rule misses min-height");
+});

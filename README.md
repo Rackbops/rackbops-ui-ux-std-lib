@@ -81,7 +81,7 @@ Several themes can load at once and swapping is one attribute flip.
 
 No-build apps can load a theme from a CDN — jsDelivr mirrors public npm. Prefer
 the flattened **bundle**, which inlines every `@import` into one request (vs
-18–22 for `index.css`) and is self-contained for vendoring:
+19–23 for `index.css`) and is self-contained for vendoring:
 `https://cdn.jsdelivr.net/npm/@rackbops/styles/luminous-precision/bundle.css`
 — or `.../all.bundle.css` for every theme in one file. Both are generated when
 the package is published; `index.css` still resolves too, as its own `@import`
@@ -203,6 +203,7 @@ app repo by symlinking or copying into `.claude/skills/design-system/`.
 styles/                    @rackbops/styles
   manifest.json            theme roster: name, scheme, fonts
   all.css                  every theme in one import (+ generated all.bundle.css)
+  _shared/                 structure.css: box-sizing + body reset shared by every theme (#52)
   arcane-obsidian/         tokens.css, base.css, components/*.css, index.css, design.md
                            publish also emits a flattened bundle.css (gitignored)
   rackbops-studio/         same layout + assets/boppy.svg + studio extras

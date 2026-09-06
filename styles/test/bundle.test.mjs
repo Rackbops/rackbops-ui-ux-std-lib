@@ -81,10 +81,13 @@ test("all.bundle.css flattens every theme, self-contained (#52)", () => {
   for (const id of themeIds()) {
     assert.ok(bundled.includes(`[data-rb-style="${id}"]`), `all.bundle missing ${id}`);
   }
-  // all.css @imports each theme's index.css, so the flatten equals every
-  // per-theme flatten concatenated in roster order.
-  const perTheme = themeIds().flatMap((id) => selectors(flatten(join(STYLES, id, "index.css"))));
-  assert.deepEqual(selectors(bundled), perTheme);
+  // all.css @imports each theme's index.css, so all.bundle's rule SET is the
+  // union of every per-theme flatten -- compared as a set, not an ordered list,
+  // because the bundler includes the shared _shared/structure.css once (deduped)
+  // where the per-theme flattens each carry their own copy (issue #52).
+  const bundledSet = [...new Set(selectors(bundled))].sort();
+  const unionSet = [...new Set(themeIds().flatMap((id) => selectors(flatten(join(STYLES, id, "index.css")))))].sort();
+  assert.deepEqual(bundledSet, unionSet);
 });
 
 test("package.json declares the ./all-bundle export (#52)", () => {
