@@ -15,15 +15,7 @@
   font-variant-numeric: tabular-nums; /* counts/ages/sizes align in a column */
 }
 
-:where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *),
-:where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *)::before,
-:where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *)::after {
-  box-sizing: border-box;
-}
-
 :where(html[data-rb-style="arcane-obsidian"]) body {
-  margin: 0;
-  min-height: 100vh;
   background-color: var(--rb-bg);
   color: var(--rb-text);
   font-family: var(--rb-font-body);

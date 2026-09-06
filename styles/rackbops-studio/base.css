@@ -12,15 +12,7 @@
   line-height: 1.6;
 }
 
-:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *),
-:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *)::before,
-:where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *)::after {
-  box-sizing: border-box;
-}
-
 :where(html[data-rb-style="rackbops-studio"]) body {
-  margin: 0;
-  min-height: 100vh;
   background-color: var(--rb-bg);
   color: var(--rb-text);
   font-family: var(--rb-font-body);

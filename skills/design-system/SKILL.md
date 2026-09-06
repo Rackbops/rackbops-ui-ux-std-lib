@@ -132,7 +132,8 @@ per theme with a switcher.
 Copy the `styles/arcane-obsidian/` layout: `tokens.css` (the full baseline
 `--rb-*` set, every rule guarded by `data-rb-style="<name>"`, plus a
 `color-scheme`), `base.css`, `components/*.css` (guarded selectors, theme-unique
-`@keyframes` names), `index.css`, and a `design.md`. Then register it:
+`@keyframes` names), and `index.css` (which imports `../_shared/structure.css`
+first for the shared box-sizing + body reset), plus a `design.md`. Then register it:
 
 1. `styles/manifest.json` — name, scheme, fonts (empty for a system-font theme).
 2. `styles/package.json` — add the directory to `files` and its four `exports`.

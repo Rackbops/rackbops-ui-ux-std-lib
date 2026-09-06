@@ -17,15 +17,7 @@
   -webkit-font-smoothing: antialiased;
 }
 
-:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *),
-:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *)::before,
-:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *)::after {
-  box-sizing: border-box;
-}
-
 :where(html[data-rb-style="summer-cloud"]) body {
-  margin: 0;
-  min-height: 100vh;
   background-color: var(--rb-bg);
   color: var(--rb-text);
   font-family: var(--rb-font-body);

@@ -31,6 +31,7 @@
     "amber-hearth",
     "amber-ember",
     "mono-field",
+    "_shared",
     "all.css",
     "all.bundle.css",
     "manifest.json",
@@ -46,6 +47,10 @@
     },
     "./manifest": "./manifest.json",
     "./contract": "./contract.json",
+    "./_shared/structure": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./_shared/structure.css"
+    },
     "./all-bundle": {
       "types": "./css-side-effect.d.ts",
       "default": "./all.bundle.css"

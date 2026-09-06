@@ -1,4 +1,5 @@
 /* arcane-parchment — full theme entry point */
+@import "../_shared/structure.css";
 @import "./tokens.css";
 @import "./base.css";
 @import "./components/button.css";
