@@ -13,7 +13,7 @@
   background: var(--rb-surface-sunken);
 }
 :where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-progress::-webkit-progress-value {
-  background: deeppink;
+  background: var(--rb-accent);
 }
 :where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-progress::-moz-progress-bar {
   background: var(--rb-accent);
