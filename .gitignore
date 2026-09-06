@@ -6,6 +6,10 @@ _dist/
 .DS_Store
 styles/test/.tmp-types-*
 .env
+# Visual-regression diff/actual output written on a failing `pnpm visual` run --
+# transient; the baselines under site/__screenshots__/ themselves ARE tracked.
+site/__screenshots__/**/*.diff.png
+site/__screenshots__/**/*.actual.png
 # Copied in at pack/publish time by scripts/copy-license.mjs from the root
 # LICENSE/NOTICE -- not a second source of truth, so not tracked here.
 /styles/LICENSE

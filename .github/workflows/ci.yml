@@ -30,3 +30,26 @@ jobs:
       - run: node --test scripts/generate-skill-table.test.mjs
       # LICENSE/NOTICE packaging (copy-license.mjs) stays wired into both packages (node:test).
       - run: node --test scripts/copy-license.test.mjs
+
+  # Visual regression -- a SEPARATE job (browser dependency) so the text suites
+  # above stay fast and dependency-free. Screenshots every showcase section per
+  # theme and compares to the committed baselines under site/__screenshots__.
+  # Runs in the same Playwright container the baselines were generated in
+  # (update-visual-baselines.yml) so rendering matches. Never regenerates here.
+  visual:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.63.0-jammy
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm visual
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-diffs
+          path: |
+            site/__screenshots__/**/*.diff.png
+            site/__screenshots__/**/*.actual.png
+          if-no-files-found: ignore

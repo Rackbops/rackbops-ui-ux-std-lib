@@ -739,9 +739,9 @@ The showcase is the library's visual acceptance test. It MUST:
   defines (rest, hover-able, disabled, active, every semantic variant,
   `--sm`, icon-only, interactive rows, a streaming log). The nav links, tab
   list, and form fields carry their full ARIA (`aria-current`, `role="tab"` /
-  `aria-selected` / `role="tabpanel"`, label `for`) after #91; the Alerts
-  section still renders no `.rb-alert--warning` (info/success/danger only)
-  `[pending #50]`;
+  `aria-selected` / `role="tabpanel"`, label `for`) after #91; and the Alerts
+  section renders all four semantic variants, `.rb-alert--warning` included
+  (#50);
 - put theme extras only in sections labelled as extras
   (`site/index.html:288`), never in a generic section (the wordmark and
   eyebrow at lines 50-54 and the `rb-btn__arrow`, `rb-card__tag` in generic
@@ -751,7 +751,7 @@ The showcase is the library's visual acceptance test. It MUST:
   every theme (`site/index.html:9-40`);
 - demonstrate a new component in every state in the same PR that adds it;
 - be photographed: a separate `pnpm visual` job screenshots every section
-  under every theme against committed baselines `[pending #50]`. A new
+  under every theme against committed baselines `[tested: scripts/visual.mjs, #50]`. A new
   theme's PR carries its baseline set -- that is the review artefact for
   "does it look out of place".
 
@@ -790,7 +790,9 @@ The showcase is the library's visual acceptance test. It MUST:
 6. Register per section 2.3.
 7. `pnpm --filter @rackbops/styles test`, `pnpm --filter @rackbops/ui-react
    test`, `pnpm build`; then open the showcase and walk every section under
-   the new theme (and commit its screenshot baselines once #50 exists).
+   the new theme, and generate its screenshot baselines via the
+   `update-visual-baselines` workflow -- never commit locally-shot ones, which
+   fail CI on antialiasing alone -- reviewing the image diff in the PR (#50).
 8. Run the review gate (`CLAUDE.md`).
 
 ### 14.2 Adding or changing a shared component
@@ -903,7 +905,7 @@ identity paragraph and the README table.
 | Every shared component file exists per theme | `contract.test.mjs` | live (#47) |
 | Contrast ratios for the fixed token pairs (computed from `tokens.css`) | `contrast.test.mjs` | live (#49) |
 | Showcase renders full ARIA (nav `aria-current`, tab/tabpanel roles + `aria-selected`, label `for`) | showcase | live (#91) |
-| Showcase complete (`.rb-alert--warning`) and photographed per theme | showcase + `pnpm visual` | pending #50 |
+| Showcase complete (`.rb-alert--warning`) and photographed per theme | showcase + `pnpm visual` (`scripts/visual.mjs`) | live (#50) |
 | Every transition reduced under `prefers-reduced-motion` | token block | pending #51 (64 of 73 files today; nine port files have none) |
 | Shared structural base; per-theme `bundle.css` | CSS + build | pending #52 |
 | `pnpm new-theme` scaffold | script | pending #53 |
