@@ -244,7 +244,7 @@ integer, add the token to all twelve themes, update SKILL.md and this table.
 | Token | Role | Rules of use |
 | --- | --- | --- |
 | `--rb-accent` | The single brand voice | Interaction, focus, active state, emphasis. Never decoration |
-| `--rb-accent-fg` | Text on a solid accent fill | MUST clear 4.5:1 on `--rb-accent` -- this token exists so the primary button stays AA (`styles/arcane-obsidian/tokens.css` comment) |
+| `--rb-accent-fg` | Text on a solid accent fill | MUST clear 4.5:1 on `--rb-accent` -- this token exists so the primary button stays AA (`styles/arcane-obsidian/tokens.css` comment); rackbops-studio is the one documented exception (~3.6:1, editorial fidelity, allowlisted in `contract.json`'s `contrast` block) |
 | `--rb-accent-wash` | Tint behind accent text; focus ring halo | Low-alpha accent; the "active" background |
 | `--rb-accent-grad` | The one rationed gradient | Spent in one or two named places (section 10); never on a primary button |
 
@@ -613,7 +613,7 @@ Transitions and animations:
 - **Targets.** Body text and control labels on their surfaces: 4.5:1. Large
   or bold text, non-text elements (borders, focus rings, semantic bars):
   3:1. `--rb-accent-fg` on `--rb-accent`: 4.5:1. These are computed from
-  `tokens.css` by a test for the fixed token pairs `[pending #49]`; a
+  `tokens.css` by a test for the fixed token pairs `[tested: styles/test/contrast.test.mjs, #49]`; a
   failing pair is either fixed or allowlisted with the `design.md` line that
   documents it.
 - **Deviations are documented, never discovered.** Every place a theme sits
@@ -622,8 +622,8 @@ Transitions and animations:
   (`styles/rackbops-studio/design.md:77-100` is the model: vermillion as
   text is ~3.6:1, so accent-coloured text is decorative only). Every theme
   MUST carry the section, even if it reads "the computed pairs pass; no
-  deviations" `[reviewed; one theme has it today; #49 gives each section a
-  test to cite]`.
+  deviations" `[tested: all twelve carry the section; contrast.test.mjs is the
+  cited test, #49]`.
 - **Status is never colour-only.** Badges carry text, alerts carry a title
   or body, stepper nodes differ by icon and border (#18, shipped in #55).
 - Dark resting palettes SHOULD avoid pure white and pure black
@@ -690,8 +690,8 @@ Sections in this order. Required unless marked.
 7. `## Shape & effects` -- radii, depth, focus, the gradient's places,
    transition duration and easing, spacing.
 8. `## Accessibility` -- every below-target ratio with its compensating
-   rule, or "no deviations", citing the contrast test once it exists
-   `[reviewed; pending adoption]`.
+   rule, or "no deviations", citing the contrast test
+   (`styles/test/contrast.test.mjs`) `[tested; all twelve adopted, #49]`.
 9. `## Components` -- one bullet per shared component in the order of the
    section 5.1 table, each naming its modifiers and how the theme reads
    them. No counts.
@@ -899,7 +899,7 @@ identity paragraph and the README table.
 | Full `REQUIRED_CLASSES` parity (every shared component's full class set) + data-driven allowlist + closed-world "no undocumented class" check | `contract.test.mjs` | live (#47) |
 | Required class set derived from React emissions (emitted `rb-*` set == `contract.json`'s React-backed classes) | `components/react/src/contract-classes.test.tsx` | live (#48) |
 | Every shared component file exists per theme | `contract.test.mjs` | live (#47) |
-| Contrast ratios for the fixed token pairs | new test | pending #49 |
+| Contrast ratios for the fixed token pairs (computed from `tokens.css`) | `contrast.test.mjs` | live (#49) |
 | Showcase complete (warning alert, `aria-selected`) and photographed per theme | showcase + `pnpm visual` | pending #50 |
 | Every transition reduced under `prefers-reduced-motion` | token block | pending #51 (64 of 73 files today; nine port files have none) |
 | Shared structural base; per-theme `bundle.css` | CSS + build | pending #52 |
@@ -915,7 +915,7 @@ identity paragraph and the README table.
 | `forwardRef` on every wrapper | `refs.test.tsx` | live (#30) |
 | SKILL.md matches the shipped contract | doc fix | partially closed by #47 (inventory table now generated + tested, extras paragraph accurate, eyebrow mis-classification fixed); roster paragraph, manifest-fonts guidance, and the add-theme recipe's missing `all.css`/`NOTICE` steps still pending #39 |
 | `design.md` counterpart and count claims true | doc fix | live (#47, #40 -- counterpart-shipped and stale-count claims fixed repo-wide) |
-| `## Accessibility` section in every `design.md` | review | 1 of 12 (rackbops-studio) |
+| `## Accessibility` section in every `design.md` | review + `contrast.test.mjs` cite | 12 of 12 (#49) |
 | `.rb-tab--active` paired with `[aria-selected="true"]` | `contract.test.mjs` | live, 12 of 12 comply (#65) |
 | `.rb-link--active` paired with `[aria-current="page"]` | `contract.test.mjs` | live, 12 of 12 comply (#65) |
 | Choice controls use `accent-color` | review | 7 of 12 (concrete pair by design; ports hand-styled) |

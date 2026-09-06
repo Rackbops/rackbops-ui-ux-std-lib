@@ -162,5 +162,21 @@
     "summer-cloud/button.css": ["#4a0000"],
     "rackbops-noir/rack.css": ["#0a121a", "#e7eef4", "#7d90a2", "#1e2b37"],
     "rackbops-studio/rack.css": ["#101a24", "#e7eef4", "#7d90a2", "#26333f"]
+  },
+  "contrast": {
+    "//": "WCAG contrast for the fixed token pairs, computed from each theme's tokens.css by styles/test/contrast.test.mjs (STANDARD.md 9). `min` is the ratio floor; `warnBelow` (text-faint only) diagnoses -- does not fail -- a value under AA that still clears the 3:1 non-text floor. A failing pair is fixed in the tokens or entered in `allowlist` with the design.md line documenting it.",
+    "pairs": [
+      { "fg": "text", "bg": "bg", "min": 4.5 },
+      { "fg": "text", "bg": "surface", "min": 4.5 },
+      { "fg": "text", "bg": "surface-2", "min": 4.5 },
+      { "fg": "text-soft", "bg": "bg", "min": 4.5 },
+      { "fg": "text-soft", "bg": "surface", "min": 4.5 },
+      { "fg": "accent-fg", "bg": "accent", "min": 4.5 },
+      { "fg": "accent", "bg": "bg", "min": 3.0 },
+      { "fg": "text-faint", "bg": "surface", "min": 3.0, "warnBelow": 4.5 }
+    ],
+    "allowlist": [
+      { "theme": "rackbops-studio", "fg": "accent-fg", "bg": "accent", "reason": "white on the vermillion accent fill is ~3.6:1 -- rackbops.com editorial fidelity; spent only on large/bold .rb-btn--accent and .rb-btn--primary hover text (large-text AA is 3:1), never small labels or essential body copy", "doc": "rackbops-studio/design.md:96-98" }
+    ]
   }
 }

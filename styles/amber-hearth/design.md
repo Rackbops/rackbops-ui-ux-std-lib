@@ -75,6 +75,12 @@ progress fill and every other surface stay solid.
   `--rb-accent-wash` ring.
 - 4px spacing rhythm (`--rb-space-1..5`).
 
+## Accessibility
+
+The token pairs `styles/test/contrast.test.mjs` computes -- `--rb-text` / `--rb-text-soft` on their surfaces, `--rb-accent-fg` on `--rb-accent`, `--rb-accent` as non-text on `--rb-bg`, and `--rb-text-faint` on `--rb-surface` -- all clear their WCAG targets (4.5:1 text, 3:1 non-text; faint clears AA here too). One note beyond the tested pairs:
+
+- **`--rb-accent` as bare `<a>` link text is ~4.47:1 on `--rb-bg`** -- essentially at the 4.5:1 AA text bar, and ~4.9:1 on `--rb-surface`, which clears it. It clears the 3:1 non-text/focus target the test checks `--rb-accent` against (accent is contracted as a non-text element, not body text).
+
 ## Components
 
 Class prefix `rb-`; shared token/class contract with the other themes. No

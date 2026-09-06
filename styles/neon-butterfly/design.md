@@ -76,6 +76,10 @@ token stack falls back to `ui-monospace`.
 - Transitions 0.3s; hover motion is a 4px `translateX` slide on links.
 - Respect `prefers-reduced-motion`.
 
+## Accessibility
+
+The token pairs `styles/test/contrast.test.mjs` computes -- `--rb-text` / `--rb-text-soft` on their surfaces, `--rb-accent-fg` on `--rb-accent`, `--rb-accent` as non-text on `--rb-bg`, and `--rb-text-faint` on `--rb-surface` -- all clear their WCAG targets (4.5:1 text, 3:1 non-text; faint clears AA here too). No deviations.
+
 ## Components
 
 Class prefix `rb-`. Variants use BEM-ish modifiers (`rb-btn--accent`).
