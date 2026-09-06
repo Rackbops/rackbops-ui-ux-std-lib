@@ -58,6 +58,20 @@ const sections = await page.$$eval("main > section", (els) =>
   els.map((el, i) => [i, el.querySelector(".sc-title")?.textContent ?? `section-${i}`]),
 );
 
+// Never let an empty matrix (a showcase refactor that renames <main>/<section>,
+// or an empty manifest) pass green having compared nothing.
+if (themes.length === 0 || sections.length === 0) {
+  console.error(`visual: nothing to capture (${themes.length} themes x ${sections.length} sections)`);
+  process.exit(1);
+}
+// A slug collision would silently make two sections share one baseline.
+const slugs = sections.map(([, title]) => slugify(title));
+const dupes = [...new Set(slugs.filter((s, i) => slugs.indexOf(s) !== i))];
+if (dupes.length) {
+  console.error(`visual: duplicate section slug(s): ${dupes.join(", ")}`);
+  process.exit(1);
+}
+
 const failures = [];
 let compared = 0;
 
@@ -66,9 +80,14 @@ for (const theme of themes) {
   // transition-suppression flip commits, exactly as a user sees it.
   await page.selectOption("#theme", theme);
   await page.waitForFunction((t) => document.documentElement.getAttribute("data-rb-style") === t, theme);
-  // Let the theme's ensureFonts() inject + register its webfont <link>, then
-  // wait for every face to finish loading before capturing.
-  await page.waitForTimeout(250);
+  // Wait for every stylesheet <link> to finish loading -- a webfont theme
+  // injects a Google Fonts <link> on switch, and its @font-face rules must be
+  // parsed before document.fonts sees the faces -- then for the faces to load.
+  // A fixed timeout would race the CDN and silently capture the fallback font,
+  // whose different metrics change tile height and fail the whole theme.
+  await page.waitForFunction(() =>
+    [...document.querySelectorAll('link[rel="stylesheet"]')].every((l) => l.sheet),
+  );
   await page.evaluate(() => document.fonts.ready);
 
   for (const [i, title] of sections) {

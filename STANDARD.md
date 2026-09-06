@@ -790,7 +790,9 @@ The showcase is the library's visual acceptance test. It MUST:
 6. Register per section 2.3.
 7. `pnpm --filter @rackbops/styles test`, `pnpm --filter @rackbops/ui-react
    test`, `pnpm build`; then open the showcase and walk every section under
-   the new theme (and commit its screenshot baselines once #50 exists).
+   the new theme, and generate its screenshot baselines via the
+   `update-visual-baselines` workflow -- never commit locally-shot ones, which
+   fail CI on antialiasing alone -- reviewing the image diff in the PR (#50).
 8. Run the review gate (`CLAUDE.md`).
 
 ### 14.2 Adding or changing a shared component
