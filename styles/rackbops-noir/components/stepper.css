@@ -39,7 +39,7 @@
   height: 2px;
   background: var(--rb-surface-sunken);
   z-index: -1;
-  transition: background-color var(--rb-transition);
+  transition: background-color var(--rb-transition) var(--rb-ease);
 }
 :where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-stepper__step:not(:first-child).rb-stepper--complete::before,
 :where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-stepper__step:not(:first-child).rb-stepper--current::before,

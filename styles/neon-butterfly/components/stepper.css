@@ -40,7 +40,7 @@
   height: 2px;
   background: var(--rb-surface);
   z-index: -1;
-  transition: background-color var(--rb-transition), box-shadow var(--rb-transition);
+  transition: background-color var(--rb-transition) var(--rb-ease), box-shadow var(--rb-transition) var(--rb-ease);
 }
 :where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-stepper__step:not(:first-child).rb-stepper--complete::before,
 :where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-stepper__step:not(:first-child).rb-stepper--current::before,

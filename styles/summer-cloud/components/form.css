@@ -13,7 +13,7 @@
   font-family: var(--rb-font-body);
   font-weight: var(--rb-font-weight);
   font-size: 16px;
-  transition: border-color var(--rb-transition), box-shadow var(--rb-transition);
+  transition: border-color var(--rb-transition) var(--rb-ease), box-shadow var(--rb-transition) var(--rb-ease);
 }
 :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-select {
   appearance: none;
@@ -70,8 +70,8 @@
   border: 1px solid var(--rb-outline);
   border-radius: var(--rb-radius-sm);
   cursor: pointer;
-  transition: background var(--rb-transition), border-color var(--rb-transition),
-    box-shadow var(--rb-transition);
+  transition: background var(--rb-transition) var(--rb-ease), border-color var(--rb-transition) var(--rb-ease),
+    box-shadow var(--rb-transition) var(--rb-ease);
 }
 :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-radio {
   border-radius: 50%;
@@ -117,7 +117,7 @@
   border-radius: var(--rb-radius-pill);
   cursor: pointer;
   position: relative;
-  transition: background var(--rb-transition), border-color var(--rb-transition);
+  transition: background var(--rb-transition) var(--rb-ease), border-color var(--rb-transition) var(--rb-ease);
 }
 :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-switch::after {
   content: "";

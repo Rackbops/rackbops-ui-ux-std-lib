@@ -17,7 +17,7 @@
   font-size: var(--rb-text-sm);
   letter-spacing: var(--rb-label-tracking);
   cursor: pointer;
-  transition: color var(--rb-transition), border-color var(--rb-transition);
+  transition: color var(--rb-transition) var(--rb-ease), border-color var(--rb-transition) var(--rb-ease);
 }
 :where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-tab:not(:disabled):hover {
   color: var(--rb-text);

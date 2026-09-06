@@ -19,7 +19,7 @@
   padding: var(--rb-space-2) var(--rb-space-3);
   border-bottom: 1px solid var(--rb-border);
   color: var(--rb-text);
-  transition: background var(--rb-transition);
+  transition: background var(--rb-transition) var(--rb-ease);
 }
 :where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-table tbody tr:hover td {
   background: var(--rb-surface-2);
@@ -31,7 +31,7 @@
 }
 :where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-table--interactive tbody tr:focus-visible,
 :where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-table--interactive tbody tr:has(:focus-visible) {
-  outline: 2px solid var(--rb-accent);
+  outline: var(--rb-focus-ring);
   outline-offset: -2px;
 }
 :where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-table--interactive tbody tr:focus-visible td,

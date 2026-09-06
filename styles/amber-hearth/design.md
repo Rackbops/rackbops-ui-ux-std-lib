@@ -68,11 +68,12 @@ progress fill and every other surface stay solid.
 - Shadows are warm-toned and diffused: `rgba(80,50,20,…)` brown-tinted, soft
   normal-blur shadows — never a neutral-black hard offset shadow. `shadow-sm`
   resting, `shadow-lg` for raised cards and dialogs.
-- Transitions `0.18s` — softer and slightly slower than the library default
+- Transitions `0.18s` (`--rb-transition`) with `--rb-ease` timing — softer and slightly slower than the library default
   (`0.15s`), so hovers and focus changes read as unhurried rather than snappy.
   Every animation and transition respects `prefers-reduced-motion`.
 - Focus is the accent: inputs swap their border for a clay line plus a soft
-  `--rb-accent-wash` ring.
+  `--rb-accent-wash` ring; the base `:focus-visible` is the `--rb-focus-ring`
+  outline (`2px solid var(--rb-accent)`).
 - 4px spacing rhythm (`--rb-space-1..5`).
 
 ## Accessibility

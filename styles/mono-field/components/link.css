@@ -14,8 +14,8 @@
   font-size: var(--rb-text-sm);
   cursor: pointer;
   transition:
-    background var(--rb-transition),
-    color var(--rb-transition);
+    background var(--rb-transition) var(--rb-ease),
+    color var(--rb-transition) var(--rb-ease);
 }
 :where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-link:hover {
   background: var(--rb-surface-2);
@@ -29,7 +29,7 @@
   width: 2px;
   border-radius: 2px;
   background: transparent;
-  transition: background var(--rb-transition);
+  transition: background var(--rb-transition) var(--rb-ease);
 }
 :where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-link:hover::before,
 :where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-link.rb-link--active::before,

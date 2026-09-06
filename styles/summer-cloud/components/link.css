@@ -12,13 +12,13 @@
   font-weight: var(--rb-font-weight-medium);
   font-size: var(--rb-text-sm);
   transition:
-    background var(--rb-transition),
-    color var(--rb-transition);
+    background var(--rb-transition) var(--rb-ease),
+    color var(--rb-transition) var(--rb-ease);
 }
 :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-link::after {
   content: "→";
   color: var(--rb-accent-2);
-  transition: transform var(--rb-transition);
+  transition: transform var(--rb-transition) var(--rb-ease);
 }
 :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-link:hover,
 :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-link:focus-visible {

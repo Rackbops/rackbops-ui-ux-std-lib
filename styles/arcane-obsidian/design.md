@@ -67,11 +67,12 @@ Muted-on-surface is tuned to clear WCAG AA (4.5:1) on every surface; the light
   two-step shadow ramp (`--rb-shadow-sm` resting, `--rb-shadow-lg` for dialogs
   and raised cards). No glow on resting UI.
 - Focus is the accent: inputs swap their border for a violet line plus a soft
-  `--rb-accent-wash` ring; interactive elements take a 2px accent outline.
+  `--rb-accent-wash` ring; interactive elements take the `--rb-focus-ring`
+  outline (`2px solid var(--rb-accent)`).
 - The **one gradient** (`--rb-accent-grad`, violet → orchid → gold) is rationed
   to exactly two places: the wordmark and the active-tab underline. Primary
   buttons stay a solid AA-safe accent fill — never the gradient.
-- Transitions `0.15s`. Every animation and transition respects
+- Transitions `0.15s` (`--rb-transition`), `--rb-ease` timing. Every animation and transition respects
   `prefers-reduced-motion`.
 - 4px spacing rhythm (`--rb-space-1..5`).
 

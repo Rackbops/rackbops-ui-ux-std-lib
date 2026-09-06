@@ -10,9 +10,9 @@
   padding: 26px 24px 28px;
   box-shadow: var(--rb-shadow-sm);
   transition:
-    transform var(--rb-transition) ease,
-    border-color var(--rb-transition) ease,
-    box-shadow var(--rb-transition) ease;
+    transform var(--rb-transition) var(--rb-ease),
+    border-color var(--rb-transition) var(--rb-ease),
+    box-shadow var(--rb-transition) var(--rb-ease);
 }
 :where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-card:hover {
   transform: translateY(-4px);

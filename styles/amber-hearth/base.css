@@ -48,7 +48,7 @@
 }
 
 :where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *):where(:focus-visible) {
-  outline: 2px solid var(--rb-accent);
+  outline: var(--rb-focus-ring);
   outline-offset: 2px;
 }
 

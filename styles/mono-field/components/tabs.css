@@ -17,7 +17,7 @@
   font-size: var(--rb-text-sm);
   text-transform: none;
   cursor: pointer;
-  transition: color var(--rb-transition);
+  transition: color var(--rb-transition) var(--rb-ease);
 }
 :where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-tab:not(:disabled):hover {
   color: var(--rb-text);

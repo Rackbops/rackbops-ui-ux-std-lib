@@ -221,7 +221,7 @@ Rules:
 
 ## 4. Token contract
 
-### 4.1 The baseline (38 tokens)
+### 4.1 The baseline (40 tokens)
 
 Every theme MUST declare all of these on its canvas selector `[tested]`
 (`styles/contract.json`'s `tokens`, read by `styles/test/contract.test.mjs`'s
@@ -288,14 +288,9 @@ marks. They are never used as a second accent.
 | `--rb-shadow-lg` | Lifted: dialogs, raised cards, hover lift |
 | `--rb-blur` | Backdrop blur for overlay surfaces (the dialog backdrop). MAY be `0px` -- the concrete pair never blurs |
 | `--rb-transition` | The one duration; every transition uses it |
+| `--rb-focus-ring` | The `outline` for `:focus-visible`; the one place a theme says what focus looks like -- `2px solid var(--rb-accent)` in ten themes, `2.5px` in the rackbops pair (the `outline-offset`/`border-radius` stay per-theme). The base rule and the table-row/button focus overrides all read it `[tested]` |
+| `--rb-ease` | The `transition-timing-function` every component transition names; `ease` everywhere, with summer-cloud's `--rb-ease-bounce` as a per-component extra `[tested]` |
 | `--rb-space-1` .. `--rb-space-5` | The five-step spacing ladder; values are the theme's own (arcane and mono-field run `0.25-1.5rem`, the studio `0.5-2.25rem`) |
-
-**Pending additions -- contract 2** `[pending #54]`
-
-| Token | Role |
-| --- | --- |
-| `--rb-focus-ring` | The `outline` value for `:focus-visible`; one place a theme says what focus looks like (today all twelve base files hard-code their own -- ten at `2px solid var(--rb-accent)`, the rackbops pair at `2.5px`/`3px` offset/radius -- plus a handful of component files each hard-coding theirs too) |
-| `--rb-ease` | The `transition-timing-function`; `ease` by default, the ports' bounce where they want it (summer-cloud already carries `--rb-ease-bounce` as an extra) |
 
 Deliberately not added: a type scale, z-index tokens, a density axis,
 `--rb-radius-sm`. No shared component needs them, and every baseline token
@@ -529,7 +524,7 @@ value]`.
 | `p` | `margin: 0 0 var(--rb-space-3)` `[tested]` |
 | `ul`, `ol` | `margin`, `padding-inline-start: var(--rb-space-4)` `[tested]`; real markers, not stripped |
 | `a` | `color: var(--rb-accent)` in eleven themes. `rackbops-studio` alone uses `inherit` (`styles/rackbops-studio/base.css:49-50`) -- a documented departure stated in that theme's `design.md` Accessibility section (accent-as-text is below AA there); property presence `[tested]`, the value itself is not pinned since the divergence is legitimate |
-| `:focus-visible` | `outline: 2px solid var(--rb-accent)`, `outline-offset: 2px` (`var(--rb-focus-ring)` after #54) -- present in all twelve `[tested]`; the rackbops pair alone uses their own 2.5 px / 3 px-offset / 3px-radius variant, tied to that pair's documented soft-shadow identity |
+| `:focus-visible` | `outline: var(--rb-focus-ring)` (`2px solid var(--rb-accent)` in ten themes, `2.5px` in the rackbops pair), `outline-offset: 2px` -- present in all twelve `[tested]`; the rackbops pair alone adds a 3 px offset / 3px radius, tied to that pair's documented soft-shadow identity |
 | `::selection` | `background: var(--rb-accent)`; `color` is the ink that reads on it (`--rb-accent-fg` in seven themes, `#fff` or `--rb-bg` in the other five) |
 
 The box-sizing reset and the page body reset are byte-identical in every theme
@@ -539,8 +534,10 @@ per-theme in `base.css`: they carry per-theme values (the rackbops pair's
 thicker focus ring; each theme's own selection ink), and a bare shared rule
 would clobber a theme's own override under `@rackbops/styles/all` -- twelve
 themes at once, the shared rule re-imported per theme and deduped to last, so at
-equal `:where()` specificity it wins by source order -- so sharing them safely
-awaits `--rb-focus-ring` (#54) or a cascade layer, not this file.
+equal `:where()` specificity it wins by source order -- so they stay per-theme.
+`--rb-focus-ring` (#54) now makes the focus half shareable in principle
+(`outline: var(--rb-focus-ring)` resolves per-theme, nothing to clobber), but that
+move is left for later; selection would still need its own token or a cascade layer.
 
 A theme MAY add an opt-in page background class (`summer-cloud`'s `.rb-bg`
 sky gradient) as an extra; the flat `--rb-bg` MUST remain correct without it.
@@ -564,8 +561,8 @@ each looks is the theme's voice; that it exists is the contract.
 Transitions and animations:
 
 - `transition` lists named properties (`border-color`, `background`,
-  `color`, `transform`, `box-shadow`) with `var(--rb-transition)` (and
-  `var(--rb-ease)` after #54). MUST NOT use `transition: all` (zero
+  `color`, `transform`, `box-shadow`) with `var(--rb-transition)` and
+  `var(--rb-ease)`. MUST NOT use `transition: all` (zero
   occurrences today).
 - Every `transition` and `animation` MUST be neutralised under
   `@media (prefers-reduced-motion: reduce)`. Transitions collapse through
@@ -677,7 +674,7 @@ Transitions and animations:
   in `design.md` or declares the token and spends it nowhere. Never a
   primary button.
 - **Motion.** `--rb-transition` runs 0.1 s (concrete) to 0.3 s (the ports);
-  one value per theme, with `--rb-ease` as its timing function after #54.
+  one value per theme, with `--rb-ease` as its timing function.
   Decorative animation (the rack's bop and pulse) is an extra, never on a
   shared component.
 
@@ -925,7 +922,7 @@ identity paragraph and the README table.
 | Per-theme flattened `bundle.css` (+ `all.bundle.css`) generated at publish | `bundle.test.mjs` | live (#52) |
 | Shared structural base file (`_shared/structure.css`): box-sizing + page body reset | `base-typography.test.mjs` + `contract.test.mjs` | live (#52) |
 | `pnpm new-theme` scaffold | script | pending #53 |
-| `--rb-focus-ring`, `--rb-ease` baseline; contract 2 | contract bump | pending #54 |
+| `--rb-focus-ring`, `--rb-ease` baseline; contract 2 | `contract.test.mjs` | live (#54) |
 | Native `<progress>` contract in all twelve | `contract.test.mjs` | live |
 | `:focus-visible` base rule in all twelve; `a` colour divergence limited to one theme and documented | CSS fix + test | live (#36) |
 | Disabled buttons take no hover | CSS fix | live (#37) |

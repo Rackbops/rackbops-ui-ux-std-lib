@@ -26,8 +26,8 @@
   font-family: var(--rb-font-body);
   font-size: var(--rb-text-sm);
   transition:
-    border-color var(--rb-transition),
-    box-shadow var(--rb-transition);
+    border-color var(--rb-transition) var(--rb-ease),
+    box-shadow var(--rb-transition) var(--rb-ease);
 }
 :where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-select {
   appearance: none;
@@ -78,6 +78,6 @@
 :where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-checkbox:focus-visible,
 :where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-radio:focus-visible,
 :where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-switch:focus-visible {
-  outline: 2px solid var(--rb-accent);
+  outline: var(--rb-focus-ring);
   outline-offset: 2px;
 }

@@ -19,10 +19,10 @@
   line-height: 1;
   cursor: pointer;
   transition:
-    border-color var(--rb-transition),
-    background var(--rb-transition),
-    color var(--rb-transition),
-    box-shadow var(--rb-transition);
+    border-color var(--rb-transition) var(--rb-ease),
+    background var(--rb-transition) var(--rb-ease),
+    color var(--rb-transition) var(--rb-ease),
+    box-shadow var(--rb-transition) var(--rb-ease);
 }
 /* --sm: compact size for inline/table-row actions (composes with any variant) */
 :where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-btn--sm {
@@ -43,7 +43,7 @@
   border-color: var(--rb-border-strong);
 }
 :where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-btn:focus-visible {
-  outline: 2px solid var(--rb-accent);
+  outline: var(--rb-focus-ring);
   outline-offset: 2px;
 }
 

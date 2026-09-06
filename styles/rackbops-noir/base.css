@@ -43,7 +43,7 @@
 }
 
 :where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *):where(:focus-visible) {
-  outline: 2.5px solid var(--rb-accent);
+  outline: var(--rb-focus-ring);
   outline-offset: 3px;
   border-radius: 3px;
 }

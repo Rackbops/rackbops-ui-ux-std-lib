@@ -16,8 +16,8 @@
   font-weight: var(--rb-font-weight-medium);
   font-size: var(--rb-text-sm);
   cursor: pointer;
-  transition: color var(--rb-transition), background var(--rb-transition),
-    border-color var(--rb-transition);
+  transition: color var(--rb-transition) var(--rb-ease), background var(--rb-transition) var(--rb-ease),
+    border-color var(--rb-transition) var(--rb-ease);
 }
 :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-tab:not(:disabled):hover {
   background: var(--rb-sky-tint);

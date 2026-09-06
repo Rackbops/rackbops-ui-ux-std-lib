@@ -67,6 +67,8 @@
                       site also uses it on its sticky header, which this library
                       does not ship as a component */
   --rb-transition: 0.15s;
+  --rb-focus-ring: 2.5px solid var(--rb-accent);
+  --rb-ease: ease;
 
   /* spacing — generous, editorial rhythm */
   --rb-space-1: 0.5rem;

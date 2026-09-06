@@ -44,7 +44,7 @@
 }
 
 :where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *):where(:focus-visible) {
-  outline: 2px solid var(--rb-accent);
+  outline: var(--rb-focus-ring);
   outline-offset: 2px;
 }
 

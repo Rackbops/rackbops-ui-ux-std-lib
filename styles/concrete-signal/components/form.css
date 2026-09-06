@@ -27,7 +27,7 @@
   font-family: var(--rb-font-body);
   font-weight: var(--rb-font-weight);
   font-size: var(--rb-text-sm);
-  transition: border-color var(--rb-transition);
+  transition: border-color var(--rb-transition) var(--rb-ease);
 }
 :where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-textarea {
   min-height: 5rem;
@@ -77,7 +77,7 @@
   border: 1px solid var(--rb-border);
   border-radius: var(--rb-radius);
   cursor: pointer;
-  transition: border-color var(--rb-transition), background var(--rb-transition);
+  transition: border-color var(--rb-transition) var(--rb-ease), background var(--rb-transition) var(--rb-ease);
 }
 :where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-checkbox:checked,
 :where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-radio:checked {
@@ -98,7 +98,7 @@
   border: 1px solid var(--rb-border);
   border-radius: var(--rb-radius);
   cursor: pointer;
-  transition: border-color var(--rb-transition);
+  transition: border-color var(--rb-transition) var(--rb-ease);
 }
 :where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-switch::after {
   content: "";
@@ -108,7 +108,7 @@
   width: calc(1.3rem - 6px);
   height: calc(1.3rem - 6px);
   background: var(--rb-text-faint);
-  transition: transform var(--rb-transition), background var(--rb-transition);
+  transition: transform var(--rb-transition) var(--rb-ease), background var(--rb-transition) var(--rb-ease);
 }
 :where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-switch:checked {
   border-color: var(--rb-accent);

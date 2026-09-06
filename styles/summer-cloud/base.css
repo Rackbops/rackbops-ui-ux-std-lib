@@ -75,7 +75,7 @@
 }
 
 :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *):where(:focus-visible) {
-  outline: 2px solid var(--rb-accent);
+  outline: var(--rb-focus-ring);
   outline-offset: 2px;
 }
 

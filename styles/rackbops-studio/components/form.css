@@ -23,8 +23,8 @@
   font-family: var(--rb-font-body);
   font-size: 16px;
   transition:
-    border-color var(--rb-transition),
-    box-shadow var(--rb-transition);
+    border-color var(--rb-transition) var(--rb-ease),
+    box-shadow var(--rb-transition) var(--rb-ease);
 }
 :where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-textarea {
   min-height: 6rem;

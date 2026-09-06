@@ -17,9 +17,9 @@
   line-height: 1;
   cursor: pointer;
   transition:
-    border-color var(--rb-transition),
-    background var(--rb-transition),
-    color var(--rb-transition);
+    border-color var(--rb-transition) var(--rb-ease),
+    background var(--rb-transition) var(--rb-ease),
+    color var(--rb-transition) var(--rb-ease);
 }
 /* --sm: compact size for inline/table-row actions (composes with any variant) */
 :where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-btn--sm {
@@ -39,7 +39,7 @@
 :where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-btn:not(:disabled):hover,
 :where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-btn:focus-visible {
   /* Keep the base :focus-visible accent outline (base.css) as the focus
-     indicator -- "interactive elements take a 2px accent outline" (design.md);
+     indicator -- the base `--rb-focus-ring` outline (design.md);
      hover shares the accent border but not the outline (it isn't focus). */
   border-color: var(--rb-accent);
 }

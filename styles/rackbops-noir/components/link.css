@@ -13,8 +13,8 @@
   text-decoration: none;
   cursor: pointer;
   transition:
-    color var(--rb-transition),
-    background var(--rb-transition);
+    color var(--rb-transition) var(--rb-ease),
+    background var(--rb-transition) var(--rb-ease);
 }
 :where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-link:hover {
   color: var(--rb-text);

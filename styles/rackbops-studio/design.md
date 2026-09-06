@@ -63,7 +63,7 @@ component). The marketing site itself uses no colour beyond the accent.
   16–20px for the large feature panels; pills for tags and troughs.
 - Depth is a soft two-step shadow (`--rb-shadow-sm` resting, `--rb-shadow-lg` on
   hover/lift). Cards lift `-4px` on hover.
-- Focus is a `2.5px` vermillion outline offset `3px`; fields add an accent border
+- Focus is the `--rb-focus-ring` (a `2.5px` vermillion outline) offset `3px`; fields add an accent border
   plus a soft wash ring.
 - Overlay surfaces (the dialog) use a blurred backdrop (`--rb-blur`); the source
   site also blurs its sticky header, which this library does not ship.
@@ -72,7 +72,7 @@ component). The marketing site itself uses no colour beyond the accent.
 - The gradient (`--rb-accent-grad`) is a vertical vermillion ramp — spent on the
   rack equaliser bars.
 - Every animation (equaliser, live-dot pulse, hovers) respects
-  `prefers-reduced-motion`.
+  `prefers-reduced-motion`; transitions run `--rb-transition` at `--rb-ease` timing.
 
 ## Accessibility
 

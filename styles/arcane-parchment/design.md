@@ -59,11 +59,12 @@ same mono voice with `--rb-space-3` margin, and bare `ul`/`ol` add
 - Flat, shadow-based depth: a two-step light shadow ramp (`--rb-shadow-sm`
   resting, `--rb-shadow-lg` for dialogs/raised cards). No glow.
 - Focus is the accent: inputs swap to a violet border + a soft `--rb-accent-wash`
-  ring; interactive elements take a 2px accent outline.
+  ring; interactive elements take the `--rb-focus-ring` outline
+  (`2px solid var(--rb-accent)`).
 - The **one gradient** (`--rb-accent-grad`, violet → orchid → gold) is rationed
   to the wordmark and the active-tab underline only; primary buttons stay a solid
   accent fill.
-- Transitions `0.15s`; every animation respects `prefers-reduced-motion`.
+- Transitions `0.15s` (`--rb-transition`), `--rb-ease` timing; every animation respects `prefers-reduced-motion`.
 - 4px spacing rhythm.
 
 ## Accessibility

@@ -17,9 +17,9 @@
   letter-spacing: var(--rb-label-tracking);
   box-shadow: inset 0 0 0 0 var(--rb-accent-2);
   transition:
-    background var(--rb-transition),
-    color var(--rb-transition),
-    box-shadow var(--rb-transition);
+    background var(--rb-transition) var(--rb-ease),
+    color var(--rb-transition) var(--rb-ease),
+    box-shadow var(--rb-transition) var(--rb-ease);
 }
 :where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-link:hover {
   background: var(--rb-surface);

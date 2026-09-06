@@ -13,7 +13,7 @@
   font-size: var(--rb-text-sm);
   text-decoration: none;
   cursor: pointer;
-  transition: background var(--rb-transition), color var(--rb-transition);
+  transition: background var(--rb-transition) var(--rb-ease), color var(--rb-transition) var(--rb-ease);
 }
 :where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-link::before {
   content: "";

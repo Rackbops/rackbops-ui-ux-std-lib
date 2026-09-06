@@ -859,3 +859,50 @@ for (const theme of themeDirs) {
     }
   });
 }
+
+// -- contract 2: --rb-focus-ring + --rb-ease (issue #54) ----------------------
+for (const theme of themeDirs) {
+  test(`${theme}: --rb-focus-ring is an accent-based outline value (#54)`, () => {
+    const raw = stripComments(readFileSync(join(ROOT, theme, "tokens.css"), "utf-8"));
+    const m = raw.match(/--rb-focus-ring:\s*([^;]+);/);
+    assert.ok(m, `${theme}: --rb-focus-ring not declared`);
+    assert.match(
+      m[1],
+      /var\(--rb-accent\)/,
+      `${theme}: --rb-focus-ring ("${m[1].trim()}") must reference var(--rb-accent) -- focus stays accent-based`,
+    );
+  });
+
+  test(`${theme}: focus outlines use var(--rb-focus-ring), never a literal accent outline (#54)`, () => {
+    // The base rule and every component override that draws an accent outline go
+    // through the token, so a theme sets what focus looks like in one place.
+    for (const file of themeCssFiles(theme)) {
+      const raw = stripComments(readFileSync(file, "utf-8"));
+      for (const m of raw.matchAll(/outline:\s*([^;]+);/g)) {
+        assert.ok(
+          !/solid\s+var\(--rb-accent\)/.test(m[1]),
+          `${file}: outline "${m[1].trim()}" hard-codes the accent -- use var(--rb-focus-ring)`,
+        );
+      }
+    }
+  });
+
+  test(`${theme}: every component transition names an easing token (#54)`, () => {
+    // Each transition item that reads the --rb-transition duration must also name
+    // an easing token (var(--rb-ease), or --rb-ease-bounce where a theme wants it),
+    // so a theme's motion character lives in tokens, not scattered literals.
+    for (const file of themeCssFiles(theme)) {
+      if (!/[\\/]components[\\/]/.test(file)) continue;
+      const raw = stripComments(readFileSync(file, "utf-8"));
+      for (const m of raw.matchAll(/(?:^|[;{}])\s*transition\s*:\s*([^;{}]+)/g)) {
+        for (const item of m[1].split(",")) {
+          if (!item.includes("var(--rb-transition)")) continue;
+          assert.ok(
+            /var\(--rb-ease/.test(item),
+            `${file}: transition item "${item.trim()}" has no easing token -- add var(--rb-ease)`,
+          );
+        }
+      }
+    }
+  });
+}

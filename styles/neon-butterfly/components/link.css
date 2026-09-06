@@ -15,14 +15,14 @@
   font-size: var(--rb-text-sm);
   letter-spacing: var(--rb-label-tracking);
   transition:
-    border-color var(--rb-transition),
-    color var(--rb-transition),
-    transform var(--rb-transition);
+    border-color var(--rb-transition) var(--rb-ease),
+    color var(--rb-transition) var(--rb-ease),
+    transform var(--rb-transition) var(--rb-ease);
 }
 :where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-link::before {
   content: ">";
   color: var(--rb-text-faint);
-  transition: color var(--rb-transition);
+  transition: color var(--rb-transition) var(--rb-ease);
 }
 :where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-link:hover {
   border-color: var(--rb-accent-border);

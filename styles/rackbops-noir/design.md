@@ -56,14 +56,14 @@ unclassed headlines, `--rb-space-3` margin on headings/paragraphs/lists, and
   pills for tags and troughs.
 - Depth is a soft two-step shadow (`--rb-shadow-sm` resting, `--rb-shadow-lg` on
   hover/lift), deepened for the dark ground. Cards lift `-4px` on hover.
-- Focus is a `2.5px` vermillion outline offset `3px`; fields add an accent border
+- Focus is the `--rb-focus-ring` (a `2.5px` vermillion outline) offset `3px`; fields add an accent border
   plus a soft wash ring.
 - Primary buttons are a **bright neutral fill with dark ink** that warms to
   vermillion on hover (the studio's ink-fill idiom, inverted for dark); a press
   dips the button `1px`; an optional arrow slides on hover.
 - The gradient (`--rb-accent-grad`) is a vertical vermillion ramp — spent on the
   rack equaliser bars.
-- Every animation respects `prefers-reduced-motion`.
+- Every animation respects `prefers-reduced-motion`; transitions run `--rb-transition` at `--rb-ease` timing.
 
 ## Accessibility
 
