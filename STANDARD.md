@@ -162,9 +162,11 @@ Rules:
   from another theme is ever required.
 - A shared file, when one exists (#52), is imported by the theme's own
   `index.css`, so a consumer never names it and the CDN URL still resolves
-  it. The single-file artefact for vendoring and no-build use is the
-  per-theme `bundle.css` `[pending #52]`; until it ships, a theme directory
-  is copy-portable on its own.
+  it. The single-file artefact for vendoring and no-build use is the per-theme
+  `bundle.css` (and `all.bundle.css` for every theme), flattened from
+  `index.css` at publish `[#52]`. A theme directory is also copy-portable on its
+  own today; once the shared file lands (#52), the bundle becomes the
+  copy-portable form.
 - Because the whole package downloads regardless of which theme is used,
   assets are kept small (2.1) and the tarball ships only what themes need
   (#38 for `LICENSE`/`NOTICE`, #42 for the PNG).
@@ -915,7 +917,8 @@ identity paragraph and the README table.
 | Showcase renders full ARIA (nav `aria-current`, tab/tabpanel roles + `aria-selected`, label `for`) | showcase | live (#91) |
 | Showcase complete (`.rb-alert--warning`) and photographed per theme | showcase + `pnpm visual` (`scripts/visual.mjs`) | live (#50) |
 | Transitions reduced by one `--rb-transition: 0s` token block per theme, with every component transition reading the token (never a literal duration); every applied keyframe has a reduced-motion override | `contract.test.mjs` | live (#51) |
-| Shared structural base; per-theme `bundle.css` | CSS + build | pending #52 |
+| Per-theme flattened `bundle.css` (+ `all.bundle.css`) generated at publish | `bundle.test.mjs` | live (#52) |
+| Shared structural base file (`_shared/structure.css`) | CSS + build | pending #52 |
 | `pnpm new-theme` scaffold | script | pending #53 |
 | `--rb-focus-ring`, `--rb-ease` baseline; contract 2 | contract bump | pending #54 |
 | Native `<progress>` contract in all twelve | `contract.test.mjs` | live |

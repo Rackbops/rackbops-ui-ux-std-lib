@@ -16,3 +16,8 @@ site/__screenshots__/**/*.actual.png
 /styles/NOTICE
 /components/react/LICENSE
 /components/react/NOTICE
+# Flattened per-theme (and all-theme) bundles generated at pack/publish time by
+# scripts/bundle-css.mjs from each index.css -- artefacts, not sources; the
+# contract test regenerates them in-memory to verify (issue #52).
+/styles/*/bundle.css
+/styles/all.bundle.css

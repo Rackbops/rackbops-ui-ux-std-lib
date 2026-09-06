@@ -507,6 +507,23 @@ test("PATHSPEC: a change to only scripts/copy-license.mjs triggers a release (is
   assert.match(result.stdout, /Version: 0\.1\.0 -> 0\.1\.1/);
 });
 
+test("PATHSPEC: a change to only scripts/bundle-css.mjs triggers a release (issue #52)", (t) => {
+  // scripts/bundle-css.mjs is the other prepack step: it flattens each theme's
+  // index.css into the shipped <theme>/bundle.css + all.bundle.css, so a fix to
+  // it rewrites every published bundle and must cut a release -- the generated
+  // bundles are gitignored, so the generator is what the log can see.
+  const repo = makeRepo(t);
+
+  mkdirSync(join(repo.repoDir, "scripts"), { recursive: true });
+  writeFileSync(join(repo.repoDir, "scripts", "bundle-css.mjs"), "// flatten theme css\n");
+  repo.run(["add", "."]);
+  repo.run(["commit", "-m", "fix(scripts): correct bundle-css.mjs"]);
+
+  const result = runRelease(repo);
+  assert.equal(result.status, 0, result.stdout + result.stderr);
+  assert.match(result.stdout, /Version: 0\.1\.0 -> 0\.1\.1/);
+});
+
 // ── Issue #87 ────────────────────────────────────────────────────────────────
 // Four ways release.sh could skip a release, base one on the wrong tag, or
 // fail spuriously. Each test below reproduces one against the real script and
