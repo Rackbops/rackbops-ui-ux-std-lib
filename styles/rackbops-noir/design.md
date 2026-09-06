@@ -65,6 +65,12 @@ unclassed headlines, `--rb-space-3` margin on headings/paragraphs/lists, and
   rack equaliser bars.
 - Every animation respects `prefers-reduced-motion`.
 
+## Accessibility
+
+The token pairs `styles/test/contrast.test.mjs` computes clear their WCAG targets, with one below-AA note the test emits as a warning (not a failure):
+
+- **`--rb-text-faint` on `--rb-surface` is ~3.8:1** -- below the 4.5:1 AA bar for normal text, above the 3:1 floor. Use it only for genuinely secondary meta (idle labels, footnotes, timestamps), never essential text; the shared `.rb-table` header uses `--rb-text-soft`, which passes.
+
 ## Components
 
 Class prefix `rb-`; the full rackbops-studio inventory, styled identically from

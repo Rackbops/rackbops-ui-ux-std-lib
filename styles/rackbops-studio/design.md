@@ -103,6 +103,11 @@ consumers can compensate rather than discover it:
   default chip, the active link/tab — sit near ~4.3:1). Reach for it where
   full-contrast UI matters.
 
+These are the ratios `styles/test/contrast.test.mjs` checks: `--rb-accent-fg` on
+`--rb-accent` (~3.6:1) is allowlisted in `contract.json`'s `contrast` block, and
+`--rb-text-faint` on `--rb-surface` (~3.2:1) is emitted as a below-AA warning;
+the remaining pairs clear their targets.
+
 ## Components
 
 Class prefix `rb-`; shared token/class contract with the other themes.

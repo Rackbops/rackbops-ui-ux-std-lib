@@ -59,6 +59,12 @@ shadows instead of blur, a hard border-weight focus change on form controls
 rationed gradient on the active-tab underline only, and `0.1s` snap
 transitions.
 
+## Accessibility
+
+The token pairs `styles/test/contrast.test.mjs` computes -- `--rb-text` / `--rb-text-soft` on their surfaces, `--rb-accent-fg` on `--rb-accent`, `--rb-accent` as non-text on `--rb-bg`, and `--rb-text-faint` on `--rb-surface` -- all clear their WCAG targets (4.5:1 text, 3:1 non-text; faint clears AA here too). One note beyond the tested pairs:
+
+- **`--rb-accent` as bare `<a>` link text is below the 4.5:1 AA text bar** -- ~4.0:1 on `--rb-bg` and ~4.4:1 on `--rb-surface`. It clears the 3:1 non-text/focus target the test checks `--rb-accent` against (accent is contracted as a non-text element, not body text); reserve accent link text for non-essential navigation.
+
 ## Components
 
 Identical to concrete-signal — see its `design.md` for per-component notes;

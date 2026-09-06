@@ -109,6 +109,10 @@ family.
 - Spacing is strictly multiples of 8px. When in doubt, add 8.
 - Respect `prefers-reduced-motion` — every transform is dropped.
 
+## Accessibility
+
+The token pairs `styles/test/contrast.test.mjs` computes -- `--rb-text` / `--rb-text-soft` on their surfaces, `--rb-accent-fg` on `--rb-accent`, `--rb-accent` as non-text on `--rb-bg`, and `--rb-text-faint` on `--rb-surface` -- all clear their WCAG targets (4.5:1 text, 3:1 non-text; faint clears AA here too). No deviations.
+
 ## Components
 
 Class prefix `rb-` (shared across themes so `@rackbops/ui-react` stays
