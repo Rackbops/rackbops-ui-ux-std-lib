@@ -84,9 +84,3 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
-
-@media (prefers-reduced-motion: reduce) {
-  :where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-btn {
-    transition: none;
-  }
-}

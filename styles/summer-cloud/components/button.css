@@ -17,8 +17,8 @@
     background var(--rb-transition),
     border-color var(--rb-transition),
     color var(--rb-transition),
-    box-shadow 0.2s ease,
-    transform 0.2s var(--rb-ease-bounce);
+    box-shadow var(--rb-transition) ease,
+    transform var(--rb-transition) var(--rb-ease-bounce);
 }
 /* --sm: compact size for inline/table-row actions (composes with any variant);
  * keeps the pill radius inherited from .rb-btn. */
@@ -115,9 +115,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn {
-    transition: background var(--rb-transition), color var(--rb-transition);
-  }
   :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn:not(:disabled):hover,
   :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn:focus-visible,
   :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-btn:active {

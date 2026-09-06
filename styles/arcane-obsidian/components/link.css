@@ -40,9 +40,3 @@
   background: var(--rb-accent-wash);
   color: var(--rb-accent);
 }
-
-@media (prefers-reduced-motion: reduce) {
-  :where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-link {
-    transition: none;
-  }
-}

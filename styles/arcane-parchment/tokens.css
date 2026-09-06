@@ -76,3 +76,9 @@
   --rb-space-4: 1rem;
   --rb-space-5: 1.5rem;
 }
+
+@media (prefers-reduced-motion: reduce) {
+  :where([data-rb-style="arcane-parchment"]) {
+    --rb-transition: 0s;
+  }
+}

@@ -25,10 +25,9 @@
   box-shadow: var(--rb-shadow-raised-hover);
 }
 
+/* --rb-transition: 0s already collapses the tween; the lift's end-state is a
+ * transform the token can't remove, so suppress it here (STANDARD.md 7). */
 @media (prefers-reduced-motion: reduce) {
-  :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-card--floating {
-    transition: none;
-  }
   :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-card--floating:hover {
     transform: none;
   }

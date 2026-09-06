@@ -100,10 +100,3 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
-
-@media (prefers-reduced-motion: reduce) {
-  :where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-btn,
-  :where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-btn--primary {
-    transition: none;
-  }
-}

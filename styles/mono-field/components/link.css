@@ -41,9 +41,3 @@
   background: var(--rb-surface-2);
   color: var(--rb-accent);
 }
-
-@media (prefers-reduced-motion: reduce) {
-  :where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-link {
-    transition: none;
-  }
-}

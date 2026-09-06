@@ -45,9 +45,3 @@
 :where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-tabpanel {
   padding: var(--rb-space-4) 0;
 }
-
-@media (prefers-reduced-motion: reduce) {
-  :where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-tab {
-    transition: none;
-  }
-}

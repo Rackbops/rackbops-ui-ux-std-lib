@@ -103,9 +103,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn {
-    transition: none;
-  }
   :where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn:not(:disabled):hover,
   :where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn:focus-visible {
     animation: none;

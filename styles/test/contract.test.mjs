@@ -698,3 +698,138 @@ test("keyframe names are rb-prefixed and unique across all themes", () => {
     }
   }
 });
+
+// -- prefers-reduced-motion (STANDARD.md 7, issue #51) -----------------------
+/** The inner text of every `@media (prefers-reduced-motion: reduce)` block in
+ * `css` (comments already stripped), brace-matched so a nested rule doesn't cut
+ * it short. */
+function reducedMotionBlocks(css) {
+  const out = [];
+  const re = /@media\s*\(\s*prefers-reduced-motion:\s*reduce\s*\)/g;
+  let m;
+  while ((m = re.exec(css))) {
+    const open = css.indexOf("{", m.index);
+    if (open === -1) continue;
+    let depth = 0;
+    let i = open;
+    for (; i < css.length; i++) {
+      if (css[i] === "{") depth++;
+      else if (css[i] === "}") {
+        depth--;
+        if (depth === 0) {
+          i++;
+          break;
+        }
+      }
+    }
+    out.push(css.slice(open + 1, i - 1));
+  }
+  return out;
+}
+
+/** The selector (prelude) of the rule that encloses character `idx`, found by
+ * counting braces backward -- robust across the @keyframes/@media nesting that
+ * a flat rule-splitting regex mispairs. */
+function enclosingSelector(css, idx) {
+  let depth = 0;
+  let i = idx;
+  for (; i >= 0; i--) {
+    if (css[i] === "}") depth++;
+    else if (css[i] === "{") {
+      if (depth === 0) break;
+      depth--;
+    }
+  }
+  let j = i - 1;
+  for (; j >= 0 && css[j] !== "}" && css[j] !== "{"; j--);
+  return css.slice(j + 1, i);
+}
+
+for (const theme of themeDirs) {
+  test(`${theme}: tokens.css collapses --rb-transition to 0 under prefers-reduced-motion (#51)`, () => {
+    // Transitions are reduced repo-wide by one guarded token block per theme,
+    // not a per-file override -- so a component file can never forget it.
+    const raw = stripComments(readFileSync(join(ROOT, theme, "tokens.css"), "utf-8"));
+    const guard = `[data-rb-style="${theme}"]`;
+    const ok = reducedMotionBlocks(raw).some(
+      (b) => b.includes(guard) && /--rb-transition:\s*0(s|ms)?\s*;/.test(b),
+    );
+    assert.ok(
+      ok,
+      `${theme}: tokens.css must set --rb-transition: 0s under a guarded @media (prefers-reduced-motion: reduce)`,
+    );
+  });
+
+  test(`${theme}: component reduced-motion blocks override motion, never a transition (#51)`, () => {
+    // A component reduced-motion block exists only to stop a keyframe animation
+    // or a transform the token can't touch; a `transition:` here is a stale
+    // per-file override the --rb-transition token now duplicates.
+    for (const file of themeCssFiles(theme)) {
+      if (!/[\\/]components[\\/]/.test(file)) continue;
+      for (const block of reducedMotionBlocks(stripComments(readFileSync(file, "utf-8")))) {
+        assert.ok(
+          !/transition\s*:/.test(block),
+          `${file}: a prefers-reduced-motion block declares a transition -- remove it; --rb-transition: 0s already reduces every transition`,
+        );
+        assert.ok(
+          /animation|transform/.test(block),
+          `${file}: an empty prefers-reduced-motion block -- it should override an animation or a transform, or be deleted`,
+        );
+      }
+    }
+  });
+
+  test(`${theme}: every keyframe animation has a prefers-reduced-motion override where applied (#51)`, () => {
+    // animation-duration is not token-driven, so wherever a keyframe is APPLIED
+    // its element must carry a reduced-motion override in that same file (none,
+    // or a slow fallback) -- else it plays at full speed under reduced motion.
+    // Keyed on the usage, not the @keyframes declaration, since a keyframe can
+    // be declared in one file and applied in another (luminous-precision's
+    // rb-lp-pulse-glow). A base-class override (.rb-btn) covers an animated
+    // modifier (.rb-btn--accent), since the modifier composes onto the base --
+    // but not the reverse, so the override side matches on the full class.
+    const elemId = (cls) => cls.split("--")[0];
+    const classesIn = (text) => (text.match(/\.rb-[\w-]+/g) ?? []).map((c) => c.slice(1));
+    const kfNames = [
+      ...new Set(themeCssFiles(theme).flatMap((f) => parseCss(readFileSync(f, "utf-8")).keyframes)),
+    ];
+    for (const file of themeCssFiles(theme)) {
+      const raw = stripComments(readFileSync(file, "utf-8"));
+      // Full class names the overrides target -- NOT reduced to the element id,
+      // so a modifier-scoped override can't be read as covering a base animation.
+      const reducedClasses = new Set(reducedMotionBlocks(raw).flatMap((b) => classesIn(b)));
+      for (const m of raw.matchAll(/animation(-name)?\s*:\s*([^;{}]+)/g)) {
+        // Only declarations that actually name a keyframe (not `animation: none`
+        // or a duration-only override).
+        const named = kfNames.filter((kf) => new RegExp(`\\b${reEscape(kf)}\\b`).test(m[2]));
+        if (!named.length) continue;
+        const onClasses = classesIn(enclosingSelector(raw, m.index));
+        // Covered if the exact class has an override, or its base class does.
+        assert.ok(
+          onClasses.some((c) => reducedClasses.has(c) || reducedClasses.has(elemId(c))),
+          `${file}: the animation ${named.join(", ")} on .${onClasses.join(", .")} has no prefers-reduced-motion override in this file`,
+        );
+      }
+    }
+  });
+
+  test(`${theme}: component transitions read their duration from var(--rb-transition) (#51)`, () => {
+    // A hardcoded transition duration escapes the --rb-transition token, so the
+    // reduced-motion token block can't collapse it and the motion still tweens
+    // for users who asked for none. The one literal time per theme lives in the
+    // --rb-transition custom property (tokens.css); every `transition` property
+    // must read its duration from var(--rb-transition). 0s is already instant.
+    for (const file of themeCssFiles(theme)) {
+      if (!/[\\/]components[\\/]/.test(file)) continue;
+      const raw = stripComments(readFileSync(file, "utf-8"));
+      for (const m of raw.matchAll(/(?:^|[;{}])\s*transition(?:-duration)?\s*:\s*([^;{}]+)/gi)) {
+        for (const t of m[1].matchAll(/(?<![\w.])(\d*\.?\d+)\s*(ms|s)\b/gi)) {
+          assert.ok(
+            parseFloat(t[1]) === 0,
+            `${file}: transition uses a literal duration ${t[0]} -- use var(--rb-transition) so prefers-reduced-motion can collapse it`,
+          );
+        }
+      }
+    }
+  });
+}

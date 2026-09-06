@@ -82,9 +82,3 @@
   color: var(--rb-accent);
   font-weight: var(--rb-font-weight-medium);
 }
-
-@media (prefers-reduced-motion: reduce) {
-  :where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-stepper__step:not(:first-child)::before {
-    transition: none;
-  }
-}

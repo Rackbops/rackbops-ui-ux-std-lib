@@ -38,9 +38,3 @@
   color: var(--rb-accent);
   font-weight: var(--rb-font-weight-bold);
 }
-
-@media (prefers-reduced-motion: reduce) {
-  :where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-link {
-    transition: none;
-  }
-}

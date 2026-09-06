@@ -10,9 +10,9 @@
   padding: 26px 24px 28px;
   box-shadow: var(--rb-shadow-sm);
   transition:
-    transform 0.16s ease,
-    border-color 0.16s ease,
-    box-shadow 0.16s ease;
+    transform var(--rb-transition) ease,
+    border-color var(--rb-transition) ease,
+    box-shadow var(--rb-transition) ease;
 }
 :where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-card:hover {
   transform: translateY(-4px);
@@ -37,10 +37,4 @@
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--rb-accent);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  :where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-card {
-    transition: none;
-  }
 }

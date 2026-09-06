@@ -15,7 +15,7 @@
   color: var(--rb-text);
   background: transparent;
   transition:
-    transform 0.12s ease,
+    transform var(--rb-transition) ease,
     background var(--rb-transition) ease,
     border-color var(--rb-transition) ease,
     color var(--rb-transition) ease;
@@ -84,11 +84,4 @@
 }
 :where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn:not(:disabled):hover .rb-btn__arrow {
   transform: translateX(3px);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  :where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn,
-  :where([data-rb-style="rackbops-studio"], [data-rb-style="rackbops-studio"] *).rb-btn__arrow {
-    transition: none;
-  }
 }

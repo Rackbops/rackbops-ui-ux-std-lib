@@ -62,11 +62,3 @@
 :where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-switch {
   width: 2rem;
 }
-
-@media (prefers-reduced-motion: reduce) {
-  :where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-input,
-  :where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-textarea,
-  :where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-select {
-    transition: none;
-  }
-}

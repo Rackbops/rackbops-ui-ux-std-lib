@@ -44,9 +44,3 @@
 :where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-tabpanel {
   padding: var(--rb-space-4) 0;
 }
-
-@media (prefers-reduced-motion: reduce) {
-  :where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-tab {
-    transition: none;
-  }
-}

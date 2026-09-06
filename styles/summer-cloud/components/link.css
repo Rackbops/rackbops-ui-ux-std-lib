@@ -47,11 +47,10 @@
   content: none;
 }
 
+/* --rb-transition: 0s already collapses the tween; the arrow slide and active
+ * dip end on transforms the token can't remove, so suppress them here
+ * (STANDARD.md 7). */
 @media (prefers-reduced-motion: reduce) {
-  :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-link,
-  :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-link::after {
-    transition: none;
-  }
   :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-link:hover::after,
   :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-link:focus-visible::after,
   :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-link:active {
