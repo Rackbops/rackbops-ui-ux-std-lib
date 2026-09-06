@@ -46,6 +46,12 @@ const url = `http://127.0.0.1:${port}/site/`;
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1000, height: 900 }, deviceScaleFactor: 1 });
 await page.goto(url, { waitUntil: "networkidle" });
+// Freeze animation + transition so every tile is deterministic run-to-run --
+// the spinner, the rack equaliser bars and the live-dot pulse never settle, so
+// a captured mid-animation frame would differ on each run and flake the diff.
+await page.addStyleTag({
+  content: "*, *::before, *::after { animation: none !important; transition: none !important; caret-color: transparent !important; }",
+});
 
 // Section identity is its sc-title, slugified -- stable across reorders.
 const sections = await page.$$eval("main > section", (els) =>
@@ -60,8 +66,10 @@ for (const theme of themes) {
   // transition-suppression flip commits, exactly as a user sees it.
   await page.selectOption("#theme", theme);
   await page.waitForFunction((t) => document.documentElement.getAttribute("data-rb-style") === t, theme);
+  // Let the theme's ensureFonts() inject + register its webfont <link>, then
+  // wait for every face to finish loading before capturing.
+  await page.waitForTimeout(250);
   await page.evaluate(() => document.fonts.ready);
-  await page.waitForTimeout(150);
 
   for (const [i, title] of sections) {
     const rel = join(theme, `${slugify(title)}.png`);
