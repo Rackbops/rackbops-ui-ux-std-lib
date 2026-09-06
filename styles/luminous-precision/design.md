@@ -79,10 +79,11 @@ disc/decimal markers, not stripped).
 - Glass panes: 1px hairline borders with a lighter top edge
   (`--rb-border-strong`) to simulate overhead lighting; `backdrop-filter` 12px.
 - Focus is electric teal: inputs drop the resting border for a teal line plus
-  soft teal outer glow.
+  soft teal outer glow; the base `:focus-visible` is the `--rb-focus-ring`
+  outline (`2px solid var(--rb-accent)`).
 - Elevation = glow (`rb-lp-pulse-glow` orchid, `rb-lp-pulse-glow-accent` teal),
   not dark shadows. `--rb-shadow-*` exist for baseline parity but the components
-  lean on glow. Transitions 0.3s. Respect `prefers-reduced-motion`.
+  lean on glow. Transitions `0.3s` (`--rb-transition`) with `--rb-ease` timing. Respect `prefers-reduced-motion`.
 - 8px spacing rhythm; generous negative space so glows can breathe.
 
 ## Accessibility

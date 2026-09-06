@@ -70,7 +70,7 @@ and the accent itself is spent sparingly — never for decoration.
 - Shadows are barely perceptible (`--rb-shadow-sm` resting, `--rb-shadow-lg`
   for raised cards, dialogs, and the primary button's hover state) — no
   glass, no glow, anywhere in this theme.
-- Focus is a plain 2px accent outline on buttons and choice controls; form
+- Focus is the `--rb-focus-ring` (a plain `2px` accent outline) on buttons and choice controls; form
   fields instead swap their border to accent and add a thin accent-wash ring
   (the wash token itself is only 6% alpha, so the ring reads as barely-there,
   consistent with the theme). Nav-link rows (`.rb-link`) don't carry a
@@ -81,7 +81,7 @@ and the accent itself is spent sparingly — never for decoration.
   ramp) is rationed to exactly one place: the active-tab underline. It
   appears nowhere else — primary buttons stay a solid accent fill, never the
   gradient.
-- Transitions `0.12s` — quick, not showy. Every transition and animation
+- Transitions `0.12s` (`--rb-transition`) with `--rb-ease` timing — quick, not showy. Every transition and animation
   respects `prefers-reduced-motion`.
 - Spacing rhythm `--rb-space-1..5` (0.25rem to 1.5rem).
 

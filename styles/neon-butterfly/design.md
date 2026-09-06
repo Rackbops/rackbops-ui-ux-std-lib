@@ -73,7 +73,7 @@ token stack falls back to `ui-monospace`.
 - Glow, not shadow: elevation is expressed with colored `box-shadow` glows
   (`rb-nb-pulse-glow` on hover) rather than dark drop shadows. `--rb-shadow-*`
   exist for baseline parity but the components lean on glow.
-- Transitions 0.3s; hover motion is a 4px `translateX` slide on links.
+- Transitions `0.3s` (`--rb-transition`) with `--rb-ease` timing; hover motion is a 4px `translateX` slide on links. The base `:focus-visible` is the `--rb-focus-ring` outline (`2px solid var(--rb-accent)`).
 - Respect `prefers-reduced-motion`.
 
 ## Accessibility

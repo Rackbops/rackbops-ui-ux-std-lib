@@ -14,8 +14,8 @@
   text-decoration: none;
   cursor: pointer;
   transition:
-    background var(--rb-transition),
-    color var(--rb-transition);
+    background var(--rb-transition) var(--rb-ease),
+    color var(--rb-transition) var(--rb-ease);
 }
 :where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-link:hover {
   background: var(--rb-surface-2);
@@ -29,7 +29,7 @@
   width: 3px;
   border-radius: var(--rb-radius-pill);
   background: transparent;
-  transition: background var(--rb-transition);
+  transition: background var(--rb-transition) var(--rb-ease);
 }
 :where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-link:hover::before,
 :where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-link.rb-link--active::before,

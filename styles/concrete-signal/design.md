@@ -8,8 +8,8 @@ radius at all), so depth reads as a literal physical offset — a stamped
 card, not a glow. The sole accent is safety-orange, used exactly as
 functionally as arcane-obsidian's violet: interaction, focus, and emphasis
 only, never decoration. Labels are heavy-weight and uppercase; numerals are
-tabular; transitions are snappy (`0.1s`, no easing softness — brutalism
-doesn't ease). Dark ("concrete-signal") is the primary look; its light
+tabular; transitions are snappy (`0.1s` — brief enough that the default ease
+reads terse, not soft). Dark ("concrete-signal") is the primary look; its light
 counterpart ("concrete-signal-light") is documented at the end.
 
 ## Color
@@ -69,7 +69,7 @@ gradient has no soft midpoint.
   Dialog backdrops are a flat `rgba(0,0,0,.6)` scrim.
   Focus is a hard border-weight change (1px to 2px solid accent) on form
   controls, never a soft wash ring or glow. Buttons instead keep the theme's
-  base hard 2px accent outline offset from the button (also hard-edged, no wash
+  base `--rb-focus-ring` (a hard `2px` accent outline) offset from the button (also hard-edged, no wash
   or glow), so keyboard focus reads distinctly from a pointer hover; the
   accent-fill `--primary` in particular relies on it, since a border-weight
   change is invisible against its own fill, and it stays distinct from the
@@ -81,7 +81,8 @@ gradient has no soft midpoint.
 - The **one gradient** (`--rb-accent-grad`, orange → red, 2-stop, no soft
   midpoint) is rationed to exactly one place: the active-tab underline.
   Everywhere else that reads as accent is a solid fill.
-- Transitions `0.1s`, no easing softness. Every animation and transition
+- Transitions `0.1s` (`--rb-transition`) with the default `--rb-ease` — short
+  enough to read as terse, no spring. Every animation and transition
   respects `prefers-reduced-motion`.
 - 4px spacing rhythm (`--rb-space-1..5`).
 

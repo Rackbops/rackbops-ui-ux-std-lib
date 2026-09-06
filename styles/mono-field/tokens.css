@@ -66,6 +66,8 @@
   --rb-shadow-lg: 0 4px 12px rgba(0, 0, 0, 0.08);
   --rb-blur: 8px;
   --rb-transition: 0.12s;
+  --rb-focus-ring: 2px solid var(--rb-accent);
+  --rb-ease: ease;
 
   /* spacing */
   --rb-space-1: 0.25rem;

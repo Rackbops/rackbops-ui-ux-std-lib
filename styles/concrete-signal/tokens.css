@@ -64,7 +64,9 @@
   --rb-shadow-sm: 2px 2px 0 rgba(0, 0, 0, 0.6);
   --rb-shadow-lg: 4px 4px 0 rgba(0, 0, 0, 0.6);
   --rb-blur: 0px; /* this theme never uses blur/glass */
-  --rb-transition: 0.1s; /* snappy; brutalism doesn't ease */
+  --rb-transition: 0.1s; /* snappy -- 0.1s reads terse regardless of easing */
+  --rb-focus-ring: 2px solid var(--rb-accent);
+  --rb-ease: ease;
 
   /* spacing — 4px rhythm */
   --rb-space-1: 0.25rem;

@@ -79,6 +79,8 @@
   --rb-shadow-lg: 0 10px 34px rgba(0, 0, 0, 0.55);
   --rb-blur: 12px; /* glass backdrop-filter */
   --rb-transition: 0.3s;
+  --rb-focus-ring: 2px solid var(--rb-accent);
+  --rb-ease: ease;
 
   /* spacing */
   --rb-space-1: 0.25rem;

@@ -18,10 +18,10 @@
   line-height: 1;
   cursor: pointer;
   transition:
-    background var(--rb-transition),
-    border-color var(--rb-transition),
-    color var(--rb-transition),
-    box-shadow var(--rb-transition);
+    background var(--rb-transition) var(--rb-ease),
+    border-color var(--rb-transition) var(--rb-ease),
+    color var(--rb-transition) var(--rb-ease),
+    box-shadow var(--rb-transition) var(--rb-ease);
 }
 /* --sm: compact size for inline/table-row actions (composes with any variant) */
 :where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-btn--sm {

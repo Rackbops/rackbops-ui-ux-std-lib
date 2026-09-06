@@ -22,8 +22,8 @@
   line-height: 1;
   cursor: pointer;
   transition:
-    border-color var(--rb-transition),
-    color var(--rb-transition);
+    border-color var(--rb-transition) var(--rb-ease),
+    color var(--rb-transition) var(--rb-ease);
 }
 /* --sm: compact size for inline/table-row actions (composes with any variant) */
 :where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-btn--sm {
@@ -54,8 +54,8 @@
   color: var(--rb-accent-fg);
   box-shadow: var(--rb-shadow-sm);
   transition:
-    transform var(--rb-transition),
-    box-shadow var(--rb-transition);
+    transform var(--rb-transition) var(--rb-ease),
+    box-shadow var(--rb-transition) var(--rb-ease);
 }
 :where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-btn--primary:not(:disabled):hover,
 :where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-btn--primary:active {
@@ -72,7 +72,7 @@
    .rb-btn:focus-visible accent color against the accent fill. */
 :where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-btn--primary:focus-visible {
   color: var(--rb-accent-fg);
-  outline: 2px solid var(--rb-accent);
+  outline: var(--rb-focus-ring);
   outline-offset: 2px;
 }
 :where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-btn--accent {

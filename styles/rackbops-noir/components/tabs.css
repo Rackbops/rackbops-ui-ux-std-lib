@@ -16,7 +16,7 @@
   font-weight: var(--rb-font-weight-medium);
   font-size: 15px;
   cursor: pointer;
-  transition: color var(--rb-transition);
+  transition: color var(--rb-transition) var(--rb-ease);
 }
 :where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-tab:not(:disabled):hover {
   color: var(--rb-text);

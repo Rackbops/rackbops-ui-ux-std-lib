@@ -18,7 +18,7 @@
   background: var(--rb-surface-glass-high);
   backdrop-filter: blur(var(--rb-blur-high));
   -webkit-backdrop-filter: blur(var(--rb-blur-high));
-  transition: transform var(--rb-transition), box-shadow var(--rb-transition);
+  transition: transform var(--rb-transition) var(--rb-ease), box-shadow var(--rb-transition) var(--rb-ease);
 }
 :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-card--floating:hover {
   transform: translateY(-4px);

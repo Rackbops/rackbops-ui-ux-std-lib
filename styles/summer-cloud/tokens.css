@@ -92,6 +92,8 @@
   --rb-blur: 12px;
   --rb-blur-high: 20px; /* (extra) */
   --rb-transition: 0.3s;
+  --rb-focus-ring: 2px solid var(--rb-accent);
+  --rb-ease: ease;
   --rb-ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1); /* (extra) */
 
   /* spacing */

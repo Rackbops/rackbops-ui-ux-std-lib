@@ -19,7 +19,7 @@
   font-size: var(--rb-text-sm);
   letter-spacing: var(--rb-label-tracking);
   cursor: pointer;
-  transition: color var(--rb-transition);
+  transition: color var(--rb-transition) var(--rb-ease);
 }
 :where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-tab:not(:disabled):hover {
   color: var(--rb-text);

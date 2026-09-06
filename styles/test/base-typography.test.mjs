@@ -104,9 +104,11 @@ const RULES = [
     props: { color: null },
   },
   {
+    // Focus is the --rb-focus-ring token (contract 2, #54); its per-theme value
+    // is `<width> solid var(--rb-accent)`, checked in the token test.
     name: ":focus-visible",
     token: ":focus-visible",
-    props: { outline: "var(--rb-accent)" },
+    props: { outline: "var(--rb-focus-ring)" },
   },
   {
     // background is always the accent (the structural rule); color legitimately

@@ -16,7 +16,7 @@
   font-weight: var(--rb-font-weight-medium);
   font-size: var(--rb-text-sm);
   cursor: pointer;
-  transition: color var(--rb-transition);
+  transition: color var(--rb-transition) var(--rb-ease);
 }
 :where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-tab:not(:disabled):hover {
   color: var(--rb-text);

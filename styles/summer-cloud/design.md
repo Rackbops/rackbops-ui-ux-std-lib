@@ -105,7 +105,9 @@ family.
   `--rb-ease-bounce` (`cubic-bezier(0.34,1.56,0.64,1)`); floating cards translate
   `-4px`.
 - Focus is a 4px sky-blue ring (`0 0 0 4px rgba(12,179,255,0.2)`), never an
-  outline suppression without a replacement.
+  outline suppression without a replacement; the base `:focus-visible` is the
+  `--rb-focus-ring` outline (`2px solid var(--rb-accent)`). Non-bounce
+  transitions use `--rb-ease` (`ease`) beside the `--rb-ease-bounce` extra.
 - Spacing is strictly multiples of 8px. When in doubt, add 8.
 - Respect `prefers-reduced-motion` — the decorative transforms (card lift,
   link slide, button/link scale) drop to `none` and every transition collapses

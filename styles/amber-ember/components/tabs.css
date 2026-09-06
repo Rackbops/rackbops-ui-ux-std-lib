@@ -17,7 +17,7 @@
   font-weight: var(--rb-font-weight-medium);
   font-size: var(--rb-text-sm);
   cursor: pointer;
-  transition: color var(--rb-transition);
+  transition: color var(--rb-transition) var(--rb-ease);
 }
 :where([data-rb-style="amber-ember"], [data-rb-style="amber-ember"] *).rb-tab:not(:disabled):hover {
   color: var(--rb-text);

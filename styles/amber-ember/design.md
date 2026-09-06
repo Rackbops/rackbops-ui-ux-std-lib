@@ -50,7 +50,7 @@ voice — over a `system-ui` body at weight 400. Labels stay normal-case, weight
 Identical to amber-hearth — see its `design.md` for the full detail. Radius
 `0.875rem` (14px) for buttons/inputs/rows, `1.25rem` (20px) for cards/dialogs,
 true pills for badges/progress; warm-toned diffused shadows (deepened to
-near-black for the dark ground); transitions `0.18s`; 4px spacing rhythm; the
+near-black for the dark ground); transitions `0.18s` (`--rb-transition`/`--rb-ease`), the `--rb-focus-ring` focus outline; 4px spacing rhythm; the
 one gradient rationed to the active-tab underline only.
 
 ## Accessibility

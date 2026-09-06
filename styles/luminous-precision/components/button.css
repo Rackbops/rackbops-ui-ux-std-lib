@@ -15,9 +15,9 @@
   letter-spacing: var(--rb-label-tracking);
   cursor: pointer;
   transition:
-    border-color var(--rb-transition),
-    color var(--rb-transition),
-    box-shadow var(--rb-transition);
+    border-color var(--rb-transition) var(--rb-ease),
+    color var(--rb-transition) var(--rb-ease),
+    box-shadow var(--rb-transition) var(--rb-ease);
 }
 /* --sm: compact size for inline/table-row actions (composes with any variant) */
 :where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-btn--sm {

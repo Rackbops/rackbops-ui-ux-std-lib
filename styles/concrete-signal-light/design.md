@@ -4,7 +4,7 @@ The light, AA-tuned counterpart of **concrete-signal** — the same brutalist
 industrial language (zero border-radius everywhere, thick hairline borders,
 hard offset shadows instead of blur, the sole safety-orange accent used
 functionally only, heavy-weight uppercase labels, tabular numerals, snappy
-`0.1s` transitions with no easing softness) rendered on a poured-concrete
+`0.1s` transitions — brief enough that the default ease reads terse) rendered on a poured-concrete
 off-white ground instead of the dark slab. It ships the identical `rb-*`
 component set as concrete-signal — the components are token-driven, so only
 the palette differs — and swaps in with a single attribute flip.
@@ -54,10 +54,10 @@ Identical to concrete-signal — see its `design.md` for per-component notes;
 behaviour is the same, only the palette differs. Zero radius everywhere
 (save the near-square `--rb-radius-pill` used by badges), hard offset
 shadows instead of blur, a hard border-weight focus change on form controls
-(buttons keep an offset accent outline instead, per concrete-signal's
+(buttons keep an offset `--rb-focus-ring` outline instead, per concrete-signal's
 `design.md`), the theme's one
-rationed gradient on the active-tab underline only, and `0.1s` snap
-transitions.
+rationed gradient on the active-tab underline only, and `0.1s`
+(`--rb-transition`/`--rb-ease`) snap transitions.
 
 ## Accessibility
 

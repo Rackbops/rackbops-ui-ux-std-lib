@@ -12,7 +12,7 @@
   font-family: var(--rb-font-mono);
   font-weight: var(--rb-font-weight);
   font-size: var(--rb-text-sm);
-  transition: border-color var(--rb-transition), box-shadow var(--rb-transition);
+  transition: border-color var(--rb-transition) var(--rb-ease), box-shadow var(--rb-transition) var(--rb-ease);
 }
 :where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-select {
   appearance: none;
@@ -63,7 +63,7 @@
   border: 1px solid var(--rb-border);
   border-radius: 0.25rem;
   cursor: pointer;
-  transition: border-color var(--rb-transition), box-shadow var(--rb-transition);
+  transition: border-color var(--rb-transition) var(--rb-ease), box-shadow var(--rb-transition) var(--rb-ease);
 }
 :where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-radio {
   border-radius: 50%;
@@ -101,7 +101,7 @@
   border-radius: 1rem;
   cursor: pointer;
   position: relative;
-  transition: border-color var(--rb-transition);
+  transition: border-color var(--rb-transition) var(--rb-ease);
 }
 :where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-switch::after {
   content: "";
@@ -112,7 +112,7 @@
   height: calc(1.3rem - 6px);
   border-radius: 50%;
   background: var(--rb-text-faint);
-  transition: transform var(--rb-transition), background var(--rb-transition);
+  transition: transform var(--rb-transition) var(--rb-ease), background var(--rb-transition) var(--rb-ease);
 }
 :where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-switch:checked {
   border-color: var(--rb-accent-2);

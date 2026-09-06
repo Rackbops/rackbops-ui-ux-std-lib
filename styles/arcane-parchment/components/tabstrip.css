@@ -17,7 +17,7 @@
   font-size: var(--rb-text-sm);
   font-weight: var(--rb-font-weight-medium);
   cursor: pointer;
-  transition: border-color var(--rb-transition);
+  transition: border-color var(--rb-transition) var(--rb-ease);
 }
 :where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-tabstrip__tab:not(:disabled):hover {
   border-color: var(--rb-accent);
