@@ -9,7 +9,9 @@ table text) stay on a humanist system-ui sans. Transitions run a touch slower
 than the library default (`0.18s` vs `0.15s`) to read as unhurried and cozy, and
 the one clay -> amber -> gold gradient is rationed to a single place — the
 active-tab underline — exactly as sparingly as the library's other gradient
-themes ration theirs. Light ("Hearth") is the primary look; its dark
+themes ration theirs. Labels never shout: normal-case, weight 600, tracked
+`0.04em` -- no uppercase anywhere in this theme, badges and table headers
+included. Light ("Hearth") is the primary look; its dark
 counterpart ("Ember") ships as its own theme, documented below.
 
 ## Color

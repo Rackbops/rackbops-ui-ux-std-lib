@@ -3,9 +3,11 @@
 The dark, espresso-ground counterpart of **amber-hearth**. Same warm,
 hand-crafted editorial design language — clay/amber accent, the library's only
 serif display voice (system serif for headings and titles over a humanist
-system-ui body), the most generously rounded shape language in the library, and
-warm-toned diffused shadows — rendered on a deep espresso ground instead of
-warm cream. It ships the identical `rb-*` component set as amber-hearth — the
+system-ui body), the most generously rounded shape language in the library,
+warm-toned diffused shadows, and the same never-shouts label voice
+(normal-case, weight 600, tracked `0.04em`, no uppercase anywhere) — rendered
+on a deep espresso ground instead of warm cream. It ships the identical
+`rb-*` component set as amber-hearth — the
 components are token-driven, so only the palette differs — and swaps in with a
 single attribute flip.
 
