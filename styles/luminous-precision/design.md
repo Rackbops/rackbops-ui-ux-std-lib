@@ -12,8 +12,10 @@ Deep obsidian foundation, glassmorphic indigo surfaces, and light used as the
 interaction language: instead of heavy borders, elements glow. Vibrant orchid
 is the primary voice; electric teal marks active paths and critical signals.
 Sora headlines over JetBrains Mono body give it a commanding, high-tech,
-developer-console feel without going full terminal. Derived from the
-InfraPulse Stitch mockups (Stitch project 18185577263375001507).
+developer-console feel without going full terminal. Labels read mono,
+uppercase, and tracked (`0.05em`) -- badges, tabs, and table headers all carry
+that voice. Derived from the InfraPulse Stitch mockups (Stitch project
+18185577263375001507).
 
 ## Token mapping (dual accent)
 
@@ -147,10 +149,17 @@ This port carries nazuraki's original component set; the rackbops-specific
 `eyebrow`, `tabstrip`, and `wordmark` surfaces are not part of it.
 `.rb-card--raised` is also absent: nazuraki's own card never had a second
 elevation tier, so the port doesn't invent one — `Card raised` is a
-documented no-op here (see `contract.test.mjs`'s allowlist). It also keeps
-nazuraki's `.rb-badge--primary` variant (orchid pill), which the other
-rackbops themes don't define — a `@rackbops/ui-react` `Badge` never emits it,
-so it is a theme extra, harmless where unused.
+documented no-op here (see `contract.test.mjs`'s allowlist).
+
+### Theme extras
+
+- **Badge** `.rb-badge--primary` — orchid-tint pill (`rgba(198,165,255,.15)`
+  fill, accent text); `@rackbops/ui-react`'s `Badge` never emits it, harmless
+  where unused.
+- **Background** `.rb-bg` — opt-in orchid/teal radial underlay over the
+  obsidian base (see the Color table above); apply to the page root.
+- **Progress** `.rb-progress--accent` — swaps the value fill from orchid to
+  the electric-teal `--rb-accent-2`, with its own glow.
 
 ## Code syntax
 

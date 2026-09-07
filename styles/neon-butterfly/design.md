@@ -9,8 +9,9 @@
 
 Dark, mono-spaced, neon-accented terminal aesthetic. Deep navy backgrounds with
 frosted-glass surfaces; lilac is the primary voice, neon lime the accent that
-signals activity. Everything is uppercase, tracked-out JetBrains Mono — the UI
-should feel like a beautiful command console, not a document.
+signals activity. Labels read loud: buttons, tabs, badges, and table headers
+go uppercase, tracked-out JetBrains Mono (`0.1em`) — the UI should feel like a
+beautiful command console, not a document.
 
 ## Token mapping (dual accent)
 
@@ -132,6 +133,16 @@ This port carries nazuraki's original component set; the rackbops-specific
 `.rb-card--raised` is also absent: nazuraki's own card never had a second
 elevation tier, so the port doesn't invent one — `Card raised` is a
 documented no-op here (see `contract.test.mjs`'s allowlist).
+
+### Theme extras
+
+- **Badge** `.rb-badge--primary` — lilac-bordered pill (`border-color:
+  var(--rb-accent-border)`, accent text); `@rackbops/ui-react`'s `Badge`
+  never emits it, harmless where unused.
+- **Background** `.rb-bg` — opt-in butterfly-circuit backdrop blended over
+  `--rb-bg-blend`; apply to `<body>` (plain `--rb-bg` navy is also correct).
+- **Progress** `.rb-progress--accent` — swaps the value fill from lilac to
+  the neon-lime `--rb-accent-2`, with its own glow.
 
 ## Code syntax
 
