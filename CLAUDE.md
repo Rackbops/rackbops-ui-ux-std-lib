@@ -67,7 +67,13 @@ or nazuraki's upstream CSS) before writing them.
 
 ## Adding a theme
 
-Copy `styles/arcane-obsidian/`, re-namespace the guard, fill the baseline tokens,
-write `design.md`, then register in `manifest.json`, `styles/package.json`,
-`styles/all.css` (`@import` the new theme), and the README table. The contract
-test gates the first three; README isn't test-checked.
+`pnpm new-theme <id> --scheme dark|light --from <closest-theme>` (issue #53)
+scaffolds it: copies the closest theme, re-guards every selector, renames
+`@keyframes`, copies forward its `contract.json` extras/allowlist exceptions,
+registers it in `manifest.json`/`styles/package.json`/`styles/all.css`/
+`contract.json`/README's themes table, and stubs `design.md` -- then runs the
+contract test. It never designs the theme: the CSS ships with the source
+theme's literal values and `design.md` is all `TODO`s until you rewrite the
+palette, typography, and prose. `--pair`, `--port`, and `--force` cover
+sibling/ported/re-run cases; running it with a missing or invalid argument
+prints its usage line. See STANDARD.md 14.1 for the full recipe.

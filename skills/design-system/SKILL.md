@@ -129,20 +129,31 @@ per theme with a switcher.
 
 ## Adding a new theme
 
-Copy the `styles/arcane-obsidian/` layout: `tokens.css` (the full baseline
-`--rb-*` set, every rule guarded by `data-rb-style="<name>"`, plus a
-`color-scheme`), `base.css`, `components/*.css` (guarded selectors, theme-unique
-`@keyframes` names), and `index.css` (which imports `../_shared/structure.css`
-first for the shared box-sizing + body reset), plus a `design.md`. Then register it:
+`pnpm new-theme <id> --scheme dark|light --from <closest-theme>` (issue #53)
+scaffolds and registers it in one step: copies the closest theme's
+`tokens.css`/`base.css`/`components/*.css`/`index.css` layout, re-guards every
+selector to `data-rb-style="<id>"`, renames its `@keyframes` to a new short
+prefix (verified against the source theme's real keyframe names, not just
+guessed -- pass `--from-short` if it can't verify one, e.g. for the three
+nazuraki ports), copies forward the source theme's `contract.json`
+extras/allowlist/`dialogBackdropBlur`/`permittedLiterals` exceptions (a copied
+theme inherits the source's documented omissions, like the universal
+`rb-stepper--upcoming` gap, or class-parity fails), registers it in
+`styles/manifest.json`, `styles/package.json` (`files` + its 5 `exports`
+keys), `styles/all.css`, `styles/contract.json`, and README.md's themes
+table, and writes a `design.md` stub (Color table pre-filled with the copied
+token values; every prose section marked `TODO`) -- then runs
+`pnpm --filter @rackbops/styles test`.
 
-1. `styles/manifest.json` — name, scheme, fonts (empty for a system-font theme).
-2. `styles/package.json` — add the directory to `files` and its four `exports`.
-3. `styles/all.css` — add `@import "./<name>/index.css";`.
-4. `README.md` — the themes table.
+Add `--pair <sibling>` for a light/dark counterpart pointer, `--port
+<upstream-name>` for a ported theme (adds the attribution block and appends a
+`NOTICE` bullet to that upstream's existing block), and `--force` to rebuild
+an id that already exists (idempotent -- re-running never duplicates a
+registration entry).
 
-Porting from nazuraki/ui-std-lib instead of designing an original theme? Also
-credit it in `NOTICE`.
-
-Run `pnpm --filter @rackbops/styles test` — the contract test enforces steps 1-3
-(plus the CSS layout above); README.md and NOTICE aren't test-checked, so
-double-check those by hand.
+The script never designs the theme: it seeds `<id>` with the source theme's
+literal palette/typography as a placeholder. Redesigning the tokens and
+rewriting `design.md`'s prose is still a manual step (STANDARD.md 14.1).
+Porting from nazuraki/ui-std-lib without an existing NOTICE block for that
+upstream? Add the license block by hand first -- the script only appends to a
+block that already exists.
