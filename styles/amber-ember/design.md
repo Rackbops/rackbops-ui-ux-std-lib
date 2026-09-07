@@ -65,8 +65,8 @@ tokens: `.rb-btn` (+ `--primary/--accent/--danger/--ghost`, `--sm` compact size,
 `.rb-textarea` / `.rb-select` / `.rb-label` / `.rb-field` / `.rb-choice` /
 `.rb-checkbox` / `.rb-radio` / `.rb-switch`), `.rb-badge`, `.rb-alert`,
 `.rb-dialog`, `.rb-tabs` / `.rb-tab` / `.rb-tabpanel`, `.rb-table` (+
-`.rb-num`, `--interactive`), `.rb-progress` / `.rb-spinner` (keyframe `rb-ember-spin`), `.rb-stepper`,
-`.rb-muted`, `.rb-pre` (+ `.rb-log`). See amber-hearth's `design.md` for the per-component
+`.rb-num`, `--interactive`), `.rb-progress` / `.rb-spinner` (keyframe `rb-ember-spin`),
+`.rb-muted`, `.rb-pre` (+ `.rb-log`), `.rb-stepper`. See amber-hearth's `design.md` for the per-component
 notes — the behaviour is the same, with one exception:
 `components/dialog.css`'s `::backdrop` scrim is its own literal
 `rgba(8, 5, 3, 0.6)` here (a heavier, near-black wash for this espresso

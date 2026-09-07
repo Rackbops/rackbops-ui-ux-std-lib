@@ -75,8 +75,8 @@ since that count has drifted before):
 `--raised`), `.rb-link`, `.rb-nav-rail`, the form set (`.rb-input`/`.rb-textarea`/
 `.rb-select`/`.rb-label`/`.rb-field`/`.rb-choice`/`.rb-checkbox`/`.rb-radio`/
 `.rb-switch`), `.rb-badge`, `.rb-alert`, `.rb-dialog`, `.rb-tabs`/`.rb-tab`/
-`.rb-tabpanel`, `.rb-table` (+ `.rb-num`, `--interactive`), `.rb-progress`/`.rb-spinner`, `.rb-stepper`,
-`.rb-muted` (no italic — brutalism never softens with a slant), `.rb-pre` (+ `.rb-log`)
+`.rb-tabpanel`, `.rb-table` (+ `.rb-num`, `--interactive`), `.rb-progress`/`.rb-spinner`,
+`.rb-muted` (no italic — brutalism never softens with a slant), `.rb-pre` (+ `.rb-log`), `.rb-stepper`
 (zero radius falls out of `--rb-radius` automatically). One exception:
 `components/form.css`'s select-arrow SVG data-URI hardcodes its own stroke
 colour (`#5f5d58`, matching this theme's `--rb-text-faint`) since an inline

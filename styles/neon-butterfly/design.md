@@ -84,6 +84,10 @@ The token pairs `styles/test/contrast.test.mjs` computes -- `--rb-text` / `--rb-
 
 Class prefix `rb-`. Variants use BEM-ish modifiers (`rb-btn--accent`).
 
+- **Button** `.rb-btn` — `--primary`, `--accent`, `--danger` variants; `--ghost`
+  drops the glass fill and border until hover reveals it — the lowest-emphasis
+  tier; `--sm` compact size for inline/table-row actions; `.rb-icon-btn` a
+  square icon-only hit target (>=2rem), paired with `.rb-btn`.
 - **Card** `.rb-card` — frosted glass panel.
 - **NavLink** `.rb-link` — the switchboard link: `>` chevron turns lime on
   hover; `--active` applies that same color/glow at rest, without the
@@ -92,10 +96,6 @@ Class prefix `rb-`. Variants use BEM-ish modifiers (`rb-btn--accent`).
   column, the same glass panel + blur as `.rb-card`, a hairline right edge.
   Composes with `.rb-link` for items; introduces no active-state convention
   of its own.
-- **Button** `.rb-btn` — `--primary`, `--accent`, `--danger` variants; `--ghost`
-  drops the glass fill and border until hover reveals it — the lowest-emphasis
-  tier; `--sm` compact size for inline/table-row actions; `.rb-icon-btn` a
-  square icon-only hit target (>=2rem), paired with `.rb-btn`.
 - **Form** `.rb-input`, `.rb-textarea`, `.rb-select`, `.rb-label`, `.rb-field`,
   `.rb-checkbox`, `.rb-radio`, `.rb-switch`, `.rb-choice` — checked states glow lime.
   The `.rb-select` arrow is an inline data-URI SVG whose stroke is a literal
@@ -109,6 +109,14 @@ Class prefix `rb-`. Variants use BEM-ish modifiers (`rb-btn--accent`).
   marks clickable rows: pointer cursor, plus a focus-visible ring (and the
   same glass wash) for a `tabindex` row or a row-wrapping button/link.
 - **Progress** `.rb-progress`, **Spinner** `.rb-spinner` — glowing lilac indicators.
+- **Muted text** `.rb-muted` — faint secondary/empty-state text;
+  `color: var(--rb-text-faint)` only, no italic — this theme's mono/uppercase
+  terminal voice never reaches for a literary flourish.
+- **Pre / log block** `.rb-pre` — command/log `<pre>`; sunken background,
+  hairline border, radius, small mono, horizontal scroll. Pair with `.rb-log`
+  (`<pre class="rb-pre rb-log">`) for multi-line streaming output: a capped
+  16rem height with vertical scroll, wrapped lines instead of horizontal
+  scroll, and roomier line-height for dense text.
 - **Stepper** `.rb-stepper` (+ `__step` / `__node` / `__label`, `--complete` /
   `--current` / `--upcoming`) — a milestone rail: complete nodes solid accent
   with a checkmark, current a surface-fill ring with an accent border, both
@@ -118,14 +126,6 @@ Class prefix `rb-`. Variants use BEM-ish modifiers (`rb-btn--accent`).
   segment picks up that same glow once its own step is reached (complete or
   current) -- no separate progress value to keep in sync with the step
   states.
-- **Muted text** `.rb-muted` — faint secondary/empty-state text;
-  `color: var(--rb-text-faint)` only, no italic — this theme's mono/uppercase
-  terminal voice never reaches for a literary flourish.
-- **Pre / log block** `.rb-pre` — command/log `<pre>`; sunken background,
-  hairline border, radius, small mono, horizontal scroll. Pair with `.rb-log`
-  (`<pre class="rb-pre rb-log">`) for multi-line streaming output: a capped
-  16rem height with vertical scroll, wrapped lines instead of horizontal
-  scroll, and roomier line-height for dense text.
 
 This port carries nazuraki's original component set; the rackbops-specific
 `eyebrow`, `tabstrip`, and `wordmark` surfaces are not part of it.
