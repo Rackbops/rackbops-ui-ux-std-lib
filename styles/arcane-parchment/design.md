@@ -4,8 +4,10 @@ The light, AA-tuned counterpart of **arcane-obsidian** — artifact-console's
 "Parchment" scheme. Same developer-console language (monospace display voice over
 a `system-ui` body, tabular numerals, the sole arcane-violet accent, the one
 rationed violet→gold gradient, flat shadow-based depth, and the same mono
-uppercase tracked label voice -- badges, eyebrows, and most headers, table
-headers excepted) rendered on a cool off-white ground instead of obsidian. It
+uppercase tracked label voice -- badges and eyebrows only; headings, the
+wordmark, and dialog titles stay mono but case-neutral and tightly tracked,
+and table headers go body-sans normal-case) rendered on a cool off-white
+ground instead of obsidian. It
 ships the identical `rb-*` component set as arcane-obsidian — the components
 are token-driven, so only the palette differs — and swaps in with a single
 attribute flip. Derived from artifact-console#31.
