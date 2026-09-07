@@ -8,9 +8,12 @@ glass is reserved for the live interactive shell and never used on static report
 pages. The display voice is monospace — the gradient-clipped wordmark and mono
 labels give it a commanding developer-console feel — over a `system-ui` body,
 with tabular numerals so counts, ages, and sizes align in a column. Labels --
-badges, eyebrows, and most headers -- read mono, uppercase, and tracked
-(`0.06em`); table headers are the one stated exception, body-sans and normal
-case, so dense data stays scannable. Dark ("Obsidian") is the primary look; an
+badges and eyebrows -- read mono, uppercase, and tracked (`0.06em`); table
+headers are the one stated exception, body-sans and normal case. Headings, the
+wordmark, and dialog titles stay mono too but case-neutral, with the display
+voice's own tight `-0.01em` tracking, not the label voice's wide `0.06em` --
+the uppercase/wide-tracked treatment is reserved for badges and eyebrows
+alone. Dark ("Obsidian") is the primary look; an
 AA-tuned light counterpart ("Parchment") is documented at the end. Derived from
 artifact-console#31.
 
