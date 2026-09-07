@@ -7,9 +7,12 @@ luminance-first (tonal layers + a restrained shadow ramp), not glass or glow;
 glass is reserved for the live interactive shell and never used on static report
 pages. The display voice is monospace — the gradient-clipped wordmark and mono
 labels give it a commanding developer-console feel — over a `system-ui` body,
-with tabular numerals so counts, ages, and sizes align in a column. Dark
-("Obsidian") is the primary look; an AA-tuned light counterpart ("Parchment") is
-documented at the end. Derived from artifact-console#31.
+with tabular numerals so counts, ages, and sizes align in a column. Labels --
+badges, eyebrows, and most headers -- read mono, uppercase, and tracked
+(`0.06em`); table headers are the one stated exception, body-sans and normal
+case, so dense data stays scannable. Dark ("Obsidian") is the primary look; an
+AA-tuned light counterpart ("Parchment") is documented at the end. Derived from
+artifact-console#31.
 
 ## Color
 
@@ -84,8 +87,6 @@ The token pairs `styles/test/contrast.test.mjs` computes -- `--rb-text` / `--rb-
 
 Class prefix `rb-`; shared token/class contract with the other themes.
 
-- **Wordmark** `.rb-wordmark` (+ `__spark`) — mono h1 with the gradient clipped
-  into the text; the spark mark stays solid accent.
 - **Button** `.rb-btn` — surface-2 ghost by default; `--primary` is the one solid
   violet fill (dark ink), `--accent` a violet-wash chip, `--danger` a rose ghost,
   `--ghost` chromeless. `--sm` is a compact size — tighter padding, type down
@@ -112,16 +113,12 @@ Class prefix `rb-`; shared token/class contract with the other themes.
   mono title.
 - **Tabs** `.rb-tabs` / `.rb-tab` / `.rb-tabpanel` — text tabs; the active tab is
   accent, underlined with the rationed gradient.
-- **Tabstrip** `.rb-tabstrip` — top-level view nav: bordered pill buttons; active
-  gets accent text + wash + accent-tinted border.
 - **Table** `.rb-table` (+ `.rb-num`) — dense data table, faint header rule,
   tabular numerals, row hover to surface-2. `--interactive` marks clickable
   rows: pointer cursor, plus a focus-visible ring (and the surface-2 wash) for
   a `tabindex` row or a row-wrapping button/link.
 - **Progress / Spinner** `.rb-progress` / `.rb-spinner` — sunken trough with an
   accent fill; the spinner is a single accent arc.
-- **Eyebrow** `.rb-eyebrow` — small mono uppercase section label in the accent,
-  wide-tracked; subtler than the studio eyebrow (no leading rule).
 - **Muted text** `.rb-muted` — faint secondary/empty-state text;
   `color: var(--rb-text-faint)`, italic.
 - **Pre / log block** `.rb-pre` — command/log `<pre>`; surface-sunken
@@ -136,6 +133,15 @@ Class prefix `rb-`; shared token/class contract with the other themes.
   connector segment fills to accent once its own step is reached
   (complete or current), so the rail can't drift out of sync with the
   step states.
+
+### Theme extras
+
+- **Wordmark** `.rb-wordmark` (+ `__spark`) — mono h1 with the gradient clipped
+  into the text; the spark mark stays solid accent.
+- **Tabstrip** `.rb-tabstrip` — top-level view nav: bordered pill buttons; active
+  gets accent text + wash + accent-tinted border.
+- **Eyebrow** `.rb-eyebrow` — small mono uppercase section label in the accent,
+  wide-tracked; subtler than the studio eyebrow (no leading rule).
 
 ## Code syntax
 
