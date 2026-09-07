@@ -136,13 +136,6 @@ extras.
 - **Progress / Spinner** `.rb-progress` / `.rb-spinner` — sunken
   trough, solid accent fill (no gradient here — that stays rationed to tabs
   only).
-- **Stepper** `.rb-stepper` (+ `__step` / `__node` / `__label`, `--complete` /
-  `--current` / `--upcoming`) — a milestone rail: complete nodes solid accent
-  with a checkmark, current a white-on-accent-border ring (no shadow or glow
-  anywhere in this theme — the ring and weight alone signal it), upcoming
-  faint surface-2. Rail track is `surface-sunken`; each connector segment
-  fills to accent once its own step is reached (complete or current), so
-  the rail can't drift out of sync with the step states.
 - **Muted text** `.rb-muted` — faint secondary/empty-state text;
   `color: var(--rb-text-faint)` only, no italic — this theme's "close to zero
   visual flourish" rule rules out a decorative slant too.
@@ -151,6 +144,13 @@ extras.
   (`<pre class="rb-pre rb-log">`) for multi-line streaming output: a capped
   16rem height with vertical scroll, wrapped lines instead of horizontal
   scroll, and roomier line-height for dense text.
+- **Stepper** `.rb-stepper` (+ `__step` / `__node` / `__label`, `--complete` /
+  `--current` / `--upcoming`) — a milestone rail: complete nodes solid accent
+  with a checkmark, current a white-on-accent-border ring (no shadow or glow
+  anywhere in this theme — the ring and weight alone signal it), upcoming
+  faint surface-2. Rail track is `surface-sunken`; each connector segment
+  fills to accent once its own step is reached (complete or current), so
+  the rail can't drift out of sync with the step states.
 
 ## Scoping
 

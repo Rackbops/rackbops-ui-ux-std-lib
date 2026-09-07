@@ -94,6 +94,12 @@ The token pairs `styles/test/contrast.test.mjs` computes -- `--rb-text` / `--rb-
 
 Class prefix `rb-` (shared token/class contract with the other themes).
 
+- **Button** `.rb-btn` — border-only by default (already reads ghost-like);
+  `--primary` is the one solid fill (orchid, dark text), `--accent` teal
+  ghost, `--danger` rose ghost, `--ghost` drops the border entirely until
+  hover reveals a surface fill — the lowest-emphasis tier. `--sm` is
+  the compact size for inline and table-row actions. `.rb-icon-btn` is a
+  square icon-only hit target (>=2rem), paired with `.rb-btn`.
 - **Card** `.rb-card` — glass pane, 1rem radius, lit top edge.
 - **NavLink** `.rb-link` — glass list row; hover shifts to solid indigo and
   lights a 2px teal bar on the left edge; `--active` applies that same
@@ -102,12 +108,6 @@ Class prefix `rb-` (shared token/class contract with the other themes).
   column, the same glass panel + blur as `.rb-card`, a hairline right edge.
   Composes with `.rb-link` for items; introduces no active-state convention
   of its own.
-- **Button** `.rb-btn` — border-only by default (already reads ghost-like);
-  `--primary` is the one solid fill (orchid, dark text), `--accent` teal
-  ghost, `--danger` rose ghost, `--ghost` drops the border entirely until
-  hover reveals a surface fill — the lowest-emphasis tier. `--sm` is
-  the compact size for inline and table-row actions. `.rb-icon-btn` is a
-  square icon-only hit target (>=2rem), paired with `.rb-btn`.
 - **Form** `.rb-input`, `.rb-textarea`, `.rb-select`, `.rb-label`,
   `.rb-field`, `.rb-checkbox`, `.rb-radio`, `.rb-switch`, `.rb-choice` —
   checked/focus states glow teal. The `.rb-select` arrow is an inline data-URI
@@ -126,14 +126,6 @@ Class prefix `rb-` (shared token/class contract with the other themes).
   `tabindex` row or a row-wrapping button/link.
 - **Progress** `.rb-progress`, **Spinner** `.rb-spinner` — glowing orchid
   indicators (`--accent` bar variant in teal).
-- **Stepper** `.rb-stepper` (+ `__step` / `__node` / `__label`, `--complete` /
-  `--current` / `--upcoming`) — a milestone rail: complete nodes solid accent
-  with a checkmark, current a surface-fill ring with an accent border, both
-  the rail fill and the current node glowing with the same `--rb-accent-glow` box-shadow
-  `.rb-progress`'s value fill uses. Upcoming reads faint surface-2; rail track is
-  `surface-sunken`, and each connector segment picks up that same glow once
-  its own step is reached (complete or current) -- no separate progress
-  value to keep in sync with the step states.
 - **Muted text** `.rb-muted` — faint secondary/empty-state text;
   `color: var(--rb-text-faint)`, italic.
 - **Pre / log block** `.rb-pre` — command/log `<pre>`; the surface-sunken
@@ -142,6 +134,14 @@ Class prefix `rb-` (shared token/class contract with the other themes).
   (`<pre class="rb-pre rb-log">`) for multi-line streaming output: a capped
   16rem height with vertical scroll, wrapped lines instead of horizontal
   scroll, and roomier line-height for dense text.
+- **Stepper** `.rb-stepper` (+ `__step` / `__node` / `__label`, `--complete` /
+  `--current` / `--upcoming`) — a milestone rail: complete nodes solid accent
+  with a checkmark, current a surface-fill ring with an accent border, both
+  the rail fill and the current node glowing with the same `--rb-accent-glow` box-shadow
+  `.rb-progress`'s value fill uses. Upcoming reads faint surface-2; rail track is
+  `surface-sunken`, and each connector segment picks up that same glow once
+  its own step is reached (complete or current) -- no separate progress
+  value to keep in sync with the step states.
 
 This port carries nazuraki's original component set; the rackbops-specific
 `eyebrow`, `tabstrip`, and `wordmark` surfaces are not part of it.
