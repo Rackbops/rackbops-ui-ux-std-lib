@@ -11,7 +11,9 @@ Light, airy, high-velocity retail aesthetic — "Airy Energetic." Frosted white
 glass floating on a sky gradient, with a vivid violet doing all the work of
 emphasis. Where neon-butterfly is a command console, summer-cloud is a summer
 storefront: weightless, optimistic, effortless. Nothing sits flat on the page;
-everything hovers.
+everything hovers. Labels split by role: badges and table headers go mono
+uppercase (`0.05em` tracking); field labels stay sentence-case, read as words
+rather than furniture.
 
 Derived from the Stitch project *Summer Cloud UI System*
 (`15973631330153907862`): Style Guide, Components Showcase, Retail Dashboard.
@@ -147,8 +149,6 @@ theme-agnostic). Variants use BEM-ish modifiers (`rb-btn--primary`).
   literals chosen to read AA on that specific fill — a separate decision from
   the fill's semantic token, so they don't track `--rb-success`/`--rb-danger`/
   etc. (a permitted literal, STANDARD.md §4.2; allowlisted in `contract.json`).
-  **Chip** `.rb-chip` — outlined filter chip; `--selected` fills violet (a
-  summer-cloud extra, beyond the shared component set).
 - **Alert** `.rb-alert` — glass card with a 4px semantic left rule.
 - **Dialog** `.rb-dialog` — native `<dialog>`, opaque white, blurred backdrop.
 - **Tabs** `.rb-tabs`/`.rb-tab`/`.rb-tabpanel` — violet underline when active.
@@ -185,6 +185,17 @@ nazuraki's own second elevation tier is `--floating` ("Level 2," documented
 above), already carried over into this port under that name, so `--raised`
 would just be a near-duplicate of it — the port doesn't add one. `Card raised` is a documented no-op here (see `contract.test.mjs`'s
 allowlist).
+
+### Theme extras
+
+- **Chip** `.rb-chip` — outlined filter chip; `--selected` fills violet.
+- **Badge** `.rb-badge--primary` — solid violet fill (`--rb-accent` background,
+  `--rb-accent-fg` text, no border); `@rackbops/ui-react`'s `Badge` never
+  emits it, harmless where unused.
+- **Background** `.rb-bg` — the opt-in sky gradient (see the Color table
+  above); apply to the page root.
+- **Progress** `.rb-progress--accent` — swaps the value fill from violet to
+  the sky-blue `--rb-accent-2`, with its own glow.
 
 ## Deviations from the Stitch source
 
