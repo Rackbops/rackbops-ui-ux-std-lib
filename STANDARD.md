@@ -111,9 +111,9 @@ and nothing else" tests in `styles/test/contract.test.mjs`):
 
 1. `styles/manifest.json` -- `"<id>": { "scheme": "dark"|"light", "fonts": [] }`;
    `fonts` holds https stylesheet URLs or is empty.
-2. `styles/package.json` -- the directory in `files`, and four `exports`
-   keys (`./<id>`, `./<id>/tokens`, `./<id>/base`, `./<id>/components/*`),
-   each `{ "types": "./css-side-effect.d.ts", "default": "..." }`.
+2. `styles/package.json` -- the directory in `files`, and five `exports`
+   keys (`./<id>`, `./<id>/tokens`, `./<id>/base`, `./<id>/components/*`,
+   `./<id>/bundle`), each `{ "types": "./css-side-effect.d.ts", "default": "..." }`.
 3. `styles/all.css` -- `@import "./<id>/index.css";`.
 4. `README.md` -- a row in the themes table: scheme, source, one-line
    description.
@@ -126,8 +126,10 @@ and nothing else" tests in `styles/test/contract.test.mjs`):
    check]`.
 
 The showcase needs no change: it reads the manifest and injects any `fonts`
-URLs on switch (`site/index.html:314-328`, `340-351`). The scaffold in #53
-performs steps 1-7 mechanically `[pending #53]`.
+URLs on switch (`site/index.html:314-328`, `340-351`). `pnpm new-theme` (#53)
+performs steps 1, 2, 3, 4, and 7 mechanically; step 5 (NOTICE) only for a
+`--port` whose upstream already has a block; step 6's roster paragraph stays
+a manual edit.
 
 ### 2.4 Naming
 
@@ -792,9 +794,11 @@ The showcase is the library's visual acceptance test. It MUST:
      any file documented as a deliberate divergence -- an exact backticked
      `` `components/<file>` `` reference -- in both `design.md`s
      `[tested: styles/test/pair-parity.test.mjs]`.
-3. Scaffold with `pnpm new-theme <id> --scheme <s> --from <closest>`
-   `[pending #53]`; until then copy the closest theme's layout, re-guard
-   every selector, rename every keyframe, and fill all 38 tokens.
+3. Scaffold with `pnpm new-theme <id> --scheme <s> --from <closest>` (#53) --
+   it copies the closest theme's layout, re-guards every selector, renames
+   every keyframe, copies forward its `contract.json` exceptions, and
+   registers it everywhere; it does not design the theme, so tokens.css still
+   carries `<closest>`'s literal values afterward.
 4. Restate in `design.md`: the depth mechanism, display voice, label voice,
    gradient places, transition duration, and the Accessibility section.
 5. Style every required selector in section 5.1; add extras only with a
