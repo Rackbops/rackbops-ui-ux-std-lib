@@ -4,7 +4,10 @@ The design language of **rackbops.com** — the studio's own editorial brand.
 A light, paper-cool canvas; heavy, balanced headlines with tight tracking; a
 single warm voice — vermillion — over deep navy ink. The texture is print-like,
 not console-like: elevation is soft two-step shadows rather than frosted panels,
-roomy spacing, and a mono "eyebrow" that kickers every section. Two motifs carry the identity: the
+roomy spacing, and a mono "eyebrow" that kickers every section. Labels read
+mono throughout: the eyebrow shouts loudest (uppercase, wide-tracked `0.18em`,
+a leading rule) and table headers go uppercase too, while badges stay mono but
+quieter -- sentence-cased, tightly tracked. Two motifs carry the identity: the
 **rack panel** — a dark equaliser unit that puns on "the rack" (infrastructure)
 and "the bops" (signal) — and **Boppy**, the mascot. This theme ships the
 canonical **light** look; the dark mode rackbops.com toggles into is tabled at
@@ -142,7 +145,6 @@ Class prefix `rb-`; shared token/class contract with the other themes.
   row or a row-wrapping button/link.
 - **Progress / Spinner** `.rb-progress` / `.rb-spinner` — pill trough with a
   vermillion fill; single-arc spinner.
-- **Eyebrow** `.rb-eyebrow` — the mono kicker with leading rule.
 - **Muted text** `.rb-muted` — faint secondary/empty-state text;
   `color: var(--rb-text-faint)`, italic — reads naturally in this editorial,
   print-like theme.
@@ -171,6 +173,7 @@ Class prefix `rb-`; shared token/class contract with the other themes.
 - **Principles** `.rb-principles` / `.rb-principle` (+ `__n` / `__body`) — the
   numbered `/0N` "how we work" list.
 - **Tags** `.rb-tags` / `.rb-tag` — mono capability pills in a flex-wrap row.
+- **Eyebrow** `.rb-eyebrow` — the mono kicker with leading rule.
 - **Boppy** — the mascot ships as `assets/boppy.svg` (navy body, round eyes, a
   vermillion equaliser smile).
 

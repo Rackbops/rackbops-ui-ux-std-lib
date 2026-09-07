@@ -3,7 +3,9 @@
 The dark counterpart of **rackbops-studio** — the mode rackbops.com toggles into.
 Same editorial studio language (heavy 800 headlines with tight tracking, the mono
 eyebrow, vermillion as the single warm voice, the rack-equaliser motif, soft
-two-step shadow depth) rendered on a deep slate canvas instead of paper. It ships
+two-step shadow depth, and the same mono label voice -- eyebrow and table
+headers uppercase, badges quieter and sentence-cased) rendered on a deep slate
+canvas instead of paper. It ships
 the identical `rb-*` component set as rackbops-studio — token-driven, so only the
 palette differs, plus a dark-appropriate accent-fg and a lighter accent ramp —
 and swaps in with a single attribute flip. Derived from rackbops.com's dark scheme.
@@ -74,18 +76,24 @@ The token pairs `styles/test/contrast.test.mjs` computes clear their WCAG target
 ## Components
 
 Class prefix `rb-`; the full rackbops-studio inventory, styled identically from
-tokens — `.rb-btn` (+ `--sm` compact size, `.rb-icon-btn` icon-only square), `.rb-card` (+ `__tag`), `.rb-link`, `.rb-nav-rail`, the form set, `.rb-badge`,
+tokens — `.rb-btn` (+ `--sm` compact size, `.rb-icon-btn` icon-only square,
+`.rb-btn__arrow` hover slide), `.rb-card` (+ `__tag`), `.rb-link`, `.rb-nav-rail`, the form set, `.rb-badge`,
 `.rb-alert`, `.rb-dialog`, `.rb-tabs`, `.rb-table` (+ `--interactive`), `.rb-progress`/`.rb-spinner`,
-`.rb-eyebrow`, `.rb-muted`, `.rb-pre` (+ `.rb-log`), `.rb-stepper` — plus the studio extras `.rb-rack` (equaliser panel; its panel palette
-matches rackbops.com's dark-mode rack — a near-canvas block set off by its border), `.rb-principles`/
-`.rb-principle`, and `.rb-tags`/`.rb-tag`. See rackbops-studio's `design.md` for
-the per-component notes. The Boppy mascot asset ships with rackbops-studio
-(`styles/rackbops-studio/assets/boppy.svg`) and is shared.
+`.rb-muted`, `.rb-pre` (+ `.rb-log`), `.rb-stepper`. See rackbops-studio's `design.md` for
+the per-component notes.
 
 One component diverges beyond palette. `components/rack.css` declares its own
 local `--rb-rack-panel`/`--rb-rack-line` values, tuned slightly darker here
 than rackbops-studio's to read correctly against this theme's already-dark
 canvas.
+
+### Theme extras
+
+`.rb-rack` (+ `__top`/`__live`/`__bars`/`__foot`), `.rb-principles`/`.rb-principle`
+(+ `__n`/`__body`), `.rb-tags`/`.rb-tag`, and `.rb-eyebrow` — identical to
+rackbops-studio's; see its `design.md` for the per-extra notes. The Boppy
+mascot asset ships with rackbops-studio
+(`styles/rackbops-studio/assets/boppy.svg`) and is shared.
 
 ## Light counterpart
 
