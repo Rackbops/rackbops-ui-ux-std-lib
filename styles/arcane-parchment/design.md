@@ -3,10 +3,12 @@
 The light, AA-tuned counterpart of **arcane-obsidian** — artifact-console's
 "Parchment" scheme. Same developer-console language (monospace display voice over
 a `system-ui` body, tabular numerals, the sole arcane-violet accent, the one
-rationed violet→gold gradient, flat shadow-based depth) rendered on a cool
-off-white ground instead of obsidian. It ships the identical `rb-*` component set
-as arcane-obsidian — the components are token-driven, so only the palette differs
-— and swaps in with a single attribute flip. Derived from artifact-console#31.
+rationed violet→gold gradient, flat shadow-based depth, and the same mono
+uppercase tracked label voice -- badges, eyebrows, and most headers, table
+headers excepted) rendered on a cool off-white ground instead of obsidian. It
+ships the identical `rb-*` component set as arcane-obsidian — the components
+are token-driven, so only the palette differs — and swaps in with a single
+attribute flip. Derived from artifact-console#31.
 
 ## Color
 
@@ -74,10 +76,10 @@ The token pairs `styles/test/contrast.test.mjs` computes -- `--rb-text` / `--rb-
 ## Components
 
 Class prefix `rb-`; the full arcane-obsidian inventory, styled identically from
-tokens: `.rb-wordmark` (+ `__spark`), `.rb-btn` (+ `--primary/--accent/--danger/--ghost`, `--sm` compact size, `.rb-icon-btn` icon-only square),
+tokens: `.rb-btn` (+ `--primary/--accent/--danger/--ghost`, `--sm` compact size, `.rb-icon-btn` icon-only square),
 `.rb-card` (+ `--raised`), `.rb-link`, `.rb-nav-rail`, the form set, `.rb-badge`, `.rb-alert`,
-`.rb-dialog`, `.rb-tabs`, `.rb-tabstrip`, `.rb-table` (+ `.rb-num`, `--interactive`),
-`.rb-progress` / `.rb-spinner`, `.rb-eyebrow`, `.rb-muted`, `.rb-pre` (+ `.rb-log`), `.rb-stepper`. See
+`.rb-dialog`, `.rb-tabs`, `.rb-table` (+ `.rb-num`, `--interactive`),
+`.rb-progress` / `.rb-spinner`, `.rb-muted`, `.rb-pre` (+ `.rb-log`), `.rb-stepper`. See
 arcane-obsidian's `design.md` for the per-component notes — the behaviour is
 the same, with one exception: `components/button.css`'s `--primary`
 hover/focus-visible fill darkens toward `--rb-text` here
@@ -85,6 +87,11 @@ hover/focus-visible fill darkens toward `--rb-text` here
 lightening toward white as arcane-obsidian does — lightening on this light
 ground would drop the label below AA (4.37:1; see the inline comment in that
 file). Otherwise only the palette is light.
+
+### Theme extras
+
+`.rb-wordmark` (+ `__spark`), `.rb-tabstrip`, and `.rb-eyebrow` — identical to
+arcane-obsidian's; see its `design.md` for the per-extra notes.
 
 ## Code syntax
 
