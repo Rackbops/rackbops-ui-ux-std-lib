@@ -10,6 +10,10 @@ the rackbops brand (`--rb-*`, `.rb-*`, `data-rb-style`). Two layers:
 - **`components/react/`** (`@rackbops/ui-react`) — React components that render the
   style layer's classes, for behavior-heavy UI.
 
+The design **contract** — tokens, classes, theme anatomy, accessibility — is
+written up in [`STANDARD.md`](STANDARD.md); read it before adding a theme or
+component.
+
 Each theme is a **design language** captured as a written `design.md` spec plus
 its CSS — most reverse-documented from one of roshne's apps, some ported (and
 credited) from [`nazuraki/ui-std-lib`](https://github.com/nazuraki/ui-std-lib),

@@ -9,11 +9,17 @@ roshne's own, separately-branded library.
 My personal `~/.claude/CLAUDE.md` governs *how I work* (review gate, escalation,
 git & shipping, tool routing, shell choice). It is not restated here.
 
+The design **contract** itself -- tokens, classes, theme anatomy, accessibility --
+lives in [`STANDARD.md`](STANDARD.md); read it first. This file states the
+definition-of-done gate and authoring conventions on top of it;
+[`CONTEXT.md`](CONTEXT.md) is the toolchain (build/test/release/deploy).
+
 ## The contract is the definition of done
 
-Each theme is a self-contained design language -- most reverse-documented from
-one of roshne's apps, some ported (and credited) from `nazuraki/ui-std-lib`
-(MIT; see `NOTICE`). Every theme must satisfy `styles/test/contract.test.mjs`:
+Each theme is a self-contained design language -- four reverse-documented from
+roshne's own apps (artifact-console, rackbops.com), three ported (and credited)
+from `nazuraki/ui-std-lib` (MIT; see `NOTICE`), and five original designs built
+directly for this library. Every theme must satisfy `styles/test/contract.test.mjs`:
 
 - every selector guarded by `:where([data-rb-style="<theme>"], … *)` (zero
   specificity, embed-safe),
@@ -35,7 +41,8 @@ Themes are drop-in swappable: all declare the same baseline tokens and `rb-*`
 classes, so a screen restyles by flipping `data-rb-style` alone. A **semantic**
 change (a token's meaning, a component's contract) must reach every surface --
 every theme's CSS, the React components, each `design.md`, the showcase, the
-README themes table, and this file.
+README themes table, `skills/design-system/SKILL.md`, `STANDARD.md`,
+`styles/contract.json`, and this file.
 
 ## Fidelity is a hard rule
 
@@ -44,7 +51,9 @@ real app's UI (artifact-console / rackbops.com) for the reverse-documented
 themes, or nazuraki's upstream theme for the ported ones. A palette value or a
 stated rule that is untrue of that source is a MAJOR defect, not doc polish --
 verify colour values and aesthetic claims against the source (the app's own CSS,
-or nazuraki's upstream CSS) before writing them.
+or nazuraki's upstream CSS) before writing them. The five original themes have
+no external source to verify against -- their `design.md` need only stay
+self-consistent with their own `tokens.css`.
 
 ## Conventions
 
