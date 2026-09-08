@@ -735,7 +735,7 @@ props to modifiers, and never branches on the theme.
 | One export per shared component, from `src/index.ts`, with a named props type | `components/react/src/index.ts` (`FieldProps`/`SpinnerProps` added by #30) |
 | Each prop that adds a class says so in JSDoc: "Maps to `.rb-btn--{variant}`" | `Button.tsx:5-13` |
 | The base class first, modifiers next, consumer `className` last, via `cx` | `Button.tsx:29-35`; tested in `Button.test.tsx:68-77` |
-| `...rest` spreads onto the root element so `id`, `data-*`, `aria-*`, handlers all reach it | every wrapper except `Tabs` (#42 overflow -- bundled with its own controlled-`activeId`/`onChange` gap, not filed individually, not part of #31); `Dialog` since #31; a labelled `Checkbox`/`Radio`/`Switch` puts it on the inner `<input>`, not the `.rb-choice` wrapper (`form.tsx:44-55`, #42 overflow) |
+| `...rest` spreads onto the root element so `id`, `data-*`, `aria-*`, handlers all reach it | every wrapper, since #31 (`Dialog`) and #84 (`Tabs`, onto its `role="tablist"` child -- the outer ref target is a structural wrapper spanning tabs+panels); a labelled `Checkbox`/`Radio`/`Switch` still puts `className`/rest on the inner `<input>`, with `wrapperClassName`/`wrapperStyle` for the `.rb-choice` row (`form.tsx:68-133`, #84) |
 | `forwardRef`, with `RefAttributes<T>` on the props type | every wrapper, since #30 (`Dialog` exposes its own internal show/close node to the forwarded ref via `useImperativeHandle`, #83) |
 | Native semantics by default: `type="button"`, `aria-current="page"` on an active link, `role="alert"`, `role="status"` + `aria-label` on the spinner, native `<dialog>` with `aria-labelledby`, ARIA tablist with roving tabindex | `Button.tsx:20`, `NavLink.tsx:12`, `feedback.tsx:22,40-41`, `Dialog.tsx:52-56`, `Tabs.tsx:41-63` |
 | Controlled by the caller, no hidden state: `NavRail activeId`, `Dialog open` | `NavRail.tsx:14-16`; `Dialog` reconciles `open` when it changes (`[open]` dependency on the sync effect) and REQUIRES `onClose`, so the parent is always told of a native close and keeps `open` in sync -- `open` is the single source of truth (#83, completing #31); `Tabs` MAY keep its selection until a controlled API is in scope |
@@ -933,7 +933,8 @@ identity paragraph and the README table.
 | `rb-stepper` in every theme | #55 merged | live (parity now tested via #47) |
 | `.rb-stepper--upcoming` styled or allowlisted; `[aria-current="step"]` paired | `contract.test.mjs` | allowlisted: live (#47). Paired: live, 12 of 12 themes comply (#65) |
 | `Dialog` spreads rest, reconciles `open`, requires `onClose` | `Dialog.test.tsx` | live (#31, #83) |
-| `Tabs` spreads rest; controlled `activeId`/`onChange` to match `NavRail` | React fix | pending (#42 overflow, not yet filed as its own issue) |
+| `Tabs` spreads rest onto its tablist | `Tabs.test.tsx` | live (#84) |
+| `Tabs` controlled `activeId`/`onChange` to match `NavRail` | React fix | pending (#42 overflow, not yet filed as its own issue; out of scope for #84) |
 | `forwardRef` on every wrapper | `refs.test.tsx` | live (#30) |
 | SKILL.md matches the shipped contract | doc fix | partially closed by #47 (inventory table now generated + tested, extras paragraph accurate, eyebrow mis-classification fixed); roster paragraph, manifest-fonts guidance, and the add-theme recipe's missing `all.css`/`NOTICE` steps still pending #39 |
 | `design.md` counterpart and count claims true | doc fix | live (#47, #40 -- counterpart-shipped and stale-count claims fixed repo-wide) |

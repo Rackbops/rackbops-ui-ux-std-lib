@@ -103,12 +103,12 @@ This table is generated from `styles/contract.json` — edit that file, then run
 | `Button` | `.rb-btn` | variants: primary, accent, danger, ghost; --sm compact size; .rb-icon-btn icon-only square |
 | `Card` | `.rb-card` | raised prop; --raised is a documented no-op in the three nazuraki ports (section 5.3) |
 | `NavLink` | `.rb-link` | active prop; also matches [aria-current="page"] in every theme |
-| `NavRail` | `.rb-nav-rail` | composes .rb-link; owns no active convention |
-| `Field`/`Label`/`Input`/`Textarea`/`Select`/`Checkbox`/`Radio`/`Switch` | `.rb-field` | pair with Field/Label; choice controls wrap in .rb-choice |
+| `NavRail` | `.rb-nav-rail` | composes .rb-link; owns no active convention; per-item onClick/target/rel/aria-*/data-*/className forward to that item's NavLink (#84) |
+| `Field`/`Label`/`Input`/`Textarea`/`Select`/`Checkbox`/`Radio`/`Switch` | `.rb-field` | pair with Field/Label; choice controls wrap in .rb-choice; className/rest still target the control itself -- use wrapperClassName/wrapperStyle to style the .rb-choice row (#84) |
 | `Badge` | `.rb-badge` | semantic variants |
-| `Alert` | `.rb-alert` | variant + optional title |
+| `Alert` | `.rb-alert` | variant + optional title (renders as a heading, replacing the native title tooltip attribute) |
 | `Dialog` | `.rb-dialog` | native <dialog>; required open + onClose (onClose keeps the parent in sync after a native Escape close, so it must set open=false to reopen); optional actions; __body is a documented no-op in four themes (section 5.3) |
-| `Tabs` | `.rb-tabs` | items: {id, label, content}[]; --active also matches [aria-selected="true"] in every theme |
+| `Tabs` | `.rb-tabs` | items: {id, label, content}[]; --active also matches [aria-selected="true"] in every theme; className/rest forward onto the tablist element -- ref targets the outer structural wrapper spanning tabs+panels (#84) |
 | — | `.rb-table` | style directly, no React wrapper |
 | `Progress`/`Spinner` | `.rb-progress` | native <progress> pseudo-element contract enforced separately (not class-based) |
 | — | `.rb-muted` | style directly, no React wrapper |
@@ -121,7 +121,11 @@ This table is generated from `styles/contract.json` — edit that file, then run
 a data-driven grouped index of links/apps — grouped by category with an
 "Other" fallback, external URLs opening in a new tab. It carries no theme
 obligation (just the primitives above), so it isn't in the table above — check
-here before building a links/app index page from scratch.
+here before building a links/app index page from scratch. Its `level` prop
+(default 2) sets the category heading level, with each card's heading one
+level deeper — set it to match wherever LinksIndex is embedded. Each url's
+list key is `label + url`, not `url` alone, so two urls sharing one address
+with different labels ("prod" / "canonical") don't collide.
 
 Theme-specific extras (styled only under that theme — check before using): the
 arcane pair adds `.rb-wordmark`, `.rb-tabstrip`, and `.rb-eyebrow`; the
