@@ -62,3 +62,23 @@ test("forwards className after rb-nav-rail, and other props onto the nav element
   );
   assert.match(html, /<nav class="rb-nav-rail mine" aria-label="Primary"/);
 });
+
+test("forwards per-item props (onClick, target, rel, data-*) onto that item's own <a>, not the others", () => {
+  const onClick = () => {};
+  const html = renderToStaticMarkup(
+    <NavRail
+      items={[
+        items[0]!,
+        { ...items[1]!, onClick, target: "_blank", rel: "noreferrer", "data-testid": "artifacts-link" },
+        items[2]!,
+      ]}
+    />,
+  );
+  const tags = anchorTags(html);
+  const artifacts = tags.find((t) => attr(t, "href") === "/artifacts");
+  const overview = tags.find((t) => attr(t, "href") === "/overview");
+  assert.equal(attr(artifacts ?? "", "target"), "_blank");
+  assert.equal(attr(artifacts ?? "", "rel"), "noreferrer");
+  assert.equal(attr(artifacts ?? "", "data-testid"), "artifacts-link");
+  assert.equal(attr(overview ?? "", "target"), undefined, "other items are untouched");
+});

@@ -32,12 +32,12 @@
     "nav-rail": {
       "react": "NavRail",
       "classes": ["rb-nav-rail"],
-      "notes": "composes .rb-link; owns no active convention"
+      "notes": "composes .rb-link; owns no active convention; per-item onClick/target/rel/aria-*/data-*/className forward to that item's NavLink (#84)"
     },
     "form": {
       "react": ["Field", "Label", "Input", "Textarea", "Select", "Checkbox", "Radio", "Switch"],
       "classes": ["rb-field", "rb-label", "rb-input", "rb-textarea", "rb-select", "rb-choice", "rb-checkbox", "rb-radio", "rb-switch"],
-      "notes": "pair with Field/Label; choice controls wrap in .rb-choice"
+      "notes": "pair with Field/Label; choice controls wrap in .rb-choice; className/rest still target the control itself -- use wrapperClassName/wrapperStyle to style the .rb-choice row (#84)"
     },
     "badge": {
       "react": "Badge",
@@ -47,7 +47,7 @@
     "alert": {
       "react": "Alert",
       "classes": ["rb-alert", "rb-alert__title", "rb-alert--info", "rb-alert--success", "rb-alert--warning", "rb-alert--danger"],
-      "notes": "variant + optional title"
+      "notes": "variant + optional title (renders as a heading, replacing the native title tooltip attribute)"
     },
     "dialog": {
       "react": "Dialog",
@@ -57,7 +57,7 @@
     "tabs": {
       "react": "Tabs",
       "classes": ["rb-tabs", "rb-tab", "rb-tab--active", "rb-tabpanel"],
-      "notes": "items: {id, label, content}[]; --active also matches [aria-selected=\"true\"] in every theme"
+      "notes": "items: {id, label, content}[]; --active also matches [aria-selected=\"true\"] in every theme; className/rest forward onto the tablist element -- ref targets the outer structural wrapper spanning tabs+panels (#84)"
     },
     "table": {
       "react": null,

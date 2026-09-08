@@ -3,6 +3,7 @@ import {
   useId,
   useRef,
   useState,
+  type HTMLAttributes,
   type KeyboardEvent,
   type ReactNode,
   type RefAttributes,
@@ -15,15 +16,14 @@ export interface TabItem {
   content: ReactNode;
 }
 
-export interface TabsProps extends RefAttributes<HTMLDivElement> {
+export interface TabsProps extends HTMLAttributes<HTMLDivElement>, RefAttributes<HTMLDivElement> {
   items: TabItem[];
   /** Initially active tab id; defaults to the first item. */
   defaultId?: string;
-  className?: string;
 }
 
 export const Tabs = forwardRef<HTMLDivElement, TabsProps>(function Tabs(
-  { items, defaultId, className },
+  { items, defaultId, className, ...rest },
   ref,
 ) {
   const base = useId();
@@ -48,8 +48,13 @@ export const Tabs = forwardRef<HTMLDivElement, TabsProps>(function Tabs(
   };
 
   return (
-    <div ref={ref} className={className}>
-      <div className="rb-tabs" role="tablist">
+    // The outer <div> is a plain structural wrapper -- an ARIA tablist should
+    // contain only `tab` children, so the tabpanels below live as its
+    // siblings instead. That's the element `ref` points to; className and
+    // arbitrary props (aria-label, data-testid, id, ...) belong on the actual
+    // role="tablist" element, which is what they're meant to reach.
+    <div ref={ref}>
+      <div className={cx("rb-tabs", className)} role="tablist" {...rest}>
         {items.map((t, idx) => {
           const selected = t.id === activeId;
           return (

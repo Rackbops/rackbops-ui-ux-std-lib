@@ -32,8 +32,13 @@ export interface AlertProps
   extends Omit<HTMLAttributes<HTMLDivElement>, "title">,
     RefAttributes<HTMLDivElement> {
   variant?: SemanticVariant;
+  /**
+   * Renders as a heading in `.rb-alert__title`, replacing the native HTML `title` tooltip
+   * attribute -- there's no way to set a real tooltip through this component.
+   */
   title?: ReactNode;
 }
+/** A status banner (.rb-alert); `role="alert"` announces it to screen readers on mount/update. */
 export const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
   { variant, title, className, children, ...rest },
   ref,

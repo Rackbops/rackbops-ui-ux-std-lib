@@ -1,5 +1,6 @@
 import {
   forwardRef,
+  type CSSProperties,
   type HTMLAttributes,
   type InputHTMLAttributes,
   type LabelHTMLAttributes,
@@ -70,13 +71,27 @@ export interface ChoiceProps
     RefAttributes<HTMLInputElement> {
   /** Optional label text; when set the control is wrapped in a .rb-choice row. */
   label?: ReactNode;
+  /** Styles the .rb-choice row itself (e.g. margins, flex alignment) -- `className` still styles the control. Only used when `label` is set. */
+  wrapperClassName?: string;
+  /** Styles the .rb-choice row itself; `style` still styles the control. Only used when `label` is set. */
+  wrapperStyle?: CSSProperties;
 }
 
 /** A checkbox/radio/switch control, optionally wrapped with its label. */
-function ChoiceControl({ label, control }: { label?: ReactNode; control: ReactNode }) {
+function ChoiceControl({
+  label,
+  control,
+  wrapperClassName,
+  wrapperStyle,
+}: {
+  label?: ReactNode;
+  control: ReactNode;
+  wrapperClassName?: string;
+  wrapperStyle?: CSSProperties;
+}) {
   if (label === undefined) return <>{control}</>;
   return (
-    <label className="rb-choice">
+    <label className={cx("rb-choice", wrapperClassName)} style={wrapperStyle}>
       {control}
       {label}
     </label>
@@ -84,12 +99,14 @@ function ChoiceControl({ label, control }: { label?: ReactNode; control: ReactNo
 }
 
 export const Checkbox = forwardRef<HTMLInputElement, ChoiceProps>(function Checkbox(
-  { label, className, ...rest },
+  { label, className, wrapperClassName, wrapperStyle, ...rest },
   ref,
 ) {
   return (
     <ChoiceControl
       label={label}
+      wrapperClassName={wrapperClassName}
+      wrapperStyle={wrapperStyle}
       control={
         <input ref={ref} type="checkbox" className={cx("rb-checkbox", className)} {...rest} />
       }
@@ -99,12 +116,14 @@ export const Checkbox = forwardRef<HTMLInputElement, ChoiceProps>(function Check
 Checkbox.displayName = "Checkbox";
 
 export const Radio = forwardRef<HTMLInputElement, ChoiceProps>(function Radio(
-  { label, className, ...rest },
+  { label, className, wrapperClassName, wrapperStyle, ...rest },
   ref,
 ) {
   return (
     <ChoiceControl
       label={label}
+      wrapperClassName={wrapperClassName}
+      wrapperStyle={wrapperStyle}
       control={<input ref={ref} type="radio" className={cx("rb-radio", className)} {...rest} />}
     />
   );
@@ -112,12 +131,14 @@ export const Radio = forwardRef<HTMLInputElement, ChoiceProps>(function Radio(
 Radio.displayName = "Radio";
 
 export const Switch = forwardRef<HTMLInputElement, ChoiceProps>(function Switch(
-  { label, className, ...rest },
+  { label, className, wrapperClassName, wrapperStyle, ...rest },
   ref,
 ) {
   return (
     <ChoiceControl
       label={label}
+      wrapperClassName={wrapperClassName}
+      wrapperStyle={wrapperStyle}
       control={
         <input
           ref={ref}

@@ -1,12 +1,21 @@
-import { forwardRef, type HTMLAttributes, type ReactNode, type RefAttributes } from "react";
+import {
+  forwardRef,
+  type AnchorHTMLAttributes,
+  type HTMLAttributes,
+  type ReactNode,
+  type RefAttributes,
+} from "react";
 import { cx } from "./cx.js";
 import { NavLink } from "./NavLink.js";
 
-export interface NavRailItem {
+export interface NavRailItem extends Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "id" | "href"> {
   /** Matched against `activeId`; also used as the React list key. */
   id: string;
   label: ReactNode;
   href?: string;
+  // AnchorHTMLAttributes has no index signature for data-* (TS only special-cases those on a
+  // JSX tag's own attributes, not on a plain object type like this one), so it's declared here.
+  [dataAttr: `data-${string}`]: unknown;
 }
 
 export interface NavRailProps extends HTMLAttributes<HTMLElement>, RefAttributes<HTMLElement> {
@@ -19,7 +28,9 @@ export interface NavRailProps extends HTMLAttributes<HTMLElement>, RefAttributes
 /**
  * A vertical nav container (.rb-nav-rail) rendering one NavLink per item.
  * Controlled by the caller via `activeId`, same as NavLink's own `active` prop --
- * this component owns no state of its own.
+ * this component owns no state of its own. Any extra props on an item (onClick, target,
+ * rel, aria-*, data-*, className, ...) forward onto that item's own NavLink/<a> -- e.g. to
+ * intercept a click for a client router while still setting a real `href`.
  */
 export const NavRail = forwardRef<HTMLElement, NavRailProps>(function NavRail(
   { items, activeId, className, ...rest },
@@ -27,9 +38,9 @@ export const NavRail = forwardRef<HTMLElement, NavRailProps>(function NavRail(
 ) {
   return (
     <nav ref={ref} className={cx("rb-nav-rail", className)} {...rest}>
-      {items.map((item) => (
-        <NavLink key={item.id} href={item.href} active={item.id === activeId}>
-          {item.label}
+      {items.map(({ id, label, href, ...itemRest }) => (
+        <NavLink key={id} href={href} active={id === activeId} {...itemRest}>
+          {label}
         </NavLink>
       ))}
     </nav>

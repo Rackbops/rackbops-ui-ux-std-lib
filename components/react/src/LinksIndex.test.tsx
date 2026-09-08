@@ -89,3 +89,55 @@ test("forwards className and other props onto the root element", () => {
   assert.match(out, /^<div[^>]*class="my-index"/, "className lands on the root div");
   assert.match(out, /^<div[^>]*id="links-root"/, "other props forward to the root div");
 });
+
+test("defaults to h2 category headings and h3 card headings", () => {
+  assert.match(html, /<h2>Applications<\/h2>/);
+  assert.match(html, /<h3>Research Triage/);
+});
+
+test("level shifts the category heading, and cards render one level deeper", () => {
+  const out = renderToStaticMarkup(
+    <LinksIndex categories={categories} links={links} level={3} />,
+  );
+  assert.match(out, /<h3>Applications<\/h3>/);
+  assert.match(out, /<h4>Research Triage/);
+});
+
+test("level clamps at h6 instead of overflowing past a real heading tag", () => {
+  const out = renderToStaticMarkup(
+    <LinksIndex categories={categories} links={links} level={6} />,
+  );
+  assert.match(out, /<h6>Applications<\/h6>/);
+  assert.match(out, /<h6>Research Triage/, "card heading clamps at h6 instead of h7");
+});
+
+test("keys url list items by label+url, so two links sharing a url render without a duplicate-key warning", () => {
+  const originalError = console.error;
+  const messages: string[] = [];
+  console.error = (...args: unknown[]) => {
+    messages.push(String(args[0]));
+  };
+  try {
+    renderToStaticMarkup(
+      <LinksIndex
+        categories={[]}
+        links={[
+          {
+            name: "app",
+            category: "other",
+            urls: [
+              { label: "prod", url: "https://x.example" },
+              { label: "canonical", url: "https://x.example" },
+            ],
+          },
+        ]}
+      />,
+    );
+  } finally {
+    console.error = originalError;
+  }
+  assert.ok(
+    !messages.some((m) => m.includes("same key")),
+    "no React duplicate-key warning for two urls sharing an address",
+  );
+});

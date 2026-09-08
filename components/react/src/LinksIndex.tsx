@@ -1,9 +1,20 @@
-import { forwardRef, type CSSProperties, type HTMLAttributes, type RefAttributes } from "react";
+import {
+  forwardRef,
+  type CSSProperties,
+  type HTMLAttributes,
+  type JSX,
+  type RefAttributes,
+} from "react";
 import { Card } from "./Card.js";
 import { Badge } from "./feedback.js";
 
 export interface LinkUrl {
   label: string;
+  /**
+   * Rendered as-is in an <a href> -- consumer-authored/trusted data (the app/site URLs you
+   * configure), not sanitized against `javascript:`-style schemes. Don't feed this untrusted
+   * input without validating the scheme first.
+   */
   url: string;
 }
 export interface LinkCategory {
@@ -25,6 +36,12 @@ export interface LinksIndexProps
     RefAttributes<HTMLDivElement> {
   categories: LinkCategory[];
   links: LinkItem[];
+  /**
+   * Heading level for each category label; each card's own heading renders one level deeper
+   * (clamped to h6). Set this to match whatever heading LinksIndex is embedded under, so
+   * heading order stays sequential instead of skipping or repeating a level. Defaults to 2.
+   */
+  level?: 2 | 3 | 4 | 5 | 6;
 }
 
 // Structural inline layout only -- the card/badge surfaces + colour come from @rackbops/styles
@@ -44,10 +61,11 @@ const listStyle: CSSProperties = { listStyle: "none", margin: 0, padding: 0 };
 // (relative, mailto:, tel:, ...) stays a plain in-page link.
 const isExternal = (url: string): boolean => /^(https?:)?\/\//i.test(url);
 
-function LinkCard({ link }: { link: LinkItem }) {
+function LinkCard({ link, level }: { link: LinkItem; level: 2 | 3 | 4 | 5 | 6 }) {
+  const Heading = `h${level}` as keyof JSX.IntrinsicElements;
   return (
     <Card>
-      <h3>
+      <Heading>
         {link.name}
         {link.monitored ? (
           <>
@@ -55,11 +73,13 @@ function LinkCard({ link }: { link: LinkItem }) {
             <Badge variant="success">monitored</Badge>
           </>
         ) : null}
-      </h3>
+      </Heading>
       {link.description ? <p>{link.description}</p> : null}
       <ul style={listStyle}>
         {link.urls.map((u) => (
-          <li key={u.url}>
+          // Two urls on one link can share a `url` with different `label`s ("prod" /
+          // "canonical") -- key on the pair, not the url alone, so they don't collide.
+          <li key={`${u.label}::${u.url}`}>
             {isExternal(u.url) ? (
               <a href={u.url} target="_blank" rel="noreferrer noopener">
                 {u.label}
@@ -75,13 +95,23 @@ function LinkCard({ link }: { link: LinkItem }) {
   );
 }
 
-function Group({ label, items }: { label: string; items: LinkItem[] }) {
+function Group({
+  label,
+  items,
+  level,
+}: {
+  label: string;
+  items: LinkItem[];
+  level: 2 | 3 | 4 | 5 | 6;
+}) {
+  const Heading = `h${level}` as keyof JSX.IntrinsicElements;
+  const cardLevel = (level < 6 ? level + 1 : 6) as 2 | 3 | 4 | 5 | 6;
   return (
     <section>
-      <h2>{label}</h2>
+      <Heading>{label}</Heading>
       <div style={gridStyle}>
         {items.map((link) => (
-          <LinkCard key={link.name} link={link} />
+          <LinkCard key={link.name} link={link} level={cardLevel} />
         ))}
       </div>
     </section>
@@ -94,7 +124,7 @@ function Group({ label, items }: { label: string; items: LinkItem[] }) {
  * router assumed -- external URLs open in a new tab. Themed by the consumer's `data-rb-style`.
  */
 export const LinksIndex = forwardRef<HTMLDivElement, LinksIndexProps>(function LinksIndex(
-  { categories, links, className, ...rest },
+  { categories, links, className, level = 2, ...rest },
   ref,
 ) {
   const known = new Set(categories.map((c) => c.id));
@@ -104,9 +134,11 @@ export const LinksIndex = forwardRef<HTMLDivElement, LinksIndexProps>(function L
     <div ref={ref} className={className} {...rest}>
       {categories.map((cat) => {
         const items = links.filter((l) => l.category === cat.id);
-        return items.length > 0 ? <Group key={cat.id} label={cat.label} items={items} /> : null;
+        return items.length > 0 ? (
+          <Group key={cat.id} label={cat.label} items={items} level={level} />
+        ) : null;
       })}
-      {other.length > 0 ? <Group label="Other" items={other} /> : null}
+      {other.length > 0 ? <Group label="Other" items={other} level={level} /> : null}
     </div>
   );
 });

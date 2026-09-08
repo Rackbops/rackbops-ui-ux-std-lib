@@ -15,6 +15,11 @@ export interface DialogProps
     RefAttributes<HTMLDialogElement> {
   open: boolean;
   onClose: () => void;
+  /**
+   * Renders as a heading in `.rb-dialog__title` (linked via aria-labelledby), replacing the
+   * native HTML `title` tooltip attribute -- there's no way to set a real tooltip through
+   * this component.
+   */
   title?: ReactNode;
   actions?: ReactNode;
 }
