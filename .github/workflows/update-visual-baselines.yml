@@ -28,10 +28,10 @@ jobs:
       # Chromium build matches -- a mismatch re-renders every tile.
       image: mcr.microsoft.com/playwright:v1.63.0-jammy
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           token: ${{ secrets.RELEASE_TOKEN }}
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
       - run: pnpm install --frozen-lockfile
       - run: pnpm visual --update
       - name: Commit and push baselines
