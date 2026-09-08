@@ -1,0 +1,73 @@
+/* mono-field — table
+ * Dense data table: a faint header rule, tabular numerals, row hover to
+ * surface-2. Headers stay normal case, weight 500 — never uppercase. */
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: var(--rb-text);
+  font-size: var(--rb-text-sm);
+  font-variant-numeric: tabular-nums;
+}
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-table th {
+  padding: var(--rb-space-2) var(--rb-space-3);
+  border-bottom: 1px solid var(--rb-border);
+  color: var(--rb-text-faint);
+  text-align: left;
+  font-weight: var(--rb-font-weight-medium);
+  letter-spacing: var(--rb-label-tracking);
+  text-transform: none;
+}
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-table td {
+  padding: var(--rb-space-2) var(--rb-space-3);
+  border-bottom: 1px solid var(--rb-border);
+  color: var(--rb-text);
+}
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-table tbody tr:hover td {
+  background: var(--rb-surface-2);
+}
+/* Numeric cells take the tabular-numeral voice — prices and counts align. */
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-table td.rb-num,
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-table th.rb-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* DataTable additions (K4-10 give-back from Kenzen): a labelled group-header row, the
+ * clickable sort-header button, and a sticky-header scroll wrapper. Every value here is an
+ * existing --rb-* token, so the same declarations apply under every theme -- only this guard
+ * selector changes. */
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-table__group-row td {
+  padding-top: var(--rb-space-3);
+  padding-bottom: var(--rb-space-1);
+  color: var(--rb-text-faint);
+  font-size: var(--rb-text-sm);
+  font-weight: var(--rb-font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  border-bottom: none;
+}
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-table__sort {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--rb-space-1);
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-table__sort:hover {
+  color: var(--rb-text);
+}
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-table-scroll {
+  max-height: 70vh;
+  overflow: auto;
+}
+:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-table-scroll thead th {
+  position: sticky;
+  top: 0;
+  background: var(--rb-surface);
+  z-index: 1;
+}

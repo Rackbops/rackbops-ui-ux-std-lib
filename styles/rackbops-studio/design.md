@@ -139,10 +139,17 @@ Class prefix `rb-`; shared token/class contract with the other themes.
   blurred navy backdrop, heavy title.
 - **Tabs** `.rb-tabs` / `.rb-tab` / `.rb-tabpanel` — understated; active goes ink
   with a vermillion underbar.
+- **Tabstrip** `.rb-tabstrip` (+ `__tab`, `--active`, `__badge`) — top-level view
+  nav: bordered pill buttons on surface-2; the active tab gets accent text, an
+  accent-tinted border, and the accent wash; an optional trailing badge in
+  faint text. Distinct from `Tabs`' text-underline tabs used inside a panel.
+  Shared identically across every theme via `--rb-*` tokens (K4-10 give-back
+  from Kenzen; previously arcane-obsidian/arcane-parchment's own two-theme
+  extra, reverse-documented from artifact-console).
 - **Table** `.rb-table` (+ `.rb-num`) — mono uppercase header rule, generous rows,
   quiet hover wash. `--interactive` marks clickable rows: pointer cursor, plus
   a bolder 2.5px focus-visible ring (and the same hover wash) for a `tabindex`
-  row or a row-wrapping button/link.
+  row or a row-wrapping button/link. `DataTable` (the React component) adds three more classes on the same shared tokens, unstyled beyond them so they read identically in every theme: `__group-row` for a labelled group-header row, `__sort` for the clickable sort-header button, and the separate top-level `.rb-table-scroll` for a sticky-header scroll wrapper.
 - **Progress / Spinner** `.rb-progress` / `.rb-spinner` — pill trough with a
   vermillion fill; single-arc spinner.
 - **Muted text** `.rb-muted` — faint secondary/empty-state text;

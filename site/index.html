@@ -176,7 +176,7 @@ ok 12 - keyframe names are rb-prefixed and unique across all themes</pre>
           </nav>
           <div class="rb-tabstrip">
             <button class="rb-tabstrip__tab rb-tabstrip__tab--active">Overview</button>
-            <button class="rb-tabstrip__tab">Artifacts</button>
+            <button class="rb-tabstrip__tab">Artifacts<span class="rb-tabstrip__badge">12</span></button>
             <button class="rb-tabstrip__tab">Issues</button>
           </div>
         </div>
@@ -260,6 +260,26 @@ ok 12 - keyframe names are rb-prefixed and unique across all themes</pre>
             <tr tabindex="0" role="button"><td>deploy-console</td><td><span class="rb-badge rb-badge--success">passed</span></td><td class="rb-num">48s</td></tr>
             <tr tabindex="0" role="button"><td>nightly-sync</td><td><span class="rb-badge rb-badge--warning">retrying</span></td><td class="rb-num">2m 11s</td></tr>
             <tr tabindex="0" role="button"><td>backup-verify</td><td><span class="rb-badge rb-badge--danger">failed</span></td><td class="rb-num">6s</td></tr>
+          </tbody>
+        </table>
+        <!-- DataTable's own additions: a sortable header (rb-table__sort, one column shown
+             already sorted), and a labelled group-header row (rb-table__group-row). Hand-authored
+             to match DataTable.tsx's real rendered markup -- this showcase has no build step to
+             render the React component itself, same as the two tables above. -->
+        <p class="rb-muted" style="margin: 1rem 0 0.5rem">DataTable — sortable header + grouped rows</p>
+        <table class="rb-table">
+          <thead>
+            <tr>
+              <th scope="col" aria-sort="ascending"><button type="button" class="rb-table__sort">Name<span aria-hidden="true"> &#9650;</span></button></th>
+              <th scope="col" class="rb-num">Count</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="rb-table__group-row"><td colspan="2">runtime</td></tr>
+            <tr><td>Alpha</td><td class="rb-num">5</td></tr>
+            <tr><td>Bravo</td><td class="rb-num">2</td></tr>
+            <tr class="rb-table__group-row"><td colspan="2">build</td></tr>
+            <tr><td>Charlie</td><td class="rb-num">1</td></tr>
           </tbody>
         </table>
       </section>

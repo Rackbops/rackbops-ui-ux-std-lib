@@ -80,7 +80,7 @@ The token pairs `styles/test/contrast.test.mjs` computes -- `--rb-text` / `--rb-
 Class prefix `rb-`; the full arcane-obsidian inventory, styled identically from
 tokens: `.rb-btn` (+ `--primary/--accent/--danger/--ghost`, `--sm` compact size, `.rb-icon-btn` icon-only square),
 `.rb-card` (+ `--raised`), `.rb-link`, `.rb-nav-rail`, the form set, `.rb-badge`, `.rb-alert`,
-`.rb-dialog`, `.rb-tabs`, `.rb-table` (+ `.rb-num`, `--interactive`),
+`.rb-dialog`, `.rb-tabs`, `.rb-tabstrip` (+ `__tab`, `--active`, `__badge`), `.rb-table` (+ `.rb-num`, `--interactive`, `__group-row`, `__sort`, `.rb-table-scroll`),
 `.rb-progress` / `.rb-spinner`, `.rb-muted`, `.rb-pre` (+ `.rb-log`), `.rb-stepper`. See
 arcane-obsidian's `design.md` for the per-component notes — the behaviour is
 the same, with one exception: `components/button.css`'s `--primary`
@@ -92,8 +92,8 @@ file). Otherwise only the palette is light.
 
 ### Theme extras
 
-`.rb-wordmark` (+ `__spark`), `.rb-tabstrip`, and `.rb-eyebrow` — identical to
-arcane-obsidian's; see its `design.md` for the per-extra notes.
+`.rb-wordmark` (+ `__spark`) and `.rb-eyebrow` — identical to arcane-obsidian's;
+see its `design.md` for the per-extra notes.
 
 ## Code syntax
 

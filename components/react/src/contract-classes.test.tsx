@@ -36,7 +36,23 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import type { ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
+import type { DataTableColumn } from "./DataTable.js";
 import * as UI from "./index.js";
+
+interface Row {
+  id: string;
+  name: string;
+  group: string;
+  count: number;
+}
+const DATATABLE_ROWS: Row[] = [
+  { id: "a", name: "Alpha", group: "runtime", count: 1 },
+  { id: "b", name: "Bravo", group: "build", count: 2 },
+];
+const DATATABLE_COLUMNS: DataTableColumn<Row>[] = [
+  { key: "name", header: "Name", render: (r) => r.name, sortValue: (r) => r.name },
+  { key: "count", header: "Count", render: (r) => r.count, numeric: true },
+];
 
 // -- The render matrix -------------------------------------------------------
 // Every export, rendered with every prop combination that can add an rb-* class
@@ -133,6 +149,48 @@ const RENDERS: Array<{ component: string; el: ReactElement }> = [
           { id: "3", label: "three" },
         ]}
         current={1}
+      />
+    ),
+  },
+  // DataTable: a sortable numeric column (-> rb-table, rb-num, rb-table__sort), grouped
+  // (-> rb-table__group-row), and sticky (-> rb-table-scroll) in separate renders, matching
+  // how the other multi-prop components above are split.
+  {
+    component: "DataTable",
+    el: (
+      <UI.DataTable columns={DATATABLE_COLUMNS} rows={DATATABLE_ROWS} rowKey={(r) => r.id} />
+    ),
+  },
+  {
+    component: "DataTable",
+    el: (
+      <UI.DataTable
+        columns={DATATABLE_COLUMNS}
+        rows={DATATABLE_ROWS}
+        rowKey={(r) => r.id}
+        groupBy={(r) => r.group}
+      />
+    ),
+  },
+  {
+    component: "DataTable",
+    el: (
+      <UI.DataTable columns={DATATABLE_COLUMNS} rows={DATATABLE_ROWS} rowKey={(r) => r.id} sticky />
+    ),
+  },
+  // Tabstrip: the first tab active by default -> emits --active; a badge on one tab -> emits
+  // __badge too.
+  {
+    component: "Tabstrip",
+    el: (
+      <UI.Tabstrip
+        tabs={[
+          { id: "a", label: "A", badge: 3 },
+          { id: "b", label: "B" },
+        ]}
+        selected="a"
+        onSelect={() => {}}
+        label="Example"
       />
     ),
   },

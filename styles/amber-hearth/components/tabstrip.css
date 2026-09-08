@@ -1,0 +1,40 @@
+/* amber-hearth — tabstrip
+ * Top-level view nav: natural-width bordered pill buttons. The active button gets accent
+ * text + a faint wash and an accent-tinted border; distinct from the text-underline .rb-tabs
+ * used inside a panel. Shared across all twelve themes via --rb-* tokens (K4-10 give-back
+ * from Kenzen; arcane-obsidian/arcane-parchment's own hand-authored version, reverse-
+ * documented from artifact-console, is the reference this shared version reproduces). */
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-tabstrip {
+  display: flex;
+  gap: var(--rb-space-2);
+  padding: var(--rb-space-2) 0;
+}
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-tabstrip__tab {
+  position: relative;
+  padding: var(--rb-space-2) var(--rb-space-4);
+  background: var(--rb-surface-2);
+  border: 1px solid var(--rb-border);
+  border-radius: var(--rb-radius);
+  color: var(--rb-text);
+  font-size: var(--rb-text-sm);
+  font-weight: var(--rb-font-weight-medium);
+  cursor: pointer;
+  transition: border-color var(--rb-transition) var(--rb-ease);
+}
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-tabstrip__tab:not(:disabled):hover {
+  border-color: var(--rb-accent);
+}
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-tabstrip__tab:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-tabstrip__tab.rb-tabstrip__tab--active {
+  color: var(--rb-accent);
+  border-color: color-mix(in srgb, var(--rb-accent) 40%, var(--rb-border));
+  background: var(--rb-accent-wash);
+}
+:where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-tabstrip__badge {
+  color: var(--rb-text-faint);
+  font-size: var(--rb-text-sm);
+  font-variant-numeric: tabular-nums;
+}

@@ -1,30 +1,5 @@
-/* mono-field — table
- * Dense data table: a faint header rule, tabular numerals, row hover to
- * surface-2. Headers stay normal case, weight 500 — never uppercase. */
-:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-table {
-  width: 100%;
-  border-collapse: collapse;
-  color: var(--rb-text);
-  font-size: var(--rb-text-sm);
-  font-variant-numeric: tabular-nums;
-}
-:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-table th {
-  padding: var(--rb-space-2) var(--rb-space-3);
-  border-bottom: 1px solid var(--rb-border);
-  color: var(--rb-text-faint);
-  text-align: left;
-  font-weight: var(--rb-font-weight-medium);
-  letter-spacing: var(--rb-label-tracking);
-  text-transform: none;
-}
-:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-table td {
-  padding: var(--rb-space-2) var(--rb-space-3);
-  border-bottom: 1px solid var(--rb-border);
-  color: var(--rb-text);
-}
-:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-table tbody tr:hover td {
-  background: var(--rb-surface-2);
-}
+/* mono-field — table (interactive-row utility only; the base table + DataTable's own
+ * additions live in data-table.css, K4-10) */
 /* --interactive: clickable rows (a tabindex tr, or a row-wrapping button/link) —
  * pointer cursor plus a keyboard-equivalent of the hover wash and a focus ring. */
 :where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-table--interactive tbody tr {
@@ -38,10 +13,4 @@
 :where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-table--interactive tbody tr:focus-visible td,
 :where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-table--interactive tbody tr:has(:focus-visible) td {
   background: var(--rb-surface-2);
-}
-/* Numeric cells take the tabular-numeral voice — prices and counts align. */
-:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-table td.rb-num,
-:where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-table th.rb-num {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
 }
