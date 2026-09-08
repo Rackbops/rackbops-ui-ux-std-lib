@@ -32,6 +32,8 @@ export {
 export { Dialog, type DialogProps } from "./Dialog.js";
 export { Tabs, type TabsProps, type TabItem } from "./Tabs.js";
 export { Stepper, type StepperProps, type StepperStep } from "./Stepper.js";
+export { DataTable, type DataTableProps, type DataTableColumn } from "./DataTable.js";
+export { Tabstrip, type TabstripProps, type TabstripTab } from "./Tabstrip.js";
 export {
   LinksIndex,
   type LinksIndexProps,

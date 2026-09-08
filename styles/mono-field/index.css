@@ -12,8 +12,10 @@
 @import "./components/nav-rail.css";
 @import "./components/progress.css";
 @import "./components/stepper.css";
+@import "./components/data-table.css";
 @import "./components/table.css";
 @import "./components/tabs.css";
+@import "./components/tabstrip.css";
 @import "./components/muted.css";
 @import "./components/pre.css";
 @import "./components/log.css";

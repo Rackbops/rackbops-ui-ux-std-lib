@@ -59,10 +59,20 @@
       "classes": ["rb-tabs", "rb-tab", "rb-tab--active", "rb-tabpanel"],
       "notes": "items: {id, label, content}[]; --active also matches [aria-selected=\"true\"] in every theme; className/rest forward onto the tablist element -- ref targets the outer structural wrapper spanning tabs+panels (#84)"
     },
+    "tabstrip": {
+      "react": "Tabstrip",
+      "classes": ["rb-tabstrip", "rb-tabstrip__tab", "rb-tabstrip__tab--active", "rb-tabstrip__badge"],
+      "notes": "top-level view nav (bordered pill buttons), distinct from Tabs' text-underline tabs inside a panel; controlled tabs/selected/onSelect + label; formerly a two-theme extra (arcane-obsidian/arcane-parchment) -- now a shared component in all twelve, K4-10 give-back from Kenzen"
+    },
+    "data-table": {
+      "react": "DataTable",
+      "classes": ["rb-table", "rb-num", "rb-table__group-row", "rb-table__sort", "rb-table-scroll"],
+      "notes": "columns/rows/rowKey; optional groupBy/groupOrder, defaultSortKey/defaultSortDirection, sticky (wraps in rb-table-scroll); numeric columns get rb-num"
+    },
     "table": {
       "react": null,
-      "classes": ["rb-table", "rb-table--interactive", "rb-num"],
-      "notes": "style directly, no React wrapper"
+      "classes": ["rb-table--interactive"],
+      "notes": "clickable-row utility, hand-applied by the consumer to any table (DataTable-rendered or not) -- DataTable itself never sets it, style directly"
     },
     "progress": {
       "react": ["Progress", "Spinner"],
@@ -112,8 +122,8 @@
     { "theme": "summer-cloud", "class": "rb-stepper--upcoming", "reason": "default/resting state -- falls through to the base node/label rule, no override needed" }
   ],
   "extras": {
-    "arcane-obsidian": ["rb-wordmark", "rb-wordmark__spark", "rb-tabstrip", "rb-tabstrip__tab", "rb-tabstrip__tab--active", "rb-eyebrow"],
-    "arcane-parchment": ["rb-wordmark", "rb-wordmark__spark", "rb-tabstrip", "rb-tabstrip__tab", "rb-tabstrip__tab--active", "rb-eyebrow"],
+    "arcane-obsidian": ["rb-wordmark", "rb-wordmark__spark", "rb-eyebrow"],
+    "arcane-parchment": ["rb-wordmark", "rb-wordmark__spark", "rb-eyebrow"],
     "rackbops-studio": ["rb-rack", "rb-rack__top", "rb-rack__live", "rb-rack__bars", "rb-rack__foot", "rb-principles", "rb-principle", "rb-principle__n", "rb-principle__body", "rb-tags", "rb-tag", "rb-card__tag", "rb-btn__arrow", "rb-eyebrow"],
     "rackbops-noir": ["rb-rack", "rb-rack__top", "rb-rack__live", "rb-rack__bars", "rb-rack__foot", "rb-principles", "rb-principle", "rb-principle__n", "rb-principle__body", "rb-tags", "rb-tag", "rb-card__tag", "rb-btn__arrow", "rb-eyebrow"],
     "luminous-precision": ["rb-badge--primary", "rb-bg", "rb-progress--accent"],

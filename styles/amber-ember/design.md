@@ -66,8 +66,9 @@ tokens: `.rb-btn` (+ `--primary/--accent/--danger/--ghost`, `--sm` compact size,
 `--raised`), `.rb-link` (+ `--active`), `.rb-nav-rail`, the form set (`.rb-input` /
 `.rb-textarea` / `.rb-select` / `.rb-label` / `.rb-field` / `.rb-choice` /
 `.rb-checkbox` / `.rb-radio` / `.rb-switch`), `.rb-badge`, `.rb-alert`,
-`.rb-dialog`, `.rb-tabs` / `.rb-tab` / `.rb-tabpanel`, `.rb-table` (+
-`.rb-num`, `--interactive`), `.rb-progress` / `.rb-spinner` (keyframe `rb-ember-spin`),
+`.rb-dialog`, `.rb-tabs` / `.rb-tab` / `.rb-tabpanel`, `.rb-tabstrip` (+
+`__tab`, `--active`, `__badge`), `.rb-table` (+
+`.rb-num`, `--interactive`, `__group-row`, `__sort`, `.rb-table-scroll`), `.rb-progress` / `.rb-spinner` (keyframe `rb-ember-spin`),
 `.rb-muted`, `.rb-pre` (+ `.rb-log`), `.rb-stepper`. See amber-hearth's `design.md` for the per-component
 notes — the behaviour is the same, with one exception:
 `components/dialog.css`'s `::backdrop` scrim is its own literal

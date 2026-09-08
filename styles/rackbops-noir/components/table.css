@@ -1,30 +1,5 @@
-/* rackbops-noir — table
- * A clean editorial table: a strong header rule, generous row padding, a quiet
- * hover wash. */
-:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 15px;
-}
-:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-table th {
-  text-align: left;
-  padding: var(--rb-space-2) var(--rb-space-3);
-  border-bottom: 2px solid var(--rb-border-strong);
-  color: var(--rb-text-soft); /* text-faint is below AA at header size */
-  font-family: var(--rb-font-mono);
-  font-size: 12px;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  font-weight: var(--rb-font-weight-medium);
-}
-:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-table td {
-  padding: var(--rb-space-2) var(--rb-space-3);
-  border-bottom: 1px solid var(--rb-border);
-  color: var(--rb-text);
-}
-:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-table tbody tr:hover td {
-  background: var(--rb-surface-2);
-}
+/* rackbops-noir — table (interactive-row utility only; the base table + DataTable's own
+ * additions live in data-table.css, K4-10) */
 /* --interactive: clickable rows (a tabindex tr, or a row-wrapping button/link) —
  * pointer cursor plus a keyboard-equivalent of the hover wash and a focus ring,
  * matching the editorial themes' bolder 2.5px ring. */
@@ -42,8 +17,4 @@
 :where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-table--interactive tbody tr:focus-visible td,
 :where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-table--interactive tbody tr:has(:focus-visible) td {
   background: var(--rb-surface-2);
-}
-:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-table .rb-num {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
 }

@@ -388,7 +388,9 @@ extras), so an undocumented class fails too]`. The React column is the
 | `alert.css` | `.rb-alert`, `__title`, `--info`, `--success`, `--warning`, `--danger` | `Alert` | |
 | `dialog.css` | `.rb-dialog`, `__title`, `__actions`; `__body` | `Dialog` | `__body` is a no-op in four themes that pad `.rb-dialog` instead -- sanctioned by #42's verdict, allowlisted in `contract.json` (section 5.3) `[tested]` |
 | `tabs.css` | `.rb-tabs`, `.rb-tab`, `.rb-tab--active`, `.rb-tabpanel` | `Tabs` | SHOULD pair `--active` with `[aria-selected="true"]`; checked by `contract.test.mjs` against `contract.json`'s `ariaPairs`, all twelve comply `[tested]` |
-| `table.css` | `.rb-table`, `--interactive`, `.rb-num` | -- | |
+| `tabstrip.css` | `.rb-tabstrip`, `__tab`, `__tab--active`, `__badge` | `Tabstrip` | Top-level view nav (bordered pill buttons), distinct from `tabs.css`'s text-underline tabs inside a panel; formerly a two-theme extra (arcane-obsidian/arcane-parchment, reverse-documented from artifact-console) with no React wrapper, now shared in all twelve (K4-10 give-back from Kenzen) |
+| `data-table.css` | `.rb-table`, `.rb-num`, `__group-row`, `__sort`, `.rb-table-scroll` | `DataTable` | Split from `table.css` at K4-10 so each `contract.json` component key maps to its own file `[tested]` |
+| `table.css` | `.rb-table--interactive` | -- | Hand-applied by the consumer -- `DataTable` never sets it |
 | `progress.css` | `.rb-progress` on a native `<progress>` (`appearance: none`, `::-webkit-progress-bar`, `::-webkit-progress-value`, `::-moz-progress-bar`); `.rb-spinner` | `Progress`, `Spinner` | |
 | `muted.css` | `.rb-muted` | -- | |
 | `pre.css` | `.rb-pre` | -- | |
@@ -470,9 +472,8 @@ A theme MAY ship classes beyond the shared set. Rules:
   (`components/react/src/LinksIndex.tsx:28-30`).
 - Shown in the showcase only in a section labelled as extras (section 13).
 
-Extras shipping today: `.rb-wordmark` (+ `__spark`), `.rb-tabstrip` (+
-`__tab`, `__tab--active`), `.rb-eyebrow` -- arcane pair, and `.rb-eyebrow`
-also in the studio pair; `.rb-rack` (+ `__top`, `__live`, `__bars`,
+Extras shipping today: `.rb-wordmark` (+ `__spark`), `.rb-eyebrow` -- arcane
+pair, and `.rb-eyebrow` also in the studio pair; `.rb-rack` (+ `__top`, `__live`, `__bars`,
 `__foot`), `.rb-principles`, `.rb-principle` (+ `__n`, `__body`), `.rb-tags`,
 `.rb-tag`, `.rb-card__tag`, `.rb-btn__arrow` -- studio pair;
 `.rb-badge--primary`, `.rb-bg`, `.rb-progress--accent` -- the three
