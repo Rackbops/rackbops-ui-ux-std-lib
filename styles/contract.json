@@ -183,10 +183,12 @@
       { "fg": "text-soft", "bg": "surface", "min": 4.5 },
       { "fg": "accent-fg", "bg": "accent", "min": 4.5 },
       { "fg": "accent", "bg": "bg", "min": 3.0 },
-      { "fg": "text-faint", "bg": "surface", "min": 3.0, "warnBelow": 4.5 }
+      { "fg": "text-faint", "bg": "surface", "min": 3.0, "warnBelow": 4.5 },
+      { "fg": "text-faint", "bg": "bg", "min": 3.0, "warnBelow": 4.5 }
     ],
     "allowlist": [
-      { "theme": "rackbops-studio", "fg": "accent-fg", "bg": "accent", "reason": "white on the vermillion accent fill is ~3.6:1 -- rackbops.com editorial fidelity; spent only on large/bold .rb-btn--accent and .rb-btn--primary hover text (large-text AA is 3:1), never small labels or essential body copy", "doc": "rackbops-studio/design.md:96-98" }
+      { "theme": "rackbops-studio", "fg": "accent-fg", "bg": "accent", "reason": "white on the vermillion accent fill is ~3.6:1 -- rackbops.com editorial fidelity; spent only on large/bold .rb-btn--accent and .rb-btn--primary hover text (large-text AA is 3:1), never small labels or essential body copy", "doc": "rackbops-studio/design.md:104-106" },
+      { "theme": "rackbops-studio", "fg": "text-faint", "bg": "bg", "reason": "text-faint on the page background is ~2.8:1, below even the 3:1 non-text floor -- .rb-muted must never be the sole signal on bare --rb-bg, only inside a --rb-surface/--rb-surface-2 context", "doc": "rackbops-studio/design.md:95-103" }
     ]
   }
 }

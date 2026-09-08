@@ -92,10 +92,15 @@ consumers can compensate rather than discover it:
   same reason above: accent-as-text is decorative-only here, and a bare link is
   ordinary body copy, not a decorative flourish. `.rb-link`'s nav component
   still carries its own accent-driven active state.
-- **`--rb-text-faint` (#8091a1) is below AA on white** — use it only for
-  genuinely secondary meta (as the source does for footnotes), never for
-  essential text. The shared `.rb-table` header therefore uses `--rb-text-soft`,
-  which passes.
+- **`--rb-text-faint` (#8091a1) is below AA on both surfaces, and below even
+  the 3:1 non-text floor on bare `--rb-bg`** — ~3.2:1 on `--rb-surface`
+  (white), ~2.8:1 on `--rb-bg` (the `#eaeef1` page background). The `bg`
+  figure has no WCAG exemption at all, so `.rb-muted` (captions, meta,
+  empty-state text) must never be the only signal sitting directly on bare
+  `--rb-bg` — pair it with an icon or a bordered container, or keep it inside
+  a `--rb-surface`/`--rb-surface-2` context (as the source does for
+  footnotes, and as `.rb-stepper__node`'s idle background already does). The
+  shared `.rb-table` header uses `--rb-text-soft` instead, which passes.
 - **White on the vermillion fill is ~3.6:1** — the `.rb-btn--accent` fill and the
   `.rb-btn--primary` hover state. Fine for large/bold button text; for small
   labels prefer the default primary (ink fill, ~15:1).
@@ -107,9 +112,10 @@ consumers can compensate rather than discover it:
   full-contrast UI matters.
 
 These are the ratios `styles/test/contrast.test.mjs` checks: `--rb-accent-fg` on
-`--rb-accent` (~3.6:1) is allowlisted in `contract.json`'s `contrast` block, and
-`--rb-text-faint` on `--rb-surface` (~3.2:1) is emitted as a below-AA warning;
-the remaining pairs clear their targets.
+`--rb-accent` (~3.6:1) and `--rb-text-faint` on `--rb-bg` (~2.8:1, below the
+3:1 floor) are allowlisted in `contract.json`'s `contrast` block, citing this
+section; `--rb-text-faint` on `--rb-surface` (~3.2:1) is emitted as a below-AA
+warning; the remaining pairs clear their targets.
 
 ## Components
 

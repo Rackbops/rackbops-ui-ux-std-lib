@@ -72,6 +72,7 @@ unclassed headlines, `--rb-space-3` margin on headings/paragraphs/lists, and
 The token pairs `styles/test/contrast.test.mjs` computes clear their WCAG targets, with one below-AA note the test emits as a warning (not a failure):
 
 - **`--rb-text-faint` on `--rb-surface` is ~3.8:1** -- below the 4.5:1 AA bar for normal text, above the 3:1 floor. Use it only for genuinely secondary meta (idle labels, footnotes, timestamps), never essential text; the shared `.rb-table` header uses `--rb-text-soft`, which passes.
+- **`--rb-text-faint` on bare `--rb-bg` is ~4.2:1** -- same shape as the surface pairing above (below AA, above the 3:1 floor) and the same rule applies: `.rb-muted` and other text-faint uses are for non-essential meta only, never the sole label of essential content.
 
 ## Components
 
