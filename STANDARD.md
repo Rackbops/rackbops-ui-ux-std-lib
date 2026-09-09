@@ -176,11 +176,18 @@ Rules:
 
 ### 2.6 Browser support
 
-The newest CSS feature any theme's components rely on is `color-mix()`
-(`:has()` and unprefixed `backdrop-filter` are both older), so that sets the
-library's floor: Chrome/Edge 111+, Firefox 113+, Safari 16.2+ -- older WebKit
-still gets its glass effect via the `-webkit-backdrop-filter` shipped beside
-every `backdrop-filter` declaration (#86).
+Components render correctly from **Chrome/Edge 111, Firefox 121, Safari 16.2**.
+The floor is set by the two features the shipped CSS relies on outright:
+`color-mix()` (Chrome 111 / Firefox 113 / Safari 16.2) and `:has()` (Chrome 105
+/ Firefox 121 / Safari 15.4) -- an engine without either drops the rules that
+use them. Three later features degrade rather than break below their own
+thresholds: the dialog backdrop's `blur(var(--rb-blur))` needs custom
+properties to reach `::backdrop` (Chromium 122 / Firefox 120 / Safari 17.4)
+and paints a plain scrim without blur before that; `text-wrap: balance` on
+headings (Chromium 114 / Firefox 121 / Safari 17.5) is ignored where
+unsupported; and unprefixed `backdrop-filter` is Safari 18+, so every
+`backdrop-filter` declaration ships a `-webkit-backdrop-filter` twin for
+Safari 9-17 (#86).
 
 ---
 
