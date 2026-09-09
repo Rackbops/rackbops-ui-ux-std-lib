@@ -391,7 +391,7 @@ extras), so an undocumented class fails too]`. The React column is the
 | `tabstrip.css` | `.rb-tabstrip`, `__tab`, `__tab--active`, `__badge` | `Tabstrip` | Top-level view nav (bordered pill buttons), distinct from `tabs.css`'s text-underline tabs inside a panel; formerly a two-theme extra (arcane-obsidian/arcane-parchment, reverse-documented from artifact-console) with no React wrapper, now shared in all twelve (K4-10 give-back from Kenzen) |
 | `data-table.css` | `.rb-table`, `.rb-num`, `__group-row`, `__sort`, `.rb-table-scroll` | `DataTable` | Split from `table.css` at K4-10 so each `contract.json` component key maps to its own file `[tested]` |
 | `table.css` | `.rb-table--interactive` | -- | Hand-applied by the consumer -- `DataTable` never sets it |
-| `progress.css` | `.rb-progress` on a native `<progress>` (`appearance: none`, `::-webkit-progress-bar`, `::-webkit-progress-value`, `::-moz-progress-bar`); `.rb-spinner` | `Progress`, `Spinner` | |
+| `progress.css` | `.rb-progress` on a native `<progress>` (`appearance: none`, `::-webkit-progress-bar`, `::-webkit-progress-value`, `::-moz-progress-bar`); `.rb-spinner` | `Progress`, `Spinner` | Omitting `value` puts `<progress>` in the `:indeterminate` state, styled with an animated sweep on `:indeterminate::-webkit-progress-bar` and `:indeterminate::-moz-progress-bar` -- always two separate rules, never comma-joined, since an engine that doesn't recognise one vendor pseudo-element drops the whole selector list `[tested]` |
 | `muted.css` | `.rb-muted` | -- | |
 | `pre.css` | `.rb-pre` | -- | |
 | `log.css` | `.rb-log` (pairs with `.rb-pre`) | -- | |

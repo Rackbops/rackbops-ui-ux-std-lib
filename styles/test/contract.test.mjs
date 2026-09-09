@@ -712,6 +712,41 @@ test("every theme's progress.css styles the native <progress> pseudo-elements, n
   }
 });
 
+test("every theme's progress.css styles :indeterminate on both progress pseudo-elements, each its own rule (#86)", () => {
+  // A <progress> with no value attribute matches :indeterminate; every theme
+  // must give it a real animated treatment rather than leaving it to render
+  // the browser's own default indeterminate track. ::-webkit-progress-bar
+  // and ::-moz-progress-bar can never share a selector list here: an engine
+  // that doesn't recognise one of the two vendor pseudo-elements drops the
+  // WHOLE rule, not just its own half (that silently broke Chrome's half of
+  // this exact feature during development -- verified by mutation below).
+  for (const theme of themeDirs) {
+    const file = join(ROOT, theme, "components", "progress.css");
+    const raw = stripComments(readFileSync(file, "utf-8"));
+    const { selectors, ruleGroups } = parseCss(raw);
+    const guard = `[data-rb-style="${theme}"]`;
+    const webkitIndeterminate = selectors.filter((s) =>
+      /\.rb-progress:indeterminate::-webkit-progress-bar(?![\w-])/.test(s)
+    );
+    const mozIndeterminate = selectors.filter((s) =>
+      /\.rb-progress:indeterminate::-moz-progress-bar(?![\w-])/.test(s)
+    );
+    assert.ok(webkitIndeterminate.length > 0, `${theme}: progress.css has no :indeterminate::-webkit-progress-bar rule`);
+    assert.ok(mozIndeterminate.length > 0, `${theme}: progress.css has no :indeterminate::-moz-progress-bar rule`);
+    for (const sel of [...webkitIndeterminate, ...mozIndeterminate]) {
+      assert.ok(sel.includes(guard), `${theme}: unguarded indeterminate progress selector: ${sel}`);
+    }
+    for (const group of ruleGroups) {
+      const hasWebkit = group.some((s) => /:indeterminate::-webkit-progress-bar(?![\w-])/.test(s));
+      const hasMoz = group.some((s) => /:indeterminate::-moz-progress-bar(?![\w-])/.test(s));
+      assert.ok(
+        !(hasWebkit && hasMoz),
+        `${theme}: progress.css comma-joins :indeterminate::-webkit-progress-bar with ::-moz-progress-bar in one selector list -- an engine that doesn't recognise one drops the whole rule; declare them as two separate rules`
+      );
+    }
+  }
+});
+
 test("keyframe names are rb-prefixed and unique across all themes", () => {
   const seen = new Map();
   for (const theme of themeDirs) {
