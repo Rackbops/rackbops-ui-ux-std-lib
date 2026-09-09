@@ -19,18 +19,14 @@
 // glass/glow, no code-* baseline), and fonts are system stacks so a theme may
 // carry an empty manifest fonts array.
 import assert from "node:assert/strict";
-import { existsSync, readdirSync, readFileSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { existsSync, readFileSync } from "node:fs";
+import { join } from "node:path";
 import { test } from "node:test";
-import { fileURLToPath } from "node:url";
+import { ROOT, themeDirs, componentFiles, stripComments, parseCss, splitSelectors, cssOf } from "./css.mjs";
 
-const ROOT = resolve(fileURLToPath(import.meta.url), "../..");
 const manifest = JSON.parse(readFileSync(join(ROOT, "manifest.json"), "utf-8"));
 const pkg = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf-8"));
 const contract = JSON.parse(readFileSync(join(ROOT, "contract.json"), "utf-8"));
-const themeDirs = readdirSync(ROOT, { withFileTypes: true })
-  .filter((e) => e.isDirectory() && e.name !== "test" && e.name !== "node_modules" && !e.name.startsWith("_"))
-  .map((e) => e.name);
 
 // Baseline token set every theme must declare, from contract.json. Additions
 // there are a contract change: bump contract.json's (and manifest.json's)
@@ -52,29 +48,6 @@ const ALL_REQUIRED_CLASS_NAMES = new Set(REQUIRED_CLASSES.map((c) => c.class));
 // deliberately doesn't style, and why. Sourced from contract.json.
 const CLASS_ALLOWLIST = contract.allowlist;
 
-/** Split a selector list on top-level commas (commas inside () and [] don't count). */
-function splitSelectors(prelude) {
-  const parts = [];
-  let depth = 0;
-  let buf = "";
-  for (const ch of prelude) {
-    if (ch === "(" || ch === "[") depth++;
-    else if (ch === ")" || ch === "]") depth--;
-    if (ch === "," && depth === 0) {
-      parts.push(buf.trim());
-      buf = "";
-    } else buf += ch;
-  }
-  if (buf.trim()) parts.push(buf.trim());
-  return parts;
-}
-
-/** Strip CSS block comments so a commented-out declaration or selector is not
- * mistaken for a live one. */
-function stripComments(css) {
-  return css.replace(/\/\*[\s\S]*?\*\//g, "");
-}
-
 /** The --rb-* custom properties actually declared (as `--rb-x:`) in a
  * tokens.css, comments stripped so a commented-out token is not counted as
  * present -- otherwise a dropped baseline token could ship green. */
@@ -89,50 +62,6 @@ function declaredScheme(css) {
   return stripComments(css).match(/color-scheme:\s*(dark|light)/)?.[1];
 }
 
-/**
- * Selectors (flat), rule groups (selectors grouped by the rule they came
- * from — needed to check that two selectors are paired in the same rule,
- * not merely co-occurring somewhere in the file), keyframe names, and
- * top-level @imports of one CSS file.
- */
-function parseCss(css) {
-  css = stripComments(css);
-  const selectors = [];
-  const ruleGroups = [];
-  const keyframes = [];
-  const imports = [];
-  const stack = [];
-  let buf = "";
-  for (const ch of css) {
-    if (ch === "{") {
-      const prelude = buf.trim();
-      buf = "";
-      const top = stack[stack.length - 1];
-      if (prelude.startsWith("@keyframes")) {
-        keyframes.push(prelude.slice("@keyframes".length).trim());
-        stack.push("keyframes");
-      } else if (prelude.startsWith("@")) {
-        stack.push("at");
-      } else if (top === "keyframes") {
-        stack.push("kf-step");
-      } else {
-        const group = splitSelectors(prelude);
-        selectors.push(...group);
-        ruleGroups.push(group);
-        stack.push("rule");
-      }
-    } else if (ch === "}") {
-      stack.pop();
-      buf = "";
-    } else if (ch === ";") {
-      const stmt = buf.trim();
-      buf = "";
-      if (stack.length === 0 && stmt.startsWith("@import")) imports.push(stmt);
-    } else buf += ch;
-  }
-  return { selectors, ruleGroups, keyframes, imports };
-}
-
 /** The declaration body of the first rule whose selector list contains
  * `selectorSubstr`, or null. `css` must be comment-stripped; these simple
  * `:disabled` blocks never nest braces, so an innermost-brace scan is enough. */
@@ -145,11 +74,9 @@ function ruleBodyFor(css, selectorSubstr) {
 
 function themeCssFiles(theme) {
   const dir = join(ROOT, theme);
-  const files = ["tokens.css", "base.css"];
-  for (const f of readdirSync(join(dir, "components"))) {
-    if (f.endsWith(".css")) files.push(join("components", f));
-  }
-  return files.map((f) => join(dir, f));
+  return ["tokens.css", "base.css", ...componentFiles(theme).map((f) => join("components", f))].map((f) =>
+    join(dir, f),
+  );
 }
 
 /** Escape a literal string for embedding in a RegExp. */
@@ -305,7 +232,7 @@ test("every theme ships every required component file", () => {
 });
 
 test("all.css imports every theme and nothing else", () => {
-  const { imports, selectors } = parseCss(readFileSync(join(ROOT, "all.css"), "utf-8"));
+  const { imports, selectors } = parseCss(cssOf(join(ROOT, "all.css")));
   assert.deepEqual(selectors, []);
   const imported = imports.map((i) => i.match(/"\.\/([^/]+)\/index\.css"/)?.[1]).sort();
   assert.deepEqual(imported, [...themeDirs].sort());
@@ -334,7 +261,7 @@ test("_shared/structure.css is guarded by the bare attribute, never a theme valu
   // The shared file applies under every theme, so its selectors use the bare
   // `[data-rb-style]` (any value) -- the one place that guard shape is allowed.
   // It must still never pin a specific theme value, or it would stop being shared.
-  const { selectors } = parseCss(readFileSync(join(ROOT, "_shared", "structure.css"), "utf-8"));
+  const { selectors } = parseCss(cssOf(join(ROOT, "_shared", "structure.css")));
   assert.ok(selectors.length > 0, "_shared/structure.css has no rules");
   for (const sel of selectors) {
     assert.ok(sel.includes("[data-rb-style]"), `structure.css: unguarded selector: ${sel}`);
@@ -354,7 +281,7 @@ for (const theme of themeDirs) {
 
   test(`${theme}: every selector is guarded by its own opt-in attribute`, () => {
     for (const file of themeCssFiles(theme)) {
-      const { selectors } = parseCss(readFileSync(file, "utf-8"));
+      const { selectors } = parseCss(cssOf(file));
       for (const sel of selectors) {
         assert.ok(sel.includes(guard), `${file}: unguarded selector: ${sel}`);
       }
@@ -363,7 +290,7 @@ for (const theme of themeDirs) {
 
   test(`${theme}: index.css pulls the shared structure, tokens, base, and every component file`, () => {
     const { imports, selectors } = parseCss(
-      readFileSync(join(ROOT, theme, "index.css"), "utf-8")
+      cssOf(join(ROOT, theme, "index.css"))
     );
     assert.deepEqual(selectors, []);
     // The shared structural file is imported first (issue #52); it resolves out
@@ -380,7 +307,7 @@ for (const theme of themeDirs) {
   });
 
   test(`${theme}: declares the full baseline token set and a color-scheme`, () => {
-    const raw = readFileSync(join(ROOT, theme, "tokens.css"), "utf-8");
+    const raw = cssOf(join(ROOT, theme, "tokens.css"));
     const declared = declaredTokens(raw);
     const missing = REQUIRED_TOKENS.filter((t) => !declared.has(t));
     assert.deepEqual(missing, [], `${theme} misses baseline tokens`);
@@ -390,7 +317,7 @@ for (const theme of themeDirs) {
   });
 
   test(`${theme}: color-scheme matches the manifest`, () => {
-    const raw = readFileSync(join(ROOT, theme, "tokens.css"), "utf-8");
+    const raw = cssOf(join(ROOT, theme, "tokens.css"));
     assert.equal(declaredScheme(raw), manifest.themes[theme].scheme);
   });
 
@@ -402,7 +329,7 @@ for (const theme of themeDirs) {
     const allowedExtras = new Set(contract.extras[theme] ?? []);
     const found = new Set();
     for (const file of themeCssFiles(theme)) {
-      const { selectors } = parseCss(readFileSync(file, "utf-8"));
+      const { selectors } = parseCss(cssOf(file));
       for (const sel of selectors) {
         for (const m of sel.match(/\.rb-[\w-]+/g) ?? []) {
           found.add(m.slice(1));
@@ -433,7 +360,7 @@ for (const theme of themeDirs) {
     const DIM_BASES = ["rb-btn", "rb-tab", "rb-tabstrip__tab", "rb-chip"];
     let sawHover = false;
     for (const file of themeCssFiles(theme)) {
-      const src = readFileSync(file, "utf-8");
+      const src = cssOf(file);
       const stripped = stripComments(src);
       const { selectors } = parseCss(src);
       // (a) Hover scoping.
@@ -481,7 +408,7 @@ for (const { file, class: cls } of REQUIRED_CLASSES) {
       const allowed = CLASS_ALLOWLIST.find((a) => (a.theme === "*" || a.theme === theme) && a.class === cls);
       const guard = `[data-rb-style="${theme}"]`;
       const cssFile = join(ROOT, theme, "components", file);
-      const { selectors } = parseCss(readFileSync(cssFile, "utf-8"));
+      const { selectors } = parseCss(cssOf(cssFile));
       const matches = selectors.filter((s) => re.test(s));
       if (allowed) {
         assert.deepEqual(
@@ -549,7 +476,7 @@ for (const pair of contract.ariaPairs) {
     for (const theme of themeDirs) {
       const exempt = pair.exempt.find((e) => e.theme === theme);
       const cssFile = join(ROOT, theme, "components", file);
-      const { ruleGroups } = parseCss(readFileSync(cssFile, "utf-8"));
+      const { ruleGroups } = parseCss(cssOf(cssFile));
       // The attribute selector must be scoped to the same base element
       // (.rb-tab, .rb-link, .rb-stepper__step) as the modifier class -- not
       // merely co-occur in the same rule group, which an unrelated selector
@@ -580,7 +507,7 @@ for (const theme of themeDirs) {
     for (const file of themeCssFiles(theme)) {
       // tokens.css/base.css hold canvas + bare-element rules, not component rules.
       if (!/[\\/]components[\\/]/.test(file)) continue;
-      const { selectors } = parseCss(readFileSync(file, "utf-8"));
+      const { selectors } = parseCss(cssOf(file));
       for (const sel of selectors) {
         const reason = forbiddenNest(stripGuard(sel));
         assert.equal(reason, null, `${file}: ${reason}`);
@@ -648,7 +575,7 @@ for (const theme of themeDirs) {
       if (!/[\\/]components[\\/]/.test(file)) continue;
       const rel = `${theme}/${file.split(/[\\/]/).pop()}`;
       const allowed = new Set((permitted[rel] ?? []).map((h) => h.toLowerCase()));
-      const css = removeColorMix(stripComments(readFileSync(file, "utf-8")));
+      const css = removeColorMix(stripComments(cssOf(file)));
       // Data-URI SVG strokes are %23-encoded and never match this; #fff/#000
       // inside a mix are stripped above.
       for (const m of css.matchAll(/#[0-9a-fA-F]{3,8}\b/g)) {
@@ -672,7 +599,7 @@ test("dialog backdrop blurs with var(--rb-blur), not a literal (or is exempt, se
   const tokenRe = new RegExp(`var\\(\\s*${reEscape(token)}\\s*\\)`);
   for (const theme of themeDirs) {
     const exempt = contract.dialogBackdropBlur.exempt.find((e) => e.theme === theme);
-    const css = readFileSync(join(ROOT, theme, "components", "dialog.css"), "utf-8");
+    const css = cssOf(join(ROOT, theme, "components", "dialog.css"));
     const backdropBlock = css.match(/::backdrop\s*\{([^}]*)\}/);
     const usesToken = !!backdropBlock && tokenRe.test(backdropBlock[1]);
     if (exempt?.permanent) continue; // by-design (no backdrop-filter at all), never checked either way
@@ -698,7 +625,7 @@ test("every theme's progress.css styles the native <progress> pseudo-elements, n
   // consumer (issue #28).
   for (const theme of themeDirs) {
     const file = join(ROOT, theme, "components", "progress.css");
-    const { selectors } = parseCss(readFileSync(file, "utf-8"));
+    const { selectors } = parseCss(cssOf(file));
     const guard = `[data-rb-style="${theme}"]`;
     const barDiv = selectors.filter((s) => /\.rb-progress__bar/.test(s));
     assert.deepEqual(barDiv, [], `${theme}: progress.css still styles a .rb-progress__bar div`);
@@ -722,7 +649,7 @@ test("every theme's progress.css styles :indeterminate on both progress pseudo-e
   // this exact feature during development -- verified by mutation below).
   for (const theme of themeDirs) {
     const file = join(ROOT, theme, "components", "progress.css");
-    const raw = stripComments(readFileSync(file, "utf-8"));
+    const raw = stripComments(cssOf(file));
     const { selectors, ruleGroups } = parseCss(raw);
     const guard = `[data-rb-style="${theme}"]`;
     const webkitIndeterminate = selectors.filter((s) =>
@@ -751,7 +678,7 @@ test("keyframe names are rb-prefixed and unique across all themes", () => {
   const seen = new Map();
   for (const theme of themeDirs) {
     for (const file of themeCssFiles(theme)) {
-      for (const name of parseCss(readFileSync(file, "utf-8")).keyframes) {
+      for (const name of parseCss(cssOf(file)).keyframes) {
         assert.match(name, /^rb-/, `${file}: keyframe ${name}`);
         assert.ok(!seen.has(name), `keyframe ${name} in both ${seen.get(name)} and ${file}`);
         seen.set(name, file);
@@ -769,7 +696,7 @@ test("every animation/animation-name reference resolves to a same-file @keyframe
   // keyframe silently breaks the consumer with no local signal.
   for (const theme of themeDirs) {
     for (const file of themeCssFiles(theme)) {
-      const raw = stripComments(readFileSync(file, "utf-8"));
+      const raw = stripComments(cssOf(file));
       const localKf = new Set(parseCss(raw).keyframes);
       for (const m of raw.matchAll(/animation(?:-name)?\s*:\s*([^;{}]+)/g)) {
         for (const word of m[1].match(/[\w-]+/g) ?? []) {
@@ -834,7 +761,7 @@ for (const theme of themeDirs) {
   test(`${theme}: tokens.css collapses --rb-transition to 0 under prefers-reduced-motion (#51)`, () => {
     // Transitions are reduced repo-wide by one guarded token block per theme,
     // not a per-file override -- so a component file can never forget it.
-    const raw = stripComments(readFileSync(join(ROOT, theme, "tokens.css"), "utf-8"));
+    const raw = stripComments(cssOf(join(ROOT, theme, "tokens.css")));
     const guard = `[data-rb-style="${theme}"]`;
     const ok = reducedMotionBlocks(raw).some(
       (b) => b.includes(guard) && /--rb-transition:\s*0(s|ms)?\s*;/.test(b),
@@ -851,7 +778,7 @@ for (const theme of themeDirs) {
     // per-file override the --rb-transition token now duplicates.
     for (const file of themeCssFiles(theme)) {
       if (!/[\\/]components[\\/]/.test(file)) continue;
-      for (const block of reducedMotionBlocks(stripComments(readFileSync(file, "utf-8")))) {
+      for (const block of reducedMotionBlocks(stripComments(cssOf(file)))) {
         assert.ok(
           !/transition\s*:/.test(block),
           `${file}: a prefers-reduced-motion block declares a transition -- remove it; --rb-transition: 0s already reduces every transition`,
@@ -886,10 +813,10 @@ for (const theme of themeDirs) {
     const classesIn = (text) => (text.match(/\.rb-[\w-]+/g) ?? []).map((c) => c.slice(1));
     const trailingPseudoElement = (sel) => sel.match(/::([\w-]+)\s*$/)?.[1] ?? null;
     const kfNames = [
-      ...new Set(themeCssFiles(theme).flatMap((f) => parseCss(readFileSync(f, "utf-8")).keyframes)),
+      ...new Set(themeCssFiles(theme).flatMap((f) => parseCss(cssOf(f)).keyframes)),
     ];
     for (const file of themeCssFiles(theme)) {
-      const raw = stripComments(readFileSync(file, "utf-8"));
+      const raw = stripComments(cssOf(file));
       // Each override kept as its own {classes, pseudo} entry, not flattened
       // into one block-wide class set -- so an override scoped to one
       // pseudo-element is never read as covering the bare host or a
@@ -910,9 +837,15 @@ for (const theme of themeDirs) {
         for (const sel of splitSelectors(enclosingSelector(raw, m.index))) {
           const onClasses = classesIn(sel);
           const pseudo = trailingPseudoElement(sel);
+          // Exact pseudo match both ways: a host-level animation (pseudo ===
+          // null) needs a host-level override, not one scoped to some
+          // pseudo-element of the same class (e.g. .rb-x::before) -- the old
+          // `pseudo === null || ...` short-circuited this case, letting an
+          // unrelated pseudo-scoped override "cover" a host animation it
+          // never touches (#86 review, round 2).
           const covered = reducedEntries.some(
             (e) =>
-              (pseudo === null || e.pseudo === pseudo) &&
+              e.pseudo === pseudo &&
               onClasses.some((c) => e.classes.has(c) || e.classes.has(elemId(c))),
           );
           assert.ok(
@@ -933,7 +866,7 @@ for (const theme of themeDirs) {
     // must read its duration from var(--rb-transition). 0s is already instant.
     for (const file of themeCssFiles(theme)) {
       if (!/[\\/]components[\\/]/.test(file)) continue;
-      const raw = stripComments(readFileSync(file, "utf-8"));
+      const raw = stripComments(cssOf(file));
       for (const m of raw.matchAll(/(?:^|[;{}])\s*transition(?:-duration)?\s*:\s*([^;{}]+)/gi)) {
         for (const t of m[1].matchAll(/(?<![\w.])(\d*\.?\d+)\s*(ms|s)\b/gi)) {
           assert.ok(
@@ -949,7 +882,7 @@ for (const theme of themeDirs) {
 // -- contract 2: --rb-focus-ring + --rb-ease (issue #54) ----------------------
 for (const theme of themeDirs) {
   test(`${theme}: --rb-focus-ring is an accent-based outline value (#54)`, () => {
-    const raw = stripComments(readFileSync(join(ROOT, theme, "tokens.css"), "utf-8"));
+    const raw = stripComments(cssOf(join(ROOT, theme, "tokens.css")));
     const m = raw.match(/--rb-focus-ring:\s*([^;]+);/);
     assert.ok(m, `${theme}: --rb-focus-ring not declared`);
     assert.match(
@@ -963,7 +896,7 @@ for (const theme of themeDirs) {
     // The base rule and every component override that draws an accent outline go
     // through the token, so a theme sets what focus looks like in one place.
     for (const file of themeCssFiles(theme)) {
-      const raw = stripComments(readFileSync(file, "utf-8"));
+      const raw = stripComments(cssOf(file));
       for (const m of raw.matchAll(/outline:\s*([^;]+);/g)) {
         assert.ok(
           !/solid\s+var\(--rb-accent\)/.test(m[1]),
@@ -979,7 +912,7 @@ for (const theme of themeDirs) {
     // so a theme's motion character lives in tokens, not scattered literals.
     for (const file of themeCssFiles(theme)) {
       if (!/[\\/]components[\\/]/.test(file)) continue;
-      const raw = stripComments(readFileSync(file, "utf-8"));
+      const raw = stripComments(cssOf(file));
       for (const m of raw.matchAll(/(?:^|[;{}])\s*transition\s*:\s*([^;{}]+)/g)) {
         for (const item of m[1].split(",")) {
           if (!item.includes("var(--rb-transition)")) continue;

@@ -26,6 +26,7 @@ import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import { renderReact, renderClass } from "./generate-skill-table.mjs";
+import { extractKeyframeNames } from "../styles/test/css.mjs";
 
 const ROOT = resolve(fileURLToPath(import.meta.url), "../..");
 const STYLES = join(ROOT, "styles");
@@ -82,19 +83,9 @@ export function deriveShort(id) {
   return parts.length > 1 ? parts.slice(1).join("-") : id;
 }
 
-function stripComments(css) {
-  return css.replace(/\/\*[\s\S]*?\*\//g, "");
-}
-
 /** Every distinct @keyframes name declared across a theme's CSS file contents. */
 export function keyframeNames(cssContents) {
-  const names = new Set();
-  for (const css of cssContents) {
-    for (const m of stripComments(css).matchAll(/@keyframes\s+(rb-[\w-]+)/g)) {
-      names.add(m[1]);
-    }
-  }
-  return [...names];
+  return [...new Set(cssContents.flatMap((css) => extractKeyframeNames(css)))];
 }
 
 /** Resolve --from's real keyframe short-name prefix, verifying the cheap
