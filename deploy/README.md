@@ -1,8 +1,10 @@
 # Hosting the showcase: `styles.rackbops.com`
 
 The `site/` gallery (theme switcher over the twelve themes) is also reachable at a gated hosted
-URL, in addition to the local `pnpm showcase` dev server (`site/serve.mjs` -- unrelated, untouched
-by this).
+URL, in addition to the local `pnpm showcase` dev server (`site/serve.mjs` -- allowlists the same
+two directories as `nginx.conf` below, issue #90; see that file's header for the deliberate `/`
+divergence and the disclosed Windows/macOS case-insensitive-filesystem quirk, neither of which
+applies to the Linux-hosted nginx below).
 
 ## Shape
 
