@@ -5,36 +5,46 @@ on:
     tags:
       - "v*"
 
-# Public npm publish. The DEFAULT path is OIDC trusted publishing -- no
-# long-lived token: GitHub mints a short-lived OIDC id-token (hence
-# `id-token: write`) and npm exchanges it against the trusted publisher
-# configured on npmjs.com for each package (organization Rackbops / repository
-# rackbops-ui-ux-std-lib / workflow publish.yml), generating provenance
-# attestations automatically. `contents: write` covers the checkout and the
-# GitHub release created at the end of this job (see below).
+# Public npm publish, via `pnpm -r publish` (issue #88 item 6). The DEFAULT
+# path is OIDC trusted publishing -- no long-lived token: GitHub mints a
+# short-lived OIDC id-token (hence `id-token: write`) and pnpm's own publish
+# command exchanges it against the trusted publisher configured on
+# npmjs.com for each package (organization Rackbops / repository
+# rackbops-ui-ux-std-lib / workflow publish.yml). Unlike pnpm v10, which
+# shelled out to `npm publish` for this, pnpm v11+ performs the OIDC
+# exchange natively -- verified working (a real placeholder-substitution bug
+# in that native path, breaking exactly the no-token/no-registry-url setup
+# this workflow uses, was fixed in pnpm 11.1.3: pnpm/pnpm#11526). Provenance
+# attestations are NOT automatic under pnpm the way they are under npm --
+# the publish step below passes `--provenance` explicitly, only in OIDC
+# mode. `contents: write` covers the checkout and the GitHub release created
+# at the end of this job (see below).
 #
 # BREAK-GLASS FALLBACK: if an `NPM_TOKEN` secret is set, the preflight step uses
 # it for classic token auth instead and OIDC is bypassed -- a manual escape
-# hatch for when the trusted publisher isn't configured yet or npm's OIDC is
+# hatch for when the trusted publisher isn't configured yet or the OIDC path is
 # down. Leave the secret UNSET for normal operation; the preflight then requires
 # the OIDC prerequisites. Token auth does not emit provenance.
 #
 # setup-node deliberately does NOT set `registry-url`: that makes it write a
 # `//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}` line into .npmrc, and
-# in the (default) no-token case that line is an empty `_authToken=` -- npm then
-# assumes auth is already configured and skips the OIDC exchange, failing with
-# ENEEDAUTH (actions/setup-node#1551). The token fallback instead writes that
-# auth line itself, only when a token actually exists. The default registry
-# (registry.npmjs.org) is the publish target with no registry-url set.
+# in the (default) no-token case that line is an empty `_authToken=` -- which
+# makes pnpm (like npm) assume auth is already configured and skip the OIDC
+# exchange, failing with ENEEDAUTH (actions/setup-node#1551; pnpm/pnpm#11526
+# is the same failure shape one layer down, an unresolved `${NODE_AUTH_TOKEN}`
+# placeholder rather than a literal empty value). The token fallback instead
+# writes that auth line itself, only when a token actually exists. The
+# default registry (registry.npmjs.org) is the publish target with no
+# registry-url set.
 #
 # `contents: write` (issue #88): this job also creates the GitHub release for
 # the tag it just published, via the final "Create the GitHub release" step
 # below -- release.sh (release.yml) no longer does that itself. Placed LAST,
-# after the npm publish step, so a failed publish withholds the release
+# after the publish step succeeds, so a failed publish withholds the release
 # entirely rather than creating one for packages that never actually shipped;
 # re-running the job after such a failure completes both (this step is
-# idempotent -- see publish-release.sh -- and so is the publish step's own
-# already-published skip loop above).
+# idempotent -- see publish-release.sh -- and `pnpm -r publish`'s own
+# already-published skip, recursive-workspace-builtin, above).
 permissions:
   contents: write
   id-token: write
@@ -56,19 +66,21 @@ jobs:
       - uses: actions/setup-node@v7
         with:
           node-version: 24
-      # Trusted publishing requires npm CLI >= 11.5.1 (and Node >= 22.14).
-      # Upgrade explicitly rather than depend on whatever npm the pinned Node
-      # bundles. Pinned to the 11.x line (>= 11.5.1) so an unattended release
-      # (release.yml pushes the tag) can't break on a surprise npm major that
-      # raises its own Node floor above the runner's.
-      - run: npm install -g npm@^11.5.1
+      # No npm-upgrade step here: trusted publishing is pnpm's own OIDC
+      # exchange now (>= 11.1.3, see the header), and pnpm/action-setup@v6
+      # already installed the version pinned in package.json's
+      # packageManager field, well above that floor. The only remaining use
+      # of the `npm` binary itself in this job is `npm config set` in the
+      # BREAK-GLASS token-auth branch below, which needs no specific
+      # version -- whatever Node 24 bundles is enough for that.
 
       # Decide the auth path and fail fast, with an actionable message, when its
-      # prerequisites are missing -- otherwise `npm publish` bails out two steps
-      # later (after install + build) with a bare ENEEDAUTH, which npm emits for
-      # every auth problem, a missing/mismatched trusted publisher included
-      # (npm/cli#9088). The mode chosen here is exported for the publish step so
-      # its error trap can name the right cause.
+      # prerequisites are missing -- otherwise the publish step bails out two
+      # steps later (after install + build) with a bare ENEEDAUTH, which pnpm
+      # (surfacing npm's own error codes) emits for every auth problem, a
+      # missing/mismatched trusted publisher included (npm/cli#9088). The mode
+      # chosen here is exported for the publish step so its error trap can
+      # name the right cause.
       #
       # NODE_AUTH_TOKEN comes from the optional NPM_TOKEN secret (empty when
       # unset -- the secrets context isn't allowed in `if:`, so the branch is in
@@ -92,27 +104,32 @@ jobs:
           echo "PUBLISH_AUTH_MODE=oidc" >> "$GITHUB_ENV"
           fail=0
 
-          # (1) id-token: write must be in effect, or npm has no token to
+          # (1) id-token: write must be in effect, or pnpm has no token to
           # exchange. GitHub exposes the mint endpoint via these two vars.
           if [ -z "${ACTIONS_ID_TOKEN_REQUEST_URL:-}" ] || [ -z "${ACTIONS_ID_TOKEN_REQUEST_TOKEN:-}" ]; then
             echo "::error::OIDC id-token unavailable -- the job is missing 'permissions: id-token: write' (or it was overridden). Trusted publishing cannot authenticate. Set an NPM_TOKEN secret to fall back to token auth."
             fail=1
           fi
 
-          # (2) npm must be >= 11.5.1 -- the floor that speaks the exchange. An
-          # older npm ignores OIDC silently and falls through to token auth.
-          need=11.5.1; have="$(npm --version)"
+          # (2) pnpm must be >= 11.1.3 -- the release that fixed a real
+          # native-OIDC bug (pnpm/pnpm#11526): an unresolved
+          # `${NODE_AUTH_TOKEN}` placeholder (exactly this workflow's
+          # no-token setup) was passed through literally instead of treated
+          # as absent, so OIDC never got a chance to run. package.json pins
+          # a pnpm version well above this floor; the check stays as a
+          # tripwire against that pin ever regressing.
+          need=11.1.3; have="$(pnpm --version)"
           if [ "$(printf '%s\n%s\n' "$need" "$have" | sort -V | head -n1)" != "$need" ]; then
-            echo "::error::npm ${have} is below the 11.5.1 trusted-publishing floor -- the 'npm install -g npm@^11.5.1' step did not take effect."
+            echo "::error::pnpm ${have} is below the 11.1.3 native-OIDC floor (pnpm/pnpm#11526) -- bump packageManager in package.json."
             fail=1
           fi
 
           # (3) No _authToken may be configured. setup-node writes one when given
-          # registry-url; with no token secret it is empty, and npm then assumes
+          # registry-url; with no token secret it is empty, and pnpm then assumes
           # auth is set and skips the OIDC exchange (actions/setup-node#1551).
           for rc in "${NPM_CONFIG_USERCONFIG:-$HOME/.npmrc}" "$HOME/.npmrc" "${RUNNER_TEMP:-/nonexistent}/.npmrc" ".npmrc"; do
             if [ -f "$rc" ] && grep -q '_authToken' "$rc"; then
-              echo "::error::${rc} sets an _authToken line, which makes npm skip the OIDC exchange (actions/setup-node#1551). Do not pass registry-url to setup-node in this workflow."
+              echo "::error::${rc} sets an _authToken line, which makes pnpm skip the OIDC exchange (actions/setup-node#1551). Do not pass registry-url to setup-node in this workflow."
               fail=1
             fi
           done
@@ -120,7 +137,7 @@ jobs:
           if [ "$fail" -ne 0 ]; then
             exit 1
           fi
-          echo "Preflight OK: id-token present, npm ${have}, no _authToken override."
+          echo "Preflight OK: id-token present, pnpm ${have}, no _authToken override."
 
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
@@ -163,13 +180,22 @@ jobs:
       # 403 "cannot publish over previously published version" (issue #33).
       # Each package's `prepack` lifecycle script still runs as part of
       # `pnpm publish` (copy-license.mjs for LICENSE/NOTICE, bundle-css.mjs
-      # for styles' bundle.css), same as the old per-package `npm publish`.
+      # for styles' bundle.css).
+      #
+      # --provenance: only in OIDC mode -- it needs the same id-token
+      # exchange, so it's meaningless (and unsupported) under token auth.
+      # Unlike npm, pnpm does not attach provenance automatically under
+      # trusted publishing; this flag is what actually requests it.
       - name: Publish every workspace package
         run: |
+          provenance_flag=()
+          if [ "${PUBLISH_AUTH_MODE:-oidc}" = "oidc" ]; then
+            provenance_flag=(--provenance)
+          fi
           # Capture output so an auth failure can be reframed to the actual
           # cause for the mode preflight chose (pnpm surfaces npm's own
           # error codes -- a bare ENEEDAUTH/E401/E404 -- npm/cli#9088).
-          if ! out="$(pnpm -r publish --no-git-checks --access public 2>&1)"; then
+          if ! out="$(pnpm -r publish --no-git-checks --access public "${provenance_flag[@]}" 2>&1)"; then
             printf '%s\n' "${out}" >&2
             if printf '%s' "${out}" | grep -Eq 'ENEEDAUTH|E401|E404|need auth|Unable to authenticate'; then
               if [ "${PUBLISH_AUTH_MODE:-oidc}" = "token" ]; then
