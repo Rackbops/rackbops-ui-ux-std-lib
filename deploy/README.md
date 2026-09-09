@@ -1,16 +1,20 @@
 # Hosting the showcase: `styles.rackbops.com`
 
 The `site/` gallery (theme switcher over the twelve themes) is also reachable at a gated hosted
-URL, in addition to the local `pnpm showcase` dev server (`site/serve.mjs` -- unrelated, untouched
-by this).
+URL, in addition to the local `pnpm showcase` dev server (`site/serve.mjs` -- allowlists the same
+two directories as `nginx.conf` below, issue #90; see that file's header for the one place the two
+intentionally differ).
 
 ## Shape
 
 - **Origin**: `nginx:alpine` (`compose.yaml`'s `web` service), repo root mounted read-only as the
   web root -- `site/index.html` imports `../styles/all.css`, a sibling of `site/`, so nginx must
-  serve the whole repo root for that import to resolve. `nginx.conf` denies `.git/`, this repo's own
-  `compose.yaml`/`nginx.conf`, and `deploy/` despite the repo-root mount, and redirects a bare `/`
-  to `/site/` (there is no root `index.html`).
+  serve the whole repo root for that import to resolve. `nginx.conf` is an **allowlist**: only
+  `site/` and `styles/` (plus `/healthz` for liveness) are served; everything else the repo-root
+  mount exposes -- `.git/`, this repo's own `compose.yaml`/`nginx.conf`, `deploy/`, or any other
+  repo-root file -- falls through to a catch-all `location /` that returns a real `404`, with no
+  per-file deny list to keep in sync as the repo grows. A bare `/` gets an explicit `302` to
+  `/site/` (there is no root `index.html`).
 - **No published host port.** Unlike the generic loopback-bound-port pattern, `web` publishes
   nothing at all -- it's reachable only in-network by the `cloudflared` sidecar in the same compose
   project.

@@ -1,12 +1,14 @@
 // Regression tests for the security-relevant logic in serve.mjs -- this
-// exact containment/.git check has needed three rounds of fixes (a naive
-// prefix check, a case-sensitive .git exclusion, a string-only check
-// defeated by an NTFS 8.3 short name alias), so it gets its own test file
-// rather than trusting review alone to catch a fourth regression.
-import { test } from "node:test";
+// exact containment/allowlist check has needed several rounds of fixes (a
+// naive prefix check, a case-sensitive .git exclusion, a string-only check
+// defeated by an NTFS 8.3 short name alias, and now the site/styles
+// allowlist replacing the old .git-only denylist -- issue #90, mirroring
+// #89's nginx.conf), so it gets its own test file rather than trusting
+// review alone to catch a regression.
+import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
 import { resolve, sep } from "node:path";
-import { decodePathname, isForbiddenRelativePath, resolveSafePath } from "./serve.mjs";
+import { decodePathname, isForbiddenRelativePath, resolveSafePath, server } from "./serve.mjs";
 
 /** resolveSafePath rejecting is the "forbidden" contract; anything else
  * (a plain file-not-found) is a different failure this suite doesn't
@@ -20,8 +22,8 @@ async function isForbidden(pathname) {
   }
 }
 
-// -- resolveSafePath: the full chain (URL decode -> join/normalize ->
-// realpath -> isForbiddenRelativePath) against real requests and real files.
+// -- resolveSafePath: the full chain (URL decode -> join -> realpath ->
+// isForbiddenRelativePath) against real requests and real files.
 
 test("resolves a real in-root file", async () => {
   const filePath = await resolveSafePath(decodePathname("/site/serve.mjs"));
@@ -62,12 +64,13 @@ test(
   },
 );
 
-test("plain .. is collapsed by the URL parser itself, before decode -- not a bypass", async () => {
+test("plain .. is collapsed by the URL parser itself, before decode -- not a traversal, but package.json is outside the allowlist anyway", async () => {
   // The WHATWG URL parser collapses a literal "/../" dot segment at parse
-  // time (unlike the %2f-encoded form above), so this resolves to the real
-  // package.json at ROOT, neither escaping nor 404ing.
-  const filePath = await resolveSafePath(decodePathname("/../package.json"));
-  assert.match(filePath, /package\.json$/);
+  // time (unlike the %2f-encoded form above), so this resolves to the real,
+  // in-root package.json -- no escape occurred. It's still rejected, though:
+  // package.json isn't under site/ or styles/, so the allowlist forbids it
+  // the same as any other repo-root file.
+  assert.ok(await isForbidden(decodePathname("/../package.json")));
 });
 
 test("a real file starting with two dots but no separator after resolves normally", async () => {
@@ -85,30 +88,7 @@ test("a real file starting with two dots but no separator after resolves normall
 // -- isForbiddenRelativePath: the pure decision logic, unit-tested directly
 // with synthetic relative paths. This is what actually decides "forbidden"
 // once realpath has already resolved any filesystem-level aliasing (case,
-// an NTFS 8.3 short name, a symlink) down to a real path -- exercising it
-// this way doesn't depend on what a given checkout's .git looks like on
-// disk (a worktree's own .git is a plain pointer file, not a directory, so
-// a real "/.git/config" request can't reliably exercise this everywhere
-// this suite might run).
-
-test("isForbiddenRelativePath: an exact .git segment is forbidden, at any depth", () => {
-  assert.equal(isForbiddenRelativePath(".git"), true);
-  assert.equal(isForbiddenRelativePath([".git", "config"].join(sep)), true);
-  assert.equal(isForbiddenRelativePath([".git", "refs", "heads", "main"].join(sep)), true);
-  assert.equal(isForbiddenRelativePath(["site", ".git", "config"].join(sep)), true);
-});
-
-test("isForbiddenRelativePath: the .git match is case-insensitive", () => {
-  for (const variant of [".GIT", ".Git", ".GiT", ".gIt"]) {
-    assert.equal(isForbiddenRelativePath([variant, "config"].join(sep)), true, variant);
-  }
-});
-
-test("isForbiddenRelativePath: a segment merely containing .git as a substring is not blocked", () => {
-  assert.equal(isForbiddenRelativePath([".github-stuff", "x.txt"].join(sep)), false);
-  assert.equal(isForbiddenRelativePath(["mygit", "x.txt"].join(sep)), false);
-  assert.equal(isForbiddenRelativePath("gitignore.txt"), false);
-});
+// an NTFS 8.3 short name, a symlink) down to a real path.
 
 test("isForbiddenRelativePath: outside-root relative paths are forbidden", () => {
   assert.equal(isForbiddenRelativePath(".."), true);
@@ -121,10 +101,91 @@ test("isForbiddenRelativePath: outside-root relative paths are forbidden", () =>
 });
 
 test("isForbiddenRelativePath: a name starting with .. but no separator after is not traversal", () => {
-  assert.equal(isForbiddenRelativePath("..fixture-dotdot-prefix.txt"), false);
+  assert.equal(isForbiddenRelativePath(["site", "..fixture-dotdot-prefix.txt"].join(sep)), false);
 });
 
-test("isForbiddenRelativePath: an ordinary in-root relative path is allowed", () => {
-  assert.equal(isForbiddenRelativePath("index.html"), false);
+test("isForbiddenRelativePath: site/ and styles/ content is allowed, including the bare directories themselves", () => {
+  assert.equal(isForbiddenRelativePath(["site", "index.html"].join(sep)), false);
   assert.equal(isForbiddenRelativePath(["styles", "manifest.json"].join(sep)), false);
+  assert.equal(isForbiddenRelativePath("site"), false);
+  assert.equal(isForbiddenRelativePath("styles"), false);
+});
+
+test("isForbiddenRelativePath: a real repo-root file outside the allowlist is forbidden", () => {
+  for (const rel of [
+    "package.json",
+    "compose.yaml",
+    "nginx.conf",
+    [".claude", "launch.json"].join(sep),
+    ["deploy", "deploy-pull.sh"].join(sep),
+  ]) {
+    assert.equal(isForbiddenRelativePath(rel), true, rel);
+  }
+});
+
+test("isForbiddenRelativePath: .git is forbidden, with no dedicated .git check -- it's simply never a site/styles top segment", () => {
+  // The repo's real .git always sits at ROOT (top segment ".git"), never
+  // nested under site/ or styles/ -- there's no submodule or nested repo
+  // there, and nothing in this codebase creates one. That's what retires
+  // the old "walk every segment, case-insensitively" check: a lone
+  // top-segment test is enough for a path that's actually .git, and
+  // realpath has already resolved any alias (a symlink, an NTFS 8.3 short
+  // name) to where it truly lives before this function ever sees it -- so a
+  // request can't spoof its way to a top segment of "site" without a real
+  // "site" directory entry to back it.
+  assert.equal(isForbiddenRelativePath(".git"), true);
+  assert.equal(isForbiddenRelativePath([".git", "HEAD"].join(sep)), true);
+  assert.equal(isForbiddenRelativePath([".git", "refs", "heads", "main"].join(sep)), true);
+});
+
+// -- End-to-end over the real HTTP server: the issue #90 curl table,
+// checked against the exported `server` instance directly rather than
+// shelling out to `node site/serve.mjs` + curl.
+
+let baseUrl;
+before(async () => {
+  await new Promise((res) => server.listen(0, "127.0.0.1", res));
+  baseUrl = `http://127.0.0.1:${server.address().port}`;
+});
+after(async () => {
+  await new Promise((res) => server.close(res));
+});
+
+test("GET / serves site/index.html locally, 200 -- nginx 302s a bare / instead (documented divergence, see serve.mjs's header)", async () => {
+  const res = await fetch(`${baseUrl}/`);
+  assert.equal(res.status, 200);
+});
+
+test("GET /site/ serves site/index.html, 200 (matches nginx's exact-match /site/ location)", async () => {
+  const res = await fetch(`${baseUrl}/site/`);
+  assert.equal(res.status, 200);
+});
+
+test("GET /styles/manifest.json, 200", async () => {
+  const res = await fetch(`${baseUrl}/styles/manifest.json`);
+  assert.equal(res.status, 200);
+});
+
+test("GET /styles/neon-butterfly/assets/butterfly-circuit.png, 200", async () => {
+  const res = await fetch(`${baseUrl}/styles/neon-butterfly/assets/butterfly-circuit.png`);
+  assert.equal(res.status, 200);
+});
+
+test("GET /site and /styles with no trailing slash both 404 (matches nginx: its prefix locations require the slash to match, so these fall to the catch-all)", async () => {
+  for (const p of ["/site", "/styles"]) {
+    const res = await fetch(`${baseUrl}${p}`);
+    assert.equal(res.status, 404, p);
+  }
+});
+
+test("GET an index-less directory with a trailing slash still 404s (matches nginx: try_files never lists a directory)", async () => {
+  const res = await fetch(`${baseUrl}/site/__screenshots__/`);
+  assert.equal(res.status, 404);
+});
+
+test("GET a real repo-root file outside the allowlist, 403 (compose.yaml, nginx.conf, .claude/launch.json, deploy/deploy-pull.sh) -- nginx 404s these instead, since it has no separate escape-attempt case to distinguish them from", async () => {
+  for (const p of ["/compose.yaml", "/nginx.conf", "/.claude/launch.json", "/deploy/deploy-pull.sh"]) {
+    const res = await fetch(`${baseUrl}${p}`);
+    assert.equal(res.status, 403, p);
+  }
 });
