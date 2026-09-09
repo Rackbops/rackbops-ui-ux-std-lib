@@ -13,6 +13,7 @@
 :where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-dialog::backdrop {
   background: rgba(19, 30, 41, 0.4);
   backdrop-filter: blur(var(--rb-blur));
+  -webkit-backdrop-filter: blur(var(--rb-blur));
 }
 :where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-dialog__body {
   padding: var(--rb-space-5);
