@@ -118,10 +118,11 @@ throwaway script — not asserted as anything, this is documentation only):
   existing theme's `design.md` holds status colours to this bar as button
   text, and arcane-parchment's own `--rb-danger` (`#d64550`) on its `--rb-bg`
   is 4.06:1 — also under 4.5:1 — shipped with no equivalent note. Recorded
-  here rather than silently repeated, but fixing it library-wide (a token
-  change, a component-CSS change, or a documented allowlist entry, decided
-  per theme) is out of this PR's scope — it predates kenzen and affects
-  other themes too.
+  here rather than silently repeated, and filed as
+  [rackbops-ui-ux-std-lib#163](https://github.com/Rackbops/rackbops-ui-ux-std-lib/issues/163)
+  since fixing it (a token change, a component-CSS change, or a documented
+  allowlist entry, decided per theme) is out of this PR's scope — it
+  predates kenzen and affects other themes too.
 - **Status as small badge text on its own 16% tint fill** (`badge.css`'s
   `color-mix(in srgb, var(--rb-x) 16%, transparent)`, composited over
   `--rb-bg`): success 7.91:1, warning 6.36:1, info 5.17:1, **danger 2.89:1
