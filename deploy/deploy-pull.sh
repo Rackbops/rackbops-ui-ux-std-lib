@@ -97,7 +97,7 @@ main() {
   done <<< "$changed_files"
 
   (( needs_up )) && echo "rackbops-ui-ux-std-lib: compose.yaml changed -- run 'docker compose up -d' in $REPO_DIR to apply it."
-  (( needs_restart )) && echo "rackbops-ui-ux-std-lib: nginx.conf changed -- run 'docker compose restart rackbops-ui-ux-std-lib-web' in $REPO_DIR to apply it (a reload will NOT pick this up after a pull)."
+  (( needs_restart )) && echo "rackbops-ui-ux-std-lib: nginx.conf changed -- run 'docker compose restart web' in $REPO_DIR to apply it (a reload will NOT pick this up after a pull)."
   (( needs_reload_units )) && echo "rackbops-ui-ux-std-lib: a deploy/*.service or *.timer unit changed -- re-copy it to /etc/systemd/system/ and run 'sudo systemctl daemon-reload' to apply it."
   (( content_only )) && echo "rackbops-ui-ux-std-lib: site content updated; no restart needed (nginx serves the mounted files)."
 

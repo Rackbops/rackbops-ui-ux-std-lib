@@ -35,7 +35,7 @@ Sources this was adapted from:
 
 - **Site content** (anything under `site/`, `components/`, `styles/`) -- reaches the box on the next
   pull, live immediately, no restart (nginx re-reads files per request).
-- **`nginx.conf`** -- needs `docker compose restart rackbops-ui-ux-std-lib-web` on the box after it
+- **`nginx.conf`** -- needs `docker compose restart web` on the box after it
   pulls; `deploy-pull.sh` flags this in its log. A plain `nginx -s reload` does **not** pick up a
   git-pulled change (the checkout replaces the file via a new inode; Docker's single-file bind mount
   keeps watching the old one).
