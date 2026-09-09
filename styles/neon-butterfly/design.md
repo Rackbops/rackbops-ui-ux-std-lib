@@ -105,6 +105,8 @@ Class prefix `rb-`. Variants use BEM-ish modifiers (`rb-btn--accent`).
 - **Badge** `.rb-badge` + semantic modifiers.
 - **Alert** `.rb-alert` — left accent bar carries the semantic color.
 - **Dialog** `.rb-dialog` — native `<dialog>`, lilac border + glow, blurred backdrop.
+  `.rb-dialog__body` is a deliberate no-op here: the dialog pads `.rb-dialog`
+  itself.
 - **Tabs** `.rb-tabs`/`.rb-tab`/`.rb-tabpanel` — active tab underlined in lilac with text glow.
 - **Tabstrip** `.rb-tabstrip` (+ `__tab`, `--active`, `__badge`) — top-level view
   nav: bordered pill buttons on surface-2; the active tab gets accent text, an

@@ -457,14 +457,22 @@ reference in both sides' `design.md` as required here.
 A required class MAY be a deliberate no-op in one theme only when all three
 hold: the theme's `design.md` says so and why; the allowlist entry in
 `contract.json` names theme, class, and reason; and the React component's
-JSDoc or SKILL.md carries the caveat. Three cases today: `.rb-dialog__body`
-in luminous-precision, mono-field, neon-butterfly, and summer-cloud (which pad
-`.rb-dialog` instead), sanctioned by #42's verdict; `.rb-card--raised` in the
-three nazuraki ports (luminous-precision, neon-butterfly, summer-cloud),
-sanctioned by each port's `design.md` and `Card.tsx`'s JSDoc; and
-`.rb-stepper--upcoming` in all fourteen themes (the resting state, styled by
-falling through to the base node/label rule rather than an explicit
-override). All three are entered in `contract.json`'s `allowlist` `[tested]`.
+JSDoc or SKILL.md carries the caveat. An allowlist entry with `"theme": "*"`
+instead declares the class a no-op in *every* theme by design -- the resting
+state, not a per-theme exception: the first leg (a per-theme `design.md`
+mention) does not apply, since there is no theme-specific reason to document,
+but the JSDoc/SKILL.md caveat leg still does. Three cases today:
+`.rb-dialog__body` in luminous-precision, mono-field, neon-butterfly, and
+summer-cloud (which pad `.rb-dialog` instead), sanctioned by #42's verdict,
+each a per-theme allowlist row with the sentence in that theme's `design.md`;
+`.rb-card--raised` in the three nazuraki ports (luminous-precision,
+neon-butterfly, summer-cloud), sanctioned by each port's `design.md` and
+`Card.tsx`'s JSDoc, also per-theme rows; and `.rb-stepper--upcoming` (the
+resting state, styled by falling through to the base node/label rule rather
+than an explicit override), a single `"theme": "*"` row covering all fourteen
+themes, its caveat carried by `skills/design-system/SKILL.md` rather than any
+theme's `design.md`. All three are entered in `contract.json`'s `allowlist`
+`[tested]`.
 
 ### 5.4 Theme extras
 

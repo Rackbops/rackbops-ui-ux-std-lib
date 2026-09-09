@@ -153,8 +153,10 @@ prefix (verified against the source theme's real keyframe names, not just
 guessed -- pass `--from-short` if it can't verify one, e.g. for the three
 nazuraki ports), copies forward the source theme's `contract.json`
 extras/allowlist/`dialogBackdropBlur`/`permittedLiterals` exceptions (a copied
-theme inherits the source's documented omissions, like the universal
-`rb-stepper--upcoming` gap, or class-parity fails), registers it in
+theme inherits the source's per-theme documented omissions, like a nazuraki
+port's `rb-dialog__body` gap, or class-parity fails -- a `"theme": "*"`
+allowlist row, like `rb-stepper--upcoming`'s, already covers every theme and
+is never cloned), registers it in
 `styles/manifest.json`, `styles/package.json` (`files` + its 5 `exports`
 keys), `styles/all.css`, `styles/contract.json`, and README.md's themes
 table, and writes a `design.md` stub (Color table pre-filled with the copied
