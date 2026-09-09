@@ -25,8 +25,17 @@ on:
 # ENEEDAUTH (actions/setup-node#1551). The token fallback instead writes that
 # auth line itself, only when a token actually exists. The default registry
 # (registry.npmjs.org) is the publish target with no registry-url set.
+#
+# `contents: write` (issue #88): this job also creates the GitHub release for
+# the tag it just published, via the final "Create the GitHub release" step
+# below -- release.sh (release.yml) no longer does that itself. Placed LAST,
+# after the npm publish step, so a failed publish withholds the release
+# entirely rather than creating one for packages that never actually shipped;
+# re-running the job after such a failure completes both (this step is
+# idempotent -- see publish-release.sh -- and so is the publish step's own
+# already-published skip loop above).
 permissions:
-  contents: read
+  contents: write
   id-token: write
 
 jobs:
@@ -34,6 +43,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
+        with:
+          # release-notes.sh needs the prior release tag too, to scope the
+          # changelog range -- both need full history and every tag, not
+          # just the one that triggered this run.
+          fetch-depth: 0
+          fetch-tags: true
       - uses: pnpm/action-setup@v6
       # No registry-url / scope here -- see the header comment: setting
       # registry-url writes an empty _authToken into .npmrc and breaks OIDC.
@@ -163,3 +178,15 @@ jobs:
             fi
             printf '%s\n' "${out}"
           done < /tmp/publishable-packages.tsv
+
+      # LAST, after publishing actually succeeds -- see the permissions
+      # comment above for why. RELEASE_TOKEN (falling back to the default
+      # GITHUB_TOKEN when unset, mirroring release.yml) so the release is
+      # attributed to roshne rather than github-actions[bot]; either way
+      # `contents: write` above is enough to create it.
+      - name: Create the GitHub release
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_TOKEN || github.token }}
+        run: |
+          chmod +x .github/scripts/*.sh
+          .github/scripts/publish-release.sh "$GITHUB_REF_NAME"
