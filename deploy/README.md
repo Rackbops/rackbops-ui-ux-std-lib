@@ -8,9 +8,10 @@ by this).
 
 - **Origin**: `nginx:alpine` (`compose.yaml`'s `web` service), repo root mounted read-only as the
   web root -- `site/index.html` imports `../styles/all.css`, a sibling of `site/`, so nginx must
-  serve the whole repo root for that import to resolve. `nginx.conf` denies `.git/`, this repo's own
-  `compose.yaml`/`nginx.conf`, and `deploy/` despite the repo-root mount, and redirects a bare `/`
-  to `/site/` (there is no root `index.html`).
+  serve the whole repo root for that import to resolve. `nginx.conf` is an allowlist: only `/site/`
+  and `/styles/` are served, so `.git/`, this repo's own `compose.yaml`/`nginx.conf`, `deploy/` and
+  every other repo-root path answer 404 despite the mount; a bare `/` redirects to `/site/` (there
+  is no root `index.html`).
 - **No published host port.** Unlike the generic loopback-bound-port pattern, `web` publishes
   nothing at all -- it's reachable only in-network by the `cloudflared` sidecar in the same compose
   project.
@@ -35,7 +36,7 @@ Sources this was adapted from:
 
 - **Site content** (anything under `site/`, `components/`, `styles/`) -- reaches the box on the next
   pull, live immediately, no restart (nginx re-reads files per request).
-- **`nginx.conf`** -- needs `docker compose restart rackbops-ui-ux-std-lib-web` on the box after it
+- **`nginx.conf`** -- needs `docker compose restart web` on the box after it
   pulls; `deploy-pull.sh` flags this in its log. A plain `nginx -s reload` does **not** pick up a
   git-pulled change (the checkout replaces the file via a new inode; Docker's single-file bind mount
   keeps watching the old one).

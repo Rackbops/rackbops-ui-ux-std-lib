@@ -19,7 +19,8 @@ services:
     volumes:
       # Repo-root mount, not ./site -- site/index.html does `import "../styles/all.css"`, a
       # sibling of site/, so nginx must serve the whole repo root for that import to resolve.
-      # nginx.conf's deny blocks keep .git/, this file, and deploy/ unreadable despite the mount.
+      # nginx.conf serves only /site/ and /styles/ (allowlist); .git/, this file, deploy/ and
+      # every other repo-root path answer 404 despite the mount.
       - .:/usr/share/nginx/html:ro
       - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
     # No ports: block -- deliberately unreachable except in-network by the cloudflared sidecar
