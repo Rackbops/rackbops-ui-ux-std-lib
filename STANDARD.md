@@ -702,11 +702,13 @@ Transitions and animations:
   today). Glass on resting surfaces is a theme choice, never a
   shared-component assumption.
 - **Gradient ration.** `--rb-accent-grad` is used in component CSS in
-  exactly eleven places across the library: the active-tab underline
-  (arcane, amber, concrete pairs, mono-field), the wordmark (arcane pair),
-  and the rack bars (studio pair). A new theme names its one or two places
-  in `design.md` or declares the token and spends it nowhere. Never a
-  primary button.
+  exactly seventeen places across the library: the `.rb-tabs` active-tab
+  underline (arcane, amber, concrete, kenzen pairs, mono-field), the
+  `.rb-tabstrip` active-tab underline (arcane pair only -- its
+  artifact-console source draws it there too), the wordmark (arcane and
+  kenzen pairs), and the rack bars (studio pair). A new theme names its one
+  or two places in `design.md` or declares the token and spends it nowhere.
+  Never a primary button.
 - **Motion.** `--rb-transition` runs 0.1 s (concrete) to 0.3 s (the ports);
   one value per theme, with `--rb-ease` as its timing function.
   Decorative animation (the rack's bop and pulse) is an extra, never on a

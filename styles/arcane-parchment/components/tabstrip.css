@@ -1,7 +1,8 @@
 /* arcane-parchment — tabstrip
  * The console's top-level view nav: natural-width bordered pill buttons.
  * The active button gets accent text + a faint wash and an accent-tinted
- * border; distinct from the text-underline .rb-tabs used inside a panel. */
+ * border + the rationed gradient underline; distinct from the borderless
+ * text .rb-tabs used inside a panel. */
 :where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-tabstrip {
   display: flex;
   gap: var(--rb-space-2);
@@ -30,6 +31,18 @@
   color: var(--rb-accent);
   border-color: color-mix(in srgb, var(--rb-accent) 40%, var(--rb-border));
   background: var(--rb-accent-wash);
+}
+/* The ONE gradient, rationed here as the active tab's 2px underline — the console's signature
+   flair (reverse-documented from artifact-console 1.x `.tabstrip button.active::after`). */
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-tabstrip__tab.rb-tabstrip__tab--active::after {
+  content: "";
+  position: absolute;
+  left: var(--rb-space-3);
+  right: var(--rb-space-3);
+  bottom: -1px;
+  height: 2px;
+  border-radius: 2px 2px 0 0;
+  background: var(--rb-accent-grad);
 }
 :where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-tabstrip__badge {
   color: var(--rb-text-faint);
