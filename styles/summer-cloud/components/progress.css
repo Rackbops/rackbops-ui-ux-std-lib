@@ -63,7 +63,18 @@
     transform: rotate(360deg);
   }
 }
+@keyframes rb-sc-indeterminate {
+  0% {
+    background-position: -50% 0;
+  }
+  100% {
+    background-position: 150% 0;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
+  :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-progress {
+    animation-duration: 2s;
+  }
   :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-spinner {
     animation-duration: 2s;
   }
