@@ -152,33 +152,35 @@ jobs:
           done < /tmp/publishable-packages.tsv
 
       # --access public: a scoped package publishes as restricted by default.
-      # Skip a package already on the registry at this version, so a rerun
-      # after a partial failure (one package published, another didn't)
-      # completes the missing ones instead of aborting on a 403 "cannot
-      # publish over previously published version" (issue #33).
+      # --no-git-checks: mandatory here -- the tag checkout is a detached
+      # HEAD with no tracking branch, which pnpm's default git-state check
+      # (clean tree, on a branch, up to date with upstream) would otherwise
+      # refuse to publish from, even though there's genuinely nothing to
+      # check: the tag itself already pins the exact commit. `pnpm -r
+      # publish` skips a package already on the registry at this version by
+      # default, so a rerun after a partial failure (one package published,
+      # another didn't) completes the missing ones instead of aborting on a
+      # 403 "cannot publish over previously published version" (issue #33).
+      # Each package's `prepack` lifecycle script still runs as part of
+      # `pnpm publish` (copy-license.mjs for LICENSE/NOTICE, bundle-css.mjs
+      # for styles' bundle.css), same as the old per-package `npm publish`.
       - name: Publish every workspace package
         run: |
-          while IFS=$'\t' read -r name version path; do
-            if npm view "${name}@${version}" version >/dev/null 2>&1; then
-              echo "${name}@${version} is already published. Skipping."
-              continue
-            fi
-            # Capture output so an auth failure can be reframed to the actual
-            # cause for the mode preflight chose (npm reports every auth problem
-            # as a bare ENEEDAUTH/E401/E404 -- npm/cli#9088).
-            if ! out="$(cd "$path" && npm publish --access public 2>&1)"; then
-              printf '%s\n' "${out}" >&2
-              if printf '%s' "${out}" | grep -Eq 'ENEEDAUTH|E401|E404|need auth|Unable to authenticate'; then
-                if [ "${PUBLISH_AUTH_MODE:-oidc}" = "token" ]; then
-                  echo "::error::${name}@${version} failed to authenticate with NPM_TOKEN -- the token is expired, malformed, or lacks publish rights to ${name}. Rotate the secret or unset it to use OIDC."
-                else
-                  echo "::error::${name}@${version} could not authenticate for publish. Configure a trusted publisher for ${name} on npmjs.com -- organization Rackbops / repository rackbops-ui-ux-std-lib / workflow publish.yml / Environment blank (all case-sensitive) -- then re-run this workflow. (Or set an NPM_TOKEN secret to fall back to token auth.)"
-                fi
+          # Capture output so an auth failure can be reframed to the actual
+          # cause for the mode preflight chose (pnpm surfaces npm's own
+          # error codes -- a bare ENEEDAUTH/E401/E404 -- npm/cli#9088).
+          if ! out="$(pnpm -r publish --no-git-checks --access public 2>&1)"; then
+            printf '%s\n' "${out}" >&2
+            if printf '%s' "${out}" | grep -Eq 'ENEEDAUTH|E401|E404|need auth|Unable to authenticate'; then
+              if [ "${PUBLISH_AUTH_MODE:-oidc}" = "token" ]; then
+                echo "::error::Publish failed to authenticate with NPM_TOKEN -- the token is expired, malformed, or lacks publish rights. Rotate the secret or unset it to use OIDC."
+              else
+                echo "::error::Publish could not authenticate. Configure a trusted publisher for each package on npmjs.com -- organization Rackbops / repository rackbops-ui-ux-std-lib / workflow publish.yml / Environment blank (all case-sensitive) -- then re-run this workflow. (Or set an NPM_TOKEN secret to fall back to token auth.)"
               fi
-              exit 1
             fi
-            printf '%s\n' "${out}"
-          done < /tmp/publishable-packages.tsv
+            exit 1
+          fi
+          printf '%s\n' "${out}"
 
       # LAST, after publishing actually succeeds -- see the permissions
       # comment above for why. RELEASE_TOKEN (falling back to the default
