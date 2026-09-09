@@ -116,6 +116,7 @@ test("isForbiddenRelativePath: site/ and styles/ content is allowed, including t
 test("isForbiddenRelativePath: a real repo-root file outside the allowlist is forbidden", () => {
   for (const rel of [
     "package.json",
+    ".gitignore",
     "compose.yaml",
     "nginx.conf",
     [".claude", "launch.json"].join(sep),
@@ -185,8 +186,8 @@ test("GET an index-less directory with a trailing slash still 404s (matches ngin
   assert.equal(res.status, 404);
 });
 
-test("GET a real repo-root file outside the allowlist, 404 -- same as nginx's catch-all (compose.yaml, nginx.conf, .claude/launch.json, deploy/deploy-pull.sh)", async () => {
-  for (const p of ["/compose.yaml", "/nginx.conf", "/.claude/launch.json", "/deploy/deploy-pull.sh"]) {
+test("GET a real repo-root file outside the allowlist, 404 -- same as nginx's catch-all (.gitignore, compose.yaml, nginx.conf, .claude/launch.json, deploy/deploy-pull.sh)", async () => {
+  for (const p of ["/.gitignore", "/compose.yaml", "/nginx.conf", "/.claude/launch.json", "/deploy/deploy-pull.sh"]) {
     const res = await fetch(`${baseUrl}${p}`);
     assert.equal(res.status, 404, p);
   }
