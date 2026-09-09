@@ -4,6 +4,8 @@
     "module": "ESNext",
     "moduleResolution": "bundler",
     "jsx": "react-jsx",
+    // Explicit since TS7 stopped auto-including @types/* when this field is omitted (react/react-dom/jsdom resolve via module imports, never ambiently, so only "node" belongs here).
+    "types": ["node"],
     "strict": true,
     "declaration": true,
     "outDir": "dist",
