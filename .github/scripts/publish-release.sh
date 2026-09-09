@@ -8,7 +8,7 @@
 # already exists; npm's own already-published skip loop is already
 # idempotent too).
 set -euo pipefail
-source "$(dirname "$0")/release-lib.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/release-lib.sh"
 
 tag="${1:?usage: publish-release.sh <tag>}"
 
@@ -29,6 +29,6 @@ fi
 
 notes_file=$(mktemp)
 trap 'rm -f "$notes_file"' EXIT
-"$(dirname "$0")/release-notes.sh" "$tag" > "$notes_file"
+"$(dirname "${BASH_SOURCE[0]}")/release-notes.sh" "$tag" > "$notes_file"
 gh release create "$tag" --title "$tag" --notes-file "$notes_file"
 echo "Created release ${tag}."

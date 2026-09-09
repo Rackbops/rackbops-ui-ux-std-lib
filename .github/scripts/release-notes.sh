@@ -8,7 +8,7 @@
 # `gh` calls) -- publish-release.sh uses this as the GitHub release body, and
 # it's safe to run by hand to preview a release's notes before it's cut.
 set -euo pipefail
-source "$(dirname "$0")/release-lib.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/release-lib.sh"
 
 tag="${1:?usage: release-notes.sh <tag>}"
 

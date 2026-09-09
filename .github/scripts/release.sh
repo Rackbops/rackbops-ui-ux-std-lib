@@ -22,7 +22,7 @@
 # at the empty-commit-log check below before touching anything.
 
 set -euo pipefail
-source "$(dirname "$0")/release-lib.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/release-lib.sh"
 
 # Files that carry the release version, bumped in lockstep.
 VERSION_FILES=(styles/package.json components/react/package.json)
@@ -65,7 +65,7 @@ fi
 # whereas a `git log --grep` filter would risk dropping a real commit's
 # breaking marker by matching its body (issue #87).
 commit_bodies=$(git log "$range" --pretty=format:"%B" -- "${PATHSPEC[@]}" || true)
-new_version=$("$(dirname "$0")/next-version.sh" "$current_version" <<< "$commit_bodies")
+new_version=$("$(dirname "${BASH_SOURCE[0]}")/next-version.sh" "$current_version" <<< "$commit_bodies")
 
 for f in "${VERSION_FILES[@]}"; do
   sed -i "s|\"version\": \"${current_version}\"|\"version\": \"${new_version}\"|" "$f"
