@@ -69,6 +69,7 @@ export const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(
 });
 Alert.displayName = "Alert";
 
+/** Omit `value` for the animated `:indeterminate` state every theme styles (#86). */
 export interface ProgressProps
   extends ProgressHTMLAttributes<HTMLProgressElement>,
     RefAttributes<HTMLProgressElement> {}

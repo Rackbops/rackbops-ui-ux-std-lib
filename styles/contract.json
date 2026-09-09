@@ -77,7 +77,7 @@
     "progress": {
       "react": ["Progress", "Spinner"],
       "classes": ["rb-progress", "rb-spinner"],
-      "notes": "native <progress> pseudo-element contract enforced separately (not class-based)"
+      "notes": "native <progress> pseudo-element contract enforced separately (not class-based); omit value for the animated :indeterminate state"
     },
     "muted": {
       "react": null,

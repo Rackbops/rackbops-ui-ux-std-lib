@@ -114,7 +114,7 @@ This table is generated from `styles/contract.json` — edit that file, then run
 | `Tabstrip` | `.rb-tabstrip` | top-level view nav (bordered pill buttons), distinct from Tabs' text-underline tabs inside a panel; controlled tabs/selected/onSelect + label; formerly a two-theme extra (arcane-obsidian/arcane-parchment) -- now a shared component in all twelve, K4-10 give-back from Kenzen |
 | `DataTable` | `.rb-table` | columns/rows/rowKey; optional groupBy/groupOrder, defaultSortKey/defaultSortDirection, sticky (wraps in rb-table-scroll); numeric columns get rb-num |
 | — | `.rb-table--interactive` | clickable-row utility, hand-applied by the consumer to any table (DataTable-rendered or not) -- DataTable itself never sets it, style directly |
-| `Progress`/`Spinner` | `.rb-progress` | native <progress> pseudo-element contract enforced separately (not class-based) |
+| `Progress`/`Spinner` | `.rb-progress` | native <progress> pseudo-element contract enforced separately (not class-based); omit value for the animated :indeterminate state |
 | — | `.rb-muted` | style directly, no React wrapper |
 | — | `.rb-pre` | style directly, no React wrapper |
 | — | `.rb-log` | pairs with .rb-pre; style directly, no React wrapper |
