@@ -191,7 +191,7 @@ current_version=$(node -p "require('./${VERSION_FILES[0]}').version")
 for f in "${VERSION_FILES[@]}"; do
   v=$(node -p "require('./$f').version")
   if [[ "$v" != "$current_version" ]]; then
-    echo "ERROR: version mismatch — ${VERSION_FILES[0]} is ${current_version} but $f is ${v}" >&2
+    echo "ERROR: version mismatch -- ${VERSION_FILES[0]} is ${current_version} but $f is ${v}" >&2
     exit 1
   fi
 done
@@ -221,7 +221,7 @@ if [[ -n "$latest_tag" ]]; then
   if release_view_err=$(gh release view "$latest_tag" 2>&1 >/dev/null); then
     : # the release already exists -- nothing to backfill
   elif [[ "$release_view_err" == *"release not found"* ]]; then
-    echo "Tag ${latest_tag} has no GitHub release yet — backfilling it first."
+    echo "Tag ${latest_tag} has no GitHub release yet -- backfilling it first."
     # A harmless no-op if the tag already reached origin (the expected case on
     # a fresh checkout, since a tag can only exist locally if it was fetched
     # from there); otherwise exactly what still needs to happen for it.
@@ -231,7 +231,7 @@ if [[ -n "$latest_tag" ]]; then
     [[ -n "$prior_tag" ]] && backfill_range="${prior_tag}..${latest_tag}"
     publish_release "$(build_changelog "$backfill_range")" "$latest_tag"
   else
-    echo "ERROR: gh release view ${latest_tag} failed, and not with 'release not found' — refusing to assume the release is missing: ${release_view_err}" >&2
+    echo "ERROR: gh release view ${latest_tag} failed, and not with 'release not found' -- refusing to assume the release is missing: ${release_view_err}" >&2
     exit 1
   fi
 fi

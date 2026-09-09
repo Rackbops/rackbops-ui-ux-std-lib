@@ -62,7 +62,7 @@ jobs:
           GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         run: |
           if [ -z "${GH_TOKEN}" ]; then
-            echo "RELEASE_TOKEN not set — release/publish is inert. Skipping."
+            echo "RELEASE_TOKEN not set -- release/publish is inert. Skipping."
             exit 0
           fi
           chmod +x .github/scripts/release.sh .github/scripts/next-version.sh
