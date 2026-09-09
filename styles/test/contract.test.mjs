@@ -478,7 +478,7 @@ for (const { file, class: cls } of REQUIRED_CLASSES) {
     const escaped = reEscape(cls);
     const re = new RegExp(`\\.${escaped}(?![\\w-])`);
     for (const theme of themeDirs) {
-      const allowed = CLASS_ALLOWLIST.find((a) => a.theme === theme && a.class === cls);
+      const allowed = CLASS_ALLOWLIST.find((a) => (a.theme === "*" || a.theme === theme) && a.class === cls);
       const guard = `[data-rb-style="${theme}"]`;
       const cssFile = join(ROOT, theme, "components", file);
       const { selectors } = parseCss(readFileSync(cssFile, "utf-8"));
@@ -760,6 +760,30 @@ test("keyframe names are rb-prefixed and unique across all themes", () => {
   }
 });
 
+test("every animation/animation-name reference resolves to a same-file @keyframes (#86)", () => {
+  // Unlike the reduced-motion-coverage test below, a keyframe can no longer be
+  // declared in one file and applied in another -- a component that reaches
+  // across files for its animation (luminous-precision's rb-lp-pulse-glow,
+  // neon-butterfly's rb-nb-pulse-glow reused from button.css) is exactly the
+  // coupling that made #86 possible: renaming or deleting the declaring file's
+  // keyframe silently breaks the consumer with no local signal.
+  for (const theme of themeDirs) {
+    for (const file of themeCssFiles(theme)) {
+      const raw = stripComments(readFileSync(file, "utf-8"));
+      const localKf = new Set(parseCss(raw).keyframes);
+      for (const m of raw.matchAll(/animation(?:-name)?\s*:\s*([^;{}]+)/g)) {
+        for (const word of m[1].match(/[\w-]+/g) ?? []) {
+          if (!word.startsWith("rb-")) continue; // skip infinite/ease/none/durations etc.
+          assert.ok(
+            localKf.has(word),
+            `${file}: animation references ${word}, which has no @keyframes declared in this same file`,
+          );
+        }
+      }
+    }
+  }
+});
+
 // -- prefers-reduced-motion (STANDARD.md 7, issue #51) -----------------------
 /** The inner text of every `@media (prefers-reduced-motion: reduce)` block in
  * `css` (comments already stripped), brace-matched so a nested rule doesn't cut
@@ -844,9 +868,10 @@ for (const theme of themeDirs) {
     // animation-duration is not token-driven, so wherever a keyframe is APPLIED
     // its element must carry a reduced-motion override in that same file (none,
     // or a slow fallback) -- else it plays at full speed under reduced motion.
-    // Keyed on the usage, not the @keyframes declaration, since a keyframe can
-    // be declared in one file and applied in another (luminous-precision's
-    // rb-lp-pulse-glow). A base-class override (.rb-btn) covers an animated
+    // Keyed on the usage, not the @keyframes declaration -- this only needs
+    // the theme-wide keyframe-name pool to recognize which `animation` values
+    // name a real keyframe (locality is enforced by a separate assertion
+    // above, since #86). A base-class override (.rb-btn) covers an animated
     // modifier (.rb-btn--accent), since the modifier composes onto the base --
     // but not the reverse, so the override side matches on the full class.
     const elemId = (cls) => cls.split("--")[0];

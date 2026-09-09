@@ -124,7 +124,8 @@ extras.
   left bar (not a bold 3-6px bar).
 - **Dialog** `.rb-dialog` — native `<dialog>`, white pane, subtle shadow, a
   light blurred backdrop over a lighter-than-usual `rgba(0,0,0,.3)` scrim,
-  normal-case weight-600 title.
+  normal-case weight-600 title. `.rb-dialog__body` is a deliberate no-op
+  here: the dialog pads `.rb-dialog` itself.
 - **Tabs** `.rb-tabs` / `.rb-tab` / `.rb-tabpanel` — normal-case text tabs;
   the active tab is accent-colored and underlined with the theme's one
   rationed gradient.

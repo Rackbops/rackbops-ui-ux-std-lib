@@ -174,6 +174,21 @@ Rules:
   assets are kept small (2.1) and the tarball ships only what themes need
   (#38 for `LICENSE`/`NOTICE`, #42 for the PNG).
 
+### 2.6 Browser support
+
+Components render correctly from **Chrome/Edge 111, Firefox 121, Safari 16.2**.
+The floor is set by the two features the shipped CSS relies on outright:
+`color-mix()` (Chrome 111 / Firefox 113 / Safari 16.2) and `:has()` (Chrome 105
+/ Firefox 121 / Safari 15.4) -- an engine without either drops the rules that
+use them. Three later features degrade rather than break below their own
+thresholds: the dialog backdrop's `blur(var(--rb-blur))` needs custom
+properties to reach `::backdrop` (Chromium 122 / Firefox 120 / Safari 17.4)
+and paints a plain scrim without blur before that; `text-wrap: balance` on
+headings (Chromium 114 / Firefox 121 / Safari 17.5) is ignored where
+unsupported; and unprefixed `backdrop-filter` is Safari 18+, so every
+`backdrop-filter` declaration ships a `-webkit-backdrop-filter` twin for
+Safari 9-17 (#86).
+
 ---
 
 ## 3. Scoping and specificity
@@ -442,14 +457,22 @@ reference in both sides' `design.md` as required here.
 A required class MAY be a deliberate no-op in one theme only when all three
 hold: the theme's `design.md` says so and why; the allowlist entry in
 `contract.json` names theme, class, and reason; and the React component's
-JSDoc or SKILL.md carries the caveat. Three cases today: `.rb-dialog__body`
-in luminous-precision, mono-field, neon-butterfly, and summer-cloud (which pad
-`.rb-dialog` instead), sanctioned by #42's verdict; `.rb-card--raised` in the
-three nazuraki ports (luminous-precision, neon-butterfly, summer-cloud),
-sanctioned by each port's `design.md` and `Card.tsx`'s JSDoc; and
-`.rb-stepper--upcoming` in all twelve themes (the resting state, styled by
-falling through to the base node/label rule rather than an explicit
-override). All three are entered in `contract.json`'s `allowlist` `[tested]`.
+JSDoc or SKILL.md carries the caveat. An allowlist entry with `"theme": "*"`
+instead declares the class a no-op in *every* theme by design -- the resting
+state, not a per-theme exception: the first leg (a per-theme `design.md`
+mention) does not apply, since there is no theme-specific reason to document,
+but the JSDoc/SKILL.md caveat leg still does. Three cases today:
+`.rb-dialog__body` in luminous-precision, mono-field, neon-butterfly, and
+summer-cloud (which pad `.rb-dialog` instead), sanctioned by #42's verdict,
+each a per-theme allowlist row with the sentence in that theme's `design.md`;
+`.rb-card--raised` in the three nazuraki ports (luminous-precision,
+neon-butterfly, summer-cloud), sanctioned by each port's `design.md` and
+`Card.tsx`'s JSDoc, also per-theme rows; and `.rb-stepper--upcoming` (the
+resting state, styled by falling through to the base node/label rule rather
+than an explicit override), a single `"theme": "*"` row covering all twelve
+themes, its caveat carried by `skills/design-system/SKILL.md` rather than any
+theme's `design.md`. All three are entered in `contract.json`'s `allowlist`
+`[tested]`.
 
 ### 5.4 Theme extras
 

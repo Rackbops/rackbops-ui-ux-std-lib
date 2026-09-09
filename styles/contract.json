@@ -108,18 +108,7 @@
     { "theme": "mono-field", "class": "rb-dialog__body", "reason": "pads .rb-dialog directly instead of a wrapper -- sanctioned by #42's verdict" },
     { "theme": "neon-butterfly", "class": "rb-dialog__body", "reason": "pads .rb-dialog directly instead of a wrapper -- sanctioned by #42's verdict" },
     { "theme": "summer-cloud", "class": "rb-dialog__body", "reason": "pads .rb-dialog directly instead of a wrapper -- sanctioned by #42's verdict" },
-    { "theme": "amber-ember", "class": "rb-stepper--upcoming", "reason": "default/resting state -- falls through to the base node/label rule, no override needed" },
-    { "theme": "amber-hearth", "class": "rb-stepper--upcoming", "reason": "default/resting state -- falls through to the base node/label rule, no override needed" },
-    { "theme": "arcane-obsidian", "class": "rb-stepper--upcoming", "reason": "default/resting state -- falls through to the base node/label rule, no override needed" },
-    { "theme": "arcane-parchment", "class": "rb-stepper--upcoming", "reason": "default/resting state -- falls through to the base node/label rule, no override needed" },
-    { "theme": "concrete-signal", "class": "rb-stepper--upcoming", "reason": "default/resting state -- falls through to the base node/label rule, no override needed" },
-    { "theme": "concrete-signal-light", "class": "rb-stepper--upcoming", "reason": "default/resting state -- falls through to the base node/label rule, no override needed" },
-    { "theme": "luminous-precision", "class": "rb-stepper--upcoming", "reason": "default/resting state -- falls through to the base node/label rule, no override needed" },
-    { "theme": "mono-field", "class": "rb-stepper--upcoming", "reason": "default/resting state -- falls through to the base node/label rule, no override needed" },
-    { "theme": "neon-butterfly", "class": "rb-stepper--upcoming", "reason": "default/resting state -- falls through to the base node/label rule, no override needed" },
-    { "theme": "rackbops-noir", "class": "rb-stepper--upcoming", "reason": "default/resting state -- falls through to the base node/label rule, no override needed" },
-    { "theme": "rackbops-studio", "class": "rb-stepper--upcoming", "reason": "default/resting state -- falls through to the base node/label rule, no override needed" },
-    { "theme": "summer-cloud", "class": "rb-stepper--upcoming", "reason": "default/resting state -- falls through to the base node/label rule, no override needed" }
+    { "theme": "*", "class": "rb-stepper--upcoming", "reason": "default/resting state -- falls through to the base node/label rule, no override needed" }
   ],
   "extras": {
     "arcane-obsidian": ["rb-wordmark", "rb-wordmark__spark", "rb-eyebrow"],

@@ -151,6 +151,8 @@ theme-agnostic). Variants use BEM-ish modifiers (`rb-btn--primary`).
   etc. (a permitted literal, STANDARD.md §4.2; allowlisted in `contract.json`).
 - **Alert** `.rb-alert` — glass card with a 4px semantic left rule.
 - **Dialog** `.rb-dialog` — native `<dialog>`, opaque white, blurred backdrop.
+  `.rb-dialog__body` is a deliberate no-op here: the dialog pads `.rb-dialog`
+  itself.
 - **Tabs** `.rb-tabs`/`.rb-tab`/`.rb-tabpanel` — violet underline when active.
 - **Tabstrip** `.rb-tabstrip` (+ `__tab`, `--active`, `__badge`) — top-level view
   nav: bordered pill buttons on surface-2; the active tab gets accent text, an

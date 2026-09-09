@@ -1,4 +1,5 @@
 import {
+  createElement,
   forwardRef,
   type HTMLAttributes,
   type ProgressHTMLAttributes,
@@ -6,6 +7,17 @@ import {
   type RefAttributes,
 } from "react";
 import { cx } from "./cx.js";
+
+/** A forwardRef DOM wrapper that adds a base rb-* class and any fixed static attributes. */
+function styled<E extends HTMLElement, P extends { className?: string }>(
+  tag: string,
+  cls: string,
+  attrs: Record<string, unknown> = {},
+) {
+  return forwardRef<E, P>(function Styled({ className, ...rest }, ref) {
+    return createElement(tag, { ref, ...attrs, className: cx(cls, className), ...rest });
+  });
+}
 
 export type SemanticVariant = "info" | "success" | "warning" | "danger";
 
@@ -61,29 +73,14 @@ Alert.displayName = "Alert";
 export interface ProgressProps
   extends ProgressHTMLAttributes<HTMLProgressElement>,
     RefAttributes<HTMLProgressElement> {}
-export const Progress = forwardRef<HTMLProgressElement, ProgressProps>(function Progress(
-  { className, ...rest },
-  ref,
-) {
-  return <progress ref={ref} className={cx("rb-progress", className)} {...rest} />;
-});
+export const Progress = styled<HTMLProgressElement, ProgressProps>("progress", "rb-progress");
 Progress.displayName = "Progress";
 
 export interface SpinnerProps
   extends HTMLAttributes<HTMLSpanElement>,
     RefAttributes<HTMLSpanElement> {}
-export const Spinner = forwardRef<HTMLSpanElement, SpinnerProps>(function Spinner(
-  { className, ...rest },
-  ref,
-) {
-  return (
-    <span
-      ref={ref}
-      role="status"
-      aria-label="Loading"
-      className={cx("rb-spinner", className)}
-      {...rest}
-    />
-  );
+export const Spinner = styled<HTMLSpanElement, SpinnerProps>("span", "rb-spinner", {
+  role: "status",
+  "aria-label": "Loading",
 });
 Spinner.displayName = "Spinner";

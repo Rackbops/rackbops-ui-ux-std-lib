@@ -3,8 +3,10 @@
 // existing theme's CSS layout, re-guards every selector, renames keyframes to
 // a new short-name prefix, copies forward --from's contract.json exceptions
 // (allowlist/dialogBackdropBlur/permittedLiterals -- a theme built by copying
-// an existing one inherits its documented omissions too, e.g. every theme's
-// rb-stepper--upcoming allowlist entry), registers the theme everywhere
+// an existing one inherits its documented per-theme omissions too, e.g. the
+// nazuraki ports' rb-dialog__body allowlist entry; a "theme": "*" allowlist
+// row, like rb-stepper--upcoming's, already covers every theme including a
+// new one and is never cloned), registers the theme everywhere
 // (manifest.json, package.json, all.css, contract.json extras, README.md's
 // themes table, and -- for --port -- a NOTICE bullet), and generates a
 // design.md stub from the STANDARD.md section-11 template.
@@ -177,11 +179,15 @@ export function upsertAllCss(allCssText, id) {
  *    extras must mirror --from's list, not default to empty, or the new
  *    theme's own extra classes read as undocumented scope creep and fail
  *    class-parity.
- *  - allowlist: every current theme carries a documented-omission entry (e.g.
- *    rb-stepper--upcoming, the universal resting-state gap), and a freshly
- *    scaffolded theme reproduces that exact gap since scaffolding adds no new
- *    component overrides -- without copying it forward, the new theme fails
- *    class-parity the same way. */
+ *  - allowlist: a per-theme documented-omission entry (e.g. the nazuraki
+ *    ports' rb-dialog__body/rb-card--raised rows) names one specific theme,
+ *    and a freshly scaffolded theme copied from one of those ports reproduces
+ *    that exact gap since scaffolding adds no new component overrides --
+ *    without copying it forward, the new theme fails class-parity the same
+ *    way. A "theme": "*" row (e.g. rb-stepper--upcoming, the universal
+ *    resting-state gap) is deliberately NOT copied forward: it already
+ *    matches every theme, the new one included, so cloning it would only
+ *    duplicate coverage the wildcard already provides. */
 export function computeContractAdditions(contract, fromId, toId) {
   const extras = contract.extras[toId] ?? contract.extras[fromId] ?? [];
 

@@ -8,6 +8,7 @@
   border: 1px solid var(--rb-border);
   border-radius: var(--rb-radius);
   backdrop-filter: blur(var(--rb-blur));
+  -webkit-backdrop-filter: blur(var(--rb-blur));
   color: var(--rb-text);
   text-decoration: none;
   text-transform: uppercase;

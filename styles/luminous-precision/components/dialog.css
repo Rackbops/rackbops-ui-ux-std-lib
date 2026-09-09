@@ -14,6 +14,7 @@
 :where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-dialog::backdrop {
   background: rgba(10, 12, 16, 0.6);
   backdrop-filter: blur(var(--rb-blur));
+  -webkit-backdrop-filter: blur(var(--rb-blur));
 }
 :where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-dialog__title {
   margin: 0 0 var(--rb-space-3);
