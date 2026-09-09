@@ -96,6 +96,13 @@ test("keyframeNames finds every distinct @keyframes name, ignoring commented-out
   );
 });
 
+test("keyframeNames only ever returns rb-* names, even though its shared scanner (extractKeyframeNames) is general-purpose (#93)", () => {
+  assert.deepEqual(
+    keyframeNames(["@keyframes fade { to { opacity: 0; } }\n@keyframes rb-y-spin { to {} }"]),
+    ["rb-y-spin"]
+  );
+});
+
 test("resolveFromShort verifies its guess against real theme CSS: arcane-obsidian", () => {
   assert.equal(resolveFromShort("arcane-obsidian", realCss("arcane-obsidian"), undefined), "obsidian");
 });

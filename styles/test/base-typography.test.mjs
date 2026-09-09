@@ -12,18 +12,13 @@
 // "same declared property set, with required values for the structural tokens"
 // rather than diffing real computed styles.
 import assert from "node:assert/strict";
-import { readdirSync, readFileSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { join } from "node:path";
 import { test } from "node:test";
-import { fileURLToPath } from "node:url";
+import { ROOT, themeDirs, stripComments, cssOf } from "./css.mjs";
 
-const ROOT = resolve(fileURLToPath(import.meta.url), "../..");
-const themeDirs = readdirSync(ROOT, { withFileTypes: true })
-  .filter((e) => e.isDirectory() && e.name !== "test" && e.name !== "node_modules" && !e.name.startsWith("_"))
-  .map((e) => e.name);
 // box-sizing + the page body reset moved here (issue #52); base.css keeps the
 // rest, incl. the per-theme focus/selection this file already checks.
-const structureCss = readFileSync(join(ROOT, "_shared", "structure.css"), "utf-8");
+const structureCss = cssOf(join(ROOT, "_shared", "structure.css"));
 
 /** The declaration block (without braces) of the first rule whose selector
  * list contains `token`, or null if no such rule exists. A plain word token
@@ -36,7 +31,7 @@ const structureCss = readFileSync(join(ROOT, "_shared", "structure.css"), "utf-8
  * express, and `:`/`::` is already an unambiguous enough marker on its own
  * in this codebase. */
 function findRuleBlock(css, token) {
-  css = css.replace(/\/\*[\s\S]*?\*\//g, "");
+  css = stripComments(css);
   const isPseudo = token.startsWith(":");
   const wordBoundary = isPseudo ? null : new RegExp(`(^|[\\s,(])${token}([\\s,)]|$)`);
   let i = 0;
@@ -120,7 +115,7 @@ const RULES = [
 ];
 
 for (const theme of themeDirs) {
-  const base = readFileSync(join(ROOT, theme, "base.css"), "utf-8");
+  const base = cssOf(join(ROOT, theme, "base.css"));
 
   test(`${theme}: heading selector explicitly lists h1 through h6`, () => {
     const match = base.match(/:where\(([^)]*\bh1\b[^)]*)\)\s*\{/);
@@ -151,7 +146,7 @@ for (const theme of themeDirs) {
   }
 
   test(`${theme}: index.css imports the shared structural file (#52)`, () => {
-    const index = readFileSync(join(ROOT, theme, "index.css"), "utf-8");
+    const index = cssOf(join(ROOT, theme, "index.css"));
     assert.match(
       index,
       /@import\s+"\.\.\/_shared\/structure\.css"/,

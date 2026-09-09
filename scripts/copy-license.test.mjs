@@ -38,21 +38,27 @@ for (const dir of PACKAGE_DIRS) {
 // files array alone can't catch a broken or missing `prepack` (a deleted
 // prepack script, or one pointing at the wrong relative depth, both leave
 // `files` untouched but silently drop LICENSE/NOTICE from the real tarball).
-// One spawn packs both packages; npm preserves argument order in its JSON
-// array, so `packs[i]` lines up with `PACKAGE_DIRS[i]`.
-let packs;
+// One spawn packs both packages. Keyed by each result's own package `name`,
+// not array position: npm happens to preserve argument order today (verified
+// against npm 11.17's pack.js), but its source flags a planned name-keyed
+// output -- keying by name here means that change fails this test loudly,
+// not silently passes it against the wrong package's file list (#93).
+let packsByName;
 
 before(() => {
   const stdout = execSync(`npm pack --dry-run --json ${PACKAGE_DIRS.map((dir) => `./${dir}`).join(" ")}`, {
     cwd: ROOT,
     encoding: "utf-8",
   });
-  packs = JSON.parse(stdout);
+  packsByName = new Map(JSON.parse(stdout).map((p) => [p.name, p]));
 });
 
-for (const [i, dir] of PACKAGE_DIRS.entries()) {
+for (const dir of PACKAGE_DIRS) {
   test(`npm pack ships LICENSE and NOTICE from ${dir} (issue #38)`, () => {
-    const paths = packs[i].files.map((f) => f.path);
+    const { name } = JSON.parse(readFileSync(join(ROOT, dir, "package.json"), "utf-8"));
+    const pack = packsByName.get(name);
+    assert.ok(pack, `${dir}: no npm pack result for package "${name}"`);
+    const paths = pack.files.map((f) => f.path);
     assert.ok(paths.includes("LICENSE"), `${dir}: npm pack output misses LICENSE`);
     assert.ok(paths.includes("NOTICE"), `${dir}: npm pack output misses NOTICE`);
   });

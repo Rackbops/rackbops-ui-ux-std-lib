@@ -13,30 +13,17 @@
 // line that documents it -- an allowlisted pair that now passes fails here as
 // a stale entry, the same staleness guard the ariaPairs/dialog-blur checks use.
 //
-// The comment-stripping and --rb-* extraction mirror contract.test.mjs (kept
-// local rather than imported -- importing a *.test.mjs would re-register its
-// tests).
 import assert from "node:assert/strict";
-import { readdirSync, readFileSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { test } from "node:test";
-import { fileURLToPath } from "node:url";
+import { ROOT, themeDirs, stripComments, cssOf } from "./css.mjs";
 
-const ROOT = resolve(fileURLToPath(import.meta.url), "../..");
 const contract = JSON.parse(readFileSync(join(ROOT, "contract.json"), "utf-8"));
-const themeDirs = readdirSync(ROOT, { withFileTypes: true })
-  .filter((e) => e.isDirectory() && e.name !== "test" && e.name !== "node_modules" && !e.name.startsWith("_"))
-  .map((e) => e.name);
-
-/** Strip CSS block comments so an inline `/* ... *​/` after a token value (or a
- * commented-out token) is not mistaken for part of the value. */
-function stripComments(css) {
-  return css.replace(/\/\*[\s\S]*?\*\//g, "");
-}
 
 /** The `--rb-*: <value>` declarations in a tokens.css, last write wins. */
 function readTokens(theme) {
-  const css = stripComments(readFileSync(join(ROOT, theme, "tokens.css"), "utf-8"));
+  const css = stripComments(cssOf(join(ROOT, theme, "tokens.css")));
   const map = {};
   for (const m of css.matchAll(/(--rb-[\w-]+)\s*:\s*([^;]+);/g)) map[m[1]] = m[2].trim();
   return map;

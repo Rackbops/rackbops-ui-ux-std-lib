@@ -19,12 +19,9 @@
 // arcane-parchment's "rb-parchment-spin") rather than the full theme id, so
 // it needs its own normalisation pass.
 import assert from "node:assert/strict";
-import { readdirSync, readFileSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { join } from "node:path";
 import { test } from "node:test";
-import { fileURLToPath } from "node:url";
-
-const ROOT = resolve(fileURLToPath(import.meta.url), "../..");
+import { ROOT, componentFiles, extractKeyframeNames, stripComments, cssOf } from "./css.mjs";
 
 const PAIRS = [
   ["arcane-obsidian", "arcane-parchment"],
@@ -33,18 +30,6 @@ const PAIRS = [
   ["amber-hearth", "amber-ember"],
   ["kenzen-midnight", "kenzen-cyberhealth"],
 ];
-
-function componentFiles(theme) {
-  return readdirSync(join(ROOT, theme, "components")).filter((f) => f.endsWith(".css"));
-}
-
-function extractKeyframeNames(css) {
-  const names = [];
-  const re = /@keyframes\s+([\w-]+)/g;
-  let m;
-  while ((m = re.exec(css))) names.push(m[1]);
-  return names;
-}
 
 /**
  * Normalise a theme's component CSS so two pair members can be compared:
@@ -66,7 +51,7 @@ function normalize(css, theme) {
   // a pair member whose comment there is a different height (or absent) —
   // whitespace is collapsed afterward so that shift can never register as a
   // content difference; only real token/selector/declaration text can.
-  let out = css.replace(/\/\*[\s\S]*?\*\//g, "").split(theme).join("THEME");
+  let out = stripComments(css).split(theme).join("THEME");
   for (const [i, name] of extractKeyframeNames(css).entries()) {
     out = out.split(name).join(`__KF${i}__`);
   }
@@ -106,8 +91,8 @@ for (const [themeA, themeB] of PAIRS) {
     const filesB = new Set(componentFiles(themeB));
     const allFiles = new Set([...filesA, ...filesB]);
 
-    const designA = readFileSync(join(ROOT, themeA, "design.md"), "utf-8");
-    const designB = readFileSync(join(ROOT, themeB, "design.md"), "utf-8");
+    const designA = cssOf(join(ROOT, themeA, "design.md"));
+    const designB = cssOf(join(ROOT, themeB, "design.md"));
 
     for (const file of allFiles) {
       const inA = filesA.has(file);
@@ -123,8 +108,8 @@ for (const [themeA, themeB] of PAIRS) {
         continue;
       }
 
-      const rawA = readFileSync(join(ROOT, themeA, "components", file), "utf-8");
-      const rawB = readFileSync(join(ROOT, themeB, "components", file), "utf-8");
+      const rawA = cssOf(join(ROOT, themeA, "components", file));
+      const rawB = cssOf(join(ROOT, themeB, "components", file));
       const normA = normalize(rawA, themeA);
       const normB = normalize(rawB, themeB);
 

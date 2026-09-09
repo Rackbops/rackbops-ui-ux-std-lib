@@ -26,6 +26,7 @@ import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { spawnSync } from "node:child_process";
 import { renderReact, renderClass } from "./generate-skill-table.mjs";
+import { extractKeyframeNames } from "../styles/test/css.mjs";
 
 const ROOT = resolve(fileURLToPath(import.meta.url), "../..");
 const STYLES = join(ROOT, "styles");
@@ -82,19 +83,15 @@ export function deriveShort(id) {
   return parts.length > 1 ? parts.slice(1).join("-") : id;
 }
 
-function stripComments(css) {
-  return css.replace(/\/\*[\s\S]*?\*\//g, "");
-}
-
 /** Every distinct @keyframes name declared across a theme's CSS file contents. */
 export function keyframeNames(cssContents) {
-  const names = new Set();
-  for (const css of cssContents) {
-    for (const m of stripComments(css).matchAll(/@keyframes\s+(rb-[\w-]+)/g)) {
-      names.add(m[1]);
-    }
-  }
-  return [...names];
+  // extractKeyframeNames is a general-purpose CSS-keyframe scanner (any name,
+  // any theme's convention) -- this wrapper keeps its own original contract
+  // of rb-* names only, since new-theme.mjs only ever deals in this
+  // library's keyframes (#93 review, round 2).
+  return [
+    ...new Set(cssContents.flatMap((css) => extractKeyframeNames(css)).filter((n) => n.startsWith("rb-"))),
+  ];
 }
 
 /** Resolve --from's real keyframe short-name prefix, verifying the cheap

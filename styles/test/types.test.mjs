@@ -5,19 +5,16 @@
 // resolves "@rackbops/styles/*" straight to this package's own exports map.
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
 import { test } from "node:test";
-import { fileURLToPath } from "node:url";
+import { ROOT, themeDirs, componentFiles } from "./css.mjs";
 
-const ROOT = resolve(fileURLToPath(import.meta.url), "../..");
-const manifest = JSON.parse(readFileSync(join(ROOT, "manifest.json"), "utf-8"));
-const themes = Object.keys(manifest.themes).sort();
+const themes = [...themeDirs].sort();
 const TSC = join(ROOT, "node_modules", "typescript", "bin", "tsc");
 
 function sampleComponent(theme) {
-  const files = readdirSync(join(ROOT, theme, "components")).filter((f) => f.endsWith(".css"));
-  return files[0].replace(/\.css$/, "");
+  return componentFiles(theme)[0].replace(/\.css$/, "");
 }
 
 function consumerSource() {
