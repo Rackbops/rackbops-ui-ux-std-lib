@@ -182,8 +182,9 @@ jobs:
       # `pnpm publish` (copy-license.mjs for LICENSE/NOTICE, bundle-css.mjs
       # for styles' bundle.css).
       #
-      # --provenance: only in OIDC mode -- it needs the same id-token
-      # exchange, so it's meaningless (and unsupported) under token auth.
+      # --provenance: only in OIDC mode, by design -- the break-glass token
+      # path is for getting a release out when OIDC is down, not for
+      # attesting it (see the header: token auth does not emit provenance).
       # Unlike npm, pnpm does not attach provenance automatically under
       # trusted publishing; this flag is what actually requests it.
       - name: Publish every workspace package
