@@ -174,6 +174,21 @@ Rules:
   assets are kept small (2.1) and the tarball ships only what themes need
   (#38 for `LICENSE`/`NOTICE`, #42 for the PNG).
 
+### 2.6 Browser support
+
+Components render correctly from **Chrome/Edge 111, Firefox 121, Safari 16.2**.
+The floor is set by the two features the shipped CSS relies on outright:
+`color-mix()` (Chrome 111 / Firefox 113 / Safari 16.2) and `:has()` (Chrome 105
+/ Firefox 121 / Safari 15.4) -- an engine without either drops the rules that
+use them. Three later features degrade rather than break below their own
+thresholds: the dialog backdrop's `blur(var(--rb-blur))` needs custom
+properties to reach `::backdrop` (Chromium 122 / Firefox 120 / Safari 17.4)
+and paints a plain scrim without blur before that; `text-wrap: balance` on
+headings (Chromium 114 / Firefox 121 / Safari 17.5) is ignored where
+unsupported; and unprefixed `backdrop-filter` is Safari 18+, so every
+`backdrop-filter` declaration ships a `-webkit-backdrop-filter` twin for
+Safari 9-17 (#86).
+
 ---
 
 ## 3. Scoping and specificity

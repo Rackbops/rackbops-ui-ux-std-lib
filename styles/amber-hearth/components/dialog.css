@@ -13,6 +13,7 @@
 :where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-dialog::backdrop {
   background: rgba(43, 31, 20, 0.4);
   backdrop-filter: blur(var(--rb-blur));
+  -webkit-backdrop-filter: blur(var(--rb-blur));
 }
 :where([data-rb-style="amber-hearth"], [data-rb-style="amber-hearth"] *).rb-dialog__body {
   padding: var(--rb-space-5);

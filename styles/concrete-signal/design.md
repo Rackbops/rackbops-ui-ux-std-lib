@@ -68,7 +68,10 @@ gradient has no soft midpoint.
   `0px` — this theme never applies `backdrop-filter` or any soft blur.
   Dialog backdrops are a flat `rgba(0,0,0,.6)` scrim.
   Focus is a hard border-weight change (1px to 2px solid accent) on form
-  controls, never a soft wash ring or glow. Buttons instead keep the theme's
+  controls, never a soft wash ring or glow. The switch is the one exception:
+  widening its border would shift the padding edge the thumb's inset is
+  measured from, so it keeps the base `--rb-focus-ring` outline (see below)
+  instead of a border-weight change. Buttons instead keep the theme's
   base `--rb-focus-ring` (a hard `2px` accent outline) offset from the button (also hard-edged, no wash
   or glow), so keyboard focus reads distinctly from a pointer hover; the
   accent-fill `--primary` in particular relies on it, since a border-weight
@@ -113,9 +116,11 @@ extras.
   items; introduces no active-state convention of its own.
 - **Form** `.rb-input` / `.rb-textarea` / `.rb-select` / `.rb-label` /
   `.rb-field` / `.rb-choice` / `.rb-checkbox` / `.rb-radio` / `.rb-switch` —
-  sunken square fields; focus swaps the border from 1px to 2px solid accent;
-  checked checkbox/radio/switch states are a flat accent fill, not a tint
-  ring; labels are uppercase, tracked, weight 600. Pair divergence:
+  sunken square fields; focus swaps the border from 1px to 2px solid accent
+  (the switch keeps its border constant and uses the base `--rb-focus-ring`
+  outline instead, to avoid shifting its thumb); checked checkbox/radio/switch
+  states are a flat accent fill, not a tint ring; labels are uppercase,
+  tracked, weight 600. Pair divergence:
   `components/form.css`'s select-arrow SVG data-URI hardcodes its stroke
   colour (`#8f8f8a`, matching this theme's `--rb-text-faint`) since an inline
   SVG can't reference a CSS custom property; concrete-signal-light's icon
