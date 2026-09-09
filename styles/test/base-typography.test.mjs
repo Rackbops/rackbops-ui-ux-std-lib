@@ -14,7 +14,7 @@
 import assert from "node:assert/strict";
 import { join } from "node:path";
 import { test } from "node:test";
-import { ROOT, themeDirs, cssOf } from "./css.mjs";
+import { ROOT, themeDirs, stripComments, cssOf } from "./css.mjs";
 
 // box-sizing + the page body reset moved here (issue #52); base.css keeps the
 // rest, incl. the per-theme focus/selection this file already checks.
@@ -31,7 +31,7 @@ const structureCss = cssOf(join(ROOT, "_shared", "structure.css"));
  * express, and `:`/`::` is already an unambiguous enough marker on its own
  * in this codebase. */
 function findRuleBlock(css, token) {
-  css = css.replace(/\/\*[\s\S]*?\*\//g, "");
+  css = stripComments(css);
   const isPseudo = token.startsWith(":");
   const wordBoundary = isPseudo ? null : new RegExp(`(^|[\\s,(])${token}([\\s,)]|$)`);
   let i = 0;

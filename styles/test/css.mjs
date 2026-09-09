@@ -20,6 +20,20 @@ export const themeDirs = Object.keys(
   JSON.parse(readFileSync(join(ROOT, "manifest.json"), "utf-8")).themes,
 );
 
+/** The real on-disk theme directories -- a filesystem scan, deliberately
+ * independent of manifest.json. Not for iteration (that's `themeDirs`
+ * above): this exists ONLY so the "manifest, package.json, and theme
+ * directories agree" test has something on the other side of the
+ * comparison. Comparing `themeDirs` (itself manifest-derived) against the
+ * manifest is a tautology that can never fail -- a real directory left on
+ * disk but never added to manifest.json (or a manifest entry with no
+ * directory) needs a genuine fs scan to catch (#93 review, round 2). */
+export function scanThemeDirs() {
+  return readdirSync(ROOT, { withFileTypes: true })
+    .filter((e) => e.isDirectory() && e.name !== "test" && e.name !== "node_modules" && !e.name.startsWith("_"))
+    .map((e) => e.name);
+}
+
 /** The component CSS filenames (not full paths) in one theme's components/. */
 export function componentFiles(theme) {
   return readdirSync(join(ROOT, theme, "components")).filter((f) => f.endsWith(".css"));

@@ -22,7 +22,7 @@ import assert from "node:assert/strict";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { test } from "node:test";
-import { ROOT, themeDirs, componentFiles, stripComments, parseCss, splitSelectors, cssOf } from "./css.mjs";
+import { ROOT, themeDirs, scanThemeDirs, componentFiles, stripComments, parseCss, splitSelectors, cssOf } from "./css.mjs";
 
 const manifest = JSON.parse(readFileSync(join(ROOT, "manifest.json"), "utf-8"));
 const pkg = JSON.parse(readFileSync(join(ROOT, "package.json"), "utf-8"));
@@ -180,7 +180,11 @@ function assertCssExport(key, expectedDefault) {
 
 test("manifest, package.json, and theme directories agree", () => {
   const manifestThemes = Object.keys(manifest.themes).sort();
-  assert.deepEqual([...themeDirs].sort(), manifestThemes);
+  // A real fs scan on one side, not `themeDirs` (itself manifest-derived) --
+  // otherwise this compares the manifest to itself and can never catch a
+  // stray on-disk directory the manifest doesn't know about, or a manifest
+  // entry with no matching directory (#93 review, round 2).
+  assert.deepEqual([...scanThemeDirs()].sort(), manifestThemes);
   for (const theme of manifestThemes) {
     assert.ok(pkg.files.includes(theme), `package.json files misses ${theme}`);
     assertCssExport(`./${theme}`, `./${theme}/index.css`);

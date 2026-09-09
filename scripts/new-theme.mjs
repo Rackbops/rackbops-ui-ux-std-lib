@@ -85,7 +85,13 @@ export function deriveShort(id) {
 
 /** Every distinct @keyframes name declared across a theme's CSS file contents. */
 export function keyframeNames(cssContents) {
-  return [...new Set(cssContents.flatMap((css) => extractKeyframeNames(css)))];
+  // extractKeyframeNames is a general-purpose CSS-keyframe scanner (any name,
+  // any theme's convention) -- this wrapper keeps its own original contract
+  // of rb-* names only, since new-theme.mjs only ever deals in this
+  // library's keyframes (#93 review, round 2).
+  return [
+    ...new Set(cssContents.flatMap((css) => extractKeyframeNames(css)).filter((n) => n.startsWith("rb-"))),
+  ];
 }
 
 /** Resolve --from's real keyframe short-name prefix, verifying the cheap
