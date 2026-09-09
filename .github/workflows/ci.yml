@@ -18,18 +18,16 @@ jobs:
         with:
           node-version: 24
       - run: pnpm install --frozen-lockfile
-      # Theme contract + release-bump tests (node:test, no runtime deps).
-      - run: pnpm --filter @rackbops/styles test
-      # Typecheck/build the React package (tsc, strict).
-      - run: pnpm --filter @rackbops/ui-react build
-      # React component render tests (node:test + tsx + react-dom/server).
-      - run: pnpm --filter @rackbops/ui-react test
-      # Local dev server containment/.git-exclusion regression tests (node:test).
-      - run: node --test site/serve.test.mjs
-      # SKILL.md's generated component table stays in sync with styles/contract.json (node:test).
-      - run: node --test scripts/generate-skill-table.test.mjs
-      # LICENSE/NOTICE packaging (copy-license.mjs) stays wired into both packages (node:test).
-      - run: node --test scripts/copy-license.test.mjs
+      # Typecheck/build every workspace package that defines a build script (tsc, strict) --
+      # currently @rackbops/ui-react.
+      - run: pnpm build
+      # Every workspace package's own test script -- @rackbops/styles (theme contract +
+      # release-bump, node:test) and @rackbops/ui-react (tsc --noEmit + React component
+      # render tests, node:test + tsx + react-dom/server) -- then the root-level node:test
+      # suites: local dev server containment/.git-exclusion, generated skill table sync
+      # with styles/contract.json, LICENSE/NOTICE packaging (copy-license.mjs), and
+      # new-theme scaffolding.
+      - run: pnpm test
 
   # Visual regression -- a SEPARATE job (browser dependency) so the text suites
   # above stay fast and dependency-free. Screenshots every showcase section per
