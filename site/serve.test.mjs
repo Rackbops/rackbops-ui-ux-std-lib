@@ -10,15 +10,17 @@ import assert from "node:assert/strict";
 import { resolve, sep } from "node:path";
 import { decodePathname, isForbiddenRelativePath, resolveSafePath, server } from "./serve.mjs";
 
-/** resolveSafePath rejecting is the "forbidden" contract; anything else
- * (a plain file-not-found) is a different failure this suite doesn't
- * exercise as a rejection. */
+/** Whether resolveSafePath rejects a pathname at all -- outside the
+ * allowlist, an escape attempt, or genuinely missing all reject the same
+ * way now (round-1 review finding on #90: a distinguishable "forbidden"
+ * message let the HTTP status leak whether a non-allowlisted path exists),
+ * so this suite no longer tries to tell the reasons apart. */
 async function isForbidden(pathname) {
   try {
     await resolveSafePath(pathname);
     return false;
-  } catch (err) {
-    return err instanceof Error && err.message === "forbidden";
+  } catch {
+    return true;
   }
 }
 
@@ -183,9 +185,25 @@ test("GET an index-less directory with a trailing slash still 404s (matches ngin
   assert.equal(res.status, 404);
 });
 
-test("GET a real repo-root file outside the allowlist, 403 (compose.yaml, nginx.conf, .claude/launch.json, deploy/deploy-pull.sh) -- nginx 404s these instead, since it has no separate escape-attempt case to distinguish them from", async () => {
+test("GET a real repo-root file outside the allowlist, 404 -- same as nginx's catch-all (compose.yaml, nginx.conf, .claude/launch.json, deploy/deploy-pull.sh)", async () => {
   for (const p of ["/compose.yaml", "/nginx.conf", "/.claude/launch.json", "/deploy/deploy-pull.sh"]) {
     const res = await fetch(`${baseUrl}${p}`);
-    assert.equal(res.status, 403, p);
+    assert.equal(res.status, 404, p);
+  }
+});
+
+test("a non-allowlisted path answers the same status whether or not it actually exists on disk -- no existence leak (round-1 review finding on #90)", async () => {
+  // Before the fix, realpath ran before the allowlist check: an existing
+  // non-allowlisted file rejected with the distinguishable "forbidden"
+  // 403, while a nonexistent one 404'd on realpath's own ENOENT -- so the
+  // status code alone revealed whether e.g. some unlisted file existed.
+  for (const [existing, missing] of [
+    ["/compose.yaml", "/compose.nope"],
+    ["/deploy/deploy-pull.sh", "/deploy/nope.sh"],
+  ]) {
+    const existingRes = await fetch(`${baseUrl}${existing}`);
+    const missingRes = await fetch(`${baseUrl}${missing}`);
+    assert.equal(existingRes.status, missingRes.status, `${existing} vs ${missing}`);
+    assert.equal(existingRes.status, 404, existing);
   }
 });
