@@ -11,8 +11,8 @@ import { fileURLToPath } from "node:url";
 const ROOT = resolve(fileURLToPath(import.meta.url), "../..");
 const CONTRACT_PATH = join(ROOT, "styles", "contract.json");
 const SKILL_PATH = join(ROOT, "skills", "design-system", "SKILL.md");
-const START = "<!-- contract-table:start -->";
-const END = "<!-- contract-table:end -->";
+export const START = "<!-- contract-table:start -->";
+export const END = "<!-- contract-table:end -->";
 
 export function renderReact(react) {
   if (react === null) return "—";

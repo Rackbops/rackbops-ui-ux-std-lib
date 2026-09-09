@@ -3,7 +3,7 @@ import { execSync } from "node:child_process";
 import { mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
-import { test } from "node:test";
+import { before, test } from "node:test";
 import { fileURLToPath } from "node:url";
 import { copyLicenseFiles } from "./copy-license.mjs";
 
@@ -34,19 +34,25 @@ for (const dir of PACKAGE_DIRS) {
   });
 }
 
-for (const dir of PACKAGE_DIRS) {
-  // Unlike the files-array check above, this actually runs `npm pack` --
-  // the files array alone can't catch a broken or missing `prepack` (a
-  // deleted prepack script, or one pointing at the wrong relative depth,
-  // both leave `files` untouched but silently drop LICENSE/NOTICE from the
-  // real tarball).
+// Unlike the files-array check above, this actually runs `npm pack` -- the
+// files array alone can't catch a broken or missing `prepack` (a deleted
+// prepack script, or one pointing at the wrong relative depth, both leave
+// `files` untouched but silently drop LICENSE/NOTICE from the real tarball).
+// One spawn packs both packages; npm preserves argument order in its JSON
+// array, so `packs[i]` lines up with `PACKAGE_DIRS[i]`.
+let packs;
+
+before(() => {
+  const stdout = execSync(`npm pack --dry-run --json ${PACKAGE_DIRS.map((dir) => `./${dir}`).join(" ")}`, {
+    cwd: ROOT,
+    encoding: "utf-8",
+  });
+  packs = JSON.parse(stdout);
+});
+
+for (const [i, dir] of PACKAGE_DIRS.entries()) {
   test(`npm pack ships LICENSE and NOTICE from ${dir} (issue #38)`, () => {
-    const stdout = execSync("npm pack --dry-run --json", {
-      cwd: join(ROOT, dir),
-      encoding: "utf-8",
-    });
-    const [{ files }] = JSON.parse(stdout);
-    const paths = files.map((f) => f.path);
+    const paths = packs[i].files.map((f) => f.path);
     assert.ok(paths.includes("LICENSE"), `${dir}: npm pack output misses LICENSE`);
     assert.ok(paths.includes("NOTICE"), `${dir}: npm pack output misses NOTICE`);
   });

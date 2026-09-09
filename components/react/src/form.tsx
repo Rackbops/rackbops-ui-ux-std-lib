@@ -1,4 +1,5 @@
 import {
+  createElement,
   forwardRef,
   type CSSProperties,
   type HTMLAttributes,
@@ -11,59 +12,41 @@ import {
 } from "react";
 import { cx } from "./cx.js";
 
+/** A forwardRef DOM wrapper that only adds a base rb-* class -- Input, Textarea, Select, Label, Field. */
+function styled<E extends HTMLElement, P extends { className?: string }>(tag: string, cls: string) {
+  return forwardRef<E, P>(function Styled({ className, ...rest }, ref) {
+    return createElement(tag, { ref, className: cx(cls, className), ...rest });
+  });
+}
+
 export interface InputProps
   extends InputHTMLAttributes<HTMLInputElement>,
     RefAttributes<HTMLInputElement> {}
-export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
-  { className, ...rest },
-  ref,
-) {
-  return <input ref={ref} className={cx("rb-input", className)} {...rest} />;
-});
+export const Input = styled<HTMLInputElement, InputProps>("input", "rb-input");
 Input.displayName = "Input";
 
 export interface TextareaProps
   extends TextareaHTMLAttributes<HTMLTextAreaElement>,
     RefAttributes<HTMLTextAreaElement> {}
-export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(function Textarea(
-  { className, ...rest },
-  ref,
-) {
-  return <textarea ref={ref} className={cx("rb-textarea", className)} {...rest} />;
-});
+export const Textarea = styled<HTMLTextAreaElement, TextareaProps>("textarea", "rb-textarea");
 Textarea.displayName = "Textarea";
 
 export interface SelectProps
   extends SelectHTMLAttributes<HTMLSelectElement>,
     RefAttributes<HTMLSelectElement> {}
-export const Select = forwardRef<HTMLSelectElement, SelectProps>(function Select(
-  { className, ...rest },
-  ref,
-) {
-  return <select ref={ref} className={cx("rb-select", className)} {...rest} />;
-});
+export const Select = styled<HTMLSelectElement, SelectProps>("select", "rb-select");
 Select.displayName = "Select";
 
 export interface LabelProps
   extends LabelHTMLAttributes<HTMLLabelElement>,
     RefAttributes<HTMLLabelElement> {}
-export const Label = forwardRef<HTMLLabelElement, LabelProps>(function Label(
-  { className, ...rest },
-  ref,
-) {
-  return <label ref={ref} className={cx("rb-label", className)} {...rest} />;
-});
+export const Label = styled<HTMLLabelElement, LabelProps>("label", "rb-label");
 Label.displayName = "Label";
 
 export interface FieldProps
   extends HTMLAttributes<HTMLDivElement>,
     RefAttributes<HTMLDivElement> {}
-export const Field = forwardRef<HTMLDivElement, FieldProps>(function Field(
-  { className, ...rest },
-  ref,
-) {
-  return <div ref={ref} className={cx("rb-field", className)} {...rest} />;
-});
+export const Field = styled<HTMLDivElement, FieldProps>("div", "rb-field");
 Field.displayName = "Field";
 
 export interface ChoiceProps
@@ -98,57 +81,29 @@ function ChoiceControl({
   );
 }
 
-export const Checkbox = forwardRef<HTMLInputElement, ChoiceProps>(function Checkbox(
-  { label, className, wrapperClassName, wrapperStyle, ...rest },
-  ref,
+/** A Checkbox/Radio/Switch factory: wraps an `<input>` carrying its fixed `type`/`role` in ChoiceControl. */
+function choiceControl(
+  displayName: string,
+  cls: string,
+  attrs: Pick<InputHTMLAttributes<HTMLInputElement>, "type" | "role">,
 ) {
-  return (
-    <ChoiceControl
-      label={label}
-      wrapperClassName={wrapperClassName}
-      wrapperStyle={wrapperStyle}
-      control={
-        <input ref={ref} type="checkbox" className={cx("rb-checkbox", className)} {...rest} />
-      }
-    />
-  );
-});
-Checkbox.displayName = "Checkbox";
+  const Component = forwardRef<HTMLInputElement, ChoiceProps>(function Choice(
+    { label, className, wrapperClassName, wrapperStyle, ...rest },
+    ref,
+  ) {
+    return (
+      <ChoiceControl
+        label={label}
+        wrapperClassName={wrapperClassName}
+        wrapperStyle={wrapperStyle}
+        control={<input ref={ref} {...attrs} className={cx(cls, className)} {...rest} />}
+      />
+    );
+  });
+  Component.displayName = displayName;
+  return Component;
+}
 
-export const Radio = forwardRef<HTMLInputElement, ChoiceProps>(function Radio(
-  { label, className, wrapperClassName, wrapperStyle, ...rest },
-  ref,
-) {
-  return (
-    <ChoiceControl
-      label={label}
-      wrapperClassName={wrapperClassName}
-      wrapperStyle={wrapperStyle}
-      control={<input ref={ref} type="radio" className={cx("rb-radio", className)} {...rest} />}
-    />
-  );
-});
-Radio.displayName = "Radio";
-
-export const Switch = forwardRef<HTMLInputElement, ChoiceProps>(function Switch(
-  { label, className, wrapperClassName, wrapperStyle, ...rest },
-  ref,
-) {
-  return (
-    <ChoiceControl
-      label={label}
-      wrapperClassName={wrapperClassName}
-      wrapperStyle={wrapperStyle}
-      control={
-        <input
-          ref={ref}
-          type="checkbox"
-          role="switch"
-          className={cx("rb-switch", className)}
-          {...rest}
-        />
-      }
-    />
-  );
-});
-Switch.displayName = "Switch";
+export const Checkbox = choiceControl("Checkbox", "rb-checkbox", { type: "checkbox" });
+export const Radio = choiceControl("Radio", "rb-radio", { type: "radio" });
+export const Switch = choiceControl("Switch", "rb-switch", { type: "checkbox", role: "switch" });
