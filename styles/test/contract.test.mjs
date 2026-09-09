@@ -885,14 +885,26 @@ for (const theme of themeDirs) {
 
 // -- contract 2: --rb-focus-ring + --rb-ease (issue #54) ----------------------
 for (const theme of themeDirs) {
-  test(`${theme}: --rb-focus-ring is an accent-based outline value (#54)`, () => {
+  test(`${theme}: --rb-focus-ring is an accent-based outline value, or a documented exception (#54, #171)`, (t) => {
     const raw = stripComments(cssOf(join(ROOT, theme, "tokens.css")));
     const m = raw.match(/--rb-focus-ring:\s*([^;]+);/);
     assert.ok(m, `${theme}: --rb-focus-ring not declared`);
+    const exempt = (contract.focusRing?.exempt ?? []).find((e) => e.theme === theme);
+    if (exempt) {
+      // Staleness guard, same shape as the contrast allowlist: an exempt theme
+      // whose focus ring now IS accent-based means the exception is gone --
+      // drop the entry (and the design.md note it points at).
+      assert.ok(
+        !/var\(--rb-accent\)/.test(m[1]),
+        `${theme}: --rb-focus-ring ("${m[1].trim()}") now references var(--rb-accent) -- remove the stale focusRing exemption ("${exempt.reason}")`,
+      );
+      t.diagnostic(`${theme}: --rb-focus-ring = "${m[1].trim()}" (exempt from the accent-based rule, ${exempt.doc})`);
+      return;
+    }
     assert.match(
       m[1],
       /var\(--rb-accent\)/,
-      `${theme}: --rb-focus-ring ("${m[1].trim()}") must reference var(--rb-accent) -- focus stays accent-based`,
+      `${theme}: --rb-focus-ring ("${m[1].trim()}") must reference var(--rb-accent) -- focus stays accent-based, or add a focusRing.exempt entry in contract.json with the design.md line documenting why`,
     );
   });
 
