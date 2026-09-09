@@ -98,37 +98,37 @@ declare -A COMMIT_TYPE_NAMES=(
   [ci]="CI"
 )
 
-# Prints a changelog for the commits in $1 (a git log revision expression,
-# e.g. "v0.1.0..v0.1.1" or just "v0.1.1" for "everything up to it"), scoped
-# to PATHSPEC and excluding this script's own bump commits. Shared by both
-# the backfill path below and the normal release path, since either may
-# need to build notes for a range that isn't ..HEAD.
-build_changelog() {
-  local range="$1"
-  local commit_log
-  commit_log=$(git log "$range" --pretty=format:"%s" -- "${PATHSPEC[@]}" | grep -v "$BUMP_GREP" || true)
+# Prints a changelog from already-fetched commit subjects in $1 (newline-
+# separated "%s" lines, already scoped to PATHSPEC and with this script's own
+# bump-commit subjects excluded -- exactly what the unreleased-change check
+# below and the backfill path each already walk `git log` once to produce).
+# Takes the log text itself rather than a revision range so neither caller
+# re-walks a range it has already walked.
+build_changelog_from_log() {
+  local commit_log="$1"
 
   local -A type_entries
   local t
   for t in "${COMMIT_TYPES_ORDER[@]}"; do type_entries[$t]=""; done
   local other_entries=""
-  local msg matched pattern
+  local msg
+  # Matches: type(optional-scope)(optional !): description -- the optional !
+  # keeps breaking commits (feat!:, feat(scope)!:) under their own type
+  # instead of dropping them into "Other Changes". Stored in a variable
+  # (rather than written inline in the [[ =~ ]] below) since bash's
+  # conditional parser doesn't reliably handle literal parens inside an
+  # inline regex there.
+  local pattern='^([a-z]+)(\([^)]*\))?!?:[[:space:]]+(.+)$'
 
   while IFS= read -r msg; do
     [[ -z "$msg" ]] && continue
-    matched=false
-    for t in "${COMMIT_TYPES_ORDER[@]}"; do
-      # Matches: type(optional-scope)(optional !): description
-      # The optional ! keeps breaking commits (feat!:, feat(scope)!:) under
-      # their own type instead of dropping them into "Other Changes".
-      pattern="^${t}(\([^)]*\))?!?:[[:space:]]+(.+)$"
-      if [[ "$msg" =~ $pattern ]]; then
-        type_entries[$t]+="- ${BASH_REMATCH[2]}"$'\n'
-        matched=true
-        break
-      fi
-    done
-    if [[ "$matched" == false ]]; then
+    # COMMIT_TYPES_ORDER is ordering-only here; COMMIT_TYPE_NAMES decides
+    # real-type membership, so a lookalike like "feature:"/"cix:" still
+    # falls through to Other Changes exactly as it did when compared
+    # type-by-type.
+    if [[ "$msg" =~ $pattern ]] && [[ -n "${COMMIT_TYPE_NAMES[${BASH_REMATCH[1]}]+x}" ]]; then
+      type_entries[${BASH_REMATCH[1]}]+="- ${BASH_REMATCH[3]}"$'\n'
+    else
       other_entries+="- ${msg}"$'\n'
     fi
   done <<< "$commit_log"
@@ -198,6 +198,11 @@ done
 
 current_tag="v${current_version}"
 
+# All release tags (strict vX.Y.Z), version-sorted ascending, fetched once.
+# Every site below that used to call list_release_tags again is now a
+# tail/grep over this same captured list instead of a fresh `git tag -l`.
+all_tags=$(list_release_tags)
+
 # ── Backfill: the most recent tag, if any, missing a GitHub release ────────
 # Checked independently of HEAD's own commit, and before anything else: a
 # `gh release create` failure followed by a genuinely new commit (rather
@@ -208,7 +213,7 @@ current_tag="v${current_version}"
 # stranding the missing release for good. This only ever fires for the tag
 # right before whatever this run goes on to do below, since a release is
 # always created (or backfilled) before the next bump ever happens.
-latest_tag=$(list_release_tags | tail -1 || true)
+latest_tag=$(tail -1 <<< "$all_tags" || true)
 
 if [[ -n "$latest_tag" ]]; then
   # gh exits 1 for ANY failure, so a bare `! gh release view` reads a transient
@@ -226,10 +231,11 @@ if [[ -n "$latest_tag" ]]; then
     # a fresh checkout, since a tag can only exist locally if it was fetched
     # from there); otherwise exactly what still needs to happen for it.
     git push origin "$latest_tag"
-    prior_tag=$(list_release_tags | grep -Fxv "$latest_tag" | tail -1 || true)
+    prior_tag=$(grep -Fxv "$latest_tag" <<< "$all_tags" | tail -1 || true)
     backfill_range="$latest_tag"
     [[ -n "$prior_tag" ]] && backfill_range="${prior_tag}..${latest_tag}"
-    publish_release "$(build_changelog "$backfill_range")" "$latest_tag"
+    backfill_commit_log=$(git log "$backfill_range" --pretty=format:"%s" -- "${PATHSPEC[@]}" | grep -v "$BUMP_GREP" || true)
+    publish_release "$(build_changelog_from_log "$backfill_commit_log")" "$latest_tag"
   else
     echo "ERROR: gh release view ${latest_tag} failed, and not with 'release not found' -- refusing to assume the release is missing: ${release_view_err}" >&2
     exit 1
@@ -250,14 +256,14 @@ if [[ "$(git log -1 --pretty=format:%s)" == "chore(release): ${current_tag}" ]] 
 fi
 
 # The base to diff commits against, for both the unreleased-change check and
-# the changelog. Never current_tag itself: in a resumed run that tag may
-# already exist, and the base must stay the release BEFORE this one — the
-# same base the original, now-resumed run computed.
-if [[ "$skip_bump" == true ]]; then
-  last_tag=$(list_release_tags | grep -Fxv "$current_tag" | tail -1 || true)
-else
-  last_tag=$(list_release_tags | tail -1 || true)
-fi
+# the changelog: simply latest_tag, computed above. Never current_tag itself
+# -- in a resumed run (skip_bump=true) current_tag has no local tag yet by
+# definition, so latest_tag (the last tag that DOES exist locally) is
+# already the release before this one, the same base the original,
+# now-resumed run computed; in a fresh run latest_tag is that same last
+# existing tag regardless. Either way it's one value from one tag list,
+# never current_tag itself, whether or not that tag exists yet.
+last_tag="$latest_tag"
 
 # ── Detect unreleased changes ─────────────────────────────────────────────────
 
@@ -315,6 +321,6 @@ if ! git rev-parse -q --verify "refs/tags/${tag}" >/dev/null; then
 fi
 git push origin "$tag"
 
-publish_release "$(build_changelog "$range")" "$tag"
+publish_release "$(build_changelog_from_log "$commit_log")" "$tag"
 
 echo "Released ${tag}."
