@@ -33,14 +33,15 @@ The test runner is **`node --test` (node:test) everywhere** -- no vitest/jest. R
 - **`pnpm --filter @rackbops/ui-react test`** -- `tsc --noEmit`, then the component render tests
   (`node --import tsx --test "src/**/*.test.tsx"`, react-dom/server + jsdom).
 - **`pnpm --filter @rackbops/ui-react build`** -- strict `tsc`; the React package must typecheck + build.
-- **`node --test site/serve.test.mjs scripts/generate-skill-table.test.mjs scripts/copy-license.test.mjs`**
-  -- the showcase-server containment tests and the two generator tests.
+- **`node --test site/serve.test.mjs scripts/generate-skill-table.test.mjs scripts/copy-license.test.mjs scripts/new-theme.test.mjs`**
+  -- the showcase-server containment tests and the three generator/scaffold tests.
 
 `pnpm test` chains `pnpm -r test` with those root tests; `pnpm build` = `pnpm -r build`. **The contract
 test is the definition-of-done gate** -- see `CLAUDE.md`.
 
-**CI** ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs these checks as separate steps on
-Node 24, on **both** `pull_request` and `push:[main]`.
+**CI** ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs exactly that chain -- `pnpm install
+--frozen-lockfile`, `pnpm build`, `pnpm test` -- as its `test` job on Node 24, on **both** `pull_request`
+and `push:[main]`, plus a separate `visual` job (`pnpm visual`, Playwright container).
 
 ---
 
