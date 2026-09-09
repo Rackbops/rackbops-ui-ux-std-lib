@@ -154,7 +154,7 @@ esac
   );
 
   execFileSync("git", ["init", "-b", "main", repoDir]);
-  const dirs = { bareDir, repoDir, ghDir, ghBinDir };
+  const dirs = { root, bareDir, repoDir, ghDir, ghBinDir };
   const env = fixtureEnv(dirs);
   const run = (args) => execFileSync("git", args, { cwd: repoDir, env }).toString();
 
@@ -176,6 +176,10 @@ esac
 }
 
 const SEED = buildSeed();
+// Per-scenario copies clean up via t.after(); the shared SEED itself has no
+// TestContext to hook, so it's removed here instead -- otherwise every test
+// run leaks one more release-seed-* dir into the OS temp folder.
+process.on("exit", () => rmSync(SEED.root, { recursive: true, force: true }));
 
 /** Rewrites the absolute paths a plain file copy of SEED can't carry
  * forward correctly (see the file header): the pre-receive hook's and fake
