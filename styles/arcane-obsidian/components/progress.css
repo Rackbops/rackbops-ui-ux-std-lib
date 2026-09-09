@@ -18,6 +18,25 @@
 :where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-progress::-moz-progress-bar {
   background: var(--rb-accent);
 }
+/* indeterminate (no value): a soft accent highlight sweeps the trough.
+   ::-webkit-progress-bar and ::-moz-progress-bar MUST stay two separate
+   rules, never comma-joined -- an engine that doesn't recognise one of the
+   two vendor pseudo-elements drops the WHOLE selector list, not just its
+   own half (#86). */
+:where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-progress:indeterminate::-webkit-progress-bar {
+  background-color: var(--rb-surface-sunken);
+  background-image: linear-gradient(90deg, transparent 0%, var(--rb-accent) 50%, transparent 100%);
+  background-size: 50% 100%;
+  background-repeat: no-repeat;
+  animation: rb-obsidian-indeterminate 1.4s ease-in-out infinite;
+}
+:where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-progress:indeterminate::-moz-progress-bar {
+  background-color: var(--rb-surface-sunken);
+  background-image: linear-gradient(90deg, transparent 0%, var(--rb-accent) 50%, transparent 100%);
+  background-size: 50% 100%;
+  background-repeat: no-repeat;
+  animation: rb-obsidian-indeterminate 1.4s ease-in-out infinite;
+}
 :where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-spinner {
   display: inline-block;
   width: 1.25rem;
@@ -32,8 +51,22 @@
     transform: rotate(360deg);
   }
 }
+@keyframes rb-obsidian-indeterminate {
+  0% {
+    background-position: -50% 0;
+  }
+  100% {
+    background-position: 150% 0;
+  }
+}
 
 @media (prefers-reduced-motion: reduce) {
+  :where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-progress:indeterminate::-webkit-progress-bar {
+    animation-duration: 2s;
+  }
+  :where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-progress:indeterminate::-moz-progress-bar {
+    animation-duration: 2s;
+  }
   :where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-spinner {
     animation-duration: 2s;
   }

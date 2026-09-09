@@ -27,6 +27,27 @@
   background: var(--rb-accent-2);
   box-shadow: 0 0 10px rgba(12, 179, 255, 0.5);
 }
+/* indeterminate (no value): a glowing accent highlight sweeps the trough.
+   ::-webkit-progress-bar and ::-moz-progress-bar MUST stay two separate
+   rules, never comma-joined -- an engine that doesn't recognise one of the
+   two vendor pseudo-elements drops the WHOLE selector list, not just its
+   own half (#86). */
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-progress:indeterminate::-webkit-progress-bar {
+  background-color: var(--rb-bg-blend);
+  background-image: linear-gradient(90deg, transparent 0%, var(--rb-accent) 50%, transparent 100%);
+  background-size: 50% 100%;
+  background-repeat: no-repeat;
+  box-shadow: 0 0 10px rgba(69, 0, 217, 0.5);
+  animation: rb-sc-indeterminate 1.4s ease-in-out infinite;
+}
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-progress:indeterminate::-moz-progress-bar {
+  background-color: var(--rb-bg-blend);
+  background-image: linear-gradient(90deg, transparent 0%, var(--rb-accent) 50%, transparent 100%);
+  background-size: 50% 100%;
+  background-repeat: no-repeat;
+  box-shadow: 0 0 10px rgba(69, 0, 217, 0.5);
+  animation: rb-sc-indeterminate 1.4s ease-in-out infinite;
+}
 
 :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-spinner {
   display: inline-block;
@@ -42,7 +63,21 @@
     transform: rotate(360deg);
   }
 }
+@keyframes rb-sc-indeterminate {
+  0% {
+    background-position: -50% 0;
+  }
+  100% {
+    background-position: 150% 0;
+  }
+}
 @media (prefers-reduced-motion: reduce) {
+  :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-progress:indeterminate::-webkit-progress-bar {
+    animation-duration: 2s;
+  }
+  :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-progress:indeterminate::-moz-progress-bar {
+    animation-duration: 2s;
+  }
   :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-spinner {
     animation-duration: 2s;
   }

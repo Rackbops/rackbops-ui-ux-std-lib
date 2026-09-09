@@ -21,6 +21,42 @@
 :where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-progress::-moz-progress-bar {
   background: var(--rb-accent);
 }
+/* indeterminate (no value): a hard-edged accent block sweeps the trough --
+   no soft fade at its edges, matching the theme's flat-fill, no-wash rule.
+   ::-webkit-progress-bar and ::-moz-progress-bar MUST stay two separate
+   rules, never comma-joined -- an engine that doesn't recognise one of the
+   two vendor pseudo-elements drops the WHOLE selector list, not just its
+   own half (#86). */
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-progress:indeterminate::-webkit-progress-bar {
+  background-color: var(--rb-surface-sunken);
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    transparent 25%,
+    var(--rb-accent) 25%,
+    var(--rb-accent) 75%,
+    transparent 75%,
+    transparent 100%
+  );
+  background-size: 50% 100%;
+  background-repeat: no-repeat;
+  animation: rb-signal-light-indeterminate 1.2s linear infinite;
+}
+:where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-progress:indeterminate::-moz-progress-bar {
+  background-color: var(--rb-surface-sunken);
+  background-image: linear-gradient(
+    90deg,
+    transparent 0%,
+    transparent 25%,
+    var(--rb-accent) 25%,
+    var(--rb-accent) 75%,
+    transparent 75%,
+    transparent 100%
+  );
+  background-size: 50% 100%;
+  background-repeat: no-repeat;
+  animation: rb-signal-light-indeterminate 1.2s linear infinite;
+}
 
 :where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-spinner {
   display: inline-block;
@@ -36,8 +72,22 @@
     transform: rotate(360deg);
   }
 }
+@keyframes rb-signal-light-indeterminate {
+  0% {
+    background-position: -50% 0;
+  }
+  100% {
+    background-position: 150% 0;
+  }
+}
 
 @media (prefers-reduced-motion: reduce) {
+  :where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-progress:indeterminate::-webkit-progress-bar {
+    animation-duration: 2s;
+  }
+  :where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-progress:indeterminate::-moz-progress-bar {
+    animation-duration: 2s;
+  }
   :where([data-rb-style="concrete-signal-light"], [data-rb-style="concrete-signal-light"] *).rb-spinner {
     animation-duration: 2s;
   }
