@@ -17,7 +17,7 @@ pnpm monorepo (`pnpm@11.15.1`, `pnpm-workspace.yaml`: `styles` + `components/*`)
 | `@rackbops/styles` | `styles/` | The CSS themes + the `--rb-*` / `rb-*` contract (`contract.json`, `manifest.json`, `all.css`). **No build step** -- CSS ships as authored. |
 | `@rackbops/ui-react` | `components/react/` | React components; **built** with `tsc -p tsconfig.build.json` to `dist/` (the published artifact). |
 
-Both are `@rackbops`-scoped and **public on npm** (currently `v0.2.2`). `esbuild`'s postinstall is
+Both are `@rackbops`-scoped and **public on npm** (currently `v0.2.25`). `esbuild`'s postinstall is
 disabled in `pnpm-workspace.yaml` (`allowBuilds: esbuild: false`) -- `tsx` resolves its platform binary
 at runtime without it.
 
@@ -27,9 +27,10 @@ at runtime without it.
 
 The test runner is **`node --test` (node:test) everywhere** -- no vitest/jest. Run before staging:
 
-- **`pnpm --filter @rackbops/styles test`** -- the six `styles/test/` suites (all `node:test`, no
-  runtime deps): the theme **contract** (the DoD gate), light/dark **pair-parity**, **base-typography**
-  parity, a TS side-effect-import **types** check, and the **release** / **bump** version logic.
+- **`pnpm --filter @rackbops/styles test`** -- the eight `styles/test/` suites (all `node:test`): the
+  theme **contract** (the DoD gate), light/dark **pair-parity**, **base-typography** parity, a TS
+  side-effect-import **types** check (spawns `tsc`), computed WCAG **contrast** ratios, per-theme
+  **bundle**.css generation, and the **release** / **bump** version logic.
 - **`pnpm --filter @rackbops/ui-react test`** -- `tsc --noEmit`, then the component render tests
   (`node --import tsx --test "src/**/*.test.tsx"`, react-dom/server + jsdom).
 - **`pnpm --filter @rackbops/ui-react build`** -- strict `tsc`; the React package must typecheck + build.

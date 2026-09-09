@@ -121,15 +121,22 @@ rackbops.com uses).
 
 ```bash
 pnpm install
-pnpm build                              # tsc the React package
-pnpm --filter @rackbops/styles test       # theme contract + release-bump tests
-pnpm --filter @rackbops/ui-react test     # typecheck + render-to-string component tests + ref-forwarding (jsdom)
-pnpm visual                             # visual regression: screenshot the showcase per theme, diff vs baselines
+pnpm build   # tsc the React package
+pnpm test    # every workspace package's own tests (styles: theme contract + release-bump,
+             # node:test; ui-react: typecheck + render-to-string component tests +
+             # ref-forwarding, node:test + jsdom), then the root-level node:test suites:
+             # local dev server containment/.git-exclusion, generated skill table sync,
+             # LICENSE/NOTICE packaging, and new-theme scaffolding
+pnpm visual  # visual regression: screenshot the showcase per theme, diff vs baselines
 ```
+
+Narrow to one package while iterating with `pnpm --filter @rackbops/styles test` or
+`pnpm --filter @rackbops/ui-react test`; CI and the review-gate recipe above both run
+the root `pnpm test`, which is a superset.
 
 `pnpm visual` is a **separate** browser-based check (Playwright/Chromium) and is
 deliberately not part of `pnpm test`, so the text suites stay fast and
-dependency-free. It screenshots every showcase section under all twelve themes
+dependency-free. It screenshots every showcase section under all fourteen themes
 and compares to the committed baselines in `site/__screenshots__/<theme>/`,
 writing a `*.diff.png` beside any tile that regressed. It catches what text
 parsing can't -- a lost `::-webkit-progress-value` fill, an unstyled class, a

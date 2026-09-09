@@ -135,6 +135,8 @@ Theme-specific extras (styled only under that theme — check before using): the
 arcane pair adds `.rb-wordmark`, `.rb-tabstrip`, and `.rb-eyebrow`; the
 rackbops pair adds `.rb-rack` (equaliser panel), `.rb-principles`/`.rb-principle`,
 `.rb-tags`/`.rb-tag`, `.rb-btn__arrow`, `.rb-card__tag`, and `.rb-eyebrow` too;
+the kenzen pair (`kenzen-midnight`, `kenzen-cyberhealth`) adds `.rb-wordmark`
+(with `.rb-wordmark__spark`) and `.rb-eyebrow`;
 the three nazuraki ports (`luminous-precision`, `neon-butterfly`,
 `summer-cloud`) add `.rb-badge--primary`, `.rb-bg`, and `.rb-progress--accent`;
 `summer-cloud` additionally adds `.rb-chip` and `.rb-card--floating`. Full

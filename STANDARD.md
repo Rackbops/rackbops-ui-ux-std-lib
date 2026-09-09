@@ -120,13 +120,15 @@ and nothing else" tests in `styles/test/contract.test.mjs`):
 5. `NOTICE` -- for a ported theme, the directory listed under its upstream's
    licence block.
 6. `skills/design-system/SKILL.md` -- the component-inventory table is
-   generated from `contract.json` `[tested]`; the roster paragraph is still
-   hand-maintained and updated separately `[pending #39]`.
+   generated from `contract.json` `[tested]`; the roster paragraph is
+   hand-maintained and updated separately, accurate as of the Kenzen pair
+   (#39) `[reviewed]`.
 7. `styles/contract.json` -- the theme's `extras` entry `[tested: closed-world
    check]`.
 
 The showcase needs no change: it reads the manifest and injects any `fonts`
-URLs on switch (`site/index.html:314-328`, `340-351`). `pnpm new-theme` (#53)
+URLs on switch (`site/index.html:373-382`, the `ensureFonts` function).
+`pnpm new-theme` (#53)
 performs steps 1, 2, 3, 4, and 7 mechanically; step 5 (NOTICE) only for a
 `--port` whose upstream already has a block; step 6's roster paragraph stays
 a manual edit.
@@ -168,8 +170,8 @@ Rules:
   it. The single-file artefact for vendoring and no-build use is the per-theme
   `bundle.css` (and `all.bundle.css` for every theme), flattened from
   `index.css` at publish `[#52]`. A theme directory is also copy-portable on its
-  own today; once the shared file lands (#52), the bundle becomes the
-  copy-portable form.
+  own; the bundle is the copy-portable form that also carries the shared
+  file's rules flattened in, so it needs nothing else alongside it.
 - Because the whole package downloads regardless of which theme is used,
   assets are kept small (2.1) and the tarball ships only what themes need
   (#38 for `LICENSE`/`NOTICE`, #42 for the PNG).
@@ -481,29 +483,27 @@ A theme MAY ship classes beyond the shared set. Rules:
 - Guarded like any rule, in their own `components/<name>.css` -- or, for an
   opt-in page background only, in `base.css` (the ports' `.rb-bg`,
   `styles/summer-cloud/base.css:39`) -- imported by `index.css` `[tested]`.
-- Documented under `### Theme extras` in that theme's `design.md` (most
-  themes fold this into their `## Components` prose instead -- only
-  rackbops-studio uses the literal heading today, tracked under #56's doc-
-  template sweep), listed under the theme in `contract.json`'s `extras`
-  `[tested: closed-world check]`, and in SKILL.md's extras list
-  `[partially closed by #47 -- the extras paragraph is now accurate and the
-  eyebrow mis-classification is fixed; the theme-roster paragraph, manifest-
-  fonts consumer guidance, and the add-theme recipe gaps #39 also names are
-  still open]`.
+- Documented under `### Theme extras` in that theme's `design.md` (nine of
+  the nine extras-shipping themes use the literal heading today -- closed
+  by #56's doc-template sweep), listed under the theme in `contract.json`'s
+  `extras` `[tested: closed-world check]`, and in SKILL.md's extras list
+  `[closed by #47/#39 -- the extras paragraph, the eyebrow classification,
+  the theme-roster paragraph, and manifest-fonts consumer guidance are all
+  accurate]`.
 - Never emitted by a shared React component. `LinksIndex` is the model: it
   composes `Card` and `Badge` and adds no class of its own
   (`components/react/src/LinksIndex.tsx:28-30`).
 - Shown in the showcase only in a section labelled as extras (section 13).
 
 Extras shipping today: `.rb-wordmark` (+ `__spark`), `.rb-eyebrow` -- arcane
-pair, and `.rb-eyebrow` also in the studio pair; `.rb-rack` (+ `__top`, `__live`, `__bars`,
-`__foot`), `.rb-principles`, `.rb-principle` (+ `__n`, `__body`), `.rb-tags`,
-`.rb-tag`, `.rb-card__tag`, `.rb-btn__arrow` -- studio pair;
-`.rb-badge--primary`, `.rb-bg`, `.rb-progress--accent` -- the three
-ports; `.rb-chip` (+ `--selected`), `.rb-card--floating` -- summer-cloud.
-`.rb-eyebrow` is in four themes, not the shared set, despite being
-listed as shared in SKILL.md and rendered unlabelled in the showcase
-(issue #39).
+pair and the Kenzen pair; `.rb-eyebrow` also in the studio pair; `.rb-rack`
+(+ `__top`, `__live`, `__bars`, `__foot`), `.rb-principles`, `.rb-principle`
+(+ `__n`, `__body`), `.rb-tags`, `.rb-tag`, `.rb-card__tag`, `.rb-btn__arrow`
+-- studio pair; `.rb-badge--primary`, `.rb-bg`, `.rb-progress--accent` -- the
+three ports; `.rb-chip` (+ `--selected`), `.rb-card--floating` -- summer-cloud.
+`.rb-eyebrow` is in six themes, not the shared set -- correctly filed
+under Theme-specific extras in SKILL.md, though the showcase's "Wordmark /
+Eyebrow" section still renders it without an extras label.
 
 ### 5.5 Naming
 
@@ -579,7 +579,11 @@ each looks is the theme's voice; that it exists is the contract.
 | --- | --- |
 | Rest | The token-driven default |
 | Hover | A visible change (fill, border, or lift) that is never the only affordance -- the resting state must already read as interactive |
-| `:focus-visible` | Visible, accent-based, and distinguishable from `:hover`, on every focusable element -- most components keep the base accent outline (`base.css`), which a pointer hover never draws, so focus doesn't collapse into the hover look. A component MAY replace it with an equally perceptible accent indicator (concrete-signal's accent-fill `--primary` takes a hard offset accent outline, `styles/concrete-signal/components/button.css`, where a border-weight change would be invisible on the fill; concrete's form controls swap to a 1px→2px accent border) but MUST NOT remove it without a replacement (#85). Two themes still suppress the base button outline on `:focus-visible` with no distinct replacement, so focus reads like hover there (`luminous-precision`, `neon-butterfly`) `[pending #64]` |
+| `:focus-visible` | Visible, accent-based, and distinguishable from `:hover`, on every focusable element -- most components keep the base accent outline (`base.css`), which a pointer hover never draws, so focus doesn't collapse into the hover look. A component MAY replace it with an equally perceptible accent indicator (concrete-signal's accent-fill `--primary` takes a hard offset accent outline, `styles/concrete-signal/components/button.css`, where a border-weight change would be invisible on the fill; concrete's form controls swap to a 1px→2px accent border) but MUST NOT remove it without a replacement (#85). `luminous-precision` and
+`neon-butterfly` also replace the base outline this way -- a distinct accent
+border-color/text-color change plus a pulse-glow animation (unaffected by
+`prefers-reduced-motion`, which only strips the animation, not the static
+color change) -- so no theme suppresses it without a replacement today (#85) |
 | Active / selected | `--active` (links, tabs), `--current` (stepper); paired with the ARIA state where one exists |
 | Disabled | `opacity` + `cursor: not-allowed`, and no hover response: hover rules are scoped `:not(:disabled)` (#37, generalized in #85 to every `<button>`-backed class -- `.rb-btn`/`.rb-icon-btn`/`.rb-tab`/`.rb-tabstrip__tab`/`.rb-chip`) |
 | Press | MAY dip or scale (the studio's 1 px dip); MUST respect reduced motion |
@@ -627,7 +631,8 @@ Transitions and animations:
   (mono-field, `styles/mono-field/design.md:7-9`; the amber pair). A
   departure within a theme is allowed only when stated: arcane's table
   header is body-sans normal case while its badge is mono uppercase
-  (`styles/arcane-obsidian/components/table.css:9-15`, `badge.css:10-14`;
+  (`styles/arcane-obsidian/components/data-table.css:9-15` -- the `.rb-table th`
+  rule, split from `table.css` at K4-10 -- `badge.css:10-14`;
   stated in `design.md:52-54`, and in `arcane-parchment/design.md` for its
   counterpart -- fixed per #40). The studio badge is
   mono but not uppercase (`rackbops-studio/components/badge.css:11`);
@@ -688,11 +693,12 @@ Transitions and animations:
   | Warm diffused shadow | amber pair |
   | Glow and glass | luminous-precision, neon-butterfly, summer-cloud |
 
-  `--rb-blur` is for overlay surfaces: ten themes blur the dialog backdrop,
-  eight of them through the token (the concrete pair sets `0px` and never
-  applies `backdrop-filter`, `styles/concrete-signal/design.md:67-69`; two
-  ports hard-code `blur(4px)` where the token is the rule -- #42). Glass on
-  resting surfaces is a theme choice, never a shared-component assumption.
+  `--rb-blur` is for overlay surfaces: twelve themes blur the dialog
+  backdrop, all of them through the token (the concrete pair sets `0px` and
+  never applies `backdrop-filter`, `styles/concrete-signal/design.md:67-69`;
+  #42 closed the ports' hard-coded `blur(4px)`, so no theme hard-codes it
+  today). Glass on resting surfaces is a theme choice, never a
+  shared-component assumption.
 - **Gradient ration.** `--rb-accent-grad` is used in component CSS in
   exactly eleven places across the library: the active-tab underline
   (arcane, amber, concrete pairs, mono-field), the wordmark (arcane pair),
@@ -759,11 +765,11 @@ props to modifiers, and never branches on the theme.
 | One export per shared component, from `src/index.ts`, with a named props type | `components/react/src/index.ts` (`FieldProps`/`SpinnerProps` added by #30) |
 | Each prop that adds a class says so in JSDoc: "Maps to `.rb-btn--{variant}`" | `Button.tsx:5-13` |
 | The base class first, modifiers next, consumer `className` last, via `cx` | `Button.tsx:29-35`; tested in `Button.test.tsx:68-77` |
-| `...rest` spreads onto the root element so `id`, `data-*`, `aria-*`, handlers all reach it | every wrapper, since #31 (`Dialog`) and #84 (`Tabs`, onto its `role="tablist"` child -- the outer ref target is a structural wrapper spanning tabs+panels); a labelled `Checkbox`/`Radio`/`Switch` still puts `className`/rest on the inner `<input>`, with `wrapperClassName`/`wrapperStyle` for the `.rb-choice` row (`form.tsx:68-133`, #84) |
+| `...rest` spreads onto the root element so `id`, `data-*`, `aria-*`, handlers all reach it | every wrapper, since #31 (`Dialog`) and #84 (`Tabs`, onto its `role="tablist"` child -- the outer ref target is a structural wrapper spanning tabs+panels); a labelled `Checkbox`/`Radio`/`Switch` still puts `className`/rest on the inner `<input>`, with `wrapperClassName`/`wrapperStyle` for the `.rb-choice` row (`form.tsx:90-101`, the shared `choiceControl` factory, #84/#93) |
 | `forwardRef`, with `RefAttributes<T>` on the props type | every wrapper, since #30 (`Dialog` exposes its own internal show/close node to the forwarded ref via `useImperativeHandle`, #83) |
-| Native semantics by default: `type="button"`, `aria-current="page"` on an active link, `role="alert"`, `role="status"` + `aria-label` on the spinner, native `<dialog>` with `aria-labelledby`, ARIA tablist with roving tabindex | `Button.tsx:20`, `NavLink.tsx:12`, `feedback.tsx:22,40-41`, `Dialog.tsx:52-56`, `Tabs.tsx:41-63` |
-| Controlled by the caller, no hidden state: `NavRail activeId`, `Dialog open` | `NavRail.tsx:14-16`; `Dialog` reconciles `open` when it changes (`[open]` dependency on the sync effect) and REQUIRES `onClose`, so the parent is always told of a native close and keeps `open` in sync -- `open` is the single source of truth (#83, completing #31); `Tabs` MAY keep its selection until a controlled API is in scope |
-| No theme-specific class, no extra, no `style` that a theme would own. Structural layout a theme has no opinion on (a grid) MAY be inline, and says why in a comment | `LinksIndex.tsx:28-39` |
+| Native semantics by default: `type="button"`, `aria-current="page"` on an active link, `role="alert"`, `role="status"` + `aria-label` on the spinner, native `<dialog>` with `aria-labelledby`, ARIA tablist with roving tabindex | `Button.tsx:19`, `NavLink.tsx:18`, `feedback.tsx:61` (`role="alert"`) and `:82-85` (`role="status"`/`aria-label` passed into the shared `styled` factory, #93), `Dialog.tsx:61`, `Tabs.tsx:41-63` |
+| Controlled by the caller, no hidden state: `NavRail activeId`, `Dialog open` | `NavRail.tsx:25` (`activeId` prop), `:36` (destructured), `:42` (drives each `NavLink`'s `active`); `Dialog` reconciles `open` when it changes (`[open]` dependency on the sync effect) and REQUIRES `onClose`, so the parent is always told of a native close and keeps `open` in sync -- `open` is the single source of truth (#83, completing #31); `Tabs` MAY keep its selection until a controlled API is in scope |
+| No theme-specific class, no extra, no `style` that a theme would own. Structural layout a theme has no opinion on (a grid) MAY be inline, and says why in a comment | `LinksIndex.tsx:47-53` (`gridStyle` + its why-comment, used at `:112`) |
 | A prop that is a no-op in some theme MUST be a documented omission (section 5.3), not a bare JSDoc caveat | `Card.tsx`'s `raised` now is, for the three nazuraki ports (design.md + JSDoc + `contract.json`'s `allowlist`, #29) `[tested]` |
 | Tests render to static markup and assert the class list per prop, composition, and passthrough; the same renders feed the derived class set | `Button.test.tsx`, `NavRail.test.tsx`, `LinksIndex.test.tsx`, `Stepper.test.tsx`; `node:test` + `tsx` + `react-dom/server`; the derived class set is `contract-classes.test.tsx` (#48) `[tested]`. `refs.test.tsx` (#30) is the one exception -- ref attachment only happens on a real commit, so it client-renders via `react-dom/client` + `jsdom` instead |
 
@@ -781,9 +787,11 @@ The showcase is the library's visual acceptance test. It MUST:
   section renders all four semantic variants, `.rb-alert--warning` included
   (#50);
 - put theme extras only in sections labelled as extras
-  (`site/index.html:288`), never in a generic section (the wordmark and
-  eyebrow at lines 50-54 and the `rb-btn__arrow`, `rb-card__tag` in generic
-  sections are out of contract -- issue #39);
+  (`site/index.html:341-342`, the sole "Theme extras" section), never in a
+  generic section (the wordmark and eyebrow at lines 50-54, and the studio
+  pair's `rb-btn__arrow`/`rb-card__tag` wherever they render outside that one
+  section, are still out of contract -- no tracking issue open for this;
+  needs one filed);
 - read the roster from the manifest and inject fonts on switch;
 - style its own chrome (`.sc-*`) with tokens only, so it is on-theme under
   every theme (`site/index.html:9-40`);
@@ -951,7 +959,7 @@ identity paragraph and the README table.
 | Transitions reduced by one `--rb-transition: 0s` token block per theme, with every component transition reading the token (never a literal duration); every applied keyframe has a reduced-motion override | `contract.test.mjs` | live (#51) |
 | Per-theme flattened `bundle.css` (+ `all.bundle.css`) generated at publish | `bundle.test.mjs` | live (#52) |
 | Shared structural base file (`_shared/structure.css`): box-sizing + page body reset | `base-typography.test.mjs` + `contract.test.mjs` | live (#52) |
-| `pnpm new-theme` scaffold | script | pending #53 |
+| `pnpm new-theme` scaffold | script | live (#53) |
 | `--rb-focus-ring`, `--rb-ease` baseline; contract 2 | `contract.test.mjs` | live (#54) |
 | Native `<progress>` contract in all fourteen | `contract.test.mjs` | live |
 | `:focus-visible` base rule in all fourteen; `a` colour divergence limited to one theme and documented | CSS fix + test | live (#36) |
@@ -960,9 +968,9 @@ identity paragraph and the README table.
 | `.rb-stepper--upcoming` styled or allowlisted; `[aria-current="step"]` paired | `contract.test.mjs` | allowlisted: live (#47). Paired: live, 14 of 14 themes comply (#65, #158) |
 | `Dialog` spreads rest, reconciles `open`, requires `onClose` | `Dialog.test.tsx` | live (#31, #83) |
 | `Tabs` spreads rest onto its tablist | `Tabs.test.tsx` | live (#84) |
-| `Tabs` controlled `activeId`/`onChange` to match `NavRail` | React fix | pending (#42 overflow, not yet filed as its own issue; out of scope for #84) |
+| `Tabs` controlled `activeId`/`onChange` to match `NavRail` | React fix | still pending -- surfaced as #42 overflow (that epic is now closed); never spun into its own issue, and `Tabs.tsx:33`'s `activeId` is still an internal local, not a prop |
 | `forwardRef` on every wrapper | `refs.test.tsx` | live (#30) |
-| SKILL.md matches the shipped contract | doc fix | partially closed by #47 (inventory table now generated + tested, extras paragraph accurate, eyebrow mis-classification fixed); roster paragraph, manifest-fonts guidance, and the add-theme recipe's missing `all.css`/`NOTICE` steps still pending #39 |
+| SKILL.md matches the shipped contract | doc fix | live (#47, #39) -- inventory table generated + tested, extras paragraph and eyebrow classification accurate, roster paragraph correctly states 14 themes, manifest-fonts guidance and the add-theme recipe steps all accurate |
 | `design.md` counterpart and count claims true | doc fix | live (#47, #40 -- counterpart-shipped and stale-count claims fixed repo-wide) |
 | `## Accessibility` section in every `design.md` | review + `contrast.test.mjs` cite | 14 of 14 (#49, kenzen pair added #158) |
 | `.rb-tab--active` paired with `[aria-selected="true"]` | `contract.test.mjs` | live, 14 of 14 comply (#65, #158) |
@@ -970,5 +978,14 @@ identity paragraph and the README table.
 | Choice controls use `accent-color` | review | 9 of 14 (concrete pair by design; ports hand-styled) |
 | Dialog backdrop blurs via `var(--rb-blur)` | `contract.test.mjs` | live, 12 of 14 comply; concrete pair permanently exempt (`0px` by design) (#65) |
 | `Field` / `Spinner` named props types | `index.ts` exports | live (#30) |
-| Existing docs conform to the section 11 template; SKILL.md carries section 15 | doc sweep | pending #56 |
-| Extras only in labelled showcase sections | review | out of contract (issue #39) |
+| Existing docs conform to the section 11 template; SKILL.md carries adoption guidance matching section 15 | doc sweep | live (#56) |
+| Extras only in labelled showcase sections | review | still out of contract (wordmark/eyebrow, and the studio pair's `rb-btn__arrow`/`rb-card__tag`, render outside the sole "Theme extras" section) -- no tracking issue open, needs one filed |
+| `:indeterminate <progress>` styled in every theme | `contract.test.mjs` | live (#86 -- #156, #160) |
+| `.rb-stepper--upcoming` allowlisted with one wildcard row, not per-theme | `contract.test.mjs` | live (#97 -- #159) |
+| Release: one range walk, one tag list, one-regex changelog classifier | `release.test.mjs` | live (#88 PR-A -- #161) |
+| Release: bump commit + tag land atomically; GitHub release created by `publish.yml`, not `release.sh` | `release.test.mjs` | live (#88 PR-B -- #162); PR-C (`pnpm -r publish` replacing the `npm view` loop) not yet started |
+| `ci.yml` runs the root `pnpm build`/`pnpm test` scripts instead of enumerating steps | CI itself | live (#93 PR-1 -- #152) |
+| Shared CSS-parsing helpers (`themeDirs`, `stripComments`, keyframe extraction) used once, not duplicated per test file | `styles/test/css.mjs` | #93 PR-2, in review (#166) |
+| Release-test fixture seeded once, scenarios run concurrently | `styles/test/helpers/release-repo.mjs` | #93 PR-3, in review (#165) |
+| One `npm pack` spawn for both packages; `generate-skill-table.mjs` exports `START`/`END`; `styled`/`choiceControl` factories for the form/feedback wrappers | `copy-license.test.mjs`, `generate-skill-table.test.mjs`, `contract-classes.test.tsx` | live (#93 PR-4 -- #155) |
+| Stale doc citations, counts, and ledger rows corrected against the tree at merge time | review | this PR (#95) |

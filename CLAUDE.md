@@ -32,9 +32,10 @@ directly for this library. Every theme must satisfy `styles/test/contract.test.m
 Run it before staging:
 
 ```bash
-pnpm --filter @rackbops/styles test    # contract + release-bump tests
-pnpm --filter @rackbops/ui-react test  # React component render tests
-pnpm build                           # tsc the React package
+pnpm build   # tsc the React package
+pnpm test    # every workspace package's own tests (styles: contract + release-bump;
+             # ui-react: typecheck + React component render tests), then the root-level
+             # node:test suites -- including scripts/new-theme.test.mjs
 ```
 
 Themes are drop-in swappable: all declare the same baseline tokens and `rb-*`
