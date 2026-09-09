@@ -1,6 +1,6 @@
 {
   "name": "@rackbops/styles",
-  "version": "0.2.24",
+  "version": "0.2.25",
   "description": "Rackbops design-system styles: tokens, base styles, and component classes per theme.",
   "license": "MIT",
   "repository": {
@@ -38,7 +38,9 @@
     "contract.json",
     "css-side-effect.d.ts",
     "LICENSE",
-    "NOTICE"
+    "NOTICE",
+    "kenzen-midnight",
+    "kenzen-cyberhealth"
   ],
   "exports": {
     "./all": {
@@ -294,6 +296,46 @@
     "./mono-field/components/*": {
       "types": "./css-side-effect.d.ts",
       "default": "./mono-field/components/*.css"
+    },
+    "./kenzen-midnight/bundle": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./kenzen-midnight/bundle.css"
+    },
+    "./kenzen-midnight": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./kenzen-midnight/index.css"
+    },
+    "./kenzen-midnight/tokens": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./kenzen-midnight/tokens.css"
+    },
+    "./kenzen-midnight/base": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./kenzen-midnight/base.css"
+    },
+    "./kenzen-midnight/components/*": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./kenzen-midnight/components/*.css"
+    },
+    "./kenzen-cyberhealth/bundle": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./kenzen-cyberhealth/bundle.css"
+    },
+    "./kenzen-cyberhealth": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./kenzen-cyberhealth/index.css"
+    },
+    "./kenzen-cyberhealth/tokens": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./kenzen-cyberhealth/tokens.css"
+    },
+    "./kenzen-cyberhealth/base": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./kenzen-cyberhealth/base.css"
+    },
+    "./kenzen-cyberhealth/components/*": {
+      "types": "./css-side-effect.d.ts",
+      "default": "./kenzen-cyberhealth/components/*.css"
     }
   }
 }

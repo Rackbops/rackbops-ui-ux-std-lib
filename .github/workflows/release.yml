@@ -5,7 +5,9 @@ on:
     branches: [main]
   workflow_dispatch:
 
-# Needed to create tags, releases, and push the version-bump commit.
+# Needed to create the tag and push the version-bump commit. The GitHub
+# release itself is created by publish.yml (issue #88), triggered by the tag
+# push this job makes.
 permissions:
   contents: write
 
@@ -59,11 +61,16 @@ jobs:
 
       - name: Release if there are unreleased changes
         env:
+          # release.sh itself never calls `gh` (issue #88) -- this only gates
+          # whether the token controlling the checkout's push rights
+          # (RELEASE_TOKEN, above) actually exists, so a fork or a repo
+          # without the secret configured no-ops here instead of attempting
+          # a push doomed to fail against branch protection.
           GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         run: |
           if [ -z "${GH_TOKEN}" ]; then
             echo "RELEASE_TOKEN not set -- release/publish is inert. Skipping."
             exit 0
           fi
-          chmod +x .github/scripts/release.sh .github/scripts/next-version.sh
+          chmod +x .github/scripts/release.sh .github/scripts/release-lib.sh .github/scripts/next-version.sh
           .github/scripts/release.sh

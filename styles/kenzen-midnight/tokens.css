@@ -1,0 +1,95 @@
+/* kenzen-midnight — design tokens
+ * The dark half of Kenzen-sei's brand pair, reverse-measured from the
+ * mascot concept sheet's cyber-health palette (Code Stream Koi, Komainu
+ * guardian, status shields — Rackbops/kenzen `brand/source/`,
+ * Rackbops/rackbops-ui-ux-std-lib#158). Same structure and class contract as
+ * every other theme (token-driven); only the palette, display font, and
+ * gradient differ from the arcane pair this was scaffolded from. Consume via:
+ *   @import "@rackbops/styles/kenzen-midnight/tokens";
+ * or pull the whole theme with ./index.css.
+ *
+ * Nothing applies until an element carries data-rb-style="kenzen-midnight"
+ * — set it on <html> for a page, or on any container for an embedded island.
+ * The :where() keeps specificity at zero, so any consumer rule overrides.
+ *
+ * Every theme declares the same baseline token set (styles/test enforces
+ * parity); this theme carries no theme-specific colour token beyond it (no
+ * --rb-code-* — Kenzen renders no code). This theme ships the dark, primary
+ * look; its AA-tuned light counterpart, kenzen-cyberhealth, ships as its own
+ * theme (see design.md).
+ */
+:where([data-rb-style="kenzen-midnight"]) {
+  color-scheme: dark;
+
+  /* color — deep navy foundation, tonal navy surfaces */
+  --rb-bg: #0a2038;
+  --rb-surface: #102a48;
+  --rb-surface-2: #183456;
+  --rb-surface-sunken: #081a2e; /* inset fields, log wells, progress troughs */
+  --rb-text: #e8e8e8;
+  --rb-text-soft: rgba(232, 232, 232, 0.82);
+  --rb-text-faint: rgba(232, 232, 232, 0.6);
+  --rb-border: rgba(232, 232, 232, 0.14);
+  --rb-border-strong: rgba(232, 232, 232, 0.28);
+
+  /* accent — vibrant teal is the sole brand voice; reads fine on navy at
+   * full source saturation (7.43:1 as non-text on --rb-bg, design.md) */
+  --rb-accent: #18c0d0;
+  --rb-accent-fg: #0a2038; /* dark navy ink on the solid teal fill (AA) */
+  --rb-accent-wash: rgba(24, 192, 208, 0.16);
+
+  /* hover/active: lightens further toward white on this dark ground
+   * (matching arcane-obsidian's own dark-scheme convention) */
+  --rb-accent-strong: #5fe0ec;
+
+  /* the ONE gradient — rationed to the wordmark + active-tab underline;
+   * the same brand gradient as the light counterpart (teal → healthy mint) */
+  --rb-accent-grad: linear-gradient(120deg, #18c0d0, #50f8a0);
+
+  /* semantic — earned: severity/status only. All three at source saturation
+   * -- mint/amber/crimson read fine as large UI accents on navy; crimson as
+   * SMALL TEXT is a documented exception (design.md's Accessibility section) */
+  --rb-info: #5fb0e8;
+  --rb-success: #50f8a0;
+  --rb-warning: #f0b030;
+  --rb-danger: #d02030;
+
+  /* typography — a geometric sans display face already in the roster
+   * (Sora, shared with luminous-precision — "no new webfont") over a
+   * system-ui body; tabular numerals */
+  --rb-font-display: "Sora", ui-sans-serif, system-ui, sans-serif;
+  --rb-font-body: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --rb-font-mono: ui-monospace, "Cascadia Code", "Cascadia Mono", "Segoe UI Mono", Consolas, Menlo, monospace;
+  --rb-font-weight: 400;
+  --rb-font-weight-medium: 600;
+  --rb-font-weight-bold: 700;
+  --rb-heading-tracking: -0.01em;
+  --rb-label-tracking: 0.06em;
+  --rb-text-sm: 13px;
+
+  /* shape & effects — arcane's radii/shadow/spacing rhythm, per the issue
+   * ("fonts/radius/spacing per the arcane pair unless the mockups say
+   * otherwise") */
+  --rb-radius: 0.4375rem; /* 7px — buttons, inputs, rows */
+  --rb-radius-lg: 0.75rem; /* 12px — cards, dialogs */
+  --rb-radius-pill: 999px;
+  --rb-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35);
+  --rb-shadow-lg: 0 8px 28px rgba(0, 0, 0, 0.5);
+  --rb-blur: 12px;
+  --rb-transition: 0.15s;
+  --rb-focus-ring: 2px solid var(--rb-accent);
+  --rb-ease: ease;
+
+  /* spacing — 4px rhythm */
+  --rb-space-1: 0.25rem;
+  --rb-space-2: 0.5rem;
+  --rb-space-3: 0.75rem;
+  --rb-space-4: 1rem;
+  --rb-space-5: 1.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where([data-rb-style="kenzen-midnight"]) {
+    --rb-transition: 0s;
+  }
+}

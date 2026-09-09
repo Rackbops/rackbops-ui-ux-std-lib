@@ -25,7 +25,7 @@ attribute flip.
 
 Two of roshne's app design languages (each a light/dark pair), three themes
 ported — credited — from [`nazuraki/ui-std-lib`](https://github.com/nazuraki/ui-std-lib),
-and five original designs built for this library (two light/dark pairs plus
+and seven original designs built for this library (three light/dark pairs plus
 one standalone). One `--rb-*` / `rb-*` contract, so any two swap with a single
 `data-rb-style` flip.
 
@@ -43,6 +43,8 @@ one standalone). One `--rb-*` / `rb-*` contract, so any two swap with a single
 | `amber-hearth` | light | original | Warm hand-crafted editorial — clay-terracotta accent on cream, the library's only serif display voice, the most generously rounded shape language, warm-toned diffused shadows. |
 | `amber-ember` | dark | original | The dark, espresso-ground counterpart of amber-hearth — same serif-and-clay language on a warm dark night palette. |
 | `mono-field` | light | original | Deliberately restrained quiet monochrome — near-flat grayscale surfaces, hairline-driven hierarchy, near-black ink accent, no uppercase, no glow. Standalone, no pair. |
+| `kenzen-midnight` | dark | original | Kenzen-sei's cyber-health brand: deep navy chassis, vibrant teal accent, mint/amber/crimson status shields, Sora display voice over a system-ui body. |
+| `kenzen-cyberhealth` | light | original | The AA-tuned light counterpart of kenzen-midnight — same cyber-health language, sterile white chassis, navy structure. |
 
 Each theme ships a `design.md` — a written spec of the aesthetic (palette,
 typography, shape rules, component inventory). Read it before designing new
@@ -152,10 +154,14 @@ every manifest-reading consumer.
 
 Merging package changes to `main` runs the `release` workflow: it bumps both
 package versions (patch by default; a `type!:` subject or `BREAKING CHANGE:`
-footer bumps the minor while the major is 0), tags, and creates the GitHub
-release. Pushing a `v*` tag triggers `publish.yml`, which runs
+footer bumps the minor while the major is 0), commits, and tags -- the bump
+commit and its tag land in one atomic push (`git push --atomic origin main
+<tag>`, issue #88): either both land or neither does, so there's no partial
+state to ever resume. Pushing a `v*` tag triggers `publish.yml`, which runs
 `npm publish --access public` for both packages against the public npm
-registry (`registry.npmjs.org`).
+registry (`registry.npmjs.org`) and, once that succeeds, creates the GitHub
+release itself (`.github/scripts/publish-release.sh`, idempotent -- a re-run
+after a publish failure completes both without duplicating either).
 
 The two steps authenticate differently:
 
@@ -167,10 +173,12 @@ The two steps authenticate differently:
   both cut this way. If the secret were ever unset, the workflow no-ops
   instead (`RELEASE_TOKEN not set — release/publish is inert. Skipping.`),
   and a release can still be cut by running `.github/scripts/release.sh`
-  locally as a fallback — it commits the version bump, pushes it to
-  `main`, tags, pushes the tag, and creates the GitHub release itself, so
-  there's nothing left to push by hand afterward. It needs push rights to
-  the repo and an authenticated `gh` CLI.
+  locally as a fallback — it commits the version bump, tags, and pushes both
+  atomically to `main`, triggering `publish.yml` to publish and create the
+  release exactly as the automated path does. It needs push rights to the
+  repo (release.sh itself never calls `gh` -- only publish.yml's own
+  `publish-release.sh` step does, with `RELEASE_TOKEN` or the default
+  `GITHUB_TOKEN`).
 - **`publish`** uses **OIDC trusted publishing** — no stored npm token.
   `publish.yml` requests a short-lived `id-token` (its `permissions:` grant
   `id-token: write`), and npm exchanges it against the trusted publisher that

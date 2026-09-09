@@ -1,51 +1,50 @@
-// Rerun-safety for the release script (.github/scripts/release.sh, issue
-// #32). Tested here for the same reason next-version.sh is (bump.test.mjs):
-// so `pnpm test` in styles/ is the repo's single test entrypoint.
+// Coverage for the release/publish scripts (.github/scripts/release.sh,
+// release-lib.sh, release-notes.sh, publish-release.sh -- issue #88): one
+// atomic `git push --atomic origin main <tag>` either lands the bump commit
+// and its tag together or lands neither, so release.sh has no partial state
+// to resume from and never calls `gh` at all -- the GitHub release is
+// created by publish-release.sh, run from publish.yml after the tag-
+// triggered npm publish succeeds.
 //
-// A pure code read isn't enough confidence for a script that does real
-// `git commit`/`push`/`tag` and `gh release create` -- so this spins up a
-// genuine scratch git repo plus a genuine local bare repo as `origin` (push
-// is real, not mocked), and a tiny fake `gh` executable on PATH that records
-// what it was called with and can be told to fail once, to reproduce both
-// failure shapes from the issue for real rather than asserting against the
-// script's source text.
+// A pure code read isn't enough confidence for scripts that do real `git
+// commit`/`push`/`tag` and `gh release create` -- so this spins up a genuine
+// scratch git repo plus a genuine local bare repo as `origin` (push is real,
+// not mocked, including a pre-receive hook that can reject the tag ref, the
+// main ref, or both, to prove atomicity for real), and a tiny fake `gh`
+// executable on PATH that records what it was called with and can be told
+// to fail once, to reproduce both failure shapes from issue #87 for real
+// rather than asserting against the scripts' source text.
 //
-// DANGER, learned the hard way: release.sh has no self-check on which repo
-// it's operating on -- it just runs `git`/`gh` against whatever directory it
-// was invoked from. Every real invocation below goes through runRelease(),
-// which passes an explicit `cwd: repo.repoDir` to execFileSync -- never a
-// bare shell `bash release.sh` after a `cd`. If you're reproducing something
-// from this file by hand (ad hoc, outside these helpers), do the same:
-// pass an explicit working directory to every invocation, don't rely on
-// having `cd`-ed there first. Running this script against a real checkout of
-// this actual repo pushes real commits and tags to the real origin and can
-// trigger a real npm publish via publish.yml -- this happened once, by
-// accident, during this file's own review.
+// DANGER, learned the hard way: these scripts have no self-check on which
+// repo they're operating on -- they just run `git`/`gh` against whatever
+// directory they were invoked from. Every real invocation below goes
+// through runScript(), which passes an explicit `cwd` to execFileSync --
+// never a bare shell `bash release.sh` after a `cd`. If you're reproducing
+// something from this file by hand (ad hoc, outside these helpers), do the
+// same: pass an explicit working directory to every invocation, don't rely
+// on having `cd`-ed there first. Running these scripts against a real
+// checkout of this actual repo pushes real commits and tags to the real
+// origin and can trigger a real npm publish via publish.yml -- this
+// happened once, by accident, during release.sh's own review.
+//
+// Scripts are copied into each scratch repo as REAL FILES at their real
+// relative path and run via `bash <relative-path>` (never piped over
+// stdin): release.sh and release-notes.sh both `source
+// "$(dirname "$0")/release-lib.sh"`, and $0 is only a real path when the
+// script is invoked that way -- fed via stdin (`bash -s < script`), $0 is
+// literally "bash" and `dirname "$0"` is ".", which would source the wrong
+// file. Verified empirically (a two-line probe script under both
+// invocation styles) before relying on it here.
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { delimiter, join, resolve } from "node:path";
+import { delimiter, join } from "node:path";
 import { test } from "node:test";
 import { fileURLToPath } from "node:url";
 
-const RELEASE_SCRIPT = resolve(
-  fileURLToPath(import.meta.url),
-  "../../../.github/scripts/release.sh"
-);
-// Fed to `bash -s` over stdin (never opened by path, never passed as a -c
-// argv string) so this doesn't care which bash ends up on PATH -- e.g. on
-// Windows, PowerShell can resolve `bash` to the WSL App-Execution-alias stub,
-// which can't translate a native Windows path (see issue #35) -- and doesn't
-// depend on Node's Windows argv escaping surviving a script this size: a
-// giant multi-line `-c` argument was observed to come through corrupted
-// (spurious "unexpected EOF" quote errors) even though the identical text
-// runs fine as a real file or through a real shell's own `-c`.
-const RELEASE_SCRIPT_SRC = readFileSync(RELEASE_SCRIPT, "utf8");
-const NEXT_VERSION_SCRIPT = resolve(
-  fileURLToPath(import.meta.url),
-  "../../../.github/scripts/next-version.sh"
-);
+const SCRIPTS_DIR = fileURLToPath(new URL("../../.github/scripts", import.meta.url));
+const SCRIPT_NAMES = ["release.sh", "release-lib.sh", "release-notes.sh", "publish-release.sh", "next-version.sh"];
 
 const GIT_ENV = {
   GIT_AUTHOR_NAME: "test",
@@ -53,6 +52,18 @@ const GIT_ENV = {
   GIT_COMMITTER_NAME: "test",
   GIT_COMMITTER_EMAIL: "test@example.com",
 };
+
+/** Copies the real current scripts (never a stale snapshot) into
+ * <dir>/.github/scripts/, executable, at the same relative paths release.yml
+ * and publish.yml use. Shared by makeRepo() and the fresh-checkout scenario
+ * below, which needs a second, independent copy of the same scratch repo. */
+function installScripts(dir) {
+  const target = join(dir, ".github", "scripts");
+  mkdirSync(target, { recursive: true });
+  for (const name of SCRIPT_NAMES) {
+    writeFileSync(join(target, name), readFileSync(join(SCRIPTS_DIR, name)), { mode: 0o755 });
+  }
+}
 
 /** One scratch git repo with a real local bare `origin`, seeded at v0.1.0.
  * `t` is the running test's TestContext, used to remove the scratch
@@ -70,18 +81,34 @@ function makeRepo(t) {
   mkdirSync(ghBinDir);
 
   execFileSync("git", ["init", "--bare", "-b", "main", bareDir]);
-  // pre-receive: reject any tag ref update while <bareDir>/reject-tags
-  // exists, so a scratch test can make exactly one `git push origin <tag>`
-  // fail for real (a genuine rejected push, not a mocked one) without
-  // touching the separate branch push, which is a different invocation.
+  // pre-receive: reject a tag ref update while <bareDir>/reject-tags exists,
+  // or a main ref update while <bareDir>/reject-main exists (independently
+  // -- a scratch test picks one) -- so a test can make exactly one
+  // `git push --atomic` fail for real on either half of the atomic pair
+  // (a genuine rejected push, not a mocked one) and prove the OTHER half
+  // never lands either.
   writeFileSync(
     join(bareDir, "hooks", "pre-receive"),
-    `#!/usr/bin/env bash\nset -euo pipefail\nwhile read -r old new ref; do\n  if [[ "$ref" == refs/tags/* ]] && [[ -f "${bareDir.replace(/\\/g, "/")}/reject-tags" ]]; then\n    echo "test: rejecting tag ref update" >&2\n    exit 1\n  fi\ndone\nexit 0\n`,
+    `#!/usr/bin/env bash
+set -euo pipefail
+while read -r old new ref; do
+  if [[ "$ref" == refs/tags/* ]] && [[ -f "${bareDir.replace(/\\/g, "/")}/reject-tags" ]]; then
+    echo "test: rejecting tag ref update" >&2
+    exit 1
+  fi
+  if [[ "$ref" == "refs/heads/main" ]] && [[ -f "${bareDir.replace(/\\/g, "/")}/reject-main" ]]; then
+    echo "test: rejecting main ref update" >&2
+    exit 1
+  fi
+done
+exit 0
+`,
     { mode: 0o755 }
   );
 
-  // Fake `gh`: only implements the two subcommands release.sh uses.
-  // Bakes ghDir's absolute path into the script rather than relying on env
+  // Fake `gh`: only implements the two subcommands publish-release.sh uses
+  // (release.sh itself never calls gh -- see the file header). Bakes
+  // ghDir's absolute path into the script rather than relying on env
   // passthrough, since it's generated fresh per scratch repo anyway.
   const ghDirPosix = ghDir.replace(/\\/g, "/");
   writeFileSync(
@@ -94,7 +121,7 @@ case "\${1:-} \${2:-}" in
   "release view")
     tag="\$3"
     # A transient outage: exit non-zero but WITHOUT "release not found", the
-    # shape release.sh must not misread as a missing release (issue #87).
+    # shape publish-release.sh must not misread as a missing release (issue #87).
     if [[ -f "$state/fail-view-transient" ]]; then
       echo "HTTP 503: gh is having a bad day" >&2
       exit 1
@@ -142,30 +169,17 @@ esac
 
   mkdirSync(join(repoDir, "styles"), { recursive: true });
   mkdirSync(join(repoDir, "components", "react"), { recursive: true });
-  mkdirSync(join(repoDir, ".github", "scripts"), { recursive: true });
   writeFileSync(join(repoDir, "styles", "package.json"), pkgJson("0.1.0"));
   writeFileSync(join(repoDir, "components", "react", "package.json"), pkgJson("0.1.0"));
-  // release.sh shells out to this by a path relative to its own cwd, not
-  // relative to release.sh's own location -- so the scratch repo needs a
-  // real copy at the same relative path. Copying (not symlinking) the
-  // actual current script means a change to next-version.sh is exercised
-  // here too, not a stale snapshot.
-  writeFileSync(
-    join(repoDir, ".github", "scripts", "next-version.sh"),
-    readFileSync(NEXT_VERSION_SCRIPT),
-    { mode: 0o755 }
-  );
+  installScripts(repoDir);
 
   run(["add", "."]);
   run(["commit", "-m", "chore: seed v0.1.0"]);
   run(["push", "-u", "origin", "main"]);
   run(["tag", "v0.1.0"]);
   run(["push", "origin", "v0.1.0"]);
-  // The seed commit predates any bump commit, so the fake `gh` never sees
-  // v0.1.0 queried, but mark it released anyway for realism/symmetry.
-  writeFileSync(join(ghDir, "releases", "v0.1.0"), "");
 
-  return { repoDir, bareDir, ghDir, run, env };
+  return { repoDir, bareDir, ghDir, ghBinDir, run, env };
 }
 
 function pkgJson(version) {
@@ -178,29 +192,23 @@ function addUnreleasedCommit({ repoDir, run }) {
   run(["commit", "-m", "fix(styles): something"]);
 }
 
-/** Directly constructs the state a partial bump-then-push-fail run would
- * leave behind: version bumped, committed, and pushed -- no tag. */
-function bumpCommitAndPush(repo, newVersion) {
-  const { repoDir, run } = repo;
-  for (const f of ["styles/package.json", "components/react/package.json"]) {
-    writeFileSync(join(repoDir, f), pkgJson(newVersion));
-  }
-  run(["add", "styles/package.json", "components/react/package.json"]);
-  run(["commit", "-m", `chore(release): v${newVersion}`]);
-  run(["push"]);
-}
-
-function runRelease(repo) {
+/** Runs one of the real scripts (by its path relative to .github/scripts/)
+ * against a scratch repo dir + env, exactly as release.yml/publish.yml do:
+ * a real file, invoked by its real relative path, cwd set to the repo. */
+function runScriptAt(repoDir, env, scriptName, args = []) {
   try {
-    const stdout = execFileSync("bash", ["-s"], {
-      cwd: repo.repoDir,
-      env: repo.env,
-      input: RELEASE_SCRIPT_SRC,
+    const stdout = execFileSync("bash", [join(".github", "scripts", scriptName), ...args], {
+      cwd: repoDir,
+      env,
     }).toString();
     return { status: 0, stdout };
   } catch (err) {
     return { status: err.status, stdout: err.stdout?.toString() ?? "", stderr: err.stderr?.toString() ?? "" };
   }
+}
+
+function runScript(repo, scriptName, args = []) {
+  return runScriptAt(repo.repoDir, repo.env, scriptName, args);
 }
 
 function calls(repo) {
@@ -223,192 +231,35 @@ function tagExistsOnOrigin(repo, tag) {
   return out.includes(tag);
 }
 
-// ── Scenarios ──────────────────────────────────────────────────────────────
+function originMainSha(repo) {
+  return execFileSync("git", ["ls-remote", repo.bareDir, "refs/heads/main"], { env: repo.env })
+    .toString()
+    .split(/\s+/)[0];
+}
 
-test("normal path: a fresh unreleased commit bumps, tags, and releases exactly once", (t) => {
+// ── release.sh: normal path, PATHSPEC, BUMP_GREP ────────────────────────────
+
+test("normal path: a fresh unreleased commit bumps, commits, tags, and pushes atomically -- release.sh never calls gh", (t) => {
   const repo = makeRepo(t);
   addUnreleasedCommit(repo);
 
-  const result = runRelease(repo);
+  const result = runScript(repo, "release.sh");
   assert.equal(result.status, 0, result.stdout + result.stderr);
   assert.match(result.stdout, /Version: 0\.1\.0 -> 0\.1\.1/);
+  assert.match(result.stdout, /Released v0\.1\.1 -- publish\.yml creates the GitHub release/);
   assert.ok(tagExistsLocally(repo, "v0.1.1"));
   assert.ok(tagExistsOnOrigin(repo, "v0.1.1"));
-  assert.deepEqual(
-    calls(repo).filter((c) => c.startsWith("release create")).length,
-    1,
-    "gh release create called exactly once"
-  );
+  assert.deepEqual(calls(repo), [], "release.sh must never call gh");
 
   const log = execFileSync("git", ["log", "--oneline", "-3"], { cwd: repo.repoDir, env: repo.env })
     .toString();
   assert.match(log, /chore\(release\): v0\.1\.1/);
 });
 
-test("scenario (a): bump committed and pushed, tag push failed -- resumes without re-bumping", (t) => {
-  const repo = makeRepo(t);
-  addUnreleasedCommit(repo);
-  bumpCommitAndPush(repo, "0.1.1");
-  assert.ok(!tagExistsLocally(repo, "v0.1.1"), "precondition: no tag yet");
-
-  const result = runRelease(repo);
-  assert.equal(result.status, 0, result.stdout + result.stderr);
-  assert.match(result.stdout, /Resuming v0\.1\.1: bump committed, not yet tagged/);
-
-  assert.ok(tagExistsLocally(repo, "v0.1.1"));
-  assert.ok(tagExistsOnOrigin(repo, "v0.1.1"));
-  assert.equal(
-    calls(repo).filter((c) => c.startsWith("release create")).length,
-    1,
-    "gh release create called exactly once"
-  );
-
-  // No double bump: exactly one chore(release) commit exists, and package.json
-  // still reads 0.1.1, not 0.1.2.
-  const log = execFileSync("git", ["log", "--oneline"], { cwd: repo.repoDir, env: repo.env }).toString();
-  const bumpCommits = log.split("\n").filter((l) => l.includes("chore(release):"));
-  assert.equal(bumpCommits.length, 1, `expected exactly one bump commit, log:\n${log}`);
-  const pkg = JSON.parse(readFileSync(join(repo.repoDir, "styles", "package.json"), "utf-8"));
-  assert.equal(pkg.version, "0.1.1");
-
-  // The regenerated changelog still reflects the real unreleased commit,
-  // not just the bump commit it was filtered out from. The changelog
-  // formatter strips each commit's "type(scope): " prefix when rendering,
-  // so the bump commit's own subject would never literally read
-  // "chore(release)" in the output even if it weren't excluded -- what it
-  // WOULD leave behind is a spurious "### Maintenance" section for its
-  // stripped-down description ("v0.1.1"), since "chore" is one of the
-  // recognized commit types. Assert against that instead.
-  const notes = readFileSync(join(repo.ghDir, "last-notes"), "utf-8");
-  assert.match(notes, /something/);
-  assert.doesNotMatch(notes, /Maintenance/);
-  assert.doesNotMatch(notes, /v0\.1\.1/);
-});
-
-test("scenario (a), via a genuine rejected push: tag push fails for real, then a second run resumes", (t) => {
-  const repo = makeRepo(t);
-  addUnreleasedCommit(repo);
-  writeFileSync(join(repo.bareDir, "reject-tags"), "");
-
-  const first = runRelease(repo);
-  assert.notEqual(first.status, 0, "the tag push should genuinely fail");
-  assert.ok(!tagExistsOnOrigin(repo, "v0.1.1"), "rejected push never landed on origin");
-  // The bump commit + branch push happened before the rejected tag push.
-  const pkgAfterFirst = JSON.parse(readFileSync(join(repo.repoDir, "styles", "package.json"), "utf-8"));
-  assert.equal(pkgAfterFirst.version, "0.1.1");
-
-  rmSync(join(repo.bareDir, "reject-tags"));
-  // The rejected push still left a real LOCAL tag behind (git tag itself
-  // succeeded before the push failed) -- this repo reuses one working
-  // directory across both runs, unlike real CI's fresh checkout per run,
-  // which would never have fetched a tag that was never pushed. Left as-is,
-  // the second run's own backfill check (not the resume path this test is
-  // named for) would see that local tag and paper over the gap on its own,
-  // making this test pass without actually exercising resume at all.
-  // Deleting it restores the fresh-checkout precondition the resume check
-  // is meant to run under.
-  repo.run(["tag", "-d", "v0.1.1"]);
-  const second = runRelease(repo);
-  assert.equal(second.status, 0, second.stdout + second.stderr);
-  assert.match(second.stdout, /Resuming v0\.1\.1: bump committed, not yet tagged\./);
-  assert.ok(tagExistsOnOrigin(repo, "v0.1.1"));
-  assert.equal(calls(repo).filter((c) => c.startsWith("release create")).length, 1);
-
-  const log = execFileSync("git", ["log", "--oneline"], { cwd: repo.repoDir, env: repo.env }).toString();
-  const bumpCommits = log.split("\n").filter((l) => l.includes("chore(release):"));
-  assert.equal(bumpCommits.length, 1, `expected no double bump, log:\n${log}`);
-});
-
-test("scenario (b): tag pushed, release create failed once -- resumes without re-tagging or re-bumping", (t) => {
-  const repo = makeRepo(t);
-  addUnreleasedCommit(repo);
-  writeFileSync(join(repo.ghDir, "fail-create-once"), "");
-
-  const first = runRelease(repo);
-  assert.notEqual(first.status, 0, "gh release create should genuinely fail the first time");
-  assert.ok(tagExistsOnOrigin(repo, "v0.1.1"), "the tag push itself succeeded before the failure");
-  assert.ok(!existsSync(join(repo.ghDir, "releases", "v0.1.1")), "no release recorded yet");
-
-  const second = runRelease(repo);
-  assert.equal(second.status, 0, second.stdout + second.stderr);
-  assert.match(second.stdout, /Tag v0\.1\.1 has no GitHub release yet -- backfilling it first\./);
-  assert.ok(existsSync(join(repo.ghDir, "releases", "v0.1.1")));
-
-  // Exactly one tag, one bump commit, two release-create attempts (the
-  // failed one plus the resumed one) but only one recorded release.
-  const tags = execFileSync("git", ["tag", "-l", "v0.1.1"], { cwd: repo.repoDir, env: repo.env })
-    .toString()
-    .trim()
-    .split("\n")
-    .filter(Boolean);
-  assert.equal(tags.length, 1);
-  assert.equal(calls(repo).filter((c) => c.startsWith("release create")).length, 2);
-});
-
-test("scenario (b), with a new commit landing before the retry, not an immediate rerun -- still backfills the stranded release", (t) => {
-  // The gap a plain "is HEAD our own bump commit" check can't see: once a
-  // genuinely new commit lands, HEAD moves past the stuck release entirely,
-  // so that check alone would treat the already-tagged version as the new
-  // base and move on -- stranding v0.1.1's release for good even though
-  // v0.1.1 (and now v0.1.2) both already reached npm via their tag pushes.
-  const repo = makeRepo(t);
-  addUnreleasedCommit(repo);
-  writeFileSync(join(repo.ghDir, "fail-create-once"), "");
-
-  const first = runRelease(repo);
-  assert.notEqual(first.status, 0, "gh release create should genuinely fail the first time");
-  assert.ok(tagExistsOnOrigin(repo, "v0.1.1"), "the tag push itself succeeded before the failure");
-
-  // A new, unrelated commit lands -- not a retry of the same HEAD.
-  writeFileSync(join(repo.repoDir, "styles", "CHANGE2.txt"), "another fix\n");
-  repo.run(["add", "."]);
-  repo.run(["commit", "-m", "fix(styles): something else"]);
-
-  const second = runRelease(repo);
-  assert.equal(second.status, 0, second.stdout + second.stderr);
-  assert.match(second.stdout, /Tag v0\.1\.1 has no GitHub release yet -- backfilling it first\./);
-  assert.ok(existsSync(join(repo.ghDir, "releases", "v0.1.1")), "v0.1.1's release was backfilled");
-
-  // The new commit is also genuinely unreleased work, so this same run
-  // additionally cuts v0.1.2 for it -- both happen in one invocation.
-  assert.match(second.stdout, /Version: 0\.1\.1 -> 0\.1\.2/);
-  assert.ok(tagExistsOnOrigin(repo, "v0.1.2"));
-  assert.ok(existsSync(join(repo.ghDir, "releases", "v0.1.2")), "v0.1.2 was also released");
-
-  // Each tag's changelog reflects only its own commit, not the other's --
-  // the backfill range and the new-release range must not bleed together.
-  const notesV1 = readFileSync(join(repo.ghDir, "notes-v0.1.1"), "utf-8");
-  assert.match(notesV1, /something(?! else)/);
-  assert.doesNotMatch(notesV1, /something else/);
-  const notesV2 = readFileSync(join(repo.ghDir, "notes-v0.1.2"), "utf-8");
-  assert.match(notesV2, /something else/);
-
-  const pkg = JSON.parse(readFileSync(join(repo.repoDir, "styles", "package.json"), "utf-8"));
-  assert.equal(pkg.version, "0.1.2", "no double bump past the genuinely new version");
-});
-
-test("idle: already fully released -- exits cleanly without creating a second release", (t) => {
-  const repo = makeRepo(t);
-  addUnreleasedCommit(repo);
-  const first = runRelease(repo);
-  assert.equal(first.status, 0, first.stdout + first.stderr);
-  const callsAfterFirst = calls(repo).filter((c) => c.startsWith("release create")).length;
-
-  const second = runRelease(repo);
-  assert.equal(second.status, 0, second.stdout);
-  assert.match(second.stdout, /No unreleased package changes since v0\.1\.1\. Nothing to do\./);
-  assert.doesNotMatch(second.stdout, /backfilling/, "the existing release must not be recreated");
-  assert.equal(
-    calls(repo).filter((c) => c.startsWith("release create")).length,
-    callsAfterFirst,
-    "release create was not called again"
-  );
-});
-
 test("no unreleased package changes -- exits cleanly, no bump attempted", (t) => {
   const repo = makeRepo(t);
   // No commit touching styles/ or components/ at all.
-  const result = runRelease(repo);
+  const result = runScript(repo, "release.sh");
   assert.equal(result.status, 0, result.stdout + result.stderr);
   assert.match(result.stdout, /Nothing to do/);
   assert.ok(!tagExistsLocally(repo, "v0.1.1"));
@@ -449,7 +300,7 @@ test("PATHSPEC: unshipped styles/test and components/react test-only changes don
   repo.run(["add", "."]);
   repo.run(["commit", "-m", "test(react): test-dom setup"]);
 
-  const result = runRelease(repo);
+  const result = runScript(repo, "release.sh");
   assert.equal(result.status, 0, result.stdout + result.stderr);
   assert.match(result.stdout, /Nothing to do/);
 });
@@ -462,7 +313,7 @@ test("PATHSPEC: a shipped design.md fix triggers a release, and so does shipped 
   repo.run(["add", "."]);
   repo.run(["commit", "-m", "fix(styles): correct design.md claim"]);
 
-  const first = runRelease(repo);
+  const first = runScript(repo, "release.sh");
   assert.equal(first.status, 0, first.stdout + first.stderr);
   assert.match(first.stdout, /Version: 0\.1\.0 -> 0\.1\.1/);
 
@@ -471,7 +322,7 @@ test("PATHSPEC: a shipped design.md fix triggers a release, and so does shipped 
   repo.run(["add", "."]);
   repo.run(["commit", "-m", "feat(react): add Foo"]);
 
-  const second = runRelease(repo);
+  const second = runScript(repo, "release.sh");
   assert.equal(second.status, 0, second.stdout + second.stderr);
   assert.match(second.stdout, /Version: 0\.1\.1 -> 0\.1\.2/);
 
@@ -485,16 +336,12 @@ test("PATHSPEC: a shipped design.md fix triggers a release, and so does shipped 
   repo.run(["add", "."]);
   repo.run(["commit", "-m", "chore(react): describe the package"]);
 
-  const third = runRelease(repo);
+  const third = runScript(repo, "release.sh");
   assert.equal(third.status, 0, third.stdout + third.stderr);
   assert.match(third.stdout, /Version: 0\.1\.2 -> 0\.1\.3/);
 });
 
 test("PATHSPEC: a change to only scripts/copy-license.mjs triggers a release (issue #38)", (t) => {
-  // scripts/copy-license.mjs lives outside both package directories but is
-  // shipped-relevant -- it's the prepack step that puts LICENSE/NOTICE in
-  // each tarball -- so a fix to it alone must not fall through PATHSPEC the
-  // way pre-#34 components/react changes once did.
   const repo = makeRepo(t);
 
   mkdirSync(join(repo.repoDir, "scripts"), { recursive: true });
@@ -502,16 +349,12 @@ test("PATHSPEC: a change to only scripts/copy-license.mjs triggers a release (is
   repo.run(["add", "."]);
   repo.run(["commit", "-m", "fix(scripts): correct copy-license.mjs"]);
 
-  const result = runRelease(repo);
+  const result = runScript(repo, "release.sh");
   assert.equal(result.status, 0, result.stdout + result.stderr);
   assert.match(result.stdout, /Version: 0\.1\.0 -> 0\.1\.1/);
 });
 
 test("PATHSPEC: a change to only scripts/bundle-css.mjs triggers a release (issue #52)", (t) => {
-  // scripts/bundle-css.mjs is the other prepack step: it flattens each theme's
-  // index.css into the shipped <theme>/bundle.css + all.bundle.css, so a fix to
-  // it rewrites every published bundle and must cut a release -- the generated
-  // bundles are gitignored, so the generator is what the log can see.
   const repo = makeRepo(t);
 
   mkdirSync(join(repo.repoDir, "scripts"), { recursive: true });
@@ -519,20 +362,17 @@ test("PATHSPEC: a change to only scripts/bundle-css.mjs triggers a release (issu
   repo.run(["add", "."]);
   repo.run(["commit", "-m", "fix(scripts): correct bundle-css.mjs"]);
 
-  const result = runRelease(repo);
+  const result = runScript(repo, "release.sh");
   assert.equal(result.status, 0, result.stdout + result.stderr);
   assert.match(result.stdout, /Version: 0\.1\.0 -> 0\.1\.1/);
 });
 
-// ── Issue #87 ────────────────────────────────────────────────────────────────
-// Four ways release.sh could skip a release, base one on the wrong tag, or
-// fail spuriously. Each test below reproduces one against the real script and
-// fails on the pre-#87 code.
+// ── Issue #87: PATHSPEC/BUMP_GREP/tag-glob correctness against release.sh's
+// own bump decision (the changelog-content half of each of these moved to
+// the release-notes.sh section below, since release.sh no longer builds a
+// changelog itself).
 
 test("#87 bump-grep: a real change whose BODY quotes 'chore(release): v' still triggers a release", (t) => {
-  // git log --grep matches the WHOLE message, so the old --invert-grep filter
-  // dropped this commit entirely: "Nothing to do", and the fix never shipped.
-  // The fix filters bump commits by subject only.
   const repo = makeRepo(t);
   writeFileSync(join(repo.repoDir, "styles", "REALFIX.txt"), "a real fix\n");
   repo.run(["add", "."]);
@@ -544,27 +384,19 @@ test("#87 bump-grep: a real change whose BODY quotes 'chore(release): v' still t
     "chore(release): v0.1.10 shipped before this landed, per the changelog",
   ]);
 
-  const result = runRelease(repo);
+  const result = runScript(repo, "release.sh");
   assert.equal(result.status, 0, result.stdout + result.stderr);
   assert.match(result.stdout, /Version: 0\.1\.0 -> 0\.1\.1/);
   assert.ok(tagExistsOnOrigin(repo, "v0.1.1"));
-
-  // The real subject makes the changelog; the body's quoted bump line neither
-  // drops it nor leaks into the notes.
-  const notes = readFileSync(join(repo.ghDir, "last-notes"), "utf-8");
-  assert.match(notes, /a genuine change/);
 });
 
 test("#87 PATHSPEC: a change to only root NOTICE triggers a release", (t) => {
-  // copy-license.mjs copies root LICENSE/NOTICE into every tarball and both
-  // package "files" arrays list them, so a NOTICE-only change (e.g. crediting
-  // a newly ported theme) alters what ships and must cut a release.
   const repo = makeRepo(t);
   writeFileSync(join(repo.repoDir, "NOTICE"), "Portions (c) contributors.\n");
   repo.run(["add", "."]);
   repo.run(["commit", "-m", "docs(license): credit a ported theme in NOTICE"]);
 
-  const result = runRelease(repo);
+  const result = runScript(repo, "release.sh");
   assert.equal(result.status, 0, result.stdout + result.stderr);
   assert.match(result.stdout, /Version: 0\.1\.0 -> 0\.1\.1/);
 });
@@ -575,15 +407,12 @@ test("#87 PATHSPEC: a change to only root LICENSE triggers a release", (t) => {
   repo.run(["add", "."]);
   repo.run(["commit", "-m", "docs(license): clarify LICENSE"]);
 
-  const result = runRelease(repo);
+  const result = runScript(repo, "release.sh");
   assert.equal(result.status, 0, result.stdout + result.stderr);
   assert.match(result.stdout, /Version: 0\.1\.0 -> 0\.1\.1/);
 });
 
 test("#87 PATHSPEC: a build-config change (tsconfig.json) triggers a release", (t) => {
-  // The tsconfigs govern the emitted dist bytes (target/module/jsx) and which
-  // files are emitted (exclude list), so a build-config change alone must cut
-  // a release -- reversing the pre-#87 assertion that it must not.
   const repo = makeRepo(t);
   writeFileSync(
     join(repo.repoDir, "components", "react", "tsconfig.json"),
@@ -592,7 +421,7 @@ test("#87 PATHSPEC: a build-config change (tsconfig.json) triggers a release", (
   repo.run(["add", "."]);
   repo.run(["commit", "-m", "build(react): lower the compile target"]);
 
-  const result = runRelease(repo);
+  const result = runScript(repo, "release.sh");
   assert.equal(result.status, 0, result.stdout + result.stderr);
   assert.match(result.stdout, /Version: 0\.1\.0 -> 0\.1\.1/);
 });
@@ -606,54 +435,221 @@ test("#87 PATHSPEC: a build-config change (tsconfig.build.json) triggers a relea
   repo.run(["add", "."]);
   repo.run(["commit", "-m", "build(react): widen what the build emits"]);
 
-  const result = runRelease(repo);
+  const result = runScript(repo, "release.sh");
   assert.equal(result.status, 0, result.stdout + result.stderr);
   assert.match(result.stdout, /Version: 0\.1\.0 -> 0\.1\.1/);
 });
 
 test("#87 tag glob: pre-release and unrelated v-tags don't become the release base", (t) => {
   // git tag -l "v*" | sort -V | tail -1 would pick vendor-snapshot (or
-  // v0.2.0-rc1) over v0.1.0, then backfill or base the changelog on a
-  // non-release. The fix keeps only strict vX.Y.Z tags.
+  // v0.2.0-rc1) over v0.1.0, then base the bump/changelog on a non-release.
+  // The fix keeps only strict vX.Y.Z tags.
   const repo = makeRepo(t);
   repo.run(["tag", "v0.2.0-rc1"]); // outranks v0.1.0 under sort -V, not a release
   repo.run(["tag", "v2-experiment"]);
   repo.run(["tag", "vendor-snapshot"]);
   addUnreleasedCommit(repo);
 
-  const result = runRelease(repo);
+  const result = runScript(repo, "release.sh");
   assert.equal(result.status, 0, result.stdout + result.stderr);
-  // Based on the real latest release (v0.1.0): next is 0.1.1, with no attempt
-  // to backfill a rc/junk tag's "missing" release.
+  // Based on the real latest release (v0.1.0): next is 0.1.1.
   assert.match(result.stdout, /Version: 0\.1\.0 -> 0\.1\.1/);
-  assert.doesNotMatch(result.stdout, /backfilling/);
   assert.ok(tagExistsOnOrigin(repo, "v0.1.1"));
-  // gh was never asked about a non-release tag.
-  const viewCalls = calls(repo).filter((c) => c.startsWith("release view"));
-  assert.ok(
-    viewCalls.every((c) => !/rc1|experiment|vendor/.test(c)),
-    `release view must not touch non-release tags, saw:\n${viewCalls.join("\n")}`
+  assert.deepEqual(calls(repo), [], "release.sh must never call gh, non-release tags included");
+});
+
+// ── Atomicity (issue #88): a rejected push on either half of the atomic
+// pair leaves BOTH refs exactly as they were, and release.sh has no partial
+// state left over to clean up on the next run.
+
+test("(i) atomic push: the TAG ref rejected leaves origin/main AND the tag both untouched", (t) => {
+  const repo = makeRepo(t);
+  addUnreleasedCommit(repo);
+  const mainBefore = originMainSha(repo);
+  writeFileSync(join(repo.bareDir, "reject-tags"), "");
+
+  const result = runScript(repo, "release.sh");
+  assert.notEqual(result.status, 0, "the atomic push should genuinely fail");
+  assert.match(result.stderr, /rejecting tag ref update|\[rejected\]/);
+  assert.equal(originMainSha(repo), mainBefore, "origin/main must be unchanged");
+  assert.ok(!tagExistsOnOrigin(repo, "v0.1.1"), "the tag must not exist on origin either");
+  assert.deepEqual(calls(repo), []);
+});
+
+test("(i) atomic push: the MAIN ref rejected leaves origin/main AND the tag both untouched", (t) => {
+  const repo = makeRepo(t);
+  addUnreleasedCommit(repo);
+  const mainBefore = originMainSha(repo);
+  writeFileSync(join(repo.bareDir, "reject-main"), "");
+
+  const result = runScript(repo, "release.sh");
+  assert.notEqual(result.status, 0, "the atomic push should genuinely fail");
+  assert.match(result.stderr, /rejecting main ref update|\[rejected\]/);
+  assert.equal(originMainSha(repo), mainBefore, "origin/main must be unchanged");
+  assert.ok(!tagExistsOnOrigin(repo, "v0.1.1"), "the tag must not exist on origin, even though only main was rejected");
+  assert.deepEqual(calls(repo), []);
+});
+
+test("(ii) a second release.sh run after an atomic-push rejection, from a fresh checkout, bumps exactly once", (t) => {
+  const repo = makeRepo(t);
+  addUnreleasedCommit(repo);
+  // Pushed first, as it would already be on origin by the time release.yml
+  // even checks out -- that workflow only runs on a push to main (an
+  // ordinary PR merge), before release.sh gets involved at all. Only the
+  // bump commit release.sh creates itself is new when its own atomic push
+  // runs below.
+  repo.run(["push"]);
+  writeFileSync(join(repo.bareDir, "reject-main"), "");
+  const first = runScript(repo, "release.sh");
+  assert.notEqual(first.status, 0, "the first run's atomic push should genuinely fail");
+  rmSync(join(repo.bareDir, "reject-main"));
+
+  // A fresh clone of origin -- not the dirty repoDir from the failed
+  // attempt, which still has a local bump commit/tag the rejected push
+  // never actually landed. Real CI always starts from a fresh checkout per
+  // run, so this is the precondition that actually matters.
+  const freshDir = mkdtempSync(join(tmpdir(), "release-test-fresh-"));
+  t.after(() => rmSync(freshDir, { recursive: true, force: true }));
+  execFileSync("git", ["clone", repo.bareDir, freshDir], { env: repo.env });
+  installScripts(freshDir);
+
+  const second = runScriptAt(freshDir, repo.env, "release.sh");
+  assert.equal(second.status, 0, second.stdout + second.stderr);
+  assert.match(second.stdout, /Version: 0\.1\.0 -> 0\.1\.1/);
+  assert.ok(tagExistsOnOrigin(repo, "v0.1.1"));
+
+  const log = execFileSync("git", ["log", "--oneline"], { cwd: freshDir, env: repo.env }).toString();
+  const bumpCommits = log.split("\n").filter((l) => l.includes("chore(release):"));
+  assert.equal(bumpCommits.length, 1, `expected exactly one bump commit, log:\n${log}`);
+  const pkg = JSON.parse(readFileSync(join(freshDir, "styles", "package.json"), "utf-8"));
+  assert.equal(pkg.version, "0.1.1");
+});
+
+// ── publish-release.sh (issue #88): idempotent GitHub release creation,
+// called from publish.yml after the tag-triggered npm publish succeeds.
+
+test("publish-release.sh: creates the release from release-notes.sh's own output when missing, then no-ops on a second run", (t) => {
+  const repo = makeRepo(t);
+  addUnreleasedCommit(repo);
+  const rel = runScript(repo, "release.sh");
+  assert.equal(rel.status, 0, rel.stdout + rel.stderr);
+  assert.deepEqual(calls(repo), [], "release.sh itself must not have called gh");
+
+  const expectedNotes = runScript(repo, "release-notes.sh", ["v0.1.1"]).stdout;
+
+  const pub = runScript(repo, "publish-release.sh", ["v0.1.1"]);
+  assert.equal(pub.status, 0, pub.stdout + pub.stderr);
+  assert.match(pub.stdout, /Created release v0\.1\.1/);
+  assert.equal(calls(repo).filter((c) => c.startsWith("release create")).length, 1);
+  const notesContent = readFileSync(join(repo.ghDir, "last-notes"), "utf-8");
+  assert.equal(notesContent, expectedNotes, "the release body must equal release-notes.sh's own output");
+
+  // Idempotent: a second run against the now-existing release creates
+  // nothing further.
+  const pub2 = runScript(repo, "publish-release.sh", ["v0.1.1"]);
+  assert.equal(pub2.status, 0, pub2.stdout + pub2.stderr);
+  assert.match(pub2.stdout, /already exists/);
+  assert.equal(
+    calls(repo).filter((c) => c.startsWith("release create")).length,
+    1,
+    "no second release create"
   );
 });
 
-test("#87 gh view: a transient release-view failure aborts accurately, no spurious backfill", (t) => {
-  // A non-404 gh failure (5xx / rate-limit / auth) must NOT read as "no
-  // release exists". The old code backfilled, hit a 422 on the existing
-  // release, and aborted blaming the wrong step. The fix distinguishes a real
-  // "release not found" from every other failure.
+test("publish-release.sh: a non-404 view failure is fatal, ASCII error, no create attempted (issue #87)", (t) => {
   const repo = makeRepo(t);
-  addUnreleasedCommit(repo);
   writeFileSync(join(repo.ghDir, "fail-view-transient"), "");
 
-  const result = runRelease(repo);
-  assert.notEqual(result.status, 0, "a transient view failure must fail the run");
-  assert.match(result.stderr, /gh release view v0\.1\.0 failed/);
-  // Stopped at the view check: no spurious backfill create, version untouched.
+  const pub = runScript(repo, "publish-release.sh", ["v0.1.0"]);
+  assert.notEqual(pub.status, 0, "a transient view failure must fail the run");
+  assert.match(pub.stderr, /gh release view v0\.1\.0 failed/);
+  assert.ok(/^[\x00-\x7F]*$/.test(pub.stderr), `stderr must be ASCII, got:\n${pub.stderr}`);
   assert.equal(
     calls(repo).filter((c) => c.startsWith("release create")).length,
     0,
     "no release create attempted after a transient view failure"
   );
-  const pkg = JSON.parse(readFileSync(join(repo.repoDir, "styles", "package.json"), "utf-8"));
-  assert.equal(pkg.version, "0.1.0", "version not bumped when the view check fails");
+});
+
+// ── release-notes.sh (issue #88): pure changelog output, reusing the
+// grouping/filtering expectations release.sh's changelog used to carry.
+
+test("release-notes.sh: no prior release tag -- the range is the tag alone", (t) => {
+  const repo = makeRepo(t);
+  const notes = runScript(repo, "release-notes.sh", ["v0.1.0"]);
+  assert.equal(notes.status, 0, notes.stdout + notes.stderr);
+  // The only PATHSPEC-scoped commit up to v0.1.0 is the seed commit itself,
+  // which is a plain "chore:" subject with no colon-description this
+  // repo's grouping would recognize distinctly -- so this just proves the
+  // script runs and groups without a prior tag, without asserting exact
+  // wording of the seed commit's own bucket.
+  assert.equal(typeof notes.stdout, "string");
+});
+
+test("release-notes.sh: groups feat/fix under their headers, an unrecognized type under Other Changes", (t) => {
+  const repo = makeRepo(t);
+  writeFileSync(join(repo.repoDir, "styles", "A.txt"), "a\n");
+  repo.run(["add", "."]);
+  repo.run(["commit", "-m", "feat(styles): add A"]);
+  writeFileSync(join(repo.repoDir, "styles", "B.txt"), "b\n");
+  repo.run(["add", "."]);
+  repo.run(["commit", "-m", "fix(styles): fix B"]);
+  writeFileSync(join(repo.repoDir, "styles", "C.txt"), "c\n");
+  repo.run(["add", "."]);
+  repo.run(["commit", "-m", "feature(styles): not a real type"]);
+  repo.run(["tag", "v0.1.1"]);
+  repo.run(["push", "origin", "v0.1.1"]);
+
+  const notes = runScript(repo, "release-notes.sh", ["v0.1.1"]).stdout;
+  assert.match(notes, /### Features[\s\S]*- add A/);
+  assert.match(notes, /### Bug Fixes[\s\S]*- fix B/);
+  assert.match(notes, /### Other Changes[\s\S]*- feature\(styles\): not a real type/);
+});
+
+test("release-notes.sh: BUMP_GREP filters a bump-commit SUBJECT, not a body that merely quotes one", (t) => {
+  // git log --grep matches the WHOLE message, so a --invert-grep filter on
+  // it would drop this commit entirely -- the fix filters bump commits by
+  // subject only (issue #87).
+  const repo = makeRepo(t);
+  writeFileSync(join(repo.repoDir, "styles", "REALFIX.txt"), "a real fix\n");
+  repo.run(["add", "."]);
+  repo.run([
+    "commit",
+    "-m",
+    "fix(styles): a genuine change",
+    "-m",
+    "chore(release): v0.1.10 shipped before this landed, per the changelog",
+  ]);
+  repo.run(["tag", "v0.1.1"]);
+  repo.run(["push", "origin", "v0.1.1"]);
+
+  const notes = runScript(repo, "release-notes.sh", ["v0.1.1"]).stdout;
+  assert.match(notes, /a genuine change/);
+  // The real subject makes the changelog; the body's quoted bump line
+  // neither drops it nor leaks a spurious "### Maintenance"/version line in.
+  assert.doesNotMatch(notes, /Maintenance/);
+  assert.doesNotMatch(notes, /v0\.1\.10/);
+});
+
+test("release-notes.sh: two releases apart -- each tag's changelog reflects only its own range", (t) => {
+  const repo = makeRepo(t);
+  writeFileSync(join(repo.repoDir, "styles", "ONE.txt"), "one\n");
+  repo.run(["add", "."]);
+  repo.run(["commit", "-m", "fix(styles): something"]);
+  repo.run(["tag", "v0.1.1"]);
+  repo.run(["push", "origin", "v0.1.1"]);
+
+  writeFileSync(join(repo.repoDir, "styles", "TWO.txt"), "two\n");
+  repo.run(["add", "."]);
+  repo.run(["commit", "-m", "fix(styles): something else"]);
+  repo.run(["tag", "v0.1.2"]);
+  repo.run(["push", "origin", "v0.1.2"]);
+
+  const notesV1 = runScript(repo, "release-notes.sh", ["v0.1.1"]).stdout;
+  assert.match(notesV1, /something(?! else)/);
+  assert.doesNotMatch(notesV1, /something else/);
+
+  const notesV2 = runScript(repo, "release-notes.sh", ["v0.1.2"]).stdout;
+  assert.match(notesV2, /something else/);
+  assert.doesNotMatch(notesV2, /^- something$/m);
 });

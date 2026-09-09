@@ -1,0 +1,59 @@
+/* kenzen-midnight — base styles
+ * Scoped defaults. Requires tokens.css. Body/mono fonts are system stacks;
+ * the display face (Sora, headings only) is a webfont — see manifest.json's
+ * fonts entry, injected by the consumer per STANDARD.md section 15.
+ *
+ * The element carrying data-rb-style is the theme's canvas: it gets the
+ * background, text color, and body font — whether that is <html> for a page
+ * or a mount container for an embedded island. Page-only rules (body margin,
+ * viewport height) apply only when the attribute sits on <html>.
+ */
+:where([data-rb-style="kenzen-midnight"]) {
+  background-color: var(--rb-bg);
+  color: var(--rb-text);
+  font-family: var(--rb-font-body);
+  font-weight: var(--rb-font-weight);
+  font-variant-numeric: tabular-nums; /* counts/ages/sizes align in a column */
+}
+
+:where(html[data-rb-style="kenzen-midnight"]) body {
+  background-color: var(--rb-bg);
+  color: var(--rb-text);
+  font-family: var(--rb-font-body);
+  font-weight: var(--rb-font-weight);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Sora is the display voice here — same "Display / wordmark" treatment
+ * design.md documents, wired to bare headings too. */
+:where([data-rb-style="kenzen-midnight"], [data-rb-style="kenzen-midnight"] *):where(h1, h2, h3, h4, h5, h6) {
+  margin: 0 0 var(--rb-space-3);
+  font-family: var(--rb-font-display);
+  font-weight: var(--rb-font-weight-medium);
+  letter-spacing: var(--rb-heading-tracking);
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+:where([data-rb-style="kenzen-midnight"], [data-rb-style="kenzen-midnight"] *):where(p) {
+  margin: 0 0 var(--rb-space-3);
+}
+
+:where([data-rb-style="kenzen-midnight"], [data-rb-style="kenzen-midnight"] *):where(ul, ol) {
+  margin: 0 0 var(--rb-space-3);
+  padding-inline-start: var(--rb-space-4);
+}
+
+:where([data-rb-style="kenzen-midnight"], [data-rb-style="kenzen-midnight"] *):where(a) {
+  color: var(--rb-accent);
+}
+
+:where([data-rb-style="kenzen-midnight"], [data-rb-style="kenzen-midnight"] *):where(:focus-visible) {
+  outline: var(--rb-focus-ring);
+  outline-offset: 2px;
+}
+
+:where([data-rb-style="kenzen-midnight"], [data-rb-style="kenzen-midnight"] *)::selection {
+  background: var(--rb-accent);
+  color: var(--rb-accent-fg);
+}

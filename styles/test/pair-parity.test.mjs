@@ -28,6 +28,7 @@ const PAIRS = [
   ["rackbops-studio", "rackbops-noir"],
   ["concrete-signal", "concrete-signal-light"],
   ["amber-hearth", "amber-ember"],
+  ["kenzen-midnight", "kenzen-cyberhealth"],
 ];
 
 /**

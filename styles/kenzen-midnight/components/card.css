@@ -1,0 +1,14 @@
+/* kenzen-midnight — card
+ * Solid raised panel, hairline border, luminance-first elevation (no glass). */
+:where([data-rb-style="kenzen-midnight"], [data-rb-style="kenzen-midnight"] *).rb-card {
+  background: var(--rb-surface);
+  border: 1px solid var(--rb-border);
+  border-radius: var(--rb-radius-lg);
+  padding: var(--rb-space-5);
+  color: var(--rb-text);
+  box-shadow: var(--rb-shadow-sm);
+}
+:where([data-rb-style="kenzen-midnight"], [data-rb-style="kenzen-midnight"] *).rb-card--raised {
+  background: var(--rb-surface-2);
+  box-shadow: var(--rb-shadow-lg);
+}
