@@ -73,7 +73,10 @@
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  :where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-progress {
+  :where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-progress:indeterminate::-webkit-progress-bar {
+    animation-duration: 2s;
+  }
+  :where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-progress:indeterminate::-moz-progress-bar {
     animation-duration: 2s;
   }
   :where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-spinner {

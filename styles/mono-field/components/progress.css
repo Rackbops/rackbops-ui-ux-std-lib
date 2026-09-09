@@ -63,7 +63,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-progress {
+  :where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-progress:indeterminate::-webkit-progress-bar {
+    animation-duration: 2s;
+  }
+  :where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-progress:indeterminate::-moz-progress-bar {
     animation-duration: 2s;
   }
   :where([data-rb-style="mono-field"], [data-rb-style="mono-field"] *).rb-spinner {

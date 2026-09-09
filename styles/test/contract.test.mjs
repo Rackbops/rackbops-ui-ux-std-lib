@@ -874,27 +874,53 @@ for (const theme of themeDirs) {
     // above, since #86). A base-class override (.rb-btn) covers an animated
     // modifier (.rb-btn--accent), since the modifier composes onto the base --
     // but not the reverse, so the override side matches on the full class.
+    //
+    // When the animated selector ends in a pseudo-element (::-webkit-progress-bar),
+    // the override MUST target that same pseudo-element -- animation-duration
+    // set on the host class (.rb-progress) never reaches a pseudo-element's own
+    // animation; it is a distinct generated box, not a descendant that inherits
+    // it (#86, caught only by rendering under emulated reduced motion -- a
+    // class-name-only check like the old version of this test passed while the
+    // sweep still ran at full speed).
     const elemId = (cls) => cls.split("--")[0];
     const classesIn = (text) => (text.match(/\.rb-[\w-]+/g) ?? []).map((c) => c.slice(1));
+    const trailingPseudoElement = (sel) => sel.match(/::([\w-]+)\s*$/)?.[1] ?? null;
     const kfNames = [
       ...new Set(themeCssFiles(theme).flatMap((f) => parseCss(readFileSync(f, "utf-8")).keyframes)),
     ];
     for (const file of themeCssFiles(theme)) {
       const raw = stripComments(readFileSync(file, "utf-8"));
-      // Full class names the overrides target -- NOT reduced to the element id,
-      // so a modifier-scoped override can't be read as covering a base animation.
-      const reducedClasses = new Set(reducedMotionBlocks(raw).flatMap((b) => classesIn(b)));
+      // Each override kept as its own {classes, pseudo} entry, not flattened
+      // into one block-wide class set -- so an override scoped to one
+      // pseudo-element is never read as covering the bare host or a
+      // different pseudo-element.
+      const reducedEntries = reducedMotionBlocks(raw).flatMap((block) =>
+        [...block.matchAll(/([^{}]+)\{([^{}]*)\}/g)].flatMap(([, prelude]) =>
+          splitSelectors(prelude.trim()).map((sel) => ({
+            classes: new Set(classesIn(sel)),
+            pseudo: trailingPseudoElement(sel),
+          })),
+        ),
+      );
       for (const m of raw.matchAll(/animation(-name)?\s*:\s*([^;{}]+)/g)) {
         // Only declarations that actually name a keyframe (not `animation: none`
         // or a duration-only override).
         const named = kfNames.filter((kf) => new RegExp(`\\b${reEscape(kf)}\\b`).test(m[2]));
         if (!named.length) continue;
-        const onClasses = classesIn(enclosingSelector(raw, m.index));
-        // Covered if the exact class has an override, or its base class does.
-        assert.ok(
-          onClasses.some((c) => reducedClasses.has(c) || reducedClasses.has(elemId(c))),
-          `${file}: the animation ${named.join(", ")} on .${onClasses.join(", .")} has no prefers-reduced-motion override in this file`,
-        );
+        for (const sel of splitSelectors(enclosingSelector(raw, m.index))) {
+          const onClasses = classesIn(sel);
+          const pseudo = trailingPseudoElement(sel);
+          const covered = reducedEntries.some(
+            (e) =>
+              (pseudo === null || e.pseudo === pseudo) &&
+              onClasses.some((c) => e.classes.has(c) || e.classes.has(elemId(c))),
+          );
+          assert.ok(
+            covered,
+            `${file}: the animation ${named.join(", ")} on ${sel} has no prefers-reduced-motion override` +
+              `${pseudo ? ` targeting ::${pseudo}` : ""} in this file`,
+          );
+        }
       }
     }
   });

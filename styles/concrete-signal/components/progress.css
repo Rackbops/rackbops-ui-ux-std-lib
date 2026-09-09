@@ -82,7 +82,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-progress {
+  :where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-progress:indeterminate::-webkit-progress-bar {
+    animation-duration: 2s;
+  }
+  :where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-progress:indeterminate::-moz-progress-bar {
     animation-duration: 2s;
   }
   :where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-spinner {
