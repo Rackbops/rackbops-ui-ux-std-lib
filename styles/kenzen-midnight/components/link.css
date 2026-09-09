@@ -1,0 +1,42 @@
+/* kenzen-midnight — nav link (tree/sidebar row)
+ * A list row; hover fills to surface-2 and lights a 2px accent bar on the left
+ * edge; active carries a faint accent wash. Mirrors the arcane pair's tree rows. */
+:where([data-rb-style="kenzen-midnight"], [data-rb-style="kenzen-midnight"] *).rb-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--rb-space-2);
+  padding: var(--rb-space-2) var(--rb-space-3);
+  border-radius: var(--rb-radius);
+  color: var(--rb-text);
+  font-size: var(--rb-text-sm);
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background var(--rb-transition) var(--rb-ease),
+    color var(--rb-transition) var(--rb-ease);
+}
+:where([data-rb-style="kenzen-midnight"], [data-rb-style="kenzen-midnight"] *).rb-link:hover {
+  background: var(--rb-surface-2);
+}
+:where([data-rb-style="kenzen-midnight"], [data-rb-style="kenzen-midnight"] *).rb-link::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 6px;
+  bottom: 6px;
+  width: 2px;
+  border-radius: 2px;
+  background: transparent;
+  transition: background var(--rb-transition) var(--rb-ease);
+}
+:where([data-rb-style="kenzen-midnight"], [data-rb-style="kenzen-midnight"] *).rb-link:hover::before,
+:where([data-rb-style="kenzen-midnight"], [data-rb-style="kenzen-midnight"] *).rb-link.rb-link--active::before,
+:where([data-rb-style="kenzen-midnight"], [data-rb-style="kenzen-midnight"] *).rb-link[aria-current="page"]::before {
+  background: var(--rb-accent);
+}
+:where([data-rb-style="kenzen-midnight"], [data-rb-style="kenzen-midnight"] *).rb-link.rb-link--active,
+:where([data-rb-style="kenzen-midnight"], [data-rb-style="kenzen-midnight"] *).rb-link[aria-current="page"] {
+  background: var(--rb-accent-wash);
+  color: var(--rb-accent);
+}

@@ -54,6 +54,18 @@
     "mono-field": {
       "scheme": "light",
       "fonts": []
+    },
+    "kenzen-midnight": {
+      "scheme": "dark",
+      "fonts": [
+        "https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap"
+      ]
+    },
+    "kenzen-cyberhealth": {
+      "scheme": "light",
+      "fonts": [
+        "https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&display=swap"
+      ]
     }
   }
 }

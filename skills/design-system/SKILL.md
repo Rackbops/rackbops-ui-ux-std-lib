@@ -48,17 +48,19 @@ a base component rule at equal weight -- a few state-driven rules reach
 Several themes can load together;
 swapping is an attribute flip.
 
-The full roster is 12 themes. Two pairs are reverse-documented from roshne's
+The full roster is 14 themes. Two pairs are reverse-documented from roshne's
 own apps: `arcane-obsidian` (dark) / `arcane-parchment` (light) — the
 artifact-console developer console; and `rackbops-studio` (light) /
 `rackbops-noir` (dark) — the rackbops editorial studio. Three are ported
 (credited) from nazuraki/ui-std-lib: `luminous-precision`, `neon-butterfly`,
-`summer-cloud`. The remaining five are original: `concrete-signal` (dark) /
+`summer-cloud`. The remaining seven are original: `concrete-signal` (dark) /
 `concrete-signal-light` (light), `amber-hearth` (light) / `amber-ember` (dark),
-and standalone `mono-field` (light, no dark sibling yet). All 12 declare the
-same `--rb-*` baseline and the same `rb-*` classes, so changing the attribute
-restyles the app without touching markup. Fonts are system stacks everywhere
-except the three ported themes, which declare webfont URLs in the manifest.
+`kenzen-midnight` (dark) / `kenzen-cyberhealth` (light) — Kenzen-sei's
+cyber-health brand — and standalone `mono-field` (light, no dark sibling
+yet). All 14 declare the same `--rb-*` baseline and the same `rb-*` classes,
+so changing the attribute restyles the app without touching markup. Fonts are
+system stacks everywhere except the three ported themes and the Kenzen pair
+(Sora), which declare webfont URLs in the manifest.
 
 The packages publish to **public npm** under `@rackbops` — no auth needed:
 

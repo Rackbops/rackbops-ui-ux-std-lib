@@ -25,7 +25,7 @@ attribute flip.
 
 Two of roshne's app design languages (each a light/dark pair), three themes
 ported — credited — from [`nazuraki/ui-std-lib`](https://github.com/nazuraki/ui-std-lib),
-and five original designs built for this library (two light/dark pairs plus
+and seven original designs built for this library (three light/dark pairs plus
 one standalone). One `--rb-*` / `rb-*` contract, so any two swap with a single
 `data-rb-style` flip.
 
@@ -43,6 +43,8 @@ one standalone). One `--rb-*` / `rb-*` contract, so any two swap with a single
 | `amber-hearth` | light | original | Warm hand-crafted editorial — clay-terracotta accent on cream, the library's only serif display voice, the most generously rounded shape language, warm-toned diffused shadows. |
 | `amber-ember` | dark | original | The dark, espresso-ground counterpart of amber-hearth — same serif-and-clay language on a warm dark night palette. |
 | `mono-field` | light | original | Deliberately restrained quiet monochrome — near-flat grayscale surfaces, hairline-driven hierarchy, near-black ink accent, no uppercase, no glow. Standalone, no pair. |
+| `kenzen-midnight` | dark | original | Kenzen-sei's cyber-health brand: deep navy chassis, vibrant teal accent, mint/amber/crimson status shields, Sora display voice over a system-ui body. |
+| `kenzen-cyberhealth` | light | original | The AA-tuned light counterpart of kenzen-midnight — same cyber-health language, sterile white chassis, navy structure. |
 
 Each theme ships a `design.md` — a written spec of the aesthetic (palette,
 typography, shape rules, component inventory). Read it before designing new

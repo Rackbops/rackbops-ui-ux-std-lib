@@ -122,7 +122,9 @@
     "concrete-signal-light": [],
     "amber-hearth": [],
     "amber-ember": [],
-    "mono-field": []
+    "mono-field": [],
+    "kenzen-midnight": ["rb-wordmark", "rb-wordmark__spark", "rb-eyebrow"],
+    "kenzen-cyberhealth": ["rb-wordmark", "rb-wordmark__spark", "rb-eyebrow"]
   },
   "ariaPairs": [
     {

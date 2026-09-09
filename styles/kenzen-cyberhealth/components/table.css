@@ -1,0 +1,16 @@
+/* kenzen-cyberhealth — table (interactive-row utility only; the base table + DataTable's own
+ * additions live in data-table.css, K4-10) */
+/* --interactive: clickable rows (a tabindex tr, or a row-wrapping button/link) —
+ * pointer cursor plus a keyboard-equivalent of the hover wash and a focus ring. */
+:where([data-rb-style="kenzen-cyberhealth"], [data-rb-style="kenzen-cyberhealth"] *).rb-table--interactive tbody tr {
+  cursor: pointer;
+}
+:where([data-rb-style="kenzen-cyberhealth"], [data-rb-style="kenzen-cyberhealth"] *).rb-table--interactive tbody tr:focus-visible,
+:where([data-rb-style="kenzen-cyberhealth"], [data-rb-style="kenzen-cyberhealth"] *).rb-table--interactive tbody tr:has(:focus-visible) {
+  outline: var(--rb-focus-ring);
+  outline-offset: -2px;
+}
+:where([data-rb-style="kenzen-cyberhealth"], [data-rb-style="kenzen-cyberhealth"] *).rb-table--interactive tbody tr:focus-visible td,
+:where([data-rb-style="kenzen-cyberhealth"], [data-rb-style="kenzen-cyberhealth"] *).rb-table--interactive tbody tr:has(:focus-visible) td {
+  background: var(--rb-surface-2);
+}

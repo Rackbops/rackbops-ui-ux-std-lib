@@ -1,0 +1,90 @@
+/* kenzen-cyberhealth — button
+ * Ghost by default; --primary is the one solid accent fill (--accent-fg text).
+ * Flat depth: no glow, no drop shadow on resting UI. */
+:where([data-rb-style="kenzen-cyberhealth"], [data-rb-style="kenzen-cyberhealth"] *).rb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--rb-space-2);
+  padding: var(--rb-space-2) var(--rb-space-4);
+  background: var(--rb-surface-2);
+  border: 1px solid var(--rb-border);
+  border-radius: var(--rb-radius);
+  color: var(--rb-text);
+  font-family: var(--rb-font-body);
+  font-weight: var(--rb-font-weight-medium);
+  font-size: var(--rb-text-sm);
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    border-color var(--rb-transition) var(--rb-ease),
+    background var(--rb-transition) var(--rb-ease),
+    color var(--rb-transition) var(--rb-ease);
+}
+/* --sm: compact size for inline/table-row actions (composes with any variant) */
+:where([data-rb-style="kenzen-cyberhealth"], [data-rb-style="kenzen-cyberhealth"] *).rb-btn--sm {
+  padding: var(--rb-space-1) var(--rb-space-3);
+  font-size: calc(var(--rb-text-sm) - 1px);
+}
+/* --icon: square icon-only hit target (>=2rem); pair with .rb-btn (+ an
+ * optional color variant) — inherits color/border/hover/focus from it. */
+:where([data-rb-style="kenzen-cyberhealth"], [data-rb-style="kenzen-cyberhealth"] *).rb-icon-btn {
+  padding: var(--rb-space-2);
+  min-width: 2rem;
+  min-height: 2rem;
+  gap: 0;
+  justify-content: center;
+  line-height: 1;
+}
+:where([data-rb-style="kenzen-cyberhealth"], [data-rb-style="kenzen-cyberhealth"] *).rb-btn:not(:disabled):hover,
+:where([data-rb-style="kenzen-cyberhealth"], [data-rb-style="kenzen-cyberhealth"] *).rb-btn:focus-visible {
+  /* Keep the base :focus-visible accent outline (base.css) as the focus
+     indicator -- the base `--rb-focus-ring` outline (design.md);
+     hover shares the accent border but not the outline (it isn't focus). */
+  border-color: var(--rb-accent);
+}
+:where([data-rb-style="kenzen-cyberhealth"], [data-rb-style="kenzen-cyberhealth"] *).rb-btn--primary {
+  background: var(--rb-accent);
+  border-color: var(--rb-accent);
+  color: var(--rb-accent-fg);
+}
+:where([data-rb-style="kenzen-cyberhealth"], [data-rb-style="kenzen-cyberhealth"] *).rb-btn--primary:not(:disabled):hover,
+:where([data-rb-style="kenzen-cyberhealth"], [data-rb-style="kenzen-cyberhealth"] *).rb-btn--primary:focus-visible {
+  /* Darken the fill on a light ground (mix toward --rb-text) so the white label
+     stays AA — lightening it, as the dark sibling does, would push the fill even
+     closer to white and drop white-on-fill contrast, not raise it. Darkened 12%
+     toward navy: #157388, white text on it is 5.47:1 (styles/test/contrast.test.mjs
+     only checks the resting accent-fg/accent pair, not this hover state; verified
+     by hand, see design.md's Accessibility section). */
+  background: color-mix(in srgb, var(--rb-accent), var(--rb-text) 12%);
+  border-color: color-mix(in srgb, var(--rb-accent), var(--rb-text) 12%);
+}
+:where([data-rb-style="kenzen-cyberhealth"], [data-rb-style="kenzen-cyberhealth"] *).rb-btn--accent {
+  background: var(--rb-accent-wash);
+  border-color: color-mix(in srgb, var(--rb-accent) 40%, var(--rb-border));
+  color: var(--rb-accent);
+}
+:where([data-rb-style="kenzen-cyberhealth"], [data-rb-style="kenzen-cyberhealth"] *).rb-btn--danger {
+  background: transparent;
+  border-color: color-mix(in srgb, var(--rb-danger) 40%, var(--rb-border));
+  color: var(--rb-danger);
+}
+:where([data-rb-style="kenzen-cyberhealth"], [data-rb-style="kenzen-cyberhealth"] *).rb-btn--danger:not(:disabled):hover,
+:where([data-rb-style="kenzen-cyberhealth"], [data-rb-style="kenzen-cyberhealth"] *).rb-btn--danger:focus-visible {
+  border-color: var(--rb-danger);
+}
+:where([data-rb-style="kenzen-cyberhealth"], [data-rb-style="kenzen-cyberhealth"] *).rb-btn--ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--rb-text-soft);
+}
+:where([data-rb-style="kenzen-cyberhealth"], [data-rb-style="kenzen-cyberhealth"] *).rb-btn--ghost:not(:disabled):hover,
+:where([data-rb-style="kenzen-cyberhealth"], [data-rb-style="kenzen-cyberhealth"] *).rb-btn--ghost:focus-visible {
+  background: var(--rb-surface-2);
+  border-color: var(--rb-border);
+  color: var(--rb-text);
+}
+:where([data-rb-style="kenzen-cyberhealth"], [data-rb-style="kenzen-cyberhealth"] *).rb-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
