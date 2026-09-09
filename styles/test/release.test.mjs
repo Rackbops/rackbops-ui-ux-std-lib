@@ -331,7 +331,7 @@ test("scenario (b): tag pushed, release create failed once -- resumes without re
 
   const second = runRelease(repo);
   assert.equal(second.status, 0, second.stdout + second.stderr);
-  assert.match(second.stdout, /Tag v0\.1\.1 has no GitHub release yet — backfilling it first\./);
+  assert.match(second.stdout, /Tag v0\.1\.1 has no GitHub release yet -- backfilling it first\./);
   assert.ok(existsSync(join(repo.ghDir, "releases", "v0.1.1")));
 
   // Exactly one tag, one bump commit, two release-create attempts (the
@@ -366,7 +366,7 @@ test("scenario (b), with a new commit landing before the retry, not an immediate
 
   const second = runRelease(repo);
   assert.equal(second.status, 0, second.stdout + second.stderr);
-  assert.match(second.stdout, /Tag v0\.1\.1 has no GitHub release yet — backfilling it first\./);
+  assert.match(second.stdout, /Tag v0\.1\.1 has no GitHub release yet -- backfilling it first\./);
   assert.ok(existsSync(join(repo.ghDir, "releases", "v0.1.1")), "v0.1.1's release was backfilled");
 
   // The new commit is also genuinely unreleased work, so this same run
