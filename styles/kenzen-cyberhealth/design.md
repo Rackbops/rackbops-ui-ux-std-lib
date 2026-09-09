@@ -120,8 +120,9 @@ theme **except one**:
 - **Accent-fg on accent still passes, comfortably.** `--rb-accent-fg` reverts
   to navy `#0a2038` rather than staying white: navy on `#18c0d0` is **7.43:1**
   (`accent-fg`/`accent`'s 4.5:1 floor, cleared with room to spare), while
-  white on the exact teal is only 3.48:1 — worse, not better. The button
-  hover/focus fill (`color-mix(in srgb, var(--rb-accent), var(--rb-text)
+  white on the exact teal is only **2.21:1** — the same pair as `accent`/`bg`
+  above, since `--rb-bg` is white on this theme — worse, not better. The
+  button hover/focus fill (`color-mix(in srgb, var(--rb-accent), var(--rb-text)
   12%)` → darkens further; navy text stays comfortably above 4.5:1 there too)
   is unaffected by this change since it never carried the accent-fg pairing.
 - **Danger.** The source crimson, `#d02030`, is unchanged: it already clears
@@ -167,19 +168,27 @@ semantic chips; badges always carry a text label, so colour is reinforcement,
 not the sole signal.
 
 **Accent as text/border elsewhere — accepted, not mitigated here.** The exact
-teal also renders as small text or a hairline border in several other
-components token-driven off `--rb-accent` directly rather than through a
-tint fill: the bare `a` rule in `base.css:47-49`, the wordmark, `.rb-link`'s
-active/hover state, the active tab in both `.rb-tabs` and `.rb-tabstrip`
-(text and, for the strip, a hover/active border), `.rb-btn--accent`'s label,
-the stepper's current/complete state, and `.rb-eyebrow`. Each sits in the
-same 2.0-2.2:1 range as the allowlisted `accent`/`bg` pair above (or worse on
-the accent-wash fill) — below both the 3:1 non-text and 4.5:1 text floors.
-This issue's scope named two specific mitigations (the keyboard-focus ring
-and status-badge text) and this theme ships exactly those two; the wider
-implication that *most* uses of the exact accent as text or a thin border are
-now sub-AA on white is a direct, accepted consequence of "the brand teal is
-the identity, not a darker one" rather than something #171 asked to fix.
+teal also renders as small text or a hairline border in most other component
+CSS that reads `--rb-accent` directly rather than through a tint fill --
+grepping every `color`/`border-color`/`border-top-color: var(--rb-accent)`
+declaration in this theme finds at least: the bare `a` rule in
+`base.css:47-49`, the wordmark, `.rb-link`'s active/hover state, the active
+tab in both `.rb-tabs` and `.rb-tabstrip` (text and, for the strip, a
+hover/active border), the *default* `.rb-btn`'s hover/focus-visible border
+(`components/button.css:39-45`, every button variant, not just
+`--accent`) and `.rb-btn--accent`'s own label, the focused input's border
+(`components/form.css:37`), the stepper's current/complete state,
+`.rb-eyebrow`, and the spinner's `border-top-color`
+(`components/progress.css:45`). This list is what one full-repo grep turned
+up, not a claim of exhaustive audit coverage -- treat it as "most of the
+theme," not "all of it." Each instance sits in the same 2.0-2.2:1 range as
+the allowlisted `accent`/`bg` pair above (or worse on the accent-wash fill)
+— below both the 3:1 non-text and 4.5:1 text floors. This issue's scope
+named two specific mitigations (the keyboard-focus ring and status-badge
+text) and this theme ships exactly those two; the wider implication that
+*most* uses of the exact accent as text or a thin border are now sub-AA on
+white is a direct, accepted consequence of "the brand teal is the identity,
+not a darker one" rather than something #171 asked to fix.
 STANDARD.md 4.4's cross-theme base table already carries this same class of
 divergence for `rackbops-studio`'s own bare `a` rule (`color: inherit`,
 accent-as-text below AA there too) — the base contract only pins that `color`

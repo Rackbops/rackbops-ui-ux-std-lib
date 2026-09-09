@@ -36,7 +36,7 @@
    * contrast allowlist), not a darkened substitute. --rb-focus-ring below
    * compensates by keying off --rb-text instead. */
   --rb-accent: #18c0d0;
-  --rb-accent-fg: #0a2038; /* navy on the solid teal fill (7.43:1) -- white is worse here (3.48:1, under the 4.5:1 floor) */
+  --rb-accent-fg: #0a2038; /* navy on the solid teal fill (7.43:1) -- white is worse here (2.21:1, same pair as accent/bg since --rb-bg is white, under the 4.5:1 floor) */
   --rb-accent-wash: rgba(24, 192, 208, 0.12);
 
   /* hover/active: the palette's own darker teal, measured from the artwork
