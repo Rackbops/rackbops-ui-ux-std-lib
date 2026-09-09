@@ -4,7 +4,7 @@
 this repository: the theme CSS under `styles/`, the React layer under
 `components/react/`, the showcase under `site/`, and the agent skill under
 `skills/`. It is what "matches the library" means. A theme, component, or doc
-that follows it will not look out of place beside the twelve themes that
+that follows it will not look out of place beside the fourteen themes that
 already ship; one that departs from it needs the reason written in the PR.
 
 How it relates to the other governing files:
@@ -33,7 +33,7 @@ target.
 
 ## 1. Principles
 
-The concepts that keep twelve very different aesthetics reading as one
+The concepts that keep fourteen very different aesthetics reading as one
 library. Every rule below descends from one of these.
 
 1. **One contract, many voices.** Every theme declares the same `--rb-*`
@@ -149,7 +149,7 @@ a manual edit.
 ### 2.5 Consumption units
 
 The **package** is the install unit; the **theme** is the consumption unit.
-`npm install @rackbops/styles` downloads all twelve themes (the tarball is
+`npm install @rackbops/styles` downloads all fourteen themes (the tarball is
 one package), but a consumer imports exactly one:
 
 ```css
@@ -243,7 +243,7 @@ Rules:
 Every theme MUST declare all of these on its canvas selector `[tested]`
 (`styles/contract.json`'s `tokens`, read by `styles/test/contract.test.mjs`'s
 `REQUIRED_TOKENS`). Adding a name is a contract change: bump the contract
-integer, add the token to all twelve themes, update SKILL.md and this table.
+integer, add the token to all fourteen themes, update SKILL.md and this table.
 
 **Canvas and surfaces**
 
@@ -311,7 +311,7 @@ marks. They are never used as a second accent.
 
 Deliberately not added: a type scale, z-index tokens, a density axis,
 `--rb-radius-sm`. No shared component needs them, and every baseline token
-is one more thing twelve themes must declare and document.
+is one more thing fourteen themes must declare and document.
 
 ### 4.2 Rules of use
 
@@ -394,23 +394,23 @@ extras), so an undocumented class fails too]`. The React column is the
 
 | File | Required selectors | React | Notes |
 | --- | --- | --- | --- |
-| `button.css` | `.rb-btn`, `--primary`, `--accent`, `--danger`, `--ghost`, `--sm`, `:disabled`; `.rb-icon-btn` | `Button` | disabled buttons take no `:hover` response in all twelve (hover rules scoped `:not(:disabled)`, #37) |
+| `button.css` | `.rb-btn`, `--primary`, `--accent`, `--danger`, `--ghost`, `--sm`, `:disabled`; `.rb-icon-btn` | `Button` | disabled buttons take no `:hover` response in all fourteen (hover rules scoped `:not(:disabled)`, #37) |
 | `card.css` | `.rb-card`, `--raised` | `Card` | `--raised` is a documented no-op in the three nazuraki ports (section 5.3, `contract.test.mjs`'s `CLASS_ALLOWLIST`): luminous-precision and neon-butterfly have no second elevation tier upstream at all; summer-cloud's upstream second tier is `--floating`, already carried over, so the port doesn't also add a near-duplicate `--raised` |
-| `link.css` | `.rb-link`, `--active` | `NavLink` | SHOULD also match `[aria-current="page"]`; checked by `contract.test.mjs` against `contract.json`'s `ariaPairs`, all twelve comply `[tested]` |
+| `link.css` | `.rb-link`, `--active` | `NavLink` | SHOULD also match `[aria-current="page"]`; checked by `contract.test.mjs` against `contract.json`'s `ariaPairs`, all fourteen comply `[tested]` |
 | `nav-rail.css` | `.rb-nav-rail` | `NavRail` | Composes `.rb-link`; owns no active convention |
 | `form.css` | `.rb-field`, `.rb-label`, `.rb-input`, `.rb-textarea`, `.rb-select`, `.rb-choice`, `.rb-checkbox`, `.rb-radio`, `.rb-switch` | `Field`, `Label`, `Input`, `Textarea`, `Select`, `Checkbox`, `Radio`, `Switch` | Choice controls SHOULD use `accent-color` (seven themes do; the concrete pair draws checked states as a flat accent fill by design, `styles/concrete-signal/design.md:104-106`; the ports hand-style them) |
 | `badge.css` | `.rb-badge`, `--info`, `--success`, `--warning`, `--danger` | `Badge` | Status text is never colour-only: the label carries the meaning |
 | `alert.css` | `.rb-alert`, `__title`, `--info`, `--success`, `--warning`, `--danger` | `Alert` | |
 | `dialog.css` | `.rb-dialog`, `__title`, `__actions`; `__body` | `Dialog` | `__body` is a no-op in four themes that pad `.rb-dialog` instead -- sanctioned by #42's verdict, allowlisted in `contract.json` (section 5.3) `[tested]` |
-| `tabs.css` | `.rb-tabs`, `.rb-tab`, `.rb-tab--active`, `.rb-tabpanel` | `Tabs` | SHOULD pair `--active` with `[aria-selected="true"]`; checked by `contract.test.mjs` against `contract.json`'s `ariaPairs`, all twelve comply `[tested]` |
-| `tabstrip.css` | `.rb-tabstrip`, `__tab`, `__tab--active`, `__badge` | `Tabstrip` | Top-level view nav (bordered pill buttons), distinct from `tabs.css`'s text-underline tabs inside a panel; formerly a two-theme extra (arcane-obsidian/arcane-parchment, reverse-documented from artifact-console) with no React wrapper, now shared in all twelve (K4-10 give-back from Kenzen) |
+| `tabs.css` | `.rb-tabs`, `.rb-tab`, `.rb-tab--active`, `.rb-tabpanel` | `Tabs` | SHOULD pair `--active` with `[aria-selected="true"]`; checked by `contract.test.mjs` against `contract.json`'s `ariaPairs`, all fourteen comply `[tested]` |
+| `tabstrip.css` | `.rb-tabstrip`, `__tab`, `__tab--active`, `__badge` | `Tabstrip` | Top-level view nav (bordered pill buttons), distinct from `tabs.css`'s text-underline tabs inside a panel; formerly a two-theme extra (arcane-obsidian/arcane-parchment, reverse-documented from artifact-console) with no React wrapper, now shared in all fourteen (K4-10 give-back from Kenzen) |
 | `data-table.css` | `.rb-table`, `.rb-num`, `__group-row`, `__sort`, `.rb-table-scroll` | `DataTable` | Split from `table.css` at K4-10 so each `contract.json` component key maps to its own file `[tested]` |
 | `table.css` | `.rb-table--interactive` | -- | Hand-applied by the consumer -- `DataTable` never sets it |
 | `progress.css` | `.rb-progress` on a native `<progress>` (`appearance: none`, `::-webkit-progress-bar`, `::-webkit-progress-value`, `::-moz-progress-bar`); `.rb-spinner` | `Progress`, `Spinner` | |
 | `muted.css` | `.rb-muted` | -- | |
 | `pre.css` | `.rb-pre` | -- | |
 | `log.css` | `.rb-log` (pairs with `.rb-pre`) | -- | |
-| `stepper.css` | `.rb-stepper`, `__step`, `__node`, `__label`, `--complete`, `--current` | `Stepper` | In all twelve since #55 (closes #18). `--upcoming` is emitted by `Stepper` as the resting state and no theme declares a rule for it -- allowlisted in `contract.json` as "default state" `[tested]`; SHOULD match `[aria-current="step"]`; checked by `contract.test.mjs` against `contract.json`'s `ariaPairs`, all twelve comply `[tested]` |
+| `stepper.css` | `.rb-stepper`, `__step`, `__node`, `__label`, `--complete`, `--current` | `Stepper` | In all fourteen since #55 (closes #18). `--upcoming` is emitted by `Stepper` as the resting state and no theme declares a rule for it -- allowlisted in `contract.json` as "default state" `[tested]`; SHOULD match `[aria-current="step"]`; checked by `contract.test.mjs` against `contract.json`'s `ariaPairs`, all fourteen comply `[tested]` |
 
 Do not state the *count* of shared files in prose anywhere -- `design.md`
 files that said "the baseline ten" and "twelve" were both stale before #55
@@ -462,7 +462,7 @@ in luminous-precision, mono-field, neon-butterfly, and summer-cloud (which pad
 `.rb-dialog` instead), sanctioned by #42's verdict; `.rb-card--raised` in the
 three nazuraki ports (luminous-precision, neon-butterfly, summer-cloud),
 sanctioned by each port's `design.md` and `Card.tsx`'s JSDoc; and
-`.rb-stepper--upcoming` in all twelve themes (the resting state, styled by
+`.rb-stepper--upcoming` in all fourteen themes (the resting state, styled by
 falling through to the base node/label rule rather than an explicit
 override). All three are entered in `contract.json`'s `allowlist` `[tested]`.
 
@@ -538,11 +538,11 @@ value]`.
 | Canvas `:where([data-rb-style="x"])` | `background-color`, `color`, `font-family`, `font-weight`; MAY add `font-variant-numeric: tabular-nums` (the arcane pair does) |
 | Box-sizing reset on `*`, `::before`, `::after` (in `_shared/structure.css`) | `box-sizing: border-box` |
 | body (page-only): `margin`/`min-height` in `_shared/structure.css`, the canvas set in `base.css` | `margin: 0`, `min-height: 100vh`, plus the canvas set |
-| `h1`-`h6` (all six listed explicitly) | `margin` (`0 0 var(--rb-space-3)`), `font-family` (display), `font-weight`, `letter-spacing`, `line-height` `[tested]`; `text-wrap: balance` (in all twelve, not tested) |
+| `h1`-`h6` (all six listed explicitly) | `margin` (`0 0 var(--rb-space-3)`), `font-family` (display), `font-weight`, `letter-spacing`, `line-height` `[tested]`; `text-wrap: balance` (in all fourteen, not tested) |
 | `p` | `margin: 0 0 var(--rb-space-3)` `[tested]` |
 | `ul`, `ol` | `margin`, `padding-inline-start: var(--rb-space-4)` `[tested]`; real markers, not stripped |
 | `a` | `color: var(--rb-accent)` in eleven themes. `rackbops-studio` alone uses `inherit` (`styles/rackbops-studio/base.css:49-50`) -- a documented departure stated in that theme's `design.md` Accessibility section (accent-as-text is below AA there); property presence `[tested]`, the value itself is not pinned since the divergence is legitimate |
-| `:focus-visible` | `outline: var(--rb-focus-ring)` (`2px solid var(--rb-accent)` in ten themes, `2.5px` in the rackbops pair), `outline-offset: 2px` -- present in all twelve `[tested]`; the rackbops pair alone adds a 3 px offset / 3px radius, tied to that pair's documented soft-shadow identity |
+| `:focus-visible` | `outline: var(--rb-focus-ring)` (`2px solid var(--rb-accent)` in twelve themes, `2.5px` in the rackbops pair), `outline-offset: 2px` -- present in all fourteen `[tested]`; the rackbops pair alone adds a 3 px offset / 3px radius, tied to that pair's documented soft-shadow identity |
 | `::selection` | `background: var(--rb-accent)`; `color` is the ink that reads on it (`--rb-accent-fg` in seven themes, `#fff` or `--rb-bg` in the other five) |
 
 The box-sizing reset and the page body reset are byte-identical in every theme
@@ -550,7 +550,7 @@ and exception-free, so they move to `_shared/structure.css`, which each
 `index.css` imports `[tested]`. `:focus-visible` and `::selection` stay
 per-theme in `base.css`: they carry per-theme values (the rackbops pair's
 thicker focus ring; each theme's own selection ink), and a bare shared rule
-would clobber a theme's own override under `@rackbops/styles/all` -- twelve
+would clobber a theme's own override under `@rackbops/styles/all` -- fourteen
 themes at once, the shared rule re-imported per theme and deduped to last, so at
 equal `:where()` specificity it wins by source order -- so they stay per-theme.
 `--rb-focus-ring` (#54) now makes the focus half shareable in principle
@@ -652,7 +652,7 @@ Transitions and animations:
   (`styles/rackbops-studio/design.md:77-100` is the model: vermillion as
   text is ~3.6:1, so accent-coloured text is decorative only). Every theme
   MUST carry the section, even if it reads "the computed pairs pass; no
-  deviations" `[tested: all twelve carry the section; contrast.test.mjs is the
+  deviations" `[tested: all fourteen carry the section; contrast.test.mjs is the
   cited test, #49]`.
 - **Status is never colour-only.** Badges carry text, alerts carry a title
   or body, stepper nodes differ by icon and border (#18, shipped in #55).
@@ -721,7 +721,7 @@ Sections in this order. Required unless marked.
    transition duration and easing, spacing.
 8. `## Accessibility` -- every below-target ratio with its compensating
    rule, or "no deviations", citing the contrast test
-   (`styles/test/contrast.test.mjs`) `[tested; all twelve adopted, #49]`.
+   (`styles/test/contrast.test.mjs`) `[tested; all fourteen adopted, #49]`.
 9. `## Components` -- one bullet per shared component in the order of the
    section 5.1 table, each naming its modifiers and how the theme reads
    them. No counts.
@@ -838,7 +838,7 @@ MUST carry:
   theme's own `tokens.css`, not copied from one theme;
 - accessibility requirements (state not colour-only, the ARIA attribute);
 - an acceptance checklist: implemented and guarded in every theme; the
-  React export; all twelve `design.md` files; the showcase in every state;
+  React export; all fourteen `design.md` files; the showcase in every state;
   SKILL.md; the `contract.json` entry; both test suites green.
 
 A change to an existing component's *meaning* (a modifier's semantics, a
@@ -846,16 +846,16 @@ default state) follows the same list and bumps the contract.
 
 ### 14.3 Changing a token's meaning
 
-Bump the contract integer; update all twelve `tokens.css`, every
+Bump the contract integer; update all fourteen `tokens.css`, every
 `design.md` Color table, SKILL.md, section 4.1 of this document, and any
 React JSDoc that names it. Adding a baseline token is the same list plus
 `contract.json`'s `tokens` entry. #54 is the worked example.
 
 ### 14.4 The every-surface list
 
-A semantic change is complete only when all of these agree: the twelve
+A semantic change is complete only when all of these agree: the fourteen
 `tokens.css` / `base.css` / `components/*.css`; `components/react/src`;
-the twelve `design.md`; `site/index.html`; `README.md` (themes table and
+the fourteen `design.md`; `site/index.html`; `README.md` (themes table and
 consuming section); `skills/design-system/SKILL.md`; `styles/contract.json`
 (#47); `CLAUDE.md` where it names the rule; and this document.
 
@@ -913,6 +913,8 @@ theme:
 | `amber-hearth` | light | original | `amber-ember` | `#b5542c` clay | warm diffused shadow | system serif | system |
 | `amber-ember` | dark | original | `amber-hearth` | `#e08a3f` amber | warm diffused shadow | system serif | system |
 | `mono-field` | light | original | -- | `#1d2733` ink | near-flat hairlines | quiet sans, no uppercase | system |
+| `kenzen-midnight` | dark | original | `kenzen-cyberhealth` | `#18c0d0` vibrant teal | luminance + shadow ramp | Sora | webfonts |
+| `kenzen-cyberhealth` | light | original | `kenzen-midnight` | `#177e93` (darkened for AA) | flat shadow | Sora | webfonts |
 
 Values from each theme's `tokens.css`; descriptions from its `design.md`
 identity paragraph and the README table.
@@ -943,22 +945,22 @@ identity paragraph and the README table.
 | Shared structural base file (`_shared/structure.css`): box-sizing + page body reset | `base-typography.test.mjs` + `contract.test.mjs` | live (#52) |
 | `pnpm new-theme` scaffold | script | pending #53 |
 | `--rb-focus-ring`, `--rb-ease` baseline; contract 2 | `contract.test.mjs` | live (#54) |
-| Native `<progress>` contract in all twelve | `contract.test.mjs` | live |
-| `:focus-visible` base rule in all twelve; `a` colour divergence limited to one theme and documented | CSS fix + test | live (#36) |
+| Native `<progress>` contract in all fourteen | `contract.test.mjs` | live |
+| `:focus-visible` base rule in all fourteen; `a` colour divergence limited to one theme and documented | CSS fix + test | live (#36) |
 | Disabled buttons take no hover | CSS fix | live (#37) |
 | `rb-stepper` in every theme | #55 merged | live (parity now tested via #47) |
-| `.rb-stepper--upcoming` styled or allowlisted; `[aria-current="step"]` paired | `contract.test.mjs` | allowlisted: live (#47). Paired: live, 12 of 12 themes comply (#65) |
+| `.rb-stepper--upcoming` styled or allowlisted; `[aria-current="step"]` paired | `contract.test.mjs` | allowlisted: live (#47). Paired: live, 14 of 14 themes comply (#65, #158) |
 | `Dialog` spreads rest, reconciles `open`, requires `onClose` | `Dialog.test.tsx` | live (#31, #83) |
 | `Tabs` spreads rest onto its tablist | `Tabs.test.tsx` | live (#84) |
 | `Tabs` controlled `activeId`/`onChange` to match `NavRail` | React fix | pending (#42 overflow, not yet filed as its own issue; out of scope for #84) |
 | `forwardRef` on every wrapper | `refs.test.tsx` | live (#30) |
 | SKILL.md matches the shipped contract | doc fix | partially closed by #47 (inventory table now generated + tested, extras paragraph accurate, eyebrow mis-classification fixed); roster paragraph, manifest-fonts guidance, and the add-theme recipe's missing `all.css`/`NOTICE` steps still pending #39 |
 | `design.md` counterpart and count claims true | doc fix | live (#47, #40 -- counterpart-shipped and stale-count claims fixed repo-wide) |
-| `## Accessibility` section in every `design.md` | review + `contrast.test.mjs` cite | 12 of 12 (#49) |
-| `.rb-tab--active` paired with `[aria-selected="true"]` | `contract.test.mjs` | live, 12 of 12 comply (#65) |
-| `.rb-link--active` paired with `[aria-current="page"]` | `contract.test.mjs` | live, 12 of 12 comply (#65) |
-| Choice controls use `accent-color` | review | 7 of 12 (concrete pair by design; ports hand-styled) |
-| Dialog backdrop blurs via `var(--rb-blur)` | `contract.test.mjs` | live, 10 of 12 comply; concrete pair permanently exempt (`0px` by design) (#65) |
+| `## Accessibility` section in every `design.md` | review + `contrast.test.mjs` cite | 14 of 14 (#49, kenzen pair added #158) |
+| `.rb-tab--active` paired with `[aria-selected="true"]` | `contract.test.mjs` | live, 14 of 14 comply (#65, #158) |
+| `.rb-link--active` paired with `[aria-current="page"]` | `contract.test.mjs` | live, 14 of 14 comply (#65, #158) |
+| Choice controls use `accent-color` | review | 9 of 14 (concrete pair by design; ports hand-styled) |
+| Dialog backdrop blurs via `var(--rb-blur)` | `contract.test.mjs` | live, 12 of 14 comply; concrete pair permanently exempt (`0px` by design) (#65) |
 | `Field` / `Spinner` named props types | `index.ts` exports | live (#30) |
 | Existing docs conform to the section 11 template; SKILL.md carries section 15 | doc sweep | pending #56 |
 | Extras only in labelled showcase sections | review | out of contract (issue #39) |

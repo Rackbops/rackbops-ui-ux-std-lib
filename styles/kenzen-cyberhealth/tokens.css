@@ -1,0 +1,94 @@
+/* kenzen-cyberhealth — design tokens
+ * The light half of Kenzen-sei's brand pair, reverse-measured from the
+ * mascot concept sheet's cyber-health palette (Code Stream Koi, Komainu
+ * guardian, status shields — Rackbops/kenzen `brand/source/`,
+ * Rackbops/rackbops-ui-ux-std-lib#158). Same structure and class contract as
+ * every other theme (token-driven); only the palette, display font, and
+ * gradient differ from the arcane pair this was scaffolded from. Consume via:
+ *   @import "@rackbops/styles/kenzen-cyberhealth/tokens";
+ * or pull the whole theme with ./index.css.
+ *
+ * Nothing applies until an element carries data-rb-style="kenzen-cyberhealth".
+ * Every theme declares the same baseline token set (styles/test enforces
+ * parity); this theme carries no theme-specific colour token beyond the
+ * baseline (no --rb-code-* — Kenzen renders no code).
+ */
+:where([data-rb-style="kenzen-cyberhealth"]) {
+  color-scheme: light;
+
+  /* color — sterile white chassis, navy structure */
+  --rb-bg: #ffffff;
+  --rb-surface: #f4f6f8;
+  --rb-surface-2: #e8e8e8;
+  --rb-surface-sunken: #edeff3; /* inset fields, log wells, progress troughs */
+  --rb-text: #0a2038;
+  --rb-text-soft: rgba(10, 32, 56, 0.82);
+  --rb-text-faint: rgba(10, 32, 56, 0.6);
+  --rb-border: rgba(10, 32, 56, 0.14);
+  --rb-border-strong: rgba(10, 32, 56, 0.28);
+
+  /* accent — vibrant teal is the sole brand voice (darkened from the koi's
+   * #18c0d0 for AA — see design.md's Accessibility section: the source hex
+   * is only 2.21:1 as non-text on white, below the 3:1 floor for a focus
+   * ring or hairline border) */
+  --rb-accent: #177e93;
+  --rb-accent-fg: #ffffff; /* white on the solid teal fill */
+  --rb-accent-wash: rgba(23, 126, 147, 0.12);
+
+  /* hover/active: darkens further toward text on this light ground (matching
+   * arcane-parchment's own light-scheme convention) */
+  --rb-accent-strong: #146f82;
+
+  /* the ONE gradient — rationed to the wordmark + active-tab underline;
+   * spent at full brand saturation (the source koi teal → healthy mint),
+   * independent of the AA-adjusted --rb-accent above since no single pixel
+   * of a gradient is contrast-tested as a token pair */
+  --rb-accent-grad: linear-gradient(120deg, #18c0d0, #50f8a0);
+
+  /* semantic — earned: severity/status only. success/warning darkened from
+   * the source hexes for AA as body text on white (design.md); danger is
+   * the source hex unchanged, already AA on white */
+  --rb-info: #1e6fb0;
+  --rb-success: #0f7a47;
+  --rb-warning: #8a5a00;
+  --rb-danger: #d02030;
+
+  /* typography — a geometric sans display face already in the roster
+   * (Sora, shared with luminous-precision — "no new webfont") over a
+   * system-ui body; tabular numerals */
+  --rb-font-display: "Sora", ui-sans-serif, system-ui, sans-serif;
+  --rb-font-body: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --rb-font-mono: ui-monospace, "Cascadia Code", "Cascadia Mono", "Segoe UI Mono", Consolas, Menlo, monospace;
+  --rb-font-weight: 400;
+  --rb-font-weight-medium: 600;
+  --rb-font-weight-bold: 700;
+  --rb-heading-tracking: -0.01em;
+  --rb-label-tracking: 0.06em;
+  --rb-text-sm: 13px;
+
+  /* shape & effects — arcane's radii/shadow/spacing rhythm, per the issue
+   * ("fonts/radius/spacing per the arcane pair unless the mockups say
+   * otherwise") */
+  --rb-radius: 0.4375rem; /* 7px */
+  --rb-radius-lg: 0.75rem; /* 12px */
+  --rb-radius-pill: 999px;
+  --rb-shadow-sm: 0 1px 2px rgba(20, 25, 40, 0.06);
+  --rb-shadow-lg: 0 6px 24px rgba(20, 25, 40, 0.1);
+  --rb-blur: 12px;
+  --rb-transition: 0.15s;
+  --rb-focus-ring: 2px solid var(--rb-accent);
+  --rb-ease: ease;
+
+  /* spacing — 4px rhythm */
+  --rb-space-1: 0.25rem;
+  --rb-space-2: 0.5rem;
+  --rb-space-3: 0.75rem;
+  --rb-space-4: 1rem;
+  --rb-space-5: 1.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where([data-rb-style="kenzen-cyberhealth"]) {
+    --rb-transition: 0s;
+  }
+}

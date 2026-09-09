@@ -119,7 +119,9 @@
     { "theme": "neon-butterfly", "class": "rb-stepper--upcoming", "reason": "default/resting state -- falls through to the base node/label rule, no override needed" },
     { "theme": "rackbops-noir", "class": "rb-stepper--upcoming", "reason": "default/resting state -- falls through to the base node/label rule, no override needed" },
     { "theme": "rackbops-studio", "class": "rb-stepper--upcoming", "reason": "default/resting state -- falls through to the base node/label rule, no override needed" },
-    { "theme": "summer-cloud", "class": "rb-stepper--upcoming", "reason": "default/resting state -- falls through to the base node/label rule, no override needed" }
+    { "theme": "summer-cloud", "class": "rb-stepper--upcoming", "reason": "default/resting state -- falls through to the base node/label rule, no override needed" },
+    { "theme": "kenzen-midnight", "class": "rb-stepper--upcoming", "reason": "default/resting state -- falls through to the base node/label rule, no override needed" },
+    { "theme": "kenzen-cyberhealth", "class": "rb-stepper--upcoming", "reason": "default/resting state -- falls through to the base node/label rule, no override needed" }
   ],
   "extras": {
     "arcane-obsidian": ["rb-wordmark", "rb-wordmark__spark", "rb-eyebrow"],
@@ -133,7 +135,9 @@
     "concrete-signal-light": [],
     "amber-hearth": [],
     "amber-ember": [],
-    "mono-field": []
+    "mono-field": [],
+    "kenzen-midnight": ["rb-wordmark", "rb-wordmark__spark", "rb-eyebrow"],
+    "kenzen-cyberhealth": ["rb-wordmark", "rb-wordmark__spark", "rb-eyebrow"]
   },
   "ariaPairs": [
     {

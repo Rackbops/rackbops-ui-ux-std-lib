@@ -1,0 +1,30 @@
+/* kenzen-cyberhealth — wordmark (theme extra)
+ * The brand voice: a Sora display h1 with the ONE gradient clipped into the
+ * text, and a solid-accent spark mark that stays un-clipped. This and the
+ * active tab underline are the only two places the gradient is spent. */
+:where([data-rb-style="kenzen-cyberhealth"], [data-rb-style="kenzen-cyberhealth"] *).rb-wordmark {
+  display: inline-flex;
+  /* Sizes to its own content, never to a flex/grid ancestor's cross-axis stretch (e.g. a
+     column-flex parent with default align-items) -- without this, the box widens far past the
+     visible glyphs, so the gradient below spends most of its span on empty space and the text
+     only ever samples its first, near-uniform teal stretch instead of sweeping through mint.
+     inline-flex alone does not protect against this: it governs this element's OWN
+     children's layout, not how the element itself is sized within its parent. */
+  width: fit-content;
+  align-items: baseline;
+  gap: 0.4em;
+  margin: 0;
+  font-family: var(--rb-font-display);
+  font-weight: var(--rb-font-weight-medium);
+  font-size: 15px;
+  letter-spacing: var(--rb-heading-tracking);
+  background-image: var(--rb-accent-grad);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+}
+:where([data-rb-style="kenzen-cyberhealth"], [data-rb-style="kenzen-cyberhealth"] *).rb-wordmark__spark {
+  color: var(--rb-accent);
+  -webkit-text-fill-color: var(--rb-accent);
+}
