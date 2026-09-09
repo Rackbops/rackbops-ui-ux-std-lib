@@ -210,13 +210,22 @@ test("upsertAllCss appends the import once and is idempotent on re-run", () => {
 
 // -- computeContractAdditions (pure) -----------------------------------------
 
-test("computeContractAdditions copies arcane-obsidian's rb-stepper--upcoming allowlist entry forward", () => {
-  const additions = computeContractAdditions(contract, "arcane-obsidian", "scratch-test");
-  const entry = additions.newAllowlist.find((e) => e.class === "rb-stepper--upcoming");
-  assert.ok(entry, "the universal rb-stepper--upcoming allowlist entry must be copied forward");
+test("computeContractAdditions copies luminous-precision's rb-dialog__body allowlist entry forward", () => {
+  const additions = computeContractAdditions(contract, "luminous-precision", "scratch-test");
+  const entry = additions.newAllowlist.find((e) => e.class === "rb-dialog__body");
+  assert.ok(entry, "a per-theme documented-omission entry must be copied forward");
   assert.equal(entry.theme, "scratch-test");
-  const source = contract.allowlist.find((e) => e.theme === "arcane-obsidian" && e.class === "rb-stepper--upcoming");
+  const source = contract.allowlist.find((e) => e.theme === "luminous-precision" && e.class === "rb-dialog__body");
   assert.equal(entry.reason, source.reason);
+});
+
+test("computeContractAdditions does NOT clone a wildcard allowlist row (theme: \"*\") -- it already covers every theme, including a new one", () => {
+  const wildcard = contract.allowlist.find((e) => e.theme === "*" && e.class === "rb-stepper--upcoming");
+  assert.ok(wildcard, "rb-stepper--upcoming must still be present as a universal wildcard row");
+
+  const additions = computeContractAdditions(contract, "arcane-obsidian", "scratch-test");
+  const cloned = additions.newAllowlist.find((e) => e.class === "rb-stepper--upcoming");
+  assert.equal(cloned, undefined, "a wildcard row must never be duplicated into a per-theme row for the new theme");
 });
 
 test("computeContractAdditions mirrors --from's extras, since the copied CSS carries the same extra classes", () => {
@@ -249,13 +258,13 @@ test("computeContractAdditions does not mutate its input contract object", () =>
 // -- applyContractAdditions (surgical text edit) -----------------------------
 
 test("applyContractAdditions edits contract.json's real text without reformatting anything else", () => {
-  const additions = computeContractAdditions(contract, "arcane-obsidian", "scratch-test");
+  const additions = computeContractAdditions(contract, "luminous-precision", "scratch-test");
   const out = applyContractAdditions(contractText, "scratch-test", additions);
 
   assert.ok(JSON.parse(out), "result must still be valid JSON");
   const parsed = JSON.parse(out);
-  assert.deepEqual(parsed.extras["scratch-test"], contract.extras["arcane-obsidian"]);
-  assert.ok(parsed.allowlist.some((e) => e.theme === "scratch-test" && e.class === "rb-stepper--upcoming"));
+  assert.deepEqual(parsed.extras["scratch-test"], contract.extras["luminous-precision"]);
+  assert.ok(parsed.allowlist.some((e) => e.theme === "scratch-test" && e.class === "rb-dialog__body"));
 
   // The whole point: untouched content survives byte-for-byte, including
   // contract.json's hand-formatted compact single-line arrays/objects (the
@@ -302,10 +311,11 @@ test("applyContractAdditions's compact-style formatting never alters a ':' or ',
 });
 
 test("applyContractAdditions is idempotent: re-running does not duplicate the extras or allowlist entry", () => {
-  const additions = computeContractAdditions(contract, "arcane-obsidian", "scratch-test");
+  const additions = computeContractAdditions(contract, "luminous-precision", "scratch-test");
   const once = applyContractAdditions(contractText, "scratch-test", additions);
   const onceParsed = JSON.parse(once);
-  const additions2 = computeContractAdditions(onceParsed, "arcane-obsidian", "scratch-test");
+  const additions2 = computeContractAdditions(onceParsed, "luminous-precision", "scratch-test");
+  assert.equal(additions2.newAllowlist.length, 0, "the second pass must see scratch-test's entries as already present");
   const twice = applyContractAdditions(once, "scratch-test", additions2);
   assert.equal(twice, once, "a second run with nothing new to add must be a no-op");
 });

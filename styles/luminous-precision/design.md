@@ -119,7 +119,8 @@ Class prefix `rb-` (shared token/class contract with the other themes).
   full-saturation text (+ semantic modifiers).
 - **Alert** `.rb-alert` — glass, 3px left bar carries the semantic color.
 - **Dialog** `.rb-dialog` — native `<dialog>`, indigo pane with orchid glow,
-  Sora title, blurred obsidian backdrop.
+  Sora title, blurred obsidian backdrop. `.rb-dialog__body` is a deliberate
+  no-op here: the dialog pads `.rb-dialog` itself.
 - **Tabs** `.rb-tabs`/`.rb-tab`/`.rb-tabpanel` — active tab underlined in
   teal with text glow.
 - **Tabstrip** `.rb-tabstrip` (+ `__tab`, `--active`, `__badge`) — top-level view
