@@ -9,6 +9,7 @@
   border: 1px solid var(--rb-border);
   border-radius: var(--rb-radius);
   backdrop-filter: blur(var(--rb-blur));
+  -webkit-backdrop-filter: blur(var(--rb-blur));
   color: var(--rb-text);
   text-decoration: none;
   text-transform: uppercase;
@@ -36,14 +37,4 @@
   box-shadow:
     inset 2px 0 0 0 var(--rb-accent-2),
     0 0 12px var(--rb-accent-2-glow);
-}
-
-@keyframes rb-lp-pulse-glow {
-  0%,
-  100% {
-    box-shadow: 0 0 5px rgba(198, 165, 255, 0.15);
-  }
-  50% {
-    box-shadow: 0 0 20px var(--rb-accent-glow);
-  }
 }

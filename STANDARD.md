@@ -174,6 +174,14 @@ Rules:
   assets are kept small (2.1) and the tarball ships only what themes need
   (#38 for `LICENSE`/`NOTICE`, #42 for the PNG).
 
+### 2.6 Browser support
+
+The newest CSS feature any theme's components rely on is `color-mix()`
+(`:has()` and unprefixed `backdrop-filter` are both older), so that sets the
+library's floor: Chrome/Edge 111+, Firefox 113+, Safari 16.2+ -- older WebKit
+still gets its glass effect via the `-webkit-backdrop-filter` shipped beside
+every `backdrop-filter` declaration (#86).
+
 ---
 
 ## 3. Scoping and specificity
