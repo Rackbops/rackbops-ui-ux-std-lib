@@ -10,7 +10,8 @@ on:
 # `id-token: write`) and npm exchanges it against the trusted publisher
 # configured on npmjs.com for each package (organization Rackbops / repository
 # rackbops-ui-ux-std-lib / workflow publish.yml), generating provenance
-# attestations automatically. `contents: read` is only for the checkout.
+# attestations automatically. `contents: write` covers the checkout and the
+# GitHub release created at the end of this job (see below).
 #
 # BREAK-GLASS FALLBACK: if an `NPM_TOKEN` secret is set, the preflight step uses
 # it for classic token auth instead and OIDC is bypassed -- a manual escape
