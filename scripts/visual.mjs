@@ -46,12 +46,23 @@ const url = `http://127.0.0.1:${port}/site/`;
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1000, height: 900 }, deviceScaleFactor: 1 });
 await page.goto(url, { waitUntil: "networkidle" });
-// Freeze animation + transition so every tile is deterministic run-to-run --
-// the spinner, the rack equaliser bars and the live-dot pulse never settle, so
-// a captured mid-animation frame would differ on each run and flake the diff.
+// Freeze transitions + the caret so every tile is deterministic run-to-run.
+// `*` reaches every element and named pseudo (::before/::after), but NOT the
+// vendor-prefixed ::-webkit-progress-bar / ::-moz-progress-bar the
+// indeterminate <progress> sweep (#86) animates -- a CSS override targeting
+// those specifically was tried and measured to have no effect on Chromium's
+// headless-shell build (0 of many attempted selector/specificity/injection-
+// timing combinations stopped it; two screenshots 700ms apart kept differing
+// even with a statically-present, tied-specificity, later-in-source
+// `animation: none !important` rule). `animation: none` is dropped from this
+// stylesheet-based freeze entirely; every running animation, including ones
+// on that pseudo-element, is stopped below the CSS cascade instead, via CDP.
 await page.addStyleTag({
-  content: "*, *::before, *::after { animation: none !important; transition: none !important; caret-color: transparent !important; }",
+  content: "*, *::before, *::after { transition: none !important; caret-color: transparent !important; }",
 });
+const cdp = await page.context().newCDPSession(page);
+await cdp.send("Animation.enable");
+await cdp.send("Animation.setPlaybackRate", { playbackRate: 0 });
 
 // Section identity is its sc-title, slugified -- stable across reorders.
 const sections = await page.$$eval("main > section", (els) =>
