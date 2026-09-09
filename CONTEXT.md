@@ -58,15 +58,20 @@ and `push:[main]`, plus a separate `visual` job (`pnpm visual`, Playwright conta
 ## Release & publish (automated, tag-driven)
 
 - **Release** ([`release.yml`](.github/workflows/release.yml) + `.github/scripts/next-version.sh` /
-  `release.sh`): Conventional Commits drive the bump -- a `type!:` subject or `BREAKING CHANGE:` footer
-  gives the minor bump (major stays `0`); `release.sh`'s `VERSION_FILES` bumps every package's version
-  to match the new `v*` tag. Landed as `chore(release): vX.Y.Z`.
+  `release-lib.sh` / `release.sh`): Conventional Commits drive the bump -- a `type!:` subject or
+  `BREAKING CHANGE:` footer gives the minor bump (major stays `0`); `release.sh`'s `VERSION_FILES`
+  bumps every package's version to match the new `v*` tag. Landed as `chore(release): vX.Y.Z`, tagged,
+  and pushed in one atomic `git push --atomic origin main <tag>` (issue #88) -- either both land or
+  neither does, so release.sh has no partial state to resume from and never calls `gh`.
 - **Publish** ([`publish.yml`](.github/workflows/publish.yml), on a `v*` tag): the default path is
   **OIDC trusted publishing** (no long-lived token; provenance emitted automatically), with the trusted
   publisher configured on npmjs.com as *org Rackbops / repo rackbops-ui-ux-std-lib / workflow
   publish.yml*. **`NPM_TOKEN` is a break-glass fallback only** (classic token auth, no provenance) --
   leave it **unset** for normal operation. Before publishing, the workflow refuses if the tag doesn't
   match every package's version, and skips a package already on the registry at that version (rerun-safe).
+  Once publishing succeeds, a final step creates the GitHub release itself
+  (`.github/scripts/release-notes.sh` / `publish-release.sh`, idempotent -- issue #88) using
+  `RELEASE_TOKEN` (falling back to the default `GITHUB_TOKEN`) so the release is attributed to roshne.
   - **Gotcha (paid for once, #99/#107):** never give `setup-node` a `registry-url` here -- it writes an
     empty `_authToken=` into `.npmrc`, which makes npm skip the OIDC exchange and fail with a bare
     `ENEEDAUTH` (actions/setup-node#1551). Trusted publishing needs npm >= 11.5.1.
