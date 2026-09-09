@@ -478,7 +478,7 @@ for (const { file, class: cls } of REQUIRED_CLASSES) {
     const escaped = reEscape(cls);
     const re = new RegExp(`\\.${escaped}(?![\\w-])`);
     for (const theme of themeDirs) {
-      const allowed = CLASS_ALLOWLIST.find((a) => a.theme === theme && a.class === cls);
+      const allowed = CLASS_ALLOWLIST.find((a) => (a.theme === "*" || a.theme === theme) && a.class === cls);
       const guard = `[data-rb-style="${theme}"]`;
       const cssFile = join(ROOT, theme, "components", file);
       const { selectors } = parseCss(readFileSync(cssFile, "utf-8"));
