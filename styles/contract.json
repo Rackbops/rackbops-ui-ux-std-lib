@@ -156,6 +156,12 @@
       { "theme": "concrete-signal-light", "reason": "flat scrim by design, no blur/glass anywhere in this theme", "permanent": true }
     ]
   },
+  "focusRing": {
+    "//": "Every theme's --rb-focus-ring MUST reference var(--rb-accent) (STANDARD.md, issue #54) unless listed here, checked by styles/test/contract.test.mjs.",
+    "exempt": [
+      { "theme": "kenzen-cyberhealth", "reason": "the exact brand teal (rackbops-ui-ux-std-lib#171, kenzen#88) is only 2.21:1 as non-text on white, below the 3:1 floor for a focus indicator -- --rb-focus-ring keys off --rb-text (navy) instead so keyboard focus doesn't depend on it", "doc": "kenzen-cyberhealth/design.md:112-119" }
+    ]
+  },
   "permittedLiterals": {
     "//": "Hex colours permitted outside color-mix (STANDARD.md 4.2, issue #94): documented per-theme literals no token expresses -- hand-tuned AA inks on a semantic fill (summer-cloud) and the rack panels' fixed-dark local palette (rackbops pair). Each is named in that theme's design.md. Data-URI SVG chevron strokes are %23-encoded and so never match the hex scan.",
     "summer-cloud/alert.css": ["#1a7a1a", "#594400", "#93000a"],
@@ -179,7 +185,8 @@
     ],
     "allowlist": [
       { "theme": "rackbops-studio", "fg": "accent-fg", "bg": "accent", "reason": "white on the vermillion accent fill is ~3.6:1 -- rackbops.com editorial fidelity; spent only on large/bold .rb-btn--accent and .rb-btn--primary hover text (large-text AA is 3:1), never small labels or essential body copy", "doc": "rackbops-studio/design.md:104-106" },
-      { "theme": "rackbops-studio", "fg": "text-faint", "bg": "bg", "reason": "text-faint on the page background is ~2.8:1, below even the 3:1 non-text floor -- .rb-muted must never be the sole signal on bare --rb-bg, only inside a --rb-surface/--rb-surface-2 context", "doc": "rackbops-studio/design.md:95-103" }
+      { "theme": "rackbops-studio", "fg": "text-faint", "bg": "bg", "reason": "text-faint on the page background is ~2.8:1, below even the 3:1 non-text floor -- .rb-muted must never be the sole signal on bare --rb-bg, only inside a --rb-surface/--rb-surface-2 context", "doc": "rackbops-studio/design.md:95-103" },
+      { "theme": "kenzen-cyberhealth", "fg": "accent", "bg": "bg", "reason": "exact brand palette by owner decision (kenzen#88, rackbops-ui-ux-std-lib#171) -- the source teal is 2.21:1 as non-text on white, below the 3:1 floor for a focus ring or hairline border; --rb-focus-ring keys off --rb-text instead so keyboard focus doesn't depend on this colour", "doc": "kenzen-cyberhealth/design.md:112-119" }
     ]
   }
 }

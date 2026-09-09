@@ -307,7 +307,7 @@ marks. They are never used as a second accent.
 | `--rb-shadow-lg` | Lifted: dialogs, raised cards, hover lift |
 | `--rb-blur` | Backdrop blur for overlay surfaces (the dialog backdrop). MAY be `0px` -- the concrete pair never blurs |
 | `--rb-transition` | The one duration; every transition uses it |
-| `--rb-focus-ring` | The `outline` for `:focus-visible`; the one place a theme says what focus looks like -- `2px solid var(--rb-accent)` in ten themes, `2.5px` in the rackbops pair (the `outline-offset`/`border-radius` stay per-theme). The base rule and the table-row/button focus overrides all read it `[tested]` |
+| `--rb-focus-ring` | The `outline` for `:focus-visible`; the one place a theme says what focus looks like -- `2px solid var(--rb-accent)` in eleven themes, `2.5px` in the rackbops pair (the `outline-offset`/`border-radius` stay per-theme); kenzen-cyberhealth is a documented exception, `2px solid var(--rb-text)` (#171, `contract.json`'s `focusRing.exempt`) -- see section 9. The base rule and the table-row/button focus overrides all read it `[tested]` |
 | `--rb-ease` | The `transition-timing-function` every component transition names; `ease` everywhere, with summer-cloud's `--rb-ease-bounce` as a per-component extra `[tested]` |
 | `--rb-space-1` .. `--rb-space-5` | The five-step spacing ladder; values are the theme's own (arcane and mono-field run `0.25-1.5rem`, the studio `0.5-2.25rem`) |
 
@@ -447,12 +447,14 @@ as a deliberate divergence in both `design.md`s -- as an exact backticked
 `` `components/<file>` `` reference, not a bare filename mention or a
 line-numbered citation like `` `components/table.css:9-15` ``
 `[tested: styles/test/pair-parity.test.mjs]`. Comments are
-stripped before comparing (editorial voice, not behaviour); four files across
+stripped before comparing (editorial voice, not behaviour); five files across
 the four pairs currently diverge beyond palette (an AA-tuned hover formula, a
 local `--rb-rack-panel`/`--rb-rack-line` custom-property pair tuned per
-theme, an SVG icon colour that can't take a token, and a per-theme backdrop
-scrim alpha) and each carries an exact backticked `` `components/<file>` ``
-reference in both sides' `design.md` as required here.
+theme, an SVG icon colour that can't take a token, a per-theme backdrop
+scrim alpha, and a badge-text colour swapped for ink on the light half of the
+kenzen pair since its exact brand hexes fail as text on white -- #171) and
+each carries an exact backticked `` `components/<file>` `` reference in both
+sides' `design.md` as required here.
 
 ### 5.3 Documented omissions
 
@@ -550,7 +552,7 @@ value]`.
 | `p` | `margin: 0 0 var(--rb-space-3)` `[tested]` |
 | `ul`, `ol` | `margin`, `padding-inline-start: var(--rb-space-4)` `[tested]`; real markers, not stripped |
 | `a` | `color: var(--rb-accent)` in eleven themes. `rackbops-studio` alone uses `inherit` (`styles/rackbops-studio/base.css:49-50`) -- a documented departure stated in that theme's `design.md` Accessibility section (accent-as-text is below AA there); property presence `[tested]`, the value itself is not pinned since the divergence is legitimate |
-| `:focus-visible` | `outline: var(--rb-focus-ring)` (`2px solid var(--rb-accent)` in twelve themes, `2.5px` in the rackbops pair), `outline-offset: 2px` -- present in all fourteen `[tested]`; the rackbops pair alone adds a 3 px offset / 3px radius, tied to that pair's documented soft-shadow identity |
+| `:focus-visible` | `outline: var(--rb-focus-ring)` (`2px solid var(--rb-accent)` in eleven themes, `2.5px` in the rackbops pair, `2px solid var(--rb-text)` in kenzen-cyberhealth -- a documented exception, #171, `contract.json`'s `focusRing.exempt`), `outline-offset: 2px` -- present in all fourteen `[tested]`; the rackbops pair alone adds a 3 px offset / 3px radius, tied to that pair's documented soft-shadow identity |
 | `::selection` | `background: var(--rb-accent)`; `color` is the ink that reads on it (`--rb-accent-fg` in seven themes, `#fff` or `--rb-bg` in the other five) |
 
 The box-sizing reset and the page body reset are byte-identical in every theme
@@ -930,7 +932,7 @@ theme:
 | `amber-ember` | dark | original | `amber-hearth` | `#e08a3f` amber | warm diffused shadow | system serif | system |
 | `mono-field` | light | original | -- | `#1d2733` ink | near-flat hairlines | quiet sans, no uppercase | system |
 | `kenzen-midnight` | dark | original | `kenzen-cyberhealth` | `#18c0d0` vibrant teal | luminance + shadow ramp | Sora | webfonts |
-| `kenzen-cyberhealth` | light | original | `kenzen-midnight` | `#177e93` (darkened for AA) | flat shadow | Sora | webfonts |
+| `kenzen-cyberhealth` | light | original | `kenzen-midnight` | `#18c0d0` vibrant teal (exact; documented contrast exception, #171) | flat shadow | Sora | webfonts |
 
 Values from each theme's `tokens.css`; descriptions from its `design.md`
 identity paragraph and the README table.

@@ -1,6 +1,14 @@
 /* kenzen-cyberhealth — badge / status chip
  * A pill: a faint tint of its hue behind full-strength text. Severity and
- * status are the one place colour beyond the accent is earned. */
+ * status are the one place colour beyond the accent is earned.
+ * Pair divergence, documented per STANDARD.md 5.2: the default badge and
+ * --success/--warning use ink (--rb-text) instead of their own hue as text --
+ * the exact source hexes (#171) are only 2.00:1/1.29:1/1.73:1 as text on
+ * their own tint here, functionally unreadable; ink on the same tints is
+ * 14.9:1/15.4:1/14.9:1. --info/--danger are untouched by #171 (their hexes
+ * didn't change) and keep colour-on-tint at their pre-existing ratios.
+ * kenzen-midnight keeps colour-on-tint throughout since its numbers pass on
+ * navy. See design.md's Accessibility section for the ratios. */
 :where([data-rb-style="kenzen-cyberhealth"], [data-rb-style="kenzen-cyberhealth"] *).rb-badge {
   display: inline-flex;
   align-items: center;
@@ -13,7 +21,7 @@
   letter-spacing: var(--rb-label-tracking);
   text-transform: uppercase;
   background: var(--rb-accent-wash);
-  color: var(--rb-accent);
+  color: var(--rb-text);
 }
 :where([data-rb-style="kenzen-cyberhealth"], [data-rb-style="kenzen-cyberhealth"] *).rb-badge--info {
   background: color-mix(in srgb, var(--rb-info) 16%, transparent);
@@ -21,11 +29,11 @@
 }
 :where([data-rb-style="kenzen-cyberhealth"], [data-rb-style="kenzen-cyberhealth"] *).rb-badge--success {
   background: color-mix(in srgb, var(--rb-success) 16%, transparent);
-  color: var(--rb-success);
+  color: var(--rb-text);
 }
 :where([data-rb-style="kenzen-cyberhealth"], [data-rb-style="kenzen-cyberhealth"] *).rb-badge--warning {
   background: color-mix(in srgb, var(--rb-warning) 16%, transparent);
-  color: var(--rb-warning);
+  color: var(--rb-text);
 }
 :where([data-rb-style="kenzen-cyberhealth"], [data-rb-style="kenzen-cyberhealth"] *).rb-badge--danger {
   background: color-mix(in srgb, var(--rb-danger) 16%, transparent);

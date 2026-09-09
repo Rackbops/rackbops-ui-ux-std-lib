@@ -27,17 +27,22 @@
   --rb-border: rgba(10, 32, 56, 0.14);
   --rb-border-strong: rgba(10, 32, 56, 0.28);
 
-  /* accent — vibrant teal is the sole brand voice (darkened from the koi's
-   * #18c0d0 for AA — see design.md's Accessibility section: the source hex
-   * is only 2.21:1 as non-text on white, below the 3:1 floor for a focus
-   * ring or hairline border) */
-  --rb-accent: #177e93;
-  --rb-accent-fg: #ffffff; /* white on the solid teal fill */
-  --rb-accent-wash: rgba(23, 126, 147, 0.12);
+  /* accent — vibrant teal is the sole brand voice, the EXACT source hex
+   * (roshne's decision, rackbops-ui-ux-std-lib#171, overriding the AA
+   * darkening #164 shipped -- the brand teal is the identity, a darker teal
+   * is a different brand). #18c0d0 is only 2.21:1 as non-text on white,
+   * below the 3:1 floor a focus ring or hairline border needs -- a
+   * documented exception (design.md's Accessibility section, contract.json's
+   * contrast allowlist), not a darkened substitute. --rb-focus-ring below
+   * compensates by keying off --rb-text instead. */
+  --rb-accent: #18c0d0;
+  --rb-accent-fg: #0a2038; /* navy on the solid teal fill (7.43:1) -- white is worse here (2.21:1, same pair as accent/bg since --rb-bg is white, under the 4.5:1 floor) */
+  --rb-accent-wash: rgba(24, 192, 208, 0.12);
 
-  /* hover/active: darkens further toward text on this light ground (matching
-   * arcane-parchment's own light-scheme convention) */
-  --rb-accent-strong: #146f82;
+  /* hover/active: the palette's own darker teal, measured from the artwork
+   * (Rackbops/kenzen brand/README.md), darkening further toward text on this
+   * light ground (matching arcane-parchment's own light-scheme convention) */
+  --rb-accent-strong: #1890a8;
 
   /* the ONE gradient — rationed to the wordmark + active-tab underline;
    * spent at full brand saturation (the source koi teal → healthy mint),
@@ -45,12 +50,18 @@
    * of a gradient is contrast-tested as a token pair */
   --rb-accent-grad: linear-gradient(120deg, #18c0d0, #50f8a0);
 
-  /* semantic — earned: severity/status only. success/warning darkened from
-   * the source hexes for AA as body text on white (design.md); danger is
-   * the source hex unchanged, already AA on white */
+  /* semantic — earned: severity/status only. EXACT source hexes throughout
+   * (#171): success/warning are 1.37:1 / 1.92:1 as plain text on white, far
+   * below AA -- but contract.json's fixed pairs hold no automated check for
+   * either (only accent/bg is checked), so this is a documented-only
+   * deviation (design.md's Accessibility section), not a contract.json
+   * allowlist entry. badge.css's --success/--warning variants compensate
+   * with ink text on the tint fill instead of colour-on-tint, a pair
+   * divergence from kenzen-midnight documented in both design.md's. Danger
+   * is the source hex unchanged, already AA on white. */
   --rb-info: #1e6fb0;
-  --rb-success: #0f7a47;
-  --rb-warning: #8a5a00;
+  --rb-success: #50f8a0;
+  --rb-warning: #f0b030;
   --rb-danger: #d02030;
 
   /* typography — a geometric sans display face already in the roster
@@ -76,7 +87,11 @@
   --rb-shadow-lg: 0 6px 24px rgba(20, 25, 40, 0.1);
   --rb-blur: 12px;
   --rb-transition: 0.15s;
-  --rb-focus-ring: 2px solid var(--rb-accent);
+  /* navy, not accent -- the exact teal is only 2.21:1 on white (see the
+   * accent comment above), too low to trust as the sole keyboard-focus
+   * indicator. #171's usability mitigation for the documented exception;
+   * kenzen-midnight keeps --rb-accent here since its own numbers pass. */
+  --rb-focus-ring: 2px solid var(--rb-text);
   --rb-ease: ease;
 
   /* spacing — 4px rhythm */

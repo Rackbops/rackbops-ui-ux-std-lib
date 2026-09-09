@@ -4,8 +4,9 @@ Kenzen-sei's own brand, original to this library and reverse-measured from
 the mascot concept sheet's cyber-health palette (Code Stream Koi, Komainu
 guardian, status shields — `Rackbops/kenzen`'s `brand/source/`, per
 [rackbops-ui-ux-std-lib#158](https://github.com/Rackbops/rackbops-ui-ux-std-lib/issues/158)).
-Dark ("Midnight") is the primary look; an AA-tuned light counterpart
-("Cyberhealth") is documented at the end. Five signature traits: a deep navy
+Dark ("Midnight") is the primary look; a light counterpart ("Cyberhealth"),
+sharing this theme's exact palette under a documented contrast exception
+(#171), is documented at the end. Five signature traits: a deep navy
 chassis with tonal navy surfaces, a single vibrant-teal accent voice, three
 status shields (mint/amber/crimson) that never carry meaning through colour
 alone, luminance-first depth with a restrained shadow ramp (no glow, no
@@ -163,7 +164,13 @@ STANDARD.md section 5.1.
   use `accent-color`.
 - **Badge** `.rb-badge` — mono uppercase pill: a 16% tint of its hue behind
   full-strength text (semantic modifiers `--info/--success/--warning/--danger`
-  — see Accessibility above for the one deviation).
+  — see Accessibility above for the one deviation). **Pair divergence,
+  documented per STANDARD.md 5.2:** `components/badge.css`'s default,
+  `--success`, and `--warning` variants keep colour-on-tint here since this
+  theme's exact hexes all pass on navy; kenzen-cyberhealth's light-ground
+  version of the same file uses ink (`--rb-text`) as those variants' text
+  colour instead, because the exact hexes are far below AA there (see
+  kenzen-cyberhealth's own design.md, #171, for the ratios).
 - **Alert** `.rb-alert` — surface panel, 3px left bar carries the semantic colour.
 - **Dialog** `.rb-dialog` — native `<dialog>`, navy pane, blurred backdrop,
   Sora title.
@@ -210,8 +217,12 @@ currently use either:
 
 ## Light counterpart — "Cyberhealth"
 
-The AA-tuned light secondary, shipped as its own theme: `kenzen-cyberhealth`
-(`styles/kenzen-cyberhealth/design.md`).
+The light secondary, shipped as its own theme: `kenzen-cyberhealth`
+(`styles/kenzen-cyberhealth/design.md`). It shares this theme's exact accent,
+success, and warning hexes rather than a darkened substitute — roshne's
+decision, [#171](https://github.com/Rackbops/rackbops-ui-ux-std-lib/issues/171)
+— under a documented contrast exception (see that theme's own Accessibility
+section for the ratios and mitigations).
 
 | Role | Value |
 | --- | --- |
@@ -224,8 +235,8 @@ The AA-tuned light secondary, shipped as its own theme: `kenzen-cyberhealth`
 | Text faint | `rgba(10,32,56,.6)` |
 | Border | `rgba(10,32,56,.14)` |
 | Border strong | `rgba(10,32,56,.28)` |
-| Accent | `#177e93` (darkened from this theme's `#18c0d0` for AA on white — see kenzen-cyberhealth's own design.md) |
-| Accent fg | `#ffffff` |
+| Accent | `#18c0d0` (exact, same as this theme — see kenzen-cyberhealth's own design.md for the documented exception) |
+| Accent fg | `#0a2038` (navy, not white — see kenzen-cyberhealth's own design.md) |
 | Gradient | `linear-gradient(120deg,#18c0d0,#50f8a0)` — same brand gradient, both themes |
 
 ## Scoping
