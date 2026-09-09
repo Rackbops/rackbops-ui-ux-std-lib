@@ -152,10 +152,14 @@ every manifest-reading consumer.
 
 Merging package changes to `main` runs the `release` workflow: it bumps both
 package versions (patch by default; a `type!:` subject or `BREAKING CHANGE:`
-footer bumps the minor while the major is 0), tags, and creates the GitHub
-release. Pushing a `v*` tag triggers `publish.yml`, which runs
+footer bumps the minor while the major is 0), commits, and tags -- the bump
+commit and its tag land in one atomic push (`git push --atomic origin main
+<tag>`, issue #88): either both land or neither does, so there's no partial
+state to ever resume. Pushing a `v*` tag triggers `publish.yml`, which runs
 `npm publish --access public` for both packages against the public npm
-registry (`registry.npmjs.org`).
+registry (`registry.npmjs.org`) and, once that succeeds, creates the GitHub
+release itself (`.github/scripts/publish-release.sh`, idempotent -- a re-run
+after a publish failure completes both without duplicating either).
 
 The two steps authenticate differently:
 
@@ -167,10 +171,12 @@ The two steps authenticate differently:
   both cut this way. If the secret were ever unset, the workflow no-ops
   instead (`RELEASE_TOKEN not set — release/publish is inert. Skipping.`),
   and a release can still be cut by running `.github/scripts/release.sh`
-  locally as a fallback — it commits the version bump, pushes it to
-  `main`, tags, pushes the tag, and creates the GitHub release itself, so
-  there's nothing left to push by hand afterward. It needs push rights to
-  the repo and an authenticated `gh` CLI.
+  locally as a fallback — it commits the version bump, tags, and pushes both
+  atomically to `main`, triggering `publish.yml` to publish and create the
+  release exactly as the automated path does. It needs push rights to the
+  repo (release.sh itself never calls `gh` -- only publish.yml's own
+  `publish-release.sh` step does, with `RELEASE_TOKEN` or the default
+  `GITHUB_TOKEN`).
 - **`publish`** uses **OIDC trusted publishing** — no stored npm token.
   `publish.yml` requests a short-lived `id-token` (its `permissions:` grant
   `id-token: write`), and npm exchanges it against the trusted publisher that
