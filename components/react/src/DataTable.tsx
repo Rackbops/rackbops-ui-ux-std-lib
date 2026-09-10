@@ -154,8 +154,16 @@ export function DataTable<T>({
                     onClick={() => onHeaderClick(column)}
                   >
                     {column.header}
-                    {isSorted && (
+                    {isSorted ? (
                       <span aria-hidden="true">{sort.direction === "asc" ? " ▲" : " ▼"}</span>
+                    ) : (
+                      // #175: a muted, always-visible affordance -- without it an inactive
+                      // sortable header is a button that looks like plain text, so there's no
+                      // way to tell it's clickable until you try. `--rb-text-faint` at rest,
+                      // lifted to `--rb-text` on hover (styles/*/components/data-table.css).
+                      <span className="rb-table__sort-icon" aria-hidden="true">
+                        {" ⇅"}
+                      </span>
                     )}
                   </button>
                 ) : (
