@@ -56,6 +56,12 @@
 :where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-table__sort:hover {
   color: var(--rb-text);
 }
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-table__sort-icon {
+  color: var(--rb-text-faint);
+}
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-table__sort:hover .rb-table__sort-icon {
+  color: var(--rb-text);
+}
 :where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-table-scroll {
   max-height: 70vh;
   overflow: auto;

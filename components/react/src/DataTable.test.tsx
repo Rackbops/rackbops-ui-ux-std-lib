@@ -89,6 +89,23 @@ test("a group not listed in groupOrder is appended after, alphabetically", () =>
 test("aria-sort is omitted on every header when unsorted", () => {
   const html = renderToStaticMarkup(<DataTable columns={COLUMNS} rows={ROWS} rowKey={(r) => r.id} />);
   assert.ok(!html.includes("aria-sort"));
+})
+
+test("#175: every sortable header shows an affordance -- the neutral glyph when inactive, the arrow when active", () => {
+  // "name" pre-sorted (active): arrow, no neutral glyph. "count" is sortable but inactive: the
+  // neutral glyph, no arrow. Both are real DataTableColumn entries with a sortValue -- this is
+  // not the unsortable case (already covered by "renders as plain text, not a button" above).
+  const html = renderToStaticMarkup(
+    <DataTable columns={COLUMNS} rows={ROWS} rowKey={(r) => r.id} defaultSortKey="name" />,
+  );
+  assert.equal(
+    (html.match(/rb-table__sort-icon/g) ?? []).length,
+    1,
+    "exactly one inactive sortable header (Count) carries the neutral-glyph class",
+  );
+  assert.match(html, /Count<span class="rb-table__sort-icon" aria-hidden="true"> ⇅<\/span>/);
+  assert.doesNotMatch(html, /Name<span class="rb-table__sort-icon"/);
+  assert.match(html, /Name<span aria-hidden="true"> ▲<\/span>/);
 });
 
 test("defaultSortKey/defaultSortDirection pre-sorts without any click", () => {

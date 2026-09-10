@@ -66,8 +66,8 @@
     },
     "data-table": {
       "react": "DataTable",
-      "classes": ["rb-table", "rb-num", "rb-table__group-row", "rb-table__sort", "rb-table-scroll"],
-      "notes": "columns/rows/rowKey; optional groupBy/groupOrder, defaultSortKey/defaultSortDirection, sticky (wraps in rb-table-scroll); numeric columns get rb-num"
+      "classes": ["rb-table", "rb-num", "rb-table__group-row", "rb-table__sort", "rb-table__sort-icon", "rb-table-scroll"],
+      "notes": "columns/rows/rowKey; optional groupBy/groupOrder, defaultSortKey/defaultSortDirection, sticky (wraps in rb-table-scroll); numeric columns get rb-num; an inactive sortable header shows a muted rb-table__sort-icon affordance (#175), the active one shows the arrow instead"
     },
     "table": {
       "react": null,
