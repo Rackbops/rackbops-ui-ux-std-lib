@@ -1,7 +1,7 @@
 /* summer-cloud — tabstrip
  * Top-level view nav: natural-width bordered pill buttons. The active button gets accent
  * text + a faint wash and an accent-tinted border; distinct from the text-underline .rb-tabs
- * used inside a panel. Shared across all twelve themes via --rb-* tokens (K4-10 give-back
+ * used inside a panel. Shared across all fourteen themes via --rb-* tokens (K4-10 give-back
  * from Kenzen; arcane-obsidian/arcane-parchment's own hand-authored version, reverse-
  * documented from artifact-console, is the reference this shared version reproduces). */
 :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-tabstrip {
