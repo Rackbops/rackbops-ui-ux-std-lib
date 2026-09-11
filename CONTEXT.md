@@ -10,16 +10,25 @@ line citations and counts are known to drift (issues #95, #56).
 
 ## Workspace
 
-pnpm monorepo (`pnpm@11.15.1`, `pnpm-workspace.yaml`: `styles` + `components/*`), two publishable packages:
+pnpm monorepo (pnpm 12, pinned by the root `package.json` `packageManager` field -- Renovate keeps the pin current; `pnpm-workspace.yaml`: `styles` + `components/*`), two publishable packages:
 
 | Package | Dir | What it ships |
 |---|---|---|
 | `@rackbops/styles` | `styles/` | The CSS themes + the `--rb-*` / `rb-*` contract (`contract.json`, `manifest.json`, `all.css`). **No build step** -- CSS ships as authored. |
 | `@rackbops/ui-react` | `components/react/` | React components; **built** with `tsc -p tsconfig.build.json` to `dist/` (the published artifact). |
 
-Both are `@rackbops`-scoped and **public on npm** (currently `v0.2.25`). `esbuild`'s postinstall is
+Both are `@rackbops`-scoped and **public on npm** (`styles/package.json` and `components/react/package.json` carry the same version, cut by the release pipeline below). `esbuild`'s postinstall is
 disabled in `pnpm-workspace.yaml` (`allowBuilds: esbuild: false`) -- `tsx` resolves its platform binary
 at runtime without it.
+
+**Run pnpm through a launcher that is itself >= 12** (`npm i -g pnpm@latest`, or Corepack). An
+older npm-global launcher (this machine's was `pnpm@11.15.1` until 2026-09-11) self-switches to the pin --
+so `pnpm --version` still prints 12.x -- but first rewrites `pnpm-lock.yaml`'s
+`packageManagerDependencies` with an extra `@pnpm/exe` entry on EVERY command, even
+`install --frozen-lockfile`, leaving the lockfile dirty in every local checkout. CI never sees it
+(`pnpm/action-setup` installs the pin directly). Check the launcher with `npm ls -g pnpm --depth=0`,
+not `pnpm --version`; if the lockfile turns dirty with an `@pnpm/exe` block, restore it
+(`git checkout -- pnpm-lock.yaml`) and never commit it (#203).
 
 ---
 
@@ -27,10 +36,12 @@ at runtime without it.
 
 The test runner is **`node --test` (node:test) everywhere** -- no vitest/jest. Run before staging:
 
-- **`pnpm --filter @rackbops/styles test`** -- the eight `styles/test/` suites (all `node:test`): the
+- **`pnpm --filter @rackbops/styles test`** -- the eleven `styles/test/` suites (all `node:test`): the
   theme **contract** (the DoD gate), light/dark **pair-parity**, **base-typography** parity, a TS
   side-effect-import **types** check (spawns `tsc`), computed WCAG **contrast** ratios, per-theme
-  **bundle**.css generation, and the **release** / **bump** version logic.
+  **bundle**.css generation, the **release** / **bump** version logic, the contrast contract's
+  **accessibility-docs** documentation half, the arcane pair's **arcane-tabstrip-underline** gradient
+  fidelity check, and the shared **wordmark-paint** anatomy pin across all themes.
 - **`pnpm --filter @rackbops/ui-react test`** -- `tsc --noEmit`, then the component render tests
   (`node --import tsx --test "src/**/*.test.tsx"`, react-dom/server + jsdom).
 - **`pnpm --filter @rackbops/ui-react build`** -- strict `tsc`; the React package must typecheck + build.
