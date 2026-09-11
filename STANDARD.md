@@ -440,6 +440,18 @@ extending the list fails `tsc --noEmit` before any test runs
 residual is a dynamic template over a local, non-exported union -- today only
 `Stepper`'s three index-derived states -- which has no exported type to check
 exhaustiveness against; it is pinned by its own test instead of hidden. The
+source scan reads RAW source, comments included, with no comment-stripping
+step: three review rounds each found real ways a hand-rolled JS/TSX comment
+tokenizer could be defeated (deleting real code, or missing a real class),
+and a correct parser is real-compiler-API territory, which #118 exists
+specifically to avoid. The constraint this scan enforces instead needs no
+parser: a BARE quoted `rb-*` name -- the entire quoted content, nothing else
+-- counts as a class the component can emit wherever it appears in a
+non-test source file, comments included. A comment naming a class is written
+with a leading dot (`` `.rb-foo` ``), exactly as every real comment in this
+package's sources already does, so it is invisible to the scan by
+construction, not by parsing; a comment the scan flags is fixed by rewording
+it to the dotted form, never by adding parser sophistication here. The
 CSS-only utilities (no React wrapper) stay listed in `contract.json` and are
 covered by the theme-parity check alone.
 A class in the list is either styled in every theme, entered in the
