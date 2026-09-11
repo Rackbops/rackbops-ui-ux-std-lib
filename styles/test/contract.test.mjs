@@ -44,6 +44,10 @@ const REQUIRED_CLASSES = Object.entries(contract.components).flatMap(([name, def
 // "no undocumented class" check below.
 const ALL_REQUIRED_CLASS_NAMES = new Set(REQUIRED_CLASSES.map((c) => c.class));
 
+// The shared component names, in contract.json's own key order -- the
+// canonical index.css import order an "extras" file never appears in (#115).
+const SHARED = new Set(Object.keys(contract.components));
+
 // Documented omissions (STANDARD.md 5.3): a theme, a required class it
 // deliberately doesn't style, and why. Sourced from contract.json.
 const CLASS_ALLOWLIST = contract.allowlist;
@@ -333,7 +337,7 @@ for (const theme of themeDirs) {
     }
   });
 
-  test(`${theme}: index.css pulls the shared structure, tokens, base, and every component file`, () => {
+  test(`${theme}: index.css imports structure, tokens, base, then every shared component in contract order, then its extras`, () => {
     const { imports, selectors } = parseCss(
       cssOf(join(ROOT, theme, "index.css"))
     );
@@ -341,10 +345,25 @@ for (const theme of themeDirs) {
     // The shared structural file is imported first (issue #52); it resolves out
     // of the theme dir, so it isn't one of the ./ theme files matched below.
     assert.ok(
-      imports.some((i) => i.includes("../_shared/structure.css")),
-      `${theme}: index.css must import ../_shared/structure.css`
+      imports[0]?.includes("../_shared/structure.css"),
+      `${theme}: index.css must import ../_shared/structure.css first`
     );
     const names = imports.map((i) => i.match(/"\.\/(.+)\.css"/)?.[1]).filter(Boolean);
+    assert.equal(names[0], "tokens", `${theme}: index.css must import tokens.css second (right after structure.css)`);
+    assert.equal(names[1], "base", `${theme}: index.css must import base.css third`);
+    // Every shared component file, in contract.json's own key order (#115) --
+    // extras (a name not in SHARED) are unconstrained beyond the completeness
+    // check below, which still requires every shared file to be present.
+    // `names` entries for component files are "components/<name>" (the same
+    // format `expected` below uses); strip the prefix before matching SHARED.
+    const componentNames = names
+      .map((n) => n.match(/^components\/(.+)$/)?.[1])
+      .filter((n) => n !== undefined);
+    assert.deepEqual(
+      componentNames.filter((n) => SHARED.has(n)),
+      Object.keys(contract.components),
+      `${theme}: index.css must import the shared components in contract.json's key order`
+    );
     const expected = themeCssFiles(theme).map((f) =>
       f.slice(join(ROOT, theme).length + 1).replace(/\.css$/, "").split("\\").join("/")
     );

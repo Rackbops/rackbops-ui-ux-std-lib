@@ -11,13 +11,13 @@
 @import "./components/alert.css";
 @import "./components/dialog.css";
 @import "./components/tabs.css";
+@import "./components/tabstrip.css";
 @import "./components/data-table.css";
 @import "./components/table.css";
 @import "./components/progress.css";
 @import "./components/stepper.css";
-@import "./components/eyebrow.css";
-@import "./components/wordmark.css";
-@import "./components/tabstrip.css";
 @import "./components/muted.css";
 @import "./components/pre.css";
 @import "./components/log.css";
+@import "./components/eyebrow.css";
+@import "./components/wordmark.css";

@@ -79,6 +79,11 @@
       "classes": ["rb-progress", "rb-spinner"],
       "notes": "native <progress> pseudo-element contract enforced separately (not class-based); omit value for the animated :indeterminate state"
     },
+    "stepper": {
+      "react": "Stepper",
+      "classes": ["rb-stepper", "rb-stepper__step", "rb-stepper__node", "rb-stepper__label", "rb-stepper--complete", "rb-stepper--current", "rb-stepper--upcoming"],
+      "notes": "--upcoming is the resting state (allowlisted, no rule needed); --current also matches [aria-current=\"step\"] in every theme"
+    },
     "muted": {
       "react": null,
       "classes": ["rb-muted"],
@@ -93,11 +98,6 @@
       "react": null,
       "classes": ["rb-log"],
       "notes": "pairs with .rb-pre; style directly, no React wrapper"
-    },
-    "stepper": {
-      "react": "Stepper",
-      "classes": ["rb-stepper", "rb-stepper__step", "rb-stepper__node", "rb-stepper__label", "rb-stepper--complete", "rb-stepper--current", "rb-stepper--upcoming"],
-      "notes": "--upcoming is the resting state (allowlisted, no rule needed); --current also matches [aria-current=\"step\"] in every theme"
     }
   },
   "allowlist": [
