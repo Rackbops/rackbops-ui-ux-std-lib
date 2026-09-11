@@ -115,10 +115,10 @@ This table is generated from `styles/contract.json` — edit that file, then run
 | `DataTable` | `.rb-table` | columns/rows/rowKey; optional groupBy/groupOrder, defaultSortKey/defaultSortDirection, sticky (wraps in rb-table-scroll); numeric columns get rb-num; an inactive sortable header shows a muted rb-table__sort-icon affordance (#175), the active one shows the arrow instead; per-column width renders a <colgroup> and switches to table-layout: fixed (#150) |
 | — | `.rb-table--interactive` | clickable-row utility, hand-applied by the consumer to any table (DataTable-rendered or not) -- DataTable itself never sets it, style directly |
 | `Progress`/`Spinner` | `.rb-progress` | native <progress> pseudo-element contract enforced separately (not class-based); omit value for the animated :indeterminate state |
+| `Stepper` | `.rb-stepper` | --upcoming is the resting state (allowlisted, no rule needed); --current also matches [aria-current="step"] in every theme |
 | — | `.rb-muted` | style directly, no React wrapper |
 | — | `.rb-pre` | style directly, no React wrapper |
 | — | `.rb-log` | pairs with .rb-pre; style directly, no React wrapper |
-| `Stepper` | `.rb-stepper` | --upcoming is the resting state (allowlisted, no rule needed); --current also matches [aria-current="step"] in every theme |
 <!-- contract-table:end -->
 
 `LinksIndex` (React only, no CSS class of its own) composes `Card`/`Badge` into
@@ -130,6 +130,18 @@ here before building a links/app index page from scratch. Its `level` prop
 level deeper — set it to match wherever LinksIndex is embedded. Each url's
 list key is `label + url`, not `url` alone, so two urls sharing one address
 with different labels ("prod" / "canonical") don't collide.
+
+`EmptyState` (React only, no CSS class of its own) composes `Card` into
+an empty-guidance surface: `title` (required heading, `level` 2-4, default
+3), `children` as guidance, an optional `action` rendered last, `role="status"`
+on the root. Like any live region it only announces a state that appears
+or changes after mount (content loading in, then coming back empty) --
+it says nothing on first paint, and reusing one instance for text that
+changes on every keystroke (a live search query) would re-announce the
+whole card on every character, so keep it for a stable empty state. It
+never renders a spinner -- an empty state is a fact stated in words, so
+use `Spinner` for loading and `EmptyState` for genuinely empty. Carries
+no theme obligation, so it isn't in the table above.
 
 Theme-specific extras (styled only under that theme — check before using): the
 arcane pair adds `.rb-wordmark`, `.rb-tabstrip`, and `.rb-eyebrow`; the

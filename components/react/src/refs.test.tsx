@@ -19,6 +19,7 @@ const {
   Card,
   Checkbox,
   Dialog,
+  EmptyState,
   Field,
   Input,
   Label,
@@ -183,6 +184,13 @@ test("Stepper forwards ref to the <ol>", () => {
   const ref = createRef<HTMLOListElement>();
   const cleanup = mount(<Stepper ref={ref} steps={[{ id: "a", label: "A" }]} current={0} />);
   assert.ok(ref.current instanceof HTMLOListElement);
+  cleanup();
+});
+
+test("EmptyState forwards ref to the Card <div>", () => {
+  const ref = createRef<HTMLDivElement>();
+  const cleanup = mount(<EmptyState ref={ref} title="No cards yet" />);
+  assert.ok(ref.current instanceof HTMLDivElement);
   cleanup();
 });
 

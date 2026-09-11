@@ -18,13 +18,28 @@
 // documented omission -- without a second copy of the CSS parser over here in
 // the React package.
 //
-// The matrix (RENDERS) is maintained by hand, so this does not by itself prove
-// every prop VALUE is covered: a class reachable only through a prop the matrix
-// omits is caught not here but downstream -- by the reverse-direction check
-// once it reaches contract.json, or by the styles closed-world "no undocumented
-// class" check once any theme styles it. A class that is emitted, in no theme's
-// CSS, and absent from contract.json is the residual gap; keep RENDERS
-// exhaustive as class-adding props are added.
+// The matrix gap is closed two ways (issue #118), so RENDERS being
+// hand-maintained is no longer a silent liability:
+//  - Every static rb-* class literal anywhere in the component sources must be
+//    exercised by the matrix (a plain regex scan, below) -- this alone catches
+//    the #48 counterexample (`rb-btn--lg` behind a `size` value RENDERS never
+//    renders).
+//  - Every exported class-bearing prop union (Button's variant, the shared
+//    SemanticVariant) is rendered from a `const ... as const satisfies
+//    readonly <Union>[]` list paired with a compile-time `Exclude<...>
+//    extends never` assertion, so widening the union without extending the
+//    list fails `tsc --noEmit` (which the package test script runs first) --
+//    the matrix cannot silently fall behind an exported type.
+// The one residual: a dynamic template over a LOCAL, non-exported union --
+// today only Stepper's three index-derived states -- has no type to check
+// exhaustiveness against. It is pinned by its own test instead of hidden: the
+// Stepper matrix entry must render all three derived states.
+//
+// (typescript@7.0.2, the version this package's devDependency resolves to,
+// no longer ships the classic compiler API `import ts from "typescript"` used
+// to expect -- `lib/typescript.js` is gone and the "." export is a version
+// stub -- so the gap is closed with a source scan plus type-level
+// exhaustiveness instead of a compiler-API-driven scan.)
 //
 // The CSS-only utilities (rb-table/--interactive, rb-num, rb-muted, rb-pre,
 // rb-log) have no React wrapper, so no render can emit them; they stay listed
@@ -32,11 +47,13 @@
 // test asserts they are NOT emitted, so `react: null` stays honest.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
+import { basename, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import type { DataTableColumn } from "./DataTable.js";
+import type { ButtonProps, SemanticVariant } from "./index.js";
 import * as UI from "./index.js";
 
 interface Row {
@@ -61,20 +78,38 @@ const DATATABLE_COLUMNS: DataTableColumn<Row>[] = [
 // was left out. Composition counts: NavRail renders NavLinks, LinksIndex
 // renders Cards + Badges -- rendering the parent emits the children's classes,
 // exactly as a consumer gets them.
-const SEMANTIC = ["info", "success", "warning", "danger"] as const;
+
+/** Compile-time exhaustiveness: `Missing` must be `never`, i.e. every member of the
+ * union appears in the list. Widening the union without extending the list fails
+ * `tsc --noEmit`, which the package test script runs before any test (#118). */
+type AssertNever<T extends never> = T;
+
+type ButtonVariant = Exclude<NonNullable<ButtonProps["variant"]>, "default">;
+const BUTTON_VARIANTS = ["primary", "accent", "danger", "ghost"] as const satisfies readonly ButtonVariant[];
+type _ButtonVariantsExhaustive = AssertNever<Exclude<ButtonVariant, (typeof BUTTON_VARIANTS)[number]>>;
+
+const SEMANTIC = ["info", "success", "warning", "danger"] as const satisfies readonly SemanticVariant[];
+type _SemanticExhaustive = AssertNever<Exclude<SemanticVariant, (typeof SEMANTIC)[number]>>;
 
 const RENDERS: Array<{ component: string; el: ReactElement }> = [
-  // Button: base, each colour variant, compact size, icon-only.
+  // Button: base, every colour variant (exhaustive -- see BUTTON_VARIANTS above), compact size, icon-only.
   { component: "Button", el: <UI.Button>Go</UI.Button> },
-  { component: "Button", el: <UI.Button variant="primary">Go</UI.Button> },
-  { component: "Button", el: <UI.Button variant="accent">Go</UI.Button> },
-  { component: "Button", el: <UI.Button variant="danger">Go</UI.Button> },
-  { component: "Button", el: <UI.Button variant="ghost">Go</UI.Button> },
+  ...BUTTON_VARIANTS.map((v) => ({ component: "Button", el: <UI.Button variant={v}>Go</UI.Button> })),
   { component: "Button", el: <UI.Button size="sm">Go</UI.Button> },
   { component: "Button", el: <UI.Button iconOnly aria-label="Close" /> },
   // Card: base and raised.
   { component: "Card", el: <UI.Card>c</UI.Card> },
   { component: "Card", el: <UI.Card raised>c</UI.Card> },
+  // EmptyState: composes Card (-> rb-card) and adds no class of its own; the action is a
+  // Button so the render is realistic, and rb-btn is already in the matrix via Button.
+  {
+    component: "EmptyState",
+    el: (
+      <UI.EmptyState title="No cards yet" action={<UI.Button>Add a card</UI.Button>}>
+        Add one from the rack.
+      </UI.EmptyState>
+    ),
+  },
   // NavLink: resting and active.
   { component: "NavLink", el: <UI.NavLink href="#">home</UI.NavLink> },
   { component: "NavLink", el: <UI.NavLink href="#" active>home</UI.NavLink> },
@@ -224,6 +259,130 @@ const EMITTED = new Set<string>();
 for (const { el } of RENDERS) {
   for (const c of rbClassesIn(renderToStaticMarkup(el))) EMITTED.add(c);
 }
+
+// -- #118: close the matrix gap -- source-literal scan + registered dynamic
+// templates, no compiler API (typescript@7.0.2 no longer ships one; see the
+// plan's decision 3). Every static rb-* class in the component sources must be
+// exercised by the matrix (the #48 counterexample -- `rb-btn--lg` behind a
+// size value RENDERS never renders -- fails here), and every dynamic
+// `rb-...${x}` template must be registered with the mechanism that keeps its
+// union exhaustive (the typed lists above).
+//
+// The scan reads RAW source -- no comment stripping. Two rounds of review
+// tried progressively more careful character-by-character comment strippers
+// (round 1's naive global regex silently deleted real class-bearing code
+// sitting between an innocuous "//" comment and a later real comment; round
+// 2's real tokenizer fixed that but still mis-tokenized a `//`-terminated
+// regex literal ending in an escaped slash, e.g. LinksIndex.tsx's own
+// `/^(https?:)?\/\//i`, silently deleting the code after it -- round-3 review
+// finding on #118). A hand-rolled JS/TSX lexer is real-compiler-API territory,
+// which #118 exists specifically to avoid (see decision 3). The constraint
+// this scan enforces instead needs no parser: a BARE quoted rb-* name --
+// `"rb-foo"`, `'rb-foo'`, or `` `rb-foo` ``, the ENTIRE quoted content and
+// nothing else -- counts as a class the component can emit, wherever it
+// appears in a non-test source file, comments included. A prose mention of a
+// class inside a comment is written with a leading dot, `` `.rb-foo` `` or
+// `.rb-foo`, exactly as every real comment in this package's sources already
+// does (DataTable.tsx, Tabstrip.tsx, LinksIndex.tsx, Card.tsx) -- the dot
+// means the quoted content is never a bare `rb-foo` match, so it is invisible
+// to the scan by construction, not by parsing. If a comment ever needs fixing
+// because this scan flags it, the fix is rewording that comment to the dotted
+// form, never adding parser sophistication here.
+const SRC = dirname(fileURLToPath(import.meta.url));
+const SOURCE_FILES = readdirSync(SRC).filter(
+  (f) => /\.tsx?$/.test(f) && !/\.test\.tsx?$/.test(f) && f !== "test-dom.ts",
+);
+const DYNAMIC_TEMPLATES: Record<string, string> = {
+  "rb-btn--": "variant", // Button: exported union, exhaustive via BUTTON_VARIANTS
+  "rb-badge--": "variant", // Badge: SemanticVariant, exhaustive via SEMANTIC
+  "rb-alert--": "variant", // Alert: same
+  "rb-stepper--": "state", // Stepper: local union derived from index arithmetic -- the residual; all three states rendered, asserted below
+};
+
+function scanSources() {
+  const literals = new Set<string>();
+  const templates: Record<string, string> = {};
+  for (const f of SOURCE_FILES) {
+    const src = readFileSync(join(SRC, f), "utf-8");
+    for (const m of src.matchAll(/(["'`])(rb-[\w-]+)\1/g)) literals.add(m[2]);
+    // Every backtick literal that mentions an rb-* class next to an
+    // interpolation must match the STRICT single-interpolation-at-the-end
+    // shape exactly -- checked against the whole literal, not found via a
+    // regex that simply skips anything else. A trailing literal after the
+    // interpolation (`` `rb-card--${tone}-tint` ``) used to be invisible to
+    // both this scan and the static-literal one above -- a fully orphaned,
+    // unstyled class shipping with neither test noticing (round-1 review
+    // finding on #118, the same shape #118 itself exists to close). Failing
+    // loudly here, rather than silently skipping, is deliberate: a shape the
+    // scan can't enumerate must block until it is rewritten or the scan is
+    // extended for it -- mirroring the original compiler-API design's
+    // rejection of a non-string-literal-union interpolation.
+    for (const m of src.matchAll(/`([^`]*)`/g)) {
+      const content = m[1];
+      if (!/rb-[\w-]*\$\{/.test(content)) continue;
+      const strict = content.match(/^(rb-[\w-]+)\$\{([^}]+)\}$/);
+      assert.ok(
+        strict,
+        `${basename(f)}: dynamic template \`${content}\` uses an rb-* class in a shape this scan can't enumerate (only a plain "rb-<prefix>\${expr}" template, nothing before or after, is supported) -- rewrite it to that shape or extend scanSources()`,
+      );
+      templates[strict[1]] = strict[2].trim();
+    }
+  }
+  return { literals, templates };
+}
+
+test("scanSources's literal regex sees a bare quoted rb-* name anywhere, including inside a comment, but not a dotted prose mention (#118)", () => {
+  // Not scanSources() itself (that reads real files by name) -- the same
+  // literal regex it applies, exercised directly against synthetic input to
+  // pin the no-parser rule this test's own header documents: a comment
+  // naming a class must use the dotted form to stay invisible to the scan.
+  //
+  // Three tries at a character-by-character comment stripper each broke a
+  // different way: round 1's naive global regex silently deleted real code
+  // between an innocuous "//" comment and a later real one; round 2's real
+  // tokenizer fixed that but still mis-tokenized a "//"-terminated regex
+  // literal ending in an escaped slash (LinksIndex.tsx's own
+  // `/^(https?:)?\/\//i`), silently deleting the code after it (round-3
+  // review finding). Scanning raw, unstripped source instead needs no parser
+  // and cannot have this class of false negative -- the tradeoff, accepted
+  // on purpose, is that a BARE quoted mention in a comment now counts too.
+  const literalRe = /(["'`])(rb-[\w-]+)\1/g;
+
+  // A dotted prose mention, exactly the style every real comment in this
+  // package already uses -- invisible to the scan because the quoted content
+  // is never a bare "rb-foo" (the leading dot breaks the match), not because
+  // anything parsed "this is a comment".
+  assert.deepEqual([..."/** mentions `.rb-nav-rail--compact` in prose */".matchAll(literalRe)], []);
+
+  // A bare quoted mention DOES count, deliberately, even inside a comment --
+  // this is the documented cost of dropping the tokenizer. Rewording such a
+  // comment to the dotted form (above) is the fix, not more parsing here.
+  const bare = [..."// see `rb-nav-rail--compact` for details".matchAll(literalRe)];
+  assert.equal(bare.length, 1);
+  assert.equal(bare[0][2], "rb-nav-rail--compact");
+
+  // The regex-literal shape that defeated round 2's tokenizer is inert here:
+  // with no comment/string state machine to confuse, a real class literal
+  // sitting after such a regex on the same line is seen correctly.
+  const afterRegex = 'const isExternal = /^(https?:)?\\/\\//i.test(u); const c = "rb-should-be-visible";';
+  const found = [...afterRegex.matchAll(literalRe)].map((m) => m[2]);
+  assert.deepEqual(found, ["rb-should-be-visible"]);
+});
+
+test("every static rb-* class literal in the component sources is emitted by the render matrix (#118)", () => {
+  const { literals } = scanSources();
+  const unexercised = [...literals].filter((c) => !EMITTED.has(c)).sort();
+  assert.deepEqual(unexercised, [], `in source but never rendered by RENDERS: ${unexercised.join(", ")} -- add the prop value to the matrix`);
+});
+
+test("every dynamic rb-* template in the sources is registered with an exhaustiveness mechanism (#118)", () => {
+  const { templates } = scanSources();
+  assert.deepEqual(templates, DYNAMIC_TEMPLATES, "a new `rb-...${x}` template must be registered here together with a typed, exhaustive value list for its union");
+});
+
+test("the Stepper matrix entry renders all three derived states (#118 residual)", () => {
+  for (const s of ["complete", "current", "upcoming"]) assert.ok(EMITTED.has(`rb-stepper--${s}`), `rb-stepper--${s} not emitted`);
+});
 
 // -- contract.json's declared class set, split by whether React backs it ------
 interface ContractComponent {

@@ -89,7 +89,7 @@ A theme is a directory `styles/<theme-id>/` with exactly this layout:
 | `base.css` | Canvas rule, page-only body canvas, bare-element typography, links, focus, selection (the box-sizing reset and body `margin`/`min-height` moved to `_shared/structure.css`) | MUST carry the bare-element property set (section 6) `[tested]` |
 | `_shared/structure.css` | The box-sizing reset and the page body reset (`margin`/`min-height`), guarded by the bare `[data-rb-style]` and imported by every `index.css` | Theme-agnostic; the one place the bare-attribute guard is allowed (#52) `[tested]` |
 | `components/<name>.css` | One file per component: the shared set (section 5.1) plus any extras | MUST exist for every shared component `[tested]`; every selector guarded `[tested]` |
-| `index.css` | `@import` of the shared structure, tokens, base, and every file in `components/` | MUST import the shared structure and every component file, and contain no rules of its own `[tested]` |
+| `index.css` | `@import` of the shared structure, tokens, base, and every file in `components/`, in the canonical order: `../_shared/structure.css`, `./tokens.css`, `./base.css`, then the shared component files in `contract.json`'s `components` key order (`button card link nav-rail form badge alert dialog tabs tabstrip data-table table progress stepper muted pre log`), then that theme's extras files in any order | MUST import the shared structure and every component file, in that order, and contain no rules of its own `[tested: contract.test.mjs, #115]` |
 | `design.md` | The written spec (section 11) | MUST follow the template; every claim verified against the CSS `[reviewed]` |
 | `assets/` | Optional binaries (`rackbops-studio/assets/boppy.svg`, `neon-butterfly/assets/butterfly-circuit.png`) | MAY. Keep small: issue #42 measures the 1.3 MB PNG at 76% of the unpacked tarball |
 
@@ -409,10 +409,10 @@ extras), so an undocumented class fails too]`. The React column is the
 | `data-table.css` | `.rb-table`, `.rb-num`, `__group-row`, `__sort`, `__sort-icon`, `.rb-table-scroll` | `DataTable` | Split from `table.css` at K4-10 so each `contract.json` component key maps to its own file `[tested]`; `__sort-icon` is the muted affordance on an inactive sortable header, `--rb-text-faint` at rest / `--rb-text` on hover -- the active header's arrow carries no class of its own (#175) |
 | `table.css` | `.rb-table--interactive` | -- | Hand-applied by the consumer -- `DataTable` never sets it |
 | `progress.css` | `.rb-progress` on a native `<progress>` (`appearance: none`, `::-webkit-progress-bar`, `::-webkit-progress-value`, `::-moz-progress-bar`); `.rb-spinner` | `Progress`, `Spinner` | Omitting `value` puts `<progress>` in the `:indeterminate` state, styled with an animated sweep on `:indeterminate::-webkit-progress-bar` and `:indeterminate::-moz-progress-bar` -- always two separate rules, never comma-joined, since an engine that doesn't recognise one vendor pseudo-element drops the whole selector list `[tested]` |
+| `stepper.css` | `.rb-stepper`, `__step`, `__node`, `__label`, `--complete`, `--current` | `Stepper` | In all fourteen since #55 (closes #18). `--upcoming` is emitted by `Stepper` as the resting state and no theme declares a rule for it -- allowlisted in `contract.json` as "default state" `[tested]`; SHOULD match `[aria-current="step"]`; checked by `contract.test.mjs` against `contract.json`'s `ariaPairs`, all fourteen comply `[tested]` |
 | `muted.css` | `.rb-muted` | -- | |
 | `pre.css` | `.rb-pre` | -- | |
 | `log.css` | `.rb-log` (pairs with `.rb-pre`) | -- | |
-| `stepper.css` | `.rb-stepper`, `__step`, `__node`, `__label`, `--complete`, `--current` | `Stepper` | In all fourteen since #55 (closes #18). `--upcoming` is emitted by `Stepper` as the resting state and no theme declares a rule for it -- allowlisted in `contract.json` as "default state" `[tested]`; SHOULD match `[aria-current="step"]`; checked by `contract.test.mjs` against `contract.json`'s `ariaPairs`, all fourteen comply `[tested]` |
 
 Do not state the *count* of shared files in prose anywhere -- `design.md`
 files that said "the baseline ten" and "twelve" were both stale before #55
@@ -427,11 +427,33 @@ in turn reconciled against what `@rackbops/ui-react` emits: a test renders
 every export across a matrix of its class-adding props and asserts the emitted
 `rb-*` set equals that class set in both directions -- no emission missing from
 the contract, no contract entry unrendered
-`[tested: components/react/src/contract-classes.test.tsx, #48]`. The matrix is
-maintained by hand, so a class reachable only through a prop it does not cover
-is caught not there but by the closed-world check below, once any theme styles
-it. The CSS-only utilities (no React wrapper) stay listed in `contract.json`
-and are covered by the theme-parity check alone.
+`[tested: components/react/src/contract-classes.test.tsx, #48]`. The matrix
+(`RENDERS`) is maintained by hand, but the gap that leaves open is closed
+mechanically two ways, not left to the closed-world check below (#118): every
+static `rb-*` class literal anywhere in the component sources must be exercised
+by the matrix (a source scan), and every exported class-bearing prop union
+(Button's `variant`, the shared `SemanticVariant`) is rendered from a value
+list declared `as const satisfies readonly <Union>[]` paired with a
+compile-time exhaustiveness assertion, so widening the union without
+extending the list fails `tsc --noEmit` before any test runs
+`[tested: components/react/src/contract-classes.test.tsx, #118]`. The one
+residual is a dynamic template over a local, non-exported union -- today only
+`Stepper`'s three index-derived states -- which has no exported type to check
+exhaustiveness against; it is pinned by its own test instead of hidden. The
+source scan reads RAW source, comments included, with no comment-stripping
+step: three review rounds each found real ways a hand-rolled JS/TSX comment
+tokenizer could be defeated (deleting real code, or missing a real class),
+and a correct parser is real-compiler-API territory, which #118 exists
+specifically to avoid. The constraint this scan enforces instead needs no
+parser: a BARE quoted `rb-*` name -- the entire quoted content, nothing else
+-- counts as a class the component can emit wherever it appears in a
+non-test source file, comments included. A comment naming a class is written
+with a leading dot (`` `.rb-foo` ``), exactly as every real comment in this
+package's sources already does, so it is invisible to the scan by
+construction, not by parsing; a comment the scan flags is fixed by rewording
+it to the dotted form, never by adding parser sophistication here. The
+CSS-only utilities (no React wrapper) stay listed in `contract.json` and are
+covered by the theme-parity check alone.
 A class in the list is either styled in every theme, entered in the
 allowlist below, or -- for the three ARIA-pairing checks and the dialog-blur
 check -- listed in that check's `exempt` array (only the concrete pair's
@@ -492,9 +514,10 @@ A theme MAY ship classes beyond the shared set. Rules:
   `[closed by #47/#39 -- the extras paragraph, the eyebrow classification,
   the theme-roster paragraph, and manifest-fonts consumer guidance are all
   accurate]`.
-- Never emitted by a shared React component. `LinksIndex` is the model: it
-  composes `Card` and `Badge` and adds no class of its own
-  (`components/react/src/LinksIndex.tsx:28-30`).
+- Never emitted by a shared React component. `LinksIndex` and `EmptyState`
+  are the models: each composes `Card` (and `Badge`, for `LinksIndex`) and
+  adds no class of its own (`components/react/src/LinksIndex.tsx:67` (`Card`)
+  and `:73` (`Badge`); `EmptyState.tsx:50`, #173).
 - Shown in the showcase only in a section labelled as extras (section 13).
 
 Extras shipping today: `.rb-wordmark` (+ `__spark`), `.rb-eyebrow` -- arcane
@@ -783,11 +806,11 @@ props to modifiers, and never branches on the theme.
 | The base class first, modifiers next, consumer `className` last, via `cx` | `Button.tsx:29-35`; tested in `Button.test.tsx:68-77` |
 | `...rest` spreads onto the root element so `id`, `data-*`, `aria-*`, handlers all reach it | every wrapper, since #31 (`Dialog`) and #84 (`Tabs`, onto its `role="tablist"` child -- the outer ref target is a structural wrapper spanning tabs+panels); a labelled `Checkbox`/`Radio`/`Switch` still puts `className`/rest on the inner `<input>`, with `wrapperClassName`/`wrapperStyle` for the `.rb-choice` row (`form.tsx:90-101`, the shared `choiceControl` factory, #84/#93) |
 | `forwardRef`, with `RefAttributes<T>` on the props type | every wrapper, since #30 (`Dialog` exposes its own internal show/close node to the forwarded ref via `useImperativeHandle`, #83) |
-| Native semantics by default: `type="button"`, `aria-current="page"` on an active link, `role="alert"`, `role="status"` + `aria-label` on the spinner, native `<dialog>` with `aria-labelledby`, ARIA tablist with roving tabindex | `Button.tsx:19`, `NavLink.tsx:18`, `feedback.tsx:61` (`role="alert"`) and `:82-85` (`role="status"`/`aria-label` passed into the shared `styled` factory, #93), `Dialog.tsx:61`, `Tabs.tsx:60-81` (the roving-tabindex key handler) and `:90-113` (the tablist) |
+| Native semantics by default: `type="button"`, `aria-current="page"` on an active link, `role="alert"`, `role="status"` + `aria-label` on the spinner, native `<dialog>` with `aria-labelledby`, ARIA tablist with roving tabindex | `Button.tsx:19`, `NavLink.tsx:18`, `feedback.tsx:61` (`role="alert"`) and `:82-85` (`role="status"`/`aria-label` passed into the shared `styled` factory, #93), `Dialog.tsx:61`, `Tabs.tsx:60-81` (the roving-tabindex key handler) and `:90-113` (the tablist), `EmptyState.tsx:50` (`role="status"`, before `...rest` so a consumer can override it, #173) |
 | Controlled by the caller, no hidden state: `NavRail activeId`, `Dialog open` | `NavRail.tsx:25` (`activeId` prop), `:36` (destructured), `:42` (drives each `NavLink`'s `active`); `Dialog` reconciles `open` when it changes (`[open]` dependency on the sync effect) and REQUIRES `onClose`, so the parent is always told of a native close and keeps `open` in sync -- `open` is the single source of truth (#83, completing #31); `Tabs` takes an optional controlled `activeId`/`onChange` pair (`Tabs.tsx:30-40`, derived at `:49-53`, #169) and stays uncontrolled when `activeId` is omitted |
 | No theme-specific class, no extra, no `style` that a theme would own. Structural layout a theme has no opinion on (a grid) MAY be inline, and says why in a comment | `LinksIndex.tsx:47-53` (`gridStyle` + its why-comment, used at `:112`); `DataTable.tsx:145-149` (`hasWidths` puts the table in `table-layout: fixed` + its why-comment, #150) |
 | A prop that is a no-op in some theme MUST be a documented omission (section 5.3), not a bare JSDoc caveat | `Card.tsx`'s `raised` now is, for the three nazuraki ports (design.md + JSDoc + `contract.json`'s `allowlist`, #29) `[tested]` |
-| Tests render to static markup and assert the class list per prop, composition, and passthrough; the same renders feed the derived class set | `Button.test.tsx`, `NavRail.test.tsx`, `LinksIndex.test.tsx`, `Stepper.test.tsx`; `node:test` + `tsx` + `react-dom/server`; the derived class set is `contract-classes.test.tsx` (#48) `[tested]`. `refs.test.tsx` (#30) is the one exception -- ref attachment only happens on a real commit, so it client-renders via `react-dom/client` + `jsdom` instead |
+| Tests render to static markup and assert the class list per prop, composition, and passthrough; the same renders feed the derived class set | `Button.test.tsx`, `NavRail.test.tsx`, `LinksIndex.test.tsx`, `Stepper.test.tsx`, `EmptyState.test.tsx`; `node:test` + `tsx` + `react-dom/server`; the derived class set is `contract-classes.test.tsx` (#48) `[tested]`. `refs.test.tsx` (#30) is the one exception -- ref attachment only happens on a real commit, so it client-renders via `react-dom/client` + `jsdom` instead |
 
 ---
 
@@ -814,7 +837,18 @@ The showcase is the library's visual acceptance test. It MUST:
 - be photographed: a separate `pnpm visual` job screenshots every section
   under every theme against committed baselines `[tested: scripts/visual.mjs, #50]` --
   sections are snapped to integer document offsets before capture, so a tile
-  depends only on its own content (#186). A new
+  depends only on its own content (#186). The visual job disables
+  `backdrop-filter` globally before every capture, because Chromium renders
+  it nondeterministically across sessions (#190) -- in practice this only
+  visibly changes the three themes whose CSS spends `backdrop-filter` on
+  something other than the dialog backdrop (`luminous-precision`,
+  `neon-butterfly`, `summer-cloud`: cards, nav rail, alerts, and/or links)
+  (every other theme either uses `backdrop-filter` only on the native
+  `<dialog>`'s `::backdrop` -- which a `#demo-dialog` element capture
+  never includes, verified 0px either way -- or, for the concrete pair,
+  never applies it at all, `styles/concrete-signal/design.md:67-69`);
+  the glass effect itself is
+  reviewed by eye, not by baseline, until a deterministic fix lands. A new
   theme's PR carries its baseline set -- that is the review artefact for
   "does it look out of place".
 
@@ -960,15 +994,16 @@ identity paragraph and the README table.
 | 38 baseline tokens + `color-scheme` per theme | `contract.test.mjs` | live |
 | `color-scheme` matches manifest | `contract.test.mjs` | live |
 | manifest / package.json / dirs / all.css agree | `contract.test.mjs` | live |
-| `index.css` imports every component file, no rules | `contract.test.mjs` | live |
+| `index.css` imports every component file, no rules, in the canonical order (structure, tokens, base, then shared components in `contract.json` key order, then extras) | `contract.test.mjs` | live (#115) |
 | Keyframes `rb-`-prefixed, unique | `contract.test.mjs` | live |
 | Bare h1-h6 / p / ul,ol property names | `base-typography.test.mjs` | live |
 | Every export type-checks under `noUncheckedSideEffectImports` | `types.test.mjs` | live |
-| React prop -> class mapping, composition, passthrough | `src/*.test.tsx` | live (Button, NavRail, LinksIndex, Stepper) |
+| React prop -> class mapping, composition, passthrough | `src/*.test.tsx` | live (Button, NavRail, LinksIndex, Stepper, EmptyState) |
 | `transition: all` absent | review (Grep: 0) | live |
 | Contract as data (`contract.json`), SKILL.md generated, pair parity | `contract.test.mjs`, `pair-parity.test.mjs`, `scripts/generate-skill-table.mjs` | live (#47) |
 | Full `REQUIRED_CLASSES` parity (every shared component's full class set) + data-driven allowlist + closed-world "no undocumented class" check | `contract.test.mjs` | live (#47) |
 | Required class set derived from React emissions (emitted `rb-*` set == `contract.json`'s React-backed classes) | `components/react/src/contract-classes.test.tsx` | live (#48) |
+| Matrix-exhaustiveness gap closed: every static `rb-*` source literal exercised (scan) and every exported class-bearing union exhaustive at compile time; only a local, non-exported union (Stepper's derived states) stays a pinned residual | `components/react/src/contract-classes.test.tsx` | live (#118) |
 | Every shared component file exists per theme | `contract.test.mjs` | live (#47) |
 | Contrast ratios for the fixed token pairs (computed from `tokens.css`) | `contrast.test.mjs` | live (#49) |
 | Showcase renders full ARIA (nav `aria-current`, tab/tabpanel roles + `aria-selected`, label `for`) | showcase | live (#91) |

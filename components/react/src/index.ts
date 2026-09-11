@@ -1,5 +1,6 @@
 export { Button, type ButtonProps } from "./Button.js";
 export { Card, type CardProps } from "./Card.js";
+export { EmptyState, type EmptyStateProps } from "./EmptyState.js";
 export { NavLink, type NavLinkProps } from "./NavLink.js";
 export { NavRail, type NavRailProps, type NavRailItem } from "./NavRail.js";
 export {
