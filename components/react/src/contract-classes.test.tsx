@@ -18,13 +18,28 @@
 // documented omission -- without a second copy of the CSS parser over here in
 // the React package.
 //
-// The matrix (RENDERS) is maintained by hand, so this does not by itself prove
-// every prop VALUE is covered: a class reachable only through a prop the matrix
-// omits is caught not here but downstream -- by the reverse-direction check
-// once it reaches contract.json, or by the styles closed-world "no undocumented
-// class" check once any theme styles it. A class that is emitted, in no theme's
-// CSS, and absent from contract.json is the residual gap; keep RENDERS
-// exhaustive as class-adding props are added.
+// The matrix gap is closed two ways (issue #118), so RENDERS being
+// hand-maintained is no longer a silent liability:
+//  - Every static rb-* class literal anywhere in the component sources must be
+//    exercised by the matrix (a plain regex scan, below) -- this alone catches
+//    the #48 counterexample (`rb-btn--lg` behind a `size` value RENDERS never
+//    renders).
+//  - Every exported class-bearing prop union (Button's variant, the shared
+//    SemanticVariant) is rendered from a `const ... as const satisfies
+//    readonly <Union>[]` list paired with a compile-time `Exclude<...>
+//    extends never` assertion, so widening the union without extending the
+//    list fails `tsc --noEmit` (which the package test script runs first) --
+//    the matrix cannot silently fall behind an exported type.
+// The one residual: a dynamic template over a LOCAL, non-exported union --
+// today only Stepper's three index-derived states -- has no type to check
+// exhaustiveness against. It is pinned by its own test instead of hidden: the
+// Stepper matrix entry must render all three derived states.
+//
+// (typescript@7.0.2, the version this package's devDependency resolves to,
+// no longer ships the classic compiler API `import ts from "typescript"` used
+// to expect -- `lib/typescript.js` is gone and the "." export is a version
+// stub -- so the gap is closed with a source scan plus type-level
+// exhaustiveness instead of a compiler-API-driven scan.)
 //
 // The CSS-only utilities (rb-table/--interactive, rb-num, rb-muted, rb-pre,
 // rb-log) have no React wrapper, so no render can emit them; they stay listed
@@ -32,11 +47,13 @@
 // test asserts they are NOT emitted, so `react: null` stays honest.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import type { DataTableColumn } from "./DataTable.js";
+import type { ButtonProps, SemanticVariant } from "./index.js";
 import * as UI from "./index.js";
 
 interface Row {
@@ -61,15 +78,23 @@ const DATATABLE_COLUMNS: DataTableColumn<Row>[] = [
 // was left out. Composition counts: NavRail renders NavLinks, LinksIndex
 // renders Cards + Badges -- rendering the parent emits the children's classes,
 // exactly as a consumer gets them.
-const SEMANTIC = ["info", "success", "warning", "danger"] as const;
+
+/** Compile-time exhaustiveness: `Missing` must be `never`, i.e. every member of the
+ * union appears in the list. Widening the union without extending the list fails
+ * `tsc --noEmit`, which the package test script runs before any test (#118). */
+type AssertNever<T extends never> = T;
+
+type ButtonVariant = Exclude<NonNullable<ButtonProps["variant"]>, "default">;
+const BUTTON_VARIANTS = ["primary", "accent", "danger", "ghost"] as const satisfies readonly ButtonVariant[];
+type _ButtonVariantsExhaustive = AssertNever<Exclude<ButtonVariant, (typeof BUTTON_VARIANTS)[number]>>;
+
+const SEMANTIC = ["info", "success", "warning", "danger"] as const satisfies readonly SemanticVariant[];
+type _SemanticExhaustive = AssertNever<Exclude<SemanticVariant, (typeof SEMANTIC)[number]>>;
 
 const RENDERS: Array<{ component: string; el: ReactElement }> = [
-  // Button: base, each colour variant, compact size, icon-only.
+  // Button: base, every colour variant (exhaustive -- see BUTTON_VARIANTS above), compact size, icon-only.
   { component: "Button", el: <UI.Button>Go</UI.Button> },
-  { component: "Button", el: <UI.Button variant="primary">Go</UI.Button> },
-  { component: "Button", el: <UI.Button variant="accent">Go</UI.Button> },
-  { component: "Button", el: <UI.Button variant="danger">Go</UI.Button> },
-  { component: "Button", el: <UI.Button variant="ghost">Go</UI.Button> },
+  ...BUTTON_VARIANTS.map((v) => ({ component: "Button", el: <UI.Button variant={v}>Go</UI.Button> })),
   { component: "Button", el: <UI.Button size="sm">Go</UI.Button> },
   { component: "Button", el: <UI.Button iconOnly aria-label="Close" /> },
   // Card: base and raised.
@@ -224,6 +249,50 @@ const EMITTED = new Set<string>();
 for (const { el } of RENDERS) {
   for (const c of rbClassesIn(renderToStaticMarkup(el))) EMITTED.add(c);
 }
+
+// -- #118: close the matrix gap -- source-literal scan + registered dynamic
+// templates, no compiler API (typescript@7.0.2 no longer ships one; see the
+// plan's decision 3). Every static rb-* class in the component sources must be
+// exercised by the matrix (the #48 counterexample -- `rb-btn--lg` behind a
+// size value RENDERS never renders -- fails here), and every dynamic
+// `rb-...${x}` template must be registered with the mechanism that keeps its
+// union exhaustive (the typed lists above).
+const SRC = dirname(fileURLToPath(import.meta.url));
+const SOURCE_FILES = readdirSync(SRC).filter(
+  (f) => /\.tsx?$/.test(f) && !/\.test\.tsx?$/.test(f) && f !== "test-dom.ts",
+);
+const DYNAMIC_TEMPLATES: Record<string, string> = {
+  "rb-btn--": "variant", // Button: exported union, exhaustive via BUTTON_VARIANTS
+  "rb-badge--": "variant", // Badge: SemanticVariant, exhaustive via SEMANTIC
+  "rb-alert--": "variant", // Alert: same
+  "rb-stepper--": "state", // Stepper: local union derived from index arithmetic -- the residual; all three states rendered, asserted below
+};
+
+function scanSources() {
+  const literals = new Set<string>();
+  const templates: Record<string, string> = {};
+  for (const f of SOURCE_FILES) {
+    const src = readFileSync(join(SRC, f), "utf-8");
+    for (const m of src.matchAll(/(["'`])(rb-[\w-]+)\1/g)) literals.add(m[2]);
+    for (const m of src.matchAll(/`(rb-[\w-]+)\$\{([^}]+)\}`/g)) templates[m[1]] = m[2].trim();
+  }
+  return { literals, templates };
+}
+
+test("every static rb-* class literal in the component sources is emitted by the render matrix (#118)", () => {
+  const { literals } = scanSources();
+  const unexercised = [...literals].filter((c) => !EMITTED.has(c)).sort();
+  assert.deepEqual(unexercised, [], `in source but never rendered by RENDERS: ${unexercised.join(", ")} -- add the prop value to the matrix`);
+});
+
+test("every dynamic rb-* template in the sources is registered with an exhaustiveness mechanism (#118)", () => {
+  const { templates } = scanSources();
+  assert.deepEqual(templates, DYNAMIC_TEMPLATES, "a new `rb-...${x}` template must be registered here together with a typed, exhaustive value list for its union");
+});
+
+test("the Stepper matrix entry renders all three derived states (#118 residual)", () => {
+  for (const s of ["complete", "current", "upcoming"]) assert.ok(EMITTED.has(`rb-stepper--${s}`), `rb-stepper--${s} not emitted`);
+});
 
 // -- contract.json's declared class set, split by whether React backs it ------
 interface ContractComponent {

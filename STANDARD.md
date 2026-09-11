@@ -427,11 +427,21 @@ in turn reconciled against what `@rackbops/ui-react` emits: a test renders
 every export across a matrix of its class-adding props and asserts the emitted
 `rb-*` set equals that class set in both directions -- no emission missing from
 the contract, no contract entry unrendered
-`[tested: components/react/src/contract-classes.test.tsx, #48]`. The matrix is
-maintained by hand, so a class reachable only through a prop it does not cover
-is caught not there but by the closed-world check below, once any theme styles
-it. The CSS-only utilities (no React wrapper) stay listed in `contract.json`
-and are covered by the theme-parity check alone.
+`[tested: components/react/src/contract-classes.test.tsx, #48]`. The matrix
+(`RENDERS`) is maintained by hand, but the gap that leaves open is closed
+mechanically two ways, not left to the closed-world check below (#118): every
+static `rb-*` class literal anywhere in the component sources must be exercised
+by the matrix (a source scan), and every exported class-bearing prop union
+(Button's `variant`, the shared `SemanticVariant`) is rendered from a value
+list declared `as const satisfies readonly <Union>[]` paired with a
+compile-time exhaustiveness assertion, so widening the union without
+extending the list fails `tsc --noEmit` before any test runs
+`[tested: components/react/src/contract-classes.test.tsx, #118]`. The one
+residual is a dynamic template over a local, non-exported union -- today only
+`Stepper`'s three index-derived states -- which has no exported type to check
+exhaustiveness against; it is pinned by its own test instead of hidden. The
+CSS-only utilities (no React wrapper) stay listed in `contract.json` and are
+covered by the theme-parity check alone.
 A class in the list is either styled in every theme, entered in the
 allowlist below, or -- for the three ARIA-pairing checks and the dialog-blur
 check -- listed in that check's `exempt` array (only the concrete pair's
@@ -965,6 +975,7 @@ identity paragraph and the README table.
 | Contract as data (`contract.json`), SKILL.md generated, pair parity | `contract.test.mjs`, `pair-parity.test.mjs`, `scripts/generate-skill-table.mjs` | live (#47) |
 | Full `REQUIRED_CLASSES` parity (every shared component's full class set) + data-driven allowlist + closed-world "no undocumented class" check | `contract.test.mjs` | live (#47) |
 | Required class set derived from React emissions (emitted `rb-*` set == `contract.json`'s React-backed classes) | `components/react/src/contract-classes.test.tsx` | live (#48) |
+| Matrix-exhaustiveness gap closed: every static `rb-*` source literal exercised (scan) and every exported class-bearing union exhaustive at compile time; only a local, non-exported union (Stepper's derived states) stays a pinned residual | `components/react/src/contract-classes.test.tsx` | live (#118) |
 | Every shared component file exists per theme | `contract.test.mjs` | live (#47) |
 | Contrast ratios for the fixed token pairs (computed from `tokens.css`) | `contrast.test.mjs` | live (#49) |
 | Showcase renders full ARIA (nav `aria-current`, tab/tabpanel roles + `aria-selected`, label `for`) | showcase | live (#91) |
