@@ -178,6 +178,14 @@ STANDARD.md section 5.1.
   nav: bordered pill buttons on surface-2; the active tab gets accent text, an
   accent-tinted border, and the accent wash; an optional trailing badge in
   faint text.
+- **Wordmark** `.rb-wordmark` (+ `__spark`) — the brand mark: an inline-flex
+  Sora h1 (`--rb-font-display`, weight 600 via `--rb-font-weight-medium`,
+  tracking `-0.01em`) at `15px` (the arcane console value this was scaffolded
+  from), with the rationed teal → mint gradient clipped into the text; the
+  spark mark stays solid accent. Was this pair's extra (with the arcane pair)
+  until #185 made it a shared component in all fourteen — the ten themes that
+  don't ration their gradient here paint the same anatomy solid `--rb-text`
+  instead. Kenzen's own app does not currently use it.
 - **Table** `.rb-table` (+ `.rb-num`) — dense data table, faint header rule,
   tabular numerals, row hover to surface-2. `--interactive` marks clickable
   rows: pointer cursor, plus a focus-visible ring (and the surface-2 wash) for
@@ -205,11 +213,10 @@ STANDARD.md section 5.1.
 ### Theme extras
 
 Carried over from the arcane pair this was scaffolded from — token-driven, so
-they render correctly with no further edits, though Kenzen's own app does not
-currently use either:
+it renders correctly with no further edits, though Kenzen's own app does not
+currently use it (`.rb-wordmark` was an extra here too until #185 made it a
+shared component; see Components above):
 
-- **Wordmark** `.rb-wordmark` (+ `__spark`) — Sora h1 with the gradient clipped
-  into the text; the spark mark stays solid accent.
 - **Eyebrow** `.rb-eyebrow` — small mono uppercase section label in the accent,
   wide-tracked.
 

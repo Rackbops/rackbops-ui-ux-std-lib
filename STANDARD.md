@@ -406,6 +406,7 @@ extras), so an undocumented class fails too]`. The React column is the
 | `dialog.css` | `.rb-dialog`, `__title`, `__actions`; `__body` | `Dialog` | `__body` is a no-op in four themes that pad `.rb-dialog` instead -- sanctioned by #42's verdict, allowlisted in `contract.json` (section 5.3) `[tested]` |
 | `tabs.css` | `.rb-tabs`, `.rb-tab`, `.rb-tab--active`, `.rb-tabpanel` | `Tabs` | SHOULD pair `--active` with `[aria-selected="true"]`; checked by `contract.test.mjs` against `contract.json`'s `ariaPairs`, all fourteen comply `[tested]` |
 | `tabstrip.css` | `.rb-tabstrip`, `__tab`, `__tab--active`, `__badge` | `Tabstrip` | Top-level view nav (bordered pill buttons), distinct from `tabs.css`'s text-underline tabs inside a panel; formerly a two-theme extra (arcane-obsidian/arcane-parchment, reverse-documented from artifact-console) with no React wrapper, now shared in all fourteen (K4-10 give-back from Kenzen) |
+| `wordmark.css` | `.rb-wordmark`, `__spark` | -- | The brand mark: an inline-flex `h1` in `--rb-font-display` (`--rb-font-weight-medium`, `--rb-heading-tracking`, `width: fit-content`) with a solid-`--rb-accent` `__spark`. Paint follows each theme's own gradient ration: the arcane and kenzen pairs clip `--rb-accent-grad` into the text (at their `15px` console size); the other ten paint it solid `--rb-text` at `1rem` and spend no gradient. Formerly a four-theme extra (arcane + kenzen pairs, reverse-documented from artifact-console), shared in all fourteen since #185 (give-back from artifact-console 2.0); markup + class, no React wrapper |
 | `data-table.css` | `.rb-table`, `.rb-num`, `__group-row`, `__sort`, `__sort-icon`, `.rb-table-scroll` | `DataTable` | Split from `table.css` at K4-10 so each `contract.json` component key maps to its own file `[tested]`; `__sort-icon` is the muted affordance on an inactive sortable header, `--rb-text-faint` at rest / `--rb-text` on hover -- the active header's arrow carries no class of its own (#175) |
 | `table.css` | `.rb-table--interactive` | -- | Hand-applied by the consumer -- `DataTable` never sets it |
 | `progress.css` | `.rb-progress` on a native `<progress>` (`appearance: none`, `::-webkit-progress-bar`, `::-webkit-progress-value`, `::-moz-progress-bar`); `.rb-spinner` | `Progress`, `Spinner` | Omitting `value` puts `<progress>` in the `:indeterminate` state, styled with an animated sweep on `:indeterminate::-webkit-progress-bar` and `:indeterminate::-moz-progress-bar` -- always two separate rules, never comma-joined, since an engine that doesn't recognise one vendor pseudo-element drops the whole selector list `[tested]` |
@@ -520,15 +521,18 @@ A theme MAY ship classes beyond the shared set. Rules:
   and `:73` (`Badge`); `EmptyState.tsx:50`, #173).
 - Shown in the showcase only in a section labelled as extras (section 13).
 
-Extras shipping today: `.rb-wordmark` (+ `__spark`), `.rb-eyebrow` -- arcane
-pair and the Kenzen pair; `.rb-eyebrow` also in the studio pair; `.rb-rack`
-(+ `__top`, `__live`, `__bars`, `__foot`), `.rb-principles`, `.rb-principle`
-(+ `__n`, `__body`), `.rb-tags`, `.rb-tag`, `.rb-card__tag`, `.rb-btn__arrow`
--- studio pair; `.rb-badge--primary`, `.rb-bg`, `.rb-progress--accent` -- the
-three ports; `.rb-chip` (+ `--selected`), `.rb-card--floating` -- summer-cloud.
-`.rb-eyebrow` is in six themes, not the shared set -- correctly filed
-under Theme-specific extras in SKILL.md, and shown in the showcase only
-under a labelled extras section (#168) `[tested: site/showcase-extras.test.mjs]`.
+Extras shipping today: `.rb-eyebrow` -- arcane pair, Kenzen pair, and the
+studio pair; `.rb-rack` (+ `__top`, `__live`, `__bars`, `__foot`),
+`.rb-principles`, `.rb-principle` (+ `__n`, `__body`), `.rb-tags`, `.rb-tag`,
+`.rb-card__tag`, `.rb-btn__arrow` -- studio pair; `.rb-badge--primary`,
+`.rb-bg`, `.rb-progress--accent` -- the three ports; `.rb-chip` (+
+`--selected`), `.rb-card--floating` -- summer-cloud. `.rb-wordmark` (+
+`__spark`) was the arcane and Kenzen pairs' extra until #185 promoted it to
+the shared set (5.1); the showcase now demos it in its own "Wordmark"
+section, apart from the extras sections. `.rb-eyebrow` is in six themes, not
+the shared set -- correctly filed under Theme-specific extras in SKILL.md,
+and shown in the showcase only under a labelled extras section (#168)
+`[tested: site/showcase-extras.test.mjs]`.
 
 ### 5.5 Naming
 
@@ -829,7 +833,9 @@ The showcase is the library's visual acceptance test. It MUST:
   two `Theme extras — …` sections), never in a generic section -- except the
   ports' opt-in `.rb-bg` page canvas (`:570-571`), applied to `<body>` itself
   rather than demoed in a section, since a page background is not a
-  component `[tested: site/showcase-extras.test.mjs, #168]`;
+  component `[tested: site/showcase-extras.test.mjs, #168]`; the wordmark
+  stopped being an extra at #185 and moved to its own generic "Wordmark"
+  section, so it is not one of the two;
 - read the roster from the manifest and inject fonts on switch;
 - style its own chrome (`.sc-*`) with tokens only, so it is on-theme under
   every theme (`site/index.html:9-40`);
@@ -840,15 +846,39 @@ The showcase is the library's visual acceptance test. It MUST:
   depends only on its own content (#186). The visual job disables
   `backdrop-filter` globally before every capture, because Chromium renders
   it nondeterministically across sessions (#190) -- in practice this only
-  visibly changes the three themes whose CSS spends `backdrop-filter` on
+  applies to the three themes whose CSS spends `backdrop-filter` on
   something other than the dialog backdrop (`luminous-precision`,
   `neon-butterfly`, `summer-cloud`: cards, nav rail, alerts, and/or links)
   (every other theme either uses `backdrop-filter` only on the native
   `<dialog>`'s `::backdrop` -- which a `#demo-dialog` element capture
   never includes, verified 0px either way -- or, for the concrete pair,
-  never applies it at all, `styles/concrete-signal/design.md:67-69`);
-  the glass effect itself is
-  reviewed by eye, not by baseline, until a deterministic fix lands. A new
+  never applies it at all, `styles/concrete-signal/design.md:67-69`).
+  Precisely: Chromium composites a `backdrop-filter` layer in one of two
+  stable modes, chosen per session (not per element), and text drawn over
+  that layer re-antialiases with whichever mode won -- the actual mechanism,
+  not mere noise (confirmed: CI stayed in one mode in every one of its runs
+  on main until #191's regen landed the other mode (2026-09-11), failing
+  `main` outright -- verified against the job's full recorded run history,
+  `gh run list --workflow=ci.yml --branch main`, 155 runs back to
+  2026-08-31). With the filter on, captures of the glass-bearing tiles are
+  therefore NOT stable
+  across sessions or machines -- reconfirmed by #192's audit, which found
+  `neon-butterfly`'s Cards tile differing in 6 of 10 independent on-vs-on
+  session pairs, up to 1.68% -- above the job's own 0.1% ratio threshold.
+  #192 also investigated pinning a deterministic compositor path to restore
+  the effect to the baselines (a `--disable-gpu` candidate went 10/10 clean
+  in a local determinism experiment, with the flag verified reaching the
+  real spawned process's command line) but did not adopt it: measured in a
+  session where an on-vs-off capture came out identical at the job's
+  thresholds on all twelve glass-bearing tiles, the blur's own contribution
+  differs by at most one unit in 255 per channel -- below the pixel
+  threshold (0.1) -- so what the override actually forfeits is the
+  mode-dependent antialiasing artifact above, not a blur effect the job
+  could otherwise photograph; there is nothing measurable left for a
+  compositor pin to restore. `--disable-gpu`'s 10/10 local result is
+  recorded on #192 for the day a theme's glass effect is strong enough at a
+  measured location to matter. The effect stays reviewed by eye, not by
+  baseline. A new
   theme's PR carries its baseline set -- that is the review artefact for
   "does it look out of place".
 

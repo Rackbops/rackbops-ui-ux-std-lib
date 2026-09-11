@@ -115,6 +115,13 @@ Class prefix `rb-`. Variants use BEM-ish modifiers (`rb-btn--accent`).
   Shared identically across every theme via `--rb-*` tokens (K4-10 give-back
   from Kenzen; previously arcane-obsidian/arcane-parchment's own two-theme
   extra, reverse-documented from artifact-console).
+- **Wordmark** `.rb-wordmark` (+ `__spark`) — a library addition, not part of
+  the nazuraki port (upstream has no wordmark surface): an inline-flex h1 in
+  the JetBrains Mono display voice (weight 700 via `--rb-font-weight-medium`,
+  riding the wide `0.1em` heading tracking) at `1rem`, painted solid
+  `--rb-text` with a solid-lilac spark mark — the neutral shared anatomy, no
+  gradient or glow invented for the upstream. Shared in all fourteen themes
+  since #185.
 - **Table** `.rb-table` (+ `.rb-num`) — lilac header rule, glass row hover. `--interactive`
   marks clickable rows: pointer cursor, plus a focus-visible ring (and the
   same glass wash) for a `tabindex` row or a row-wrapping button/link. `DataTable` (the React component) adds three more classes on the same shared tokens, unstyled beyond them so they read identically in every theme: `__group-row` for a labelled group-header row, `__sort` for the clickable sort-header button, and the separate top-level `.rb-table-scroll` for a sticky-header scroll wrapper.
@@ -138,7 +145,8 @@ Class prefix `rb-`. Variants use BEM-ish modifiers (`rb-btn--accent`).
   states.
 
 This port carries nazuraki's original component set; the rackbops-specific
-`eyebrow`, `tabstrip`, and `wordmark` surfaces are not part of it.
+`eyebrow` extra is not part of it, and the shared `tabstrip` and `wordmark`
+components are library additions here, not ported surfaces.
 `.rb-card--raised` is also absent: nazuraki's own card never had a second
 elevation tier, so the port doesn't invent one — `Card raised` is a
 documented no-op here (see `contract.test.mjs`'s allowlist).

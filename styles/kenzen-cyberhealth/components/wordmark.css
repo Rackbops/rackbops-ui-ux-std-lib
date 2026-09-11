@@ -1,7 +1,10 @@
-/* kenzen-cyberhealth — wordmark (theme extra)
+/* kenzen-cyberhealth — wordmark
  * The brand voice: a Sora display h1 with the ONE gradient clipped into the
  * text, and a solid-accent spark mark that stays un-clipped. This and the
- * active tab underline are the only two places the gradient is spent. */
+ * active tab underline are the only two places the gradient is spent.
+ * A shared component in all fourteen themes since #185 (formerly this pair's
+ * + the arcane pair's extra); the ten themes that don't ration their gradient
+ * to the wordmark paint the same anatomy solid --rb-text instead. */
 :where([data-rb-style="kenzen-cyberhealth"], [data-rb-style="kenzen-cyberhealth"] *).rb-wordmark {
   display: inline-flex;
   /* Sizes to its own content, never to a flex/grid ancestor's cross-axis stretch (e.g. a

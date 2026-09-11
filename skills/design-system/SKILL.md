@@ -112,6 +112,7 @@ This table is generated from `styles/contract.json` — edit that file, then run
 | `Dialog` | `.rb-dialog` | native <dialog>; required open + onClose (onClose keeps the parent in sync after a native Escape close, so it must set open=false to reopen); optional actions; __body is a documented no-op in four themes (section 5.3) |
 | `Tabs` | `.rb-tabs` | items: {id, label, content}[]; --active also matches [aria-selected="true"] in every theme; className/rest forward onto the tablist element -- ref targets the outer structural wrapper spanning tabs+panels (#84); optional controlled activeId/onChange pair mirroring NavRail, uncontrolled via defaultId when activeId is omitted (#169) |
 | `Tabstrip` | `.rb-tabstrip` | top-level view nav (bordered pill buttons), distinct from Tabs' text-underline tabs inside a panel; controlled tabs/selected/onSelect + label; formerly a two-theme extra (arcane-obsidian/arcane-parchment) -- now a shared component in all fourteen, K4-10 give-back from Kenzen |
+| — | `.rb-wordmark` | brand mark: an h1 in the display face with a solid-accent __spark; the text is gradient-clipped only where a theme rations --rb-accent-grad to the wordmark (arcane + kenzen pairs), solid --rb-text everywhere else; formerly a four-theme extra -- shared in all fourteen since #185; markup + class, no React wrapper |
 | `DataTable` | `.rb-table` | columns/rows/rowKey; optional groupBy/groupOrder, defaultSortKey/defaultSortDirection, sticky (wraps in rb-table-scroll); numeric columns get rb-num; an inactive sortable header shows a muted rb-table__sort-icon affordance (#175), the active one shows the arrow instead; per-column width renders a <colgroup> and switches to table-layout: fixed (#150) |
 | — | `.rb-table--interactive` | clickable-row utility, hand-applied by the consumer to any table (DataTable-rendered or not) -- DataTable itself never sets it, style directly |
 | `Progress`/`Spinner` | `.rb-progress` | native <progress> pseudo-element contract enforced separately (not class-based); omit value for the animated :indeterminate state |
@@ -144,15 +145,16 @@ use `Spinner` for loading and `EmptyState` for genuinely empty. Carries
 no theme obligation, so it isn't in the table above.
 
 Theme-specific extras (styled only under that theme — check before using): the
-arcane pair adds `.rb-wordmark`, `.rb-tabstrip`, and `.rb-eyebrow`; the
+arcane pair adds `.rb-eyebrow`; the
 rackbops pair adds `.rb-rack` (equaliser panel), `.rb-principles`/`.rb-principle`,
 `.rb-tags`/`.rb-tag`, `.rb-btn__arrow`, `.rb-card__tag`, and `.rb-eyebrow` too;
-the kenzen pair (`kenzen-midnight`, `kenzen-cyberhealth`) adds `.rb-wordmark`
-(with `.rb-wordmark__spark`) and `.rb-eyebrow`;
+the kenzen pair (`kenzen-midnight`, `kenzen-cyberhealth`) adds `.rb-eyebrow`;
 the three nazuraki ports (`luminous-precision`, `neon-butterfly`,
 `summer-cloud`) add `.rb-badge--primary`, `.rb-bg`, and `.rb-progress--accent`;
 `summer-cloud` additionally adds `.rb-chip` and `.rb-card--floating`. Full
-per-theme lists live in `styles/contract.json`'s `extras`.
+per-theme lists live in `styles/contract.json`'s `extras`. (`.rb-wordmark` and
+`.rb-tabstrip`, once arcane/kenzen extras, are shared components in the table
+above — safe under every theme.)
 
 Visual reference: run `pnpm showcase` in the std-lib to render every component
 per theme with a switcher.

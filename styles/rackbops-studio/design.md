@@ -159,6 +159,14 @@ Class prefix `rb-`; shared token/class contract with the other themes.
   Shared identically across every theme via `--rb-*` tokens (K4-10 give-back
   from Kenzen; previously arcane-obsidian/arcane-parchment's own two-theme
   extra, reverse-documented from artifact-console).
+- **Wordmark** `.rb-wordmark` (+ `__spark`) — the brand mark: an inline-flex
+  h1 in the display voice (the system sans, weight 600 via
+  `--rb-font-weight-medium` — not the 800 headline weight, tracking
+  `-0.02em`) at `1rem`, painted solid `--rb-text` (navy ink) — the vermillion
+  gradient stays spent on the rack bars only; the spark mark is solid
+  vermillion. Shared in all fourteen themes since #185 (formerly an
+  arcane/kenzen-pair extra, where the gradient is clipped into the text
+  instead); rackbops.com itself has no such mark.
 - **Table** `.rb-table` (+ `.rb-num`) — mono uppercase header rule, generous rows,
   quiet hover wash. `--interactive` marks clickable rows: pointer cursor, plus
   a bolder 2.5px focus-visible ring (and the same hover wash) for a `tabindex`

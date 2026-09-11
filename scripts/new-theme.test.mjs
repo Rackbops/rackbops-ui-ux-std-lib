@@ -294,7 +294,7 @@ test("applyContractAdditions edits contract.json's real text without reformattin
 test("applyContractAdditions produces new entries in the file's own compact style (space after : and inside { })", () => {
   const additions = computeContractAdditions(contract, "arcane-obsidian", "scratch-test");
   const out = applyContractAdditions(contractText, "scratch-test", additions);
-  assert.ok(out.includes('"scratch-test": ["rb-wordmark", "rb-wordmark__spark"'));
+  assert.ok(out.includes('"scratch-test": ["rb-eyebrow"]'));
 });
 
 test("applyContractAdditions's compact-style formatting never alters a ':' or ',' that occurs inside a string VALUE", () => {
@@ -454,17 +454,18 @@ test("renderDesignMd includes the attribution block and Token mapping section on
 
 test("renderThemeExtrasSection returns null for no extras, and a bulleted TODO for real ones", () => {
   assert.equal(renderThemeExtrasSection([]), null);
-  const section = renderThemeExtrasSection(["rb-wordmark", "rb-eyebrow"]);
+  const section = renderThemeExtrasSection(["rb-chip", "rb-eyebrow"]);
   assert.ok(section.startsWith("### Theme extras"));
-  assert.ok(section.includes(".rb-wordmark"));
+  assert.ok(section.includes(".rb-chip"));
   assert.ok(section.includes(".rb-eyebrow"));
 });
 
 test("renderDesignMd includes a '### Theme extras' subheading (STANDARD.md 11 item 10) between Components and Code syntax when --from carries extras", () => {
-  // arcane-obsidian's own extras (rb-wordmark, rb-tabstrip*, rb-eyebrow) are
-  // copied verbatim into the new theme's CSS, so a scaffold from it must
-  // document them -- otherwise the acceptance bullet "design.md matches the
-  // STANDARD.md section-11 section order" silently drops an applicable item.
+  // arcane-obsidian's own extra (rb-eyebrow; rb-wordmark and rb-tabstrip* were
+  // extras too before they joined the shared set) is copied verbatim into the
+  // new theme's CSS, so a scaffold from it must document it -- otherwise the
+  // acceptance bullet "design.md matches the STANDARD.md section-11 section
+  // order" silently drops an applicable item.
   const md = renderDesignMd({
     id: "scratch-test",
     scheme: "dark",
@@ -481,7 +482,9 @@ test("renderDesignMd includes a '### Theme extras' subheading (STANDARD.md 11 it
   const codeSyntaxIdx = headings.indexOf("Code syntax");
   assert.ok(componentsIdx !== -1 && extrasIdx !== -1 && codeSyntaxIdx !== -1);
   assert.ok(componentsIdx < extrasIdx && extrasIdx < codeSyntaxIdx, "Theme extras must sit between Components and Code syntax");
-  assert.ok(md.includes(".rb-wordmark"));
+  const extrasBody = md.slice(md.indexOf("### Theme extras"), md.indexOf("## Code syntax"));
+  assert.ok(extrasBody.includes(".rb-eyebrow"), "the source theme's real extra must be listed");
+  assert.ok(!extrasBody.includes(".rb-wordmark"), "a shared component must not be re-listed as an extra");
 });
 
 test("renderDesignMd includes a counterpart pointer heading only when --pair is given", () => {
