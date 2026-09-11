@@ -100,9 +100,10 @@ build_changelog_from_log() {
   # its own group so a breaking subject (feat!:, feat(scope)!:) is both kept
   # under its own type instead of dropping into "Other Changes" AND marked
   # "BREAKING:" in the notes (issue #113). Only the subject is visible here
-  # (both callers pass a %s subjects-only stream), so a "BREAKING CHANGE:"
-  # footer cannot be seen by the changelog -- it is visible only to
-  # next-version.sh, which reads full bodies for the bump. Stored in a
+  # (the caller, release-notes.sh, passes a %s subjects-only stream), so a
+  # "BREAKING CHANGE:" footer cannot be seen by the changelog -- it is
+  # visible only to next-version.sh, which reads full bodies for the bump.
+  # Stored in a
   # variable (rather than written inline in the [[ =~ ]] below) since bash's
   # conditional parser doesn't reliably handle literal parens inside an
   # inline regex there.

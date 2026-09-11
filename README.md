@@ -182,10 +182,12 @@ The two steps authenticate differently:
   the job-level `if` reads (#114). Both **are configured and live** — the
   workflow runs automatically on qualifying merges to `main`, unattended;
   `v0.1.9` and `v0.1.10` were both cut this way. Without the variable the
-  job is skipped before a runner is provisioned (previously every non-bump
-  push checked out full history just to print Skipping); without the
-  secret it no-ops as before (`RELEASE_TOKEN not set -- release/publish is
-  inert. Skipping.`), and a release can still be cut by running
+  job is skipped before a runner is provisioned (previously that inert
+  check lived only in the final step, so a repo without the secret would
+  still check out full history and set up the toolchain just to print
+  Skipping); without the secret it no-ops as before
+  (`RELEASE_TOKEN not set -- release/publish is inert. Skipping.`), and a
+  release can still be cut by running
   `.github/scripts/release.sh` locally as a fallback — it commits the
   version bump, tags, and pushes both atomically to `main`, triggering
   `publish.yml` to publish and create the release exactly as the automated
