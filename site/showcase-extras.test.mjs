@@ -28,10 +28,14 @@ const mainHtml = html.slice(MAIN_START, MAIN_END);
 const outsideMainHtml = html.slice(0, MAIN_START) + html.slice(MAIN_END + "</main>".length);
 
 /** Split a slice of the page into its top-level <section>...</section>
- * blocks. A naive split on the literal tags is enough here: no <section> in
- * this file nests another (verified by inspection; a nested one would just
- * make this test conservative in the caller's favor, matching too broadly
- * rather than missing a violation). */
+ * blocks. A naive lazy-match regex is enough here ONLY because no <section>
+ * in this file nests another (verified by inspection: 15 opens, 15 closes,
+ * strictly sequential). A nested <section> would NOT make this conservative
+ * -- the lazy match truncates at the first inner </section>, so an outer
+ * section's tail content after that point falls into no block at all and a
+ * real violation there would escape test 1 entirely. If this file ever
+ * grows a nested <section>, this function needs a real (depth-tracking)
+ * parser, not this regex. */
 function sections(source) {
   const blocks = [];
   const re = /<section[^>]*>([\s\S]*?)<\/section>/g;
