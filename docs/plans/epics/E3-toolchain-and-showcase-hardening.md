@@ -375,3 +375,85 @@ On `main`: inserting a 0.5px spacer above any section and running `pnpm visual` 
 - Own worktree from `origin/main` (fetch first); never `git stash` (step 3 says edit-and-revert instead); `git -C`, never `cd && git`; no force-push.
 - Stop conditions -- message the orchestrator: the post-snap probe finding a fractional top (the 1/64 assumption failed); pair A of the guard regressing any tile; the bot regen leaving any theme's tiles unchanged when its sections were at fractional offsets (means the snap did not run in CI).
 - Review gate as before (two read-only adversarial agents: correctness on the evaluate block and its verification vs. claims-vs-code on the pasted pairs), up to four rounds; report round count and findings; do not merge.
+
+# PR D
+
+# E3 -- Toolchain and showcase hardening: implementation plan, PR D (#125, committed reduced-motion render check)
+
+Epic #179. PR D is #125 alone, entered via `/work-on 125`. Written by the orchestrator on 2026-09-11 against `origin/main` at `9642b63` (#186 merged); line numbers are from that commit -- re-check with `grep -n`. Append this plan as a `# PR D` section at the end of the committed `docs/plans/epics/E3-toolchain-and-showcase-hardening.md` (after whatever sections are there; PR B's may land concurrently -- merge `origin/main` into your branch, no rebase, keep every section in landing order, yours last).
+
+## Locked decisions
+
+1. **The suppression list is contract data, not script data.** `styles/contract.json` gains a `reducedMotion` block: `{ "suppressions": { "<theme>": [ { "file": "card.css", "selector": ".rb-card--floating", "state": "hover", "target": "self" }, ... ] } }`. Today it declares exactly summer-cloud's seven (verified against source): `card.css` `.rb-card--floating` hover/self (`:30-33`); `link.css` `.rb-link` hover/`::after`, focus-visible/`::after`, active/self (`:53-59`); `button.css` `.rb-btn` hover/self, focus-visible/self, active/self (`:117-123`). Every other theme's reduced-motion blocks override `animation` only (neon-butterfly, luminous-precision, the studio pair's rack, every `progress.css`) -- no `transform: none` anywhere else (verified: the only other `transform: none` hits are mono-field's `text-transform: none` and summer-cloud's disabled-button rule outside any media block). Two checks read this data: a **source-level parity test** in `contract.test.mjs` (both directions: every declared suppression has a `transform: none` rule for that selector+state inside a `prefers-reduced-motion` block in the named file, and every `transform: none` inside a reduced-motion block in any theme file is declared), and the **render job** below. So a new suppression must be declared to pass the styles suite, and once declared it is render-checked; a deleted rule fails both.
+2. **The render job is `scripts/reduced-motion.mjs`, run as `pnpm visual:reduced`, in its own CI job in the Playwright container**, mirroring `visual` (`ci.yml:37-53`) -- no browser dependency enters `pnpm test`. It reuses `scripts/visual.mjs`'s setup verbatim where it matters (in-process `server`, 1000x900, theme switch through `#theme`, the stylesheet-`sheet` wait, `document.fonts.ready`) but does **not** freeze animations (it reads computed style, never pixels) and does **not** need the #186 snap or the pointer park.
+3. **Every assertion is made twice, under `page.emulateMedia({ reducedMotion: "reduce" })` and under `{ reducedMotion: "no-preference" }`, and the two must differ where the contract says they differ.** This is the guard against a vacuous pass: if emulation silently stopped applying, "transition-duration is 0s under reduce" could pass because it was 0s anyway. Concretely: `.rb-btn` `transition-duration` is all-`0s` under reduce and has at least one non-zero entry under no-preference; `.rb-spinner` `animation-duration` is `2s` under reduce and shorter under no-preference (the themes' resting 0.7-0.8s), with `animation-name` never `none` in either.
+4. **Pseudo-states are forced through CDP, not simulated with a real pointer or keyboard.** `page.context().newCDPSession(page)` -> `DOM.getDocument`, `DOM.querySelector` for the element, `CSS.forcePseudoState({ nodeId, forcedPseudoClasses: [state] })` with `state` in `hover` / `active` / `focus-visible` (all supported by current Chromium), then `getComputedStyle(el, target === "self" ? null : target).transform` read in the page. Deterministic and independent of the parked pointer; `CSS.forcePseudoState` with an empty list resets it between checks. (If `focus-visible` turns out unsupported by the pinned Chromium, fall back to `page.keyboard.press("Tab")` until `document.activeElement` is the target -- a real key press is what makes `:focus-visible` match, programmatic `focus()` does not -- and say so in the PR.)
+5. **The floating card is injected, the rest is already on the page.** The showcase renders `.rb-link` (`site/index.html:172-175`, use a non-active one), `.rb-btn` (`:60`), a checked `.rb-switch` (`:216`) and `.rb-spinner` (`:296`), but no `.rb-card--floating` (a summer-cloud extra with no showcase demo). The script appends `<div class="rb-card rb-card--floating">probe</div>` to `main` before probing and removes it after. For every declared suppression the forced-state computed `transform` must be exactly `none` under reduce; for the same element and state under no-preference it must NOT be `none` (that is what proves the rule is live, not that the transform never existed).
+6. **Functional transforms are kept, in every theme:** the checked switch thumb (`.rb-switch:checked::after`, summer-cloud `form.css:138-139` `translateX(1.25rem)`; every theme animates the thumb this way) must have a computed `::after` `transform` that is neither `none` nor the identity `matrix(1, 0, 0, 1, 0, 0)` under reduce -- reduced motion removes decoration, never the state a control's position carries.
+
+## Build order (one commit per step, Conventional Commits)
+
+### 1. Plan section -- `docs(plans): E3 PR D, committed reduced-motion render check`
+
+### 2. Contract data + parity test -- `test(styles): declare decorative reduced-motion suppressions in contract.json and check them against source (#125)`
+
+- `styles/contract.json`: add the `reducedMotion` block after `contrast` (surgical edit; the seven summer-cloud entries above, in file order; a short `"//"` note in the block explaining that a suppression is a per-theme choice -- dropping vs. instant -- so this list is owned by the theme, and that `scripts/reduced-motion.mjs` renders it).
+- `styles/test/contract.test.mjs`, beside the existing reduced-motion tests (`:718-810`): `reducedMotionBlocks(css)` (`:722`) already extracts the inner text of each `@media (prefers-reduced-motion: reduce)` block. Add, per theme: (a) for each declared entry, some rule inside a reduced-motion block of `styles/<theme>/components/<file>` has `transform: none` and a selector that contains `<selector>:<state>` followed by the target pseudo when `target` is `::after`; (b) closed-world: every `transform: none` declaration inside any reduced-motion block of any component file of that theme corresponds to a declared entry -- collect the selectors of such rules, split on commas, and require each compound to be covered. Test names: `${theme}: every declared reduced-motion suppression exists in source (#125)` and `${theme}: every transform: none inside a reduced-motion block is declared in contract.json (#125)`.
+- STANDARD.md section 7 (`:599-604`, the "MUST be neutralised" bullet): add one sentence that a decorative transform a theme drops under reduce is declared in `contract.json`'s `reducedMotion.suppressions` `[tested: contract.test.mjs both directions, #125]`.
+
+### 3. The render job -- `ci(visual): committed reduced-motion render check in the Playwright container (#125)`
+
+`scripts/reduced-motion.mjs` (new), root `package.json` script `"visual:reduced": "node scripts/reduced-motion.mjs"`. Structure:
+
+```
+setup (server, browser, page 1000x900, goto, wait) -- copy visual.mjs:42-47, :64, :103-106 minus the animation freeze and the snap
+for mode of ["reduce", "no-preference"]:
+  await page.emulateMedia({ reducedMotion: mode })
+  for theme of themes:
+    switch theme (visual.mjs:118-126 verbatim), then:
+    btn  = every comma-separated value of getComputedStyle(.rb-btn).transitionDuration
+    spin = getComputedStyle(.rb-spinner).animationName / animationDuration
+    thumb = getComputedStyle(.rb-switch:checked, "::after").transform
+    for each declared suppression of this theme (inject .rb-card--floating first if needed):
+      force the pseudo-state via CDP, read transform, reset
+    record { theme, mode, btn, spin, thumb, suppressions: [...] }
+assert per theme:
+  reduce:  btn all "0s"; spin.name !== "none" && spin.duration === "2s"; thumb not none/identity; every suppression transform === "none"
+  no-pref: btn some !== "0s"; spin.name !== "none" && spin.duration !== "2s"; every suppression transform !== "none"
+print a per-theme table; exit 1 with every failure listed
+```
+
+`.github/workflows/ci.yml`: a `reduced-motion` job after `visual`, same container and steps, `run: pnpm visual:reduced`, no artifact upload. CONTEXT.md's toolchain line for the visual job (`grep -n 'visual' CONTEXT.md`) gains the new script; STANDARD.md's status table (`:963` row for #51) gains a row: "Decorative reduced-motion suppressions resolve to `transform: none` when rendered; transitions collapse and the spinner slows to 2s in every theme" / `scripts/reduced-motion.mjs` / `live (#125)`.
+
+### 4. Nothing else. No baselines change (no pixels are captured), no theme CSS changes.
+
+## Mutation guards (paste one failing output per row)
+
+| Change | Mutation | Failing check |
+| --- | --- | --- |
+| render check, suppression | delete summer-cloud `card.css`'s reduced-motion block (`:30-33`) | `pnpm visual:reduced`: summer-cloud `.rb-card--floating` hover transform is not `none` under reduce; AND `contract.test.mjs` parity (a): declared but absent in source |
+| render check, token collapse | in one theme's `tokens.css`, delete the `--rb-transition: 0s` reduced block | `visual:reduced`: that theme's `.rb-btn` transition-duration non-zero under reduce (the existing source test at `:765` also fails) |
+| render check, spinner | change one theme's reduced `animation-duration: 2s` (progress.css) to `1s` | `visual:reduced`: spinner duration is not `2s` |
+| emulation is live | remove the `emulateMedia` call | the no-preference and reduce records are identical -> the "must differ" assertions fail (btn non-zero under reduce, suppressions not `none`) |
+| parity, closed world | add `transform: none` for `.rb-btn:hover` inside a reduced-motion block in amber-hearth `button.css` without declaring it | `contract.test.mjs` parity (b) names it |
+| parity, declared | add a bogus entry (`.rb-badge` hover) to summer-cloud's list | parity (a) names it; `visual:reduced` also fails on it under no-preference (transform already `none`, so "not none without reduce" fails) |
+
+## Acceptance to execute and paste (the #125 bullets, made concrete)
+
+1. `pnpm visual:reduced` locally (Chromium via `playwright-core` is present): the per-theme table for both modes, fourteen rows each, and the green summary. Local is valid here: nothing is compared to committed pixels.
+2. `pnpm --filter @rackbops/styles test` green with the two parity tests visible; paste summer-cloud's rows.
+3. The `reduced-motion` CI job green on the branch (link), in the Playwright container, separate from `test`.
+4. `grep -n 'reducedMotion' styles/contract.json` (the block) and `grep -n '#125' STANDARD.md CONTEXT.md scripts/reduced-motion.mjs .github/workflows/ci.yml`.
+5. The mutation table, one pasted failure per row.
+6. `pnpm test` (root) and `pnpm build` green.
+
+## Exit demo (closes the epic's "reduced-motion render job in ci.yml beside visual")
+
+On `main`: `ci.yml` runs `reduced-motion` in the Playwright container; deleting summer-cloud's `card.css` reduced-motion block fails two checks (render and parity); the no-preference pass proves the emulation is live.
+
+## Sub's operating rules
+
+- Read #125, #51 (closed; its acceptance bullet 6 is the prior art) and #179 in full before touching anything.
+- Own worktree from `origin/main`; never `git stash`; `git -C`, never `cd && git`; no force-push. The plan-file conflict rule above applies.
+- Stop conditions -- message the orchestrator: `CSS.forcePseudoState` rejecting `focus-visible` AND the keyboard fallback not matching either; any theme other than summer-cloud turning out to carry a `transform: none` inside a reduced-motion block (the closed-world test will name it; that is a finding about main, declare it only after reporting); the spinner's reduced duration not being `2s` in some theme on a clean tree.
+- Review gate as before (correctness on the CDP forcing and the two-mode logic vs. claims-vs-code on the acceptance and the STANDARD.md/CONTEXT.md sentences), up to four rounds; report round count and findings; do not merge.
