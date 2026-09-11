@@ -76,7 +76,8 @@ Muted-on-surface is tuned to clear WCAG AA (4.5:1) on every surface; the light
   `--rb-accent-wash` ring; interactive elements take the `--rb-focus-ring`
   outline (`2px solid var(--rb-accent)`).
 - The **one gradient** (`--rb-accent-grad`, violet → orchid → gold) is rationed
-  to exactly two places: the wordmark and the active-tab underline. Primary
+  to exactly two places: the wordmark and the active-tab underline (both
+  `.rb-tabs` inside a panel and the top-level `.rb-tabstrip`). Primary
   buttons stay a solid AA-safe accent fill — never the gradient.
 - Transitions `0.15s` (`--rb-transition`), `--rb-ease` timing. Every animation and transition respects
   `prefers-reduced-motion`.
@@ -118,7 +119,11 @@ Class prefix `rb-`; shared token/class contract with the other themes.
   accent, underlined with the rationed gradient.
 - **Tabstrip** `.rb-tabstrip` (+ `__tab`, `--active`, `__badge`) — top-level view
   nav: bordered pill buttons on surface-2; the active tab gets accent text, an
-  accent-tinted border, and the accent wash; an optional trailing badge in
+  accent-tinted border, and the accent wash, with the rationed gradient
+  underline (2px, sitting on the pill's bottom border -- artifact-console 1.x
+  anchors it 9px below the pill on the strip's own base line, and tucks it 3px
+  inside the pill only on mobile; this `.rb-tabstrip` has no base line, so the
+  pill's border is the nearest honest analogue); an optional trailing badge in
   faint text. Distinct from `Tabs`' text-underline tabs used inside a panel.
   Was this theme's own two-theme extra (with arcane-parchment) before K4-10
   gave it a React wrapper and the same token-driven look to every theme.

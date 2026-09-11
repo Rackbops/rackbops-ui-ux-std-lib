@@ -66,8 +66,9 @@ same mono voice with `--rb-space-3` margin, and bare `ul`/`ol` add
   ring; interactive elements take the `--rb-focus-ring` outline
   (`2px solid var(--rb-accent)`).
 - The **one gradient** (`--rb-accent-grad`, violet → orchid → gold) is rationed
-  to the wordmark and the active-tab underline only; primary buttons stay a solid
-  accent fill.
+  to the wordmark and the active-tab underline (both `.rb-tabs` inside a panel
+  and the top-level `.rb-tabstrip`) only; primary buttons stay a solid accent
+  fill.
 - Transitions `0.15s` (`--rb-transition`), `--rb-ease` timing; every animation respects `prefers-reduced-motion`.
 - 4px spacing rhythm.
 
