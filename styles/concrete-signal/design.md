@@ -32,7 +32,7 @@ counterpart ("concrete-signal-light") is documented at the end.
 | Info | `#4ea1e0` | Informational chips |
 | Success | `#4caa5c` | Healthy/live status |
 | Warning | `#e8b23a` | Caution status |
-| Danger | `#e8342a` | Destructive actions, errors |
+| Danger | `#ea463c` | Destructive actions, errors |
 
 **Rules.** Colour is functional. Resting UI is concrete grey and faint;
 safety-orange appears only on interaction, focus, active state, and

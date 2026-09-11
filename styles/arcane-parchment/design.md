@@ -14,12 +14,15 @@ attribute flip. Derived from artifact-console#31.
 
 ## Color
 
-Palette values match artifact-console's light scheme. Unlike the studio themes,
-the arcane accent (a darker violet) stays **above WCAG AA as text on white**
-(~5.5:1), so accent labels, body text, and the muted ramp all clear AA. The one
-exception — inherited from artifact-console itself — is the semantic chip colours
-(`--rb-success/--rb-warning/...`) used as small text on their faint tint, which
-sit below 4.5:1; treat those as status accents, not body copy.
+Palette values match artifact-console's light scheme, except `--rb-danger`,
+raised from the console's `#d64550` to `#d23440` so the ghost danger button's
+label clears 4.5:1 on both `--rb-bg` and `--rb-surface` (#163). Unlike the
+studio themes, the arcane accent (a darker violet) stays **above WCAG AA as
+text on white** (~5.5:1), so accent labels, body text, and the muted ramp all
+clear AA. The one exception — inherited from artifact-console itself — is the
+semantic chip colours (`--rb-success/--rb-warning/...`) used as small text on
+their faint tint, which sit below 4.5:1; treat those as status accents, not
+body copy.
 
 | Role | Value | Usage |
 | --- | --- | --- |
@@ -38,7 +41,7 @@ sit below 4.5:1; treat those as status accents, not body copy.
 | Info | `#1e6fd0` | Informational chips |
 | Success | `#1f9d57` | Healthy/live status |
 | Warning | `#c07d12` | Caution status |
-| Danger | `#d64550` | Destructive actions, errors |
+| Danger | `#d23440` | Destructive actions, errors |
 
 **Rules.** Colour is functional. Resting UI is parchment, white, and faint;
 violet appears only on interaction, focus, active state, and emphasis. Colour

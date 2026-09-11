@@ -30,7 +30,7 @@ single attribute flip.
 | Info | `#5a9fc4` | Informational chips |
 | Success | `#6ba26e` | Healthy/live status |
 | Warning | `#dba748` | Caution status |
-| Danger | `#d1614a` | Destructive actions, errors |
+| Danger | `#d2634c` | Destructive actions, errors |
 
 **Rules.** Colour is functional. Resting UI is espresso, near-black wells, and
 warm neutral ink; amber appears only on interaction, focus, active state, and
