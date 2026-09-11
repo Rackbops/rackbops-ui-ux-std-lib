@@ -454,9 +454,9 @@ test("renderDesignMd includes the attribution block and Token mapping section on
 
 test("renderThemeExtrasSection returns null for no extras, and a bulleted TODO for real ones", () => {
   assert.equal(renderThemeExtrasSection([]), null);
-  const section = renderThemeExtrasSection(["rb-wordmark", "rb-eyebrow"]);
+  const section = renderThemeExtrasSection(["rb-chip", "rb-eyebrow"]);
   assert.ok(section.startsWith("### Theme extras"));
-  assert.ok(section.includes(".rb-wordmark"));
+  assert.ok(section.includes(".rb-chip"));
   assert.ok(section.includes(".rb-eyebrow"));
 });
 
