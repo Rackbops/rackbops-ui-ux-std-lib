@@ -64,6 +64,11 @@
       "classes": ["rb-tabstrip", "rb-tabstrip__tab", "rb-tabstrip__tab--active", "rb-tabstrip__badge"],
       "notes": "top-level view nav (bordered pill buttons), distinct from Tabs' text-underline tabs inside a panel; controlled tabs/selected/onSelect + label; formerly a two-theme extra (arcane-obsidian/arcane-parchment) -- now a shared component in all fourteen, K4-10 give-back from Kenzen"
     },
+    "wordmark": {
+      "react": null,
+      "classes": ["rb-wordmark", "rb-wordmark__spark"],
+      "notes": "brand mark: an h1 in the display face with a solid-accent __spark; the text is gradient-clipped only where a theme rations --rb-accent-grad to the wordmark (arcane + kenzen pairs), solid --rb-text everywhere else; formerly a four-theme extra -- shared in all fourteen since #185; markup + class, no React wrapper"
+    },
     "data-table": {
       "react": "DataTable",
       "classes": ["rb-table", "rb-num", "rb-table__group-row", "rb-table__sort", "rb-table__sort-icon", "rb-table-scroll"],
@@ -111,8 +116,8 @@
     { "theme": "*", "class": "rb-stepper--upcoming", "reason": "default/resting state -- falls through to the base node/label rule, no override needed" }
   ],
   "extras": {
-    "arcane-obsidian": ["rb-wordmark", "rb-wordmark__spark", "rb-eyebrow"],
-    "arcane-parchment": ["rb-wordmark", "rb-wordmark__spark", "rb-eyebrow"],
+    "arcane-obsidian": ["rb-eyebrow"],
+    "arcane-parchment": ["rb-eyebrow"],
     "rackbops-studio": ["rb-rack", "rb-rack__top", "rb-rack__live", "rb-rack__bars", "rb-rack__foot", "rb-principles", "rb-principle", "rb-principle__n", "rb-principle__body", "rb-tags", "rb-tag", "rb-card__tag", "rb-btn__arrow", "rb-eyebrow"],
     "rackbops-noir": ["rb-rack", "rb-rack__top", "rb-rack__live", "rb-rack__bars", "rb-rack__foot", "rb-principles", "rb-principle", "rb-principle__n", "rb-principle__body", "rb-tags", "rb-tag", "rb-card__tag", "rb-btn__arrow", "rb-eyebrow"],
     "luminous-precision": ["rb-badge--primary", "rb-bg", "rb-progress--accent"],
@@ -123,8 +128,8 @@
     "amber-hearth": [],
     "amber-ember": [],
     "mono-field": [],
-    "kenzen-midnight": ["rb-wordmark", "rb-wordmark__spark", "rb-eyebrow"],
-    "kenzen-cyberhealth": ["rb-wordmark", "rb-wordmark__spark", "rb-eyebrow"]
+    "kenzen-midnight": ["rb-eyebrow"],
+    "kenzen-cyberhealth": ["rb-eyebrow"]
   },
   "ariaPairs": [
     {

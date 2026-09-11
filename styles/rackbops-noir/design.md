@@ -80,7 +80,7 @@ The token pairs `styles/test/contrast.test.mjs` computes clear their WCAG target
 Class prefix `rb-`; the full rackbops-studio inventory, styled identically from
 tokens — `.rb-btn` (+ `--sm` compact size, `.rb-icon-btn` icon-only square,
 `.rb-btn__arrow` hover slide), `.rb-card` (+ `__tag`), `.rb-link`, `.rb-nav-rail`, the form set, `.rb-badge`,
-`.rb-alert`, `.rb-dialog`, `.rb-tabs`, `.rb-tabstrip` (+ `__tab`, `--active`, `__badge`), `.rb-table` (+ `.rb-num`, `--interactive`, `__group-row`, `__sort`, `.rb-table-scroll`), `.rb-progress`/`.rb-spinner`,
+`.rb-alert`, `.rb-dialog`, `.rb-tabs`, `.rb-tabstrip` (+ `__tab`, `--active`, `__badge`), `.rb-wordmark` (+ `__spark`; solid `--rb-text` at `1rem`, system sans weight 600 — the gradient stays on the rack bars), `.rb-table` (+ `.rb-num`, `--interactive`, `__group-row`, `__sort`, `.rb-table-scroll`), `.rb-progress`/`.rb-spinner`,
 `.rb-muted`, `.rb-pre` (+ `.rb-log`), `.rb-stepper`. See rackbops-studio's `design.md` for
 the per-component notes.
 

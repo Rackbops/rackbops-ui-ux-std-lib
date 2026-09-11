@@ -75,7 +75,7 @@ since that count has drifted before):
 `--raised`), `.rb-link`, `.rb-nav-rail`, the form set (`.rb-input`/`.rb-textarea`/
 `.rb-select`/`.rb-label`/`.rb-field`/`.rb-choice`/`.rb-checkbox`/`.rb-radio`/
 `.rb-switch`), `.rb-badge`, `.rb-alert`, `.rb-dialog`, `.rb-tabs`/`.rb-tab`/
-`.rb-tabpanel`, `.rb-tabstrip` (+ `__tab`, `--active`, `__badge`), `.rb-table` (+ `.rb-num`, `--interactive`, `__group-row`, `__sort`, `.rb-table-scroll`), `.rb-progress`/`.rb-spinner`,
+`.rb-tabpanel`, `.rb-tabstrip` (+ `__tab`, `--active`, `__badge`), `.rb-wordmark` (+ `__spark`; solid `--rb-text` at `1rem`, `system-ui` weight 600 — the gradient stays on the active-tab underline), `.rb-table` (+ `.rb-num`, `--interactive`, `__group-row`, `__sort`, `.rb-table-scroll`), `.rb-progress`/`.rb-spinner`,
 `.rb-muted` (no italic — brutalism never softens with a slant), `.rb-pre` (+ `.rb-log`), `.rb-stepper`
 (zero radius falls out of `--rb-radius` automatically). One exception:
 `components/form.css`'s select-arrow SVG data-URI hardcodes its own stroke

@@ -130,6 +130,13 @@ Class prefix `rb-`; shared token/class contract with the other themes. No
   Shared identically across every theme via `--rb-*` tokens (K4-10 give-back
   from Kenzen; previously arcane-obsidian/arcane-parchment's own two-theme
   extra, reverse-documented from artifact-console).
+- **Wordmark** `.rb-wordmark` (+ `__spark`) — the brand mark: an inline-flex
+  h1 in the serif display voice (`--rb-font-display`, weight 600 via
+  `--rb-font-weight-medium`, tracking `-0.01em`) at `1rem`, painted solid
+  `--rb-text` — the one gradient stays rationed to the active-tab underline
+  and is never spent here; the spark mark is solid accent. Shared in all
+  fourteen themes since #185 (formerly an arcane/kenzen-pair extra, where the
+  gradient is clipped into the text instead).
 - **Table** `.rb-table` (+ `.rb-num`) — faint header rule, tabular numerals,
   row hover to surface-2 with the theme's own soft transition, normal-case
   weight-600 headers. `--interactive` marks clickable rows: pointer cursor,

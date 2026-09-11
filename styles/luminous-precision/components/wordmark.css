@@ -1,0 +1,25 @@
+/* luminous-precision — wordmark
+ * A library addition, not part of the nazuraki port: the upstream theme has no wordmark
+ * surface, so this is the neutral shared anatomy (an inline-flex h1 in the Sora display face
+ * with a solid-accent spark mark) painted SOLID --rb-text -- no gradient spend, nothing
+ * invented for the upstream. Shared across all fourteen themes since #185 (formerly a
+ * four-theme extra of the arcane + kenzen pairs, which clip their rationed gradient into
+ * the text). */
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-wordmark {
+  display: inline-flex;
+  /* Sizes to its own content, never to a flex/grid ancestor's cross-axis stretch -- the same
+     anatomy in every theme, so a consumer's header layout doesn't shift on theme switch (the
+     gradient-clipping themes depend on it; see arcane-obsidian's wordmark.css). */
+  width: fit-content;
+  align-items: baseline;
+  gap: 0.4em;
+  margin: 0;
+  font-family: var(--rb-font-display);
+  font-weight: var(--rb-font-weight-medium);
+  font-size: 1rem;
+  letter-spacing: var(--rb-heading-tracking);
+  color: var(--rb-text);
+}
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-wordmark__spark {
+  color: var(--rb-accent);
+}

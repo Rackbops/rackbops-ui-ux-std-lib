@@ -163,6 +163,13 @@ theme-agnostic). Variants use BEM-ish modifiers (`rb-btn--primary`).
   Shared identically across every theme via `--rb-*` tokens (K4-10 give-back
   from Kenzen; previously arcane-obsidian/arcane-parchment's own two-theme
   extra, reverse-documented from artifact-console).
+- **Wordmark** `.rb-wordmark` (+ `__spark`) — a library addition, not part of
+  the nazuraki port (upstream has no wordmark surface): an inline-flex h1 in
+  the Plus Jakarta Sans display voice (weight 600 via
+  `--rb-font-weight-medium`, tracking `-0.02em`) at `1rem`, painted solid
+  `--rb-text` with a solid-violet spark mark — the neutral shared anatomy, no
+  gradient invented for the upstream. Shared in all fourteen themes since
+  #185.
 - **Table** `.rb-table` — mono uppercase headers, sky-tint row hover; add
   `.rb-num` to numeric cells for the mono/right-aligned treatment.
   `--interactive` marks clickable rows: pointer cursor, plus a focus-visible
@@ -190,8 +197,9 @@ theme-agnostic). Variants use BEM-ish modifiers (`rb-btn--primary`).
   the step states.
 
 This port carries nazuraki's original component set (plus its `.rb-chip` and
-`.rb-card--floating` extras); the rackbops-specific `eyebrow`, `tabstrip`, and
-`wordmark` surfaces are not part of it. `.rb-card--raised` is also absent:
+`.rb-card--floating` extras); the rackbops-specific `eyebrow` extra is not
+part of it, and the shared `tabstrip` and `wordmark` components are library
+additions here, not ported surfaces. `.rb-card--raised` is also absent:
 nazuraki's own second elevation tier is `--floating` ("Level 2," documented
 above), already carried over into this port under that name, so `--raised`
 would just be a near-duplicate of it — the port doesn't add one. `Card raised` is a documented no-op here (see `contract.test.mjs`'s

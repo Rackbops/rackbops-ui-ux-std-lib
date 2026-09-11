@@ -127,6 +127,14 @@ Class prefix `rb-`; shared token/class contract with the other themes.
   faint text. Distinct from `Tabs`' text-underline tabs used inside a panel.
   Was this theme's own two-theme extra (with arcane-parchment) before K4-10
   gave it a React wrapper and the same token-driven look to every theme.
+- **Wordmark** `.rb-wordmark` (+ `__spark`) — the brand mark, reverse-documented
+  from artifact-console: an inline-flex mono h1 (`--rb-font-display`, weight
+  600 via `--rb-font-weight-medium`, tracking `-0.01em`) at the console's
+  `15px`, with the rationed gradient clipped into the text; the spark mark
+  stays solid accent. Was this theme's own extra (with arcane-parchment and
+  the kenzen pair) until #185 made it a shared component in all fourteen — the
+  ten themes that don't ration their gradient here paint the same anatomy
+  solid `--rb-text` instead.
 - **Table** `.rb-table` (+ `.rb-num`) — dense data table, faint header rule,
   tabular numerals, row hover to surface-2. `--interactive` marks clickable
   rows: pointer cursor, plus a focus-visible ring (and the surface-2 wash) for
@@ -150,8 +158,6 @@ Class prefix `rb-`; shared token/class contract with the other themes.
 
 ### Theme extras
 
-- **Wordmark** `.rb-wordmark` (+ `__spark`) — mono h1 with the gradient clipped
-  into the text; the spark mark stays solid accent.
 - **Eyebrow** `.rb-eyebrow` — small mono uppercase section label in the accent,
   wide-tracked; subtler than the studio eyebrow (no leading rule).
 
