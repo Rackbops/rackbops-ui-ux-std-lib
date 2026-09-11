@@ -268,19 +268,109 @@ const DYNAMIC_TEMPLATES: Record<string, string> = {
   "rb-stepper--": "state", // Stepper: local union derived from index arithmetic -- the residual; all three states rendered, asserted below
 };
 
+/** Strips // and /* *\/ comments while correctly skipping over string and
+ * template-literal content, so scanSources() below never scans a comment as
+ * if it were live code and never mistakes a stray "/*"-looking substring
+ * INSIDE a real "//" comment (e.g. a glob path, "styles/*\/components/x.css",
+ * which this package's own sources contain) for a block-comment opener.
+ * That exact naive mistake -- a single global `/\/\*[\s\S]*?\*\//g` replace --
+ * was round 1's fix for the comment-mention false positive below; it silently
+ * deleted every real line between such a "//" comment and the next *\/
+ * ANYWHERE later in the file, including live rb-* class-bearing JSX (round-2
+ * review finding on #118) -- a false NEGATIVE, worse than the false positive
+ * it was fixing, because it defeats the entire mechanism #118 exists to
+ * provide. This walks the source char by char instead: a "//" always starts
+ * a line comment (so a "/*" inside one is inert), a "/*" outside a string
+ * always starts a block comment ended only by its OWN matching *\/, and
+ * string/template content (including a template's ${...} interpolation,
+ * tracked by brace depth) is copied through untouched. */
+function stripComments(src: string): string {
+  let out = "";
+  let i = 0;
+  const n = src.length;
+  const copyQuoted = (quote: string): void => {
+    out += src[i];
+    i++;
+    while (i < n && src[i] !== quote) {
+      if (src[i] === "\\" && i + 1 < n) {
+        out += src[i] + src[i + 1];
+        i += 2;
+        continue;
+      }
+      out += src[i];
+      i++;
+    }
+    if (i < n) {
+      out += src[i];
+      i++;
+    }
+  };
+  while (i < n) {
+    const c = src[i];
+    const c2 = i + 1 < n ? src[i + 1] : "";
+    if (c === "/" && c2 === "/") {
+      while (i < n && src[i] !== "\n") i++;
+      continue;
+    }
+    if (c === "/" && c2 === "*") {
+      i += 2;
+      while (i < n && !(src[i] === "*" && src[i + 1] === "/")) i++;
+      i = Math.min(i + 2, n);
+      continue;
+    }
+    if (c === '"' || c === "'") {
+      copyQuoted(c);
+      continue;
+    }
+    if (c === "`") {
+      out += c;
+      i++;
+      while (i < n && src[i] !== "`") {
+        if (src[i] === "\\" && i + 1 < n) {
+          out += src[i] + src[i + 1];
+          i += 2;
+          continue;
+        }
+        if (src[i] === "$" && src[i + 1] === "{") {
+          out += "${";
+          i += 2;
+          let depth = 1;
+          while (i < n && depth > 0) {
+            if (src[i] === '"' || src[i] === "'") {
+              copyQuoted(src[i]);
+              continue;
+            }
+            if (src[i] === "{") depth++;
+            else if (src[i] === "}") depth--;
+            out += src[i];
+            i++;
+          }
+          continue;
+        }
+        out += src[i];
+        i++;
+      }
+      if (i < n) {
+        out += src[i];
+        i++;
+      }
+      continue;
+    }
+    out += c;
+    i++;
+  }
+  return out;
+}
+
 function scanSources() {
   const literals = new Set<string>();
   const templates: Record<string, string> = {};
   for (const f of SOURCE_FILES) {
-    // Strip /* */ block comments (JSDoc included) before scanning, so a
-    // documentary mention of an rb-* class -- a real pattern already used
-    // elsewhere in this package, e.g. DataTable.tsx's file-header comment --
-    // can't manufacture a false "must be rendered" requirement (round-1
-    // review finding on #118). Single-line `//` comments are left alone: a
-    // naive strip risks truncating a real string that happens to contain
-    // `//` (a URL) on the same line as live code, which would be a silent
-    // MISS -- worse than this scan's remaining, noisier false-positive risk.
-    const src = readFileSync(join(SRC, f), "utf-8").replace(/\/\*[\s\S]*?\*\//g, "");
+    // Strip comments before scanning, so a documentary mention of an rb-*
+    // class -- a real pattern already used elsewhere in this package, e.g.
+    // DataTable.tsx's file-header comment -- can't manufacture a false "must
+    // be rendered" requirement (round-1 review finding on #118).
+    const src = stripComments(readFileSync(join(SRC, f), "utf-8"));
     for (const m of src.matchAll(/(["'`])(rb-[\w-]+)\1/g)) literals.add(m[2]);
     // Every backtick literal that mentions an rb-* class next to an
     // interpolation must match the STRICT single-interpolation-at-the-end
@@ -307,6 +397,45 @@ function scanSources() {
   }
   return { literals, templates };
 }
+
+test("stripComments: strips real comments, including JSDoc, without eating real code (#118)", () => {
+  // The original target: a documentary rb-* mention inside a real block
+  // comment must not survive (round-1 review finding -- it used to
+  // manufacture a false "must be rendered" requirement).
+  assert.equal(stripComments("/** mentions `rb-nav-rail--compact` */\nreal();"), "\nreal();");
+
+  // The regression: a naive `/\/\*[\s\S]*?\*\//g` global replace (round 1's
+  // actual fix) treats the FIRST "/*"-looking substring anywhere in the file
+  // as a comment opener, even one sitting inside a live "//" line comment
+  // (this package's own sources contain exactly this shape -- a glob path
+  // like "styles/*/components/x.css") -- and deletes everything up to the
+  // NEXT "*/" anywhere later, real code included. This must not happen:
+  // stripComments must treat the whole "//" line as a comment (so any "/*"
+  // text inside it is inert) and leave the real code between it and a later
+  // real comment untouched (round-2 review finding).
+  const adversarial = [
+    "// styles/*/components/data-table.css note",
+    "function real() {",
+    '  return "rb-should-be-visible";',
+    "}",
+    "",
+    "/** real jsdoc, unrelated */",
+    "const x = 1;",
+  ].join("\n");
+  const stripped = stripComments(adversarial);
+  assert.ok(stripped.includes('return "rb-should-be-visible";'), "real code between the two comments must survive");
+  assert.ok(!stripped.includes("real jsdoc"), "the later real comment must still be stripped");
+
+  // A template literal's ${...} interpolation, including one containing a
+  // quoted string with a brace inside it, must pass through unaltered --
+  // stripComments must never mistake a `}` inside a nested string for the
+  // interpolation's own closing brace.
+  assert.equal(stripComments("const c = `rb-btn--${variant}`;"), "const c = `rb-btn--${variant}`;");
+  assert.equal(
+    stripComments('const c = `rb-x--${cond ? "}" : "y"}`;'),
+    'const c = `rb-x--${cond ? "}" : "y"}`;',
+  );
+});
 
 test("every static rb-* class literal in the component sources is emitted by the render matrix (#118)", () => {
   const { literals } = scanSources();

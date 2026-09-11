@@ -112,27 +112,31 @@ function stripGuard(sel) {
  * `:where(html[data-rb-style="t"]) body`, which scope the canvas element
  * itself. A bare attribute guard (`[data-rb-style="x"] .rb-btn`, specificity
  * 0,2,0) contains the same substring and used to pass -- #42's overflow,
- * fixed in #115. The root tier checks EXACT equality against the two admitted
- * forms, never a substring: an early substring check accepted
- * `:where(:not([data-rb-style="x"]))`, which means "every element NOT themed
- * x" -- the opposite of a guard -- because the attribute text still appears
- * inside it (round-1 review finding on #115). */
+ * fixed in #115. The root tier requires the ENTIRE selector -- the leading
+ * :where(...) content AND everything after its closing paren -- to exactly
+ * equal one of the two admitted root forms, never a substring check and never
+ * a check of the leading group alone:
+ *  - `leading[1].includes(...)` used to accept
+ *    `:where(:not([data-rb-style="x"]))`, meaning "every element NOT themed
+ *    x" -- the opposite of a guard -- because the attribute text still
+ *    appears inside it (round-1 review finding on #115).
+ *  - Checking only `leading[1] === rootAttr` (round 1's own fix) still
+ *    accepted `:where([data-rb-style="x"]) .rb-btn--ghost`: a real descendant
+ *    rule with real specificity (0,1,0) sitting OUTSIDE the :where() --
+ *    exactly the defect class the guard exists to prevent. `leading[2]` must
+ *    now be empty for the bare-attribute form, matching the html-body form's
+ *    already-exact `" body"` check (round-2 review finding). */
 function whereGuardDescendant(theme) {
   return `:where([data-rb-style="${theme}"], [data-rb-style="${theme}"] *)`;
 }
 function assertWhereGuarded(sel, theme, label, { rootScope = false } = {}) {
   const descendant = sel.startsWith(whereGuardDescendant(theme));
-  // Root tier: the LEADING :where(...) content and whatever follows its closing
-  // paren must EXACTLY equal one of the two admitted root forms -- never a
-  // substring check. `leading[1].includes(...)` used to accept
-  // `:where(:not([data-rb-style="x"]))`, whose actual meaning is "every
-  // element NOT themed x", the exact opposite of a scope guard (#115 review).
   const leading = sel.match(/^:where\(([^)]*)\)(.*)$/);
   const rootAttr = `[data-rb-style="${theme}"]`;
   const rootForm =
     rootScope &&
     leading !== null &&
-    (leading[1] === rootAttr || (leading[1] === `html${rootAttr}` && leading[2] === " body"));
+    ((leading[1] === rootAttr && leading[2] === "") || (leading[1] === `html${rootAttr}` && leading[2] === " body"));
   assert.ok(
     descendant || rootForm,
     `${label}: selector is not guarded by the zero-specificity :where() form${rootScope ? "" : " (component files use the exact descendant form)"}: ${sel}`,
@@ -157,6 +161,18 @@ test("guard form: component tier accepts only the descendant :where() form; root
   assertWhereGuarded(':where(html[data-rb-style="x"]) body', "x", "t", { rootScope: true });
   assert.throws(() => assertWhereGuarded('[data-rb-style="x"] .rb-btn', "x", "t", { rootScope: true }));
   assert.throws(() => assertWhereGuarded('html[data-rb-style="x"] body', "x", "t", { rootScope: true }));
+
+  // Regression pins for two round-2-review bypasses of the root tier -- both
+  // MUST throw, and both are real defects a naive re-simplification of the
+  // check above would reintroduce silently (round 1 shipped a fix for the
+  // first without a test, and round 2 found the second in the same fix):
+  // (a) a :not() wrapping the attribute inside :where() -- means "every
+  //     element NOT themed x", the opposite of a guard;
+  assert.throws(() => assertWhereGuarded(':where(:not([data-rb-style="x"]))', "x", "t", { rootScope: true }));
+  // (b) a real descendant rule with real specificity sitting OUTSIDE the
+  //     :where() -- checking only the :where() content and ignoring what
+  //     follows it lets exactly this leak through.
+  assert.throws(() => assertWhereGuarded(':where([data-rb-style="x"]) .rb-btn--ghost', "x", "t", { rootScope: true }));
 });
 
 /** Split a selector into combinator-joined compounds (top level only -- commas
