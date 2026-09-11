@@ -115,10 +115,10 @@ This table is generated from `styles/contract.json` — edit that file, then run
 | `DataTable` | `.rb-table` | columns/rows/rowKey; optional groupBy/groupOrder, defaultSortKey/defaultSortDirection, sticky (wraps in rb-table-scroll); numeric columns get rb-num; an inactive sortable header shows a muted rb-table__sort-icon affordance (#175), the active one shows the arrow instead; per-column width renders a <colgroup> and switches to table-layout: fixed (#150) |
 | — | `.rb-table--interactive` | clickable-row utility, hand-applied by the consumer to any table (DataTable-rendered or not) -- DataTable itself never sets it, style directly |
 | `Progress`/`Spinner` | `.rb-progress` | native <progress> pseudo-element contract enforced separately (not class-based); omit value for the animated :indeterminate state |
+| `Stepper` | `.rb-stepper` | --upcoming is the resting state (allowlisted, no rule needed); --current also matches [aria-current="step"] in every theme |
 | — | `.rb-muted` | style directly, no React wrapper |
 | — | `.rb-pre` | style directly, no React wrapper |
 | — | `.rb-log` | pairs with .rb-pre; style directly, no React wrapper |
-| `Stepper` | `.rb-stepper` | --upcoming is the resting state (allowlisted, no rule needed); --current also matches [aria-current="step"] in every theme |
 <!-- contract-table:end -->
 
 `LinksIndex` (React only, no CSS class of its own) composes `Card`/`Badge` into
