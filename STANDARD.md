@@ -836,15 +836,25 @@ The showcase is the library's visual acceptance test. It MUST:
   depends only on its own content (#186). The visual job disables
   `backdrop-filter` globally before every capture, because Chromium renders
   it nondeterministically across sessions (#190) -- in practice this only
-  visibly changes the three themes whose CSS spends `backdrop-filter` on
+  applies to the three themes whose CSS spends `backdrop-filter` on
   something other than the dialog backdrop (`luminous-precision`,
   `neon-butterfly`, `summer-cloud`: cards, nav rail, alerts, and/or links)
   (every other theme either uses `backdrop-filter` only on the native
   `<dialog>`'s `::backdrop` -- which a `#demo-dialog` element capture
   never includes, verified 0px either way -- or, for the concrete pair,
-  never applies it at all, `styles/concrete-signal/design.md:67-69`);
-  the glass effect itself is
-  reviewed by eye, not by baseline, until a deterministic fix lands. A new
+  never applies it at all, `styles/concrete-signal/design.md:67-69`).
+  #192 investigated pinning a deterministic compositor path to restore the
+  effect to the baselines and found the override costs no fidelity the job
+  can measure in the first place: with the effect genuinely rendering (the
+  underlay behind each card, verified present and visually strong at the
+  page level) and every affected card genuinely translucent (verified, not
+  opaque by mistake), a vanilla capture with the effect on versus off is
+  byte-for-byte identical, at the job's own pixel and ratio thresholds, on
+  every glass-bearing tile in all three themes -- the blur is real and
+  applied but too subtle, within the small region each tile crops to, to
+  register as a difference the job would ever catch. The effect stays
+  reviewed by eye, not by baseline, but not because of nondeterminism the
+  override is hiding -- it is genuinely below what this job measures. A new
   theme's PR carries its baseline set -- that is the review artefact for
   "does it look out of place".
 

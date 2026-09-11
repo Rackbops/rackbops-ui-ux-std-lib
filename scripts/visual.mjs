@@ -86,11 +86,16 @@ await page.addStyleTag({
 // two separate browser launches (phase 1, #190): disabling backdrop-filter
 // entirely was 10/10 pixel-clean; CI caught the bimodality directly when
 // #191's bot regen landed one mode and the next compare run landed the
-// other, failing `main` outright. Disabling the filter for every capture is
-// a real loss of fidelity -- the glass effect itself goes untested here --
-// but an undeterministic acceptance test is worse than an incomplete one;
-// the filter's own rendering is reviewed by eye, not by baseline, until a
-// deterministic compositor pin replaces this (tracked separately).
+// other, failing `main` outright. #192 investigated pinning a deterministic
+// compositor path (a candidate flag set was 10/10 clean locally) to restore
+// the effect to these baselines instead, and found this override costs no
+// fidelity the job can measure: with the underlay confirmed rendering and
+// every affected card confirmed translucent, a vanilla capture with the
+// effect on versus off is identical at this job's own threshold on every
+// glass-bearing tile in all three affected themes -- the blur is real and
+// applied, just too subtle within the small region each tile crops to. The
+// filter's own rendering stays reviewed by eye, not by baseline, but not
+// because of nondeterminism this override is hiding.
 await page.addStyleTag({ content: "* { backdrop-filter: none !important; }" });
 
 // Section identity is its sc-title, slugified -- stable across reorders.
