@@ -22,7 +22,7 @@ disabled in `pnpm-workspace.yaml` (`allowBuilds: esbuild: false`) -- `tsx` resol
 at runtime without it.
 
 **Run pnpm through a launcher that is itself >= 12** (`npm i -g pnpm@latest`, or Corepack). An
-older npm-global launcher (the machine had `pnpm@11.15.1` on 2026-09-11) self-switches to the pin --
+older npm-global launcher (this machine's was `pnpm@11.15.1` until 2026-09-11) self-switches to the pin --
 so `pnpm --version` still prints 12.x -- but first rewrites `pnpm-lock.yaml`'s
 `packageManagerDependencies` with an extra `@pnpm/exe` entry on EVERY command, even
 `install --frozen-lockfile`, leaving the lockfile dirty in every local checkout. CI never sees it
