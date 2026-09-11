@@ -8,6 +8,12 @@ export interface DataTableColumn<T> {
   render: (row: T) => ReactNode;
   /** Right-aligns the cell (rb-num, matching the existing numeric-column class). */
   numeric?: boolean;
+  /** CSS width for the column (`"20%"`, `"12rem"`), rendered as `<col style="width: ...">` in a
+   * `<colgroup>` ahead of `<thead>`. Declaring a width on any column also puts the table in
+   * `table-layout: fixed`, so the widths are honoured and stay identical across table instances
+   * instead of each auto-sizing from its own content (kenzen#70). Columns without a width share
+   * the remaining space. */
+  width?: string;
   /** Omit to make the column unsortable. Returning a number sorts numerically; a string sorts
    * lexicographically (case-insensitive). */
   sortValue?: (row: T) => string | number;
@@ -131,8 +137,18 @@ export function DataTable<T>({
       })()
     : [{ label: null, rows: sortRows(rows, columns, sort) }];
 
+  const hasWidths = columns.some((c) => c.width !== undefined);
   const table = (
-    <table className="rb-table">
+    // table-layout is structural (which sizing algorithm), not a theme's visual opinion -- no
+    // theme CSS sets it -- so it is inline here, like LinksIndex's grid (STANDARD.md 12).
+    <table className="rb-table" style={hasWidths ? { tableLayout: "fixed" } : undefined}>
+      {hasWidths && (
+        <colgroup>
+          {columns.map((column) => (
+            <col key={column.key} style={column.width !== undefined ? { width: column.width } : undefined} />
+          ))}
+        </colgroup>
+      )}
       <thead>
         <tr>
           {columns.map((column) => {
