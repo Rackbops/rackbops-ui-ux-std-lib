@@ -473,6 +473,44 @@ test(
 );
 
 test(
+  "release-notes.sh: revert!: lands under Reverts with the BREAKING marker; a breaking feat keeps its section and gains the marker; a plain feat has none",
+  { concurrency: true },
+  async (t) => {
+    // Issue #113: the changelog grammar used to diverge from next-version.sh's
+    // bump grammar -- `revert` had no section (a revert!: was filed under
+    // Other Changes) and a `type!:` subject rendered without any breaking
+    // marker even though the version was bumped for it.
+    const repo = await makeRepo(t);
+    writeFileSync(join(repo.repoDir, "styles", "R1.txt"), "r1\n");
+    await repo.run(["add", "."]);
+    await repo.run(["commit", "-m", "revert!: drop the legacy tokens"]);
+    writeFileSync(join(repo.repoDir, "styles", "F1.txt"), "f1\n");
+    await repo.run(["add", "."]);
+    await repo.run(["commit", "-m", "feat!: rename the accent tokens"]);
+    writeFileSync(join(repo.repoDir, "styles", "F2.txt"), "f2\n");
+    await repo.run(["add", "."]);
+    await repo.run(["commit", "-m", "feat: plain feature"]);
+    writeFileSync(join(repo.repoDir, "styles", "R2.txt"), "r2\n");
+    await repo.run(["add", "."]);
+    await repo.run(["commit", "-m", "revert: undo the badge tweak"]);
+    await repo.run(["tag", "v0.1.1"]);
+    await repo.run(["push", "origin", "v0.1.1"]);
+
+    const notes = (await runScript(repo, "release-notes.sh", ["v0.1.1"])).stdout;
+    assert.match(notes, /### Reverts[\s\S]*- BREAKING: drop the legacy tokens/);
+    assert.match(notes, /### Reverts[\s\S]*- undo the badge tweak/);
+    assert.match(notes, /### Features[\s\S]*- BREAKING: rename the accent tokens/);
+    assert.match(notes, /### Features[\s\S]*- plain feature/);
+    assert.doesNotMatch(notes, /BREAKING: plain feature/);
+    assert.doesNotMatch(notes, /BREAKING: undo/);
+    assert.ok(
+      notes.indexOf("### Features") < notes.indexOf("### Reverts"),
+      "Features precede Reverts in COMMIT_TYPES_ORDER"
+    );
+  }
+);
+
+test(
   "release-notes.sh: BUMP_GREP filters a bump-commit SUBJECT, not a body that merely quotes one",
   { concurrency: true },
   async (t) => {
