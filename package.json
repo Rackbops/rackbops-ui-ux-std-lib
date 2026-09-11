@@ -8,6 +8,7 @@
     "test": "pnpm -r test && node --test site/serve.test.mjs site/showcase-extras.test.mjs scripts/generate-skill-table.test.mjs scripts/copy-license.test.mjs scripts/new-theme.test.mjs",
     "showcase": "node site/serve.mjs",
     "visual": "node scripts/visual.mjs",
+    "visual:reduced": "node scripts/reduced-motion.mjs",
     "new-theme": "node scripts/new-theme.mjs"
   },
   "devDependencies": {

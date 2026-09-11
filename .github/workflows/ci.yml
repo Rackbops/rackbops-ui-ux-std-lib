@@ -51,3 +51,19 @@ jobs:
             site/__screenshots__/**/*.diff.png
             site/__screenshots__/**/*.actual.png
           if-no-files-found: ignore
+
+  # Reduced-motion render check -- a SEPARATE job (browser dependency), same
+  # container as `visual` so rendering matches. Renders the showcase under
+  # emulated prefers-reduced-motion and asserts computed style (transition
+  # collapse, spinner slowdown, decorative-transform suppressions), never
+  # pixels -- no baseline to regenerate, so no artifact upload on failure
+  # (issue #125, STANDARD.md 7).
+  reduced-motion:
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.63.0-jammy
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm visual:reduced

@@ -42,7 +42,10 @@ test is the definition-of-done gate** -- see `CLAUDE.md`.
 
 **CI** ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs exactly that chain -- `pnpm install
 --frozen-lockfile`, `pnpm build`, `pnpm test` -- as its `test` job on Node 24, on **both** `pull_request`
-and `push:[main]`, plus a separate `visual` job (`pnpm visual`, Playwright container).
+and `push:[main]`, plus two separate browser-dependency jobs in the Playwright container: `visual`
+(`pnpm visual`, pixel comparison against committed baselines) and `reduced-motion` (`pnpm visual:reduced`,
+issue #125 -- renders the showcase under emulated `prefers-reduced-motion` and asserts computed style,
+never pixels; no baseline to regenerate).
 
 ---
 

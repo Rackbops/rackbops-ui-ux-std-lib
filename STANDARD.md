@@ -974,6 +974,7 @@ identity paragraph and the README table.
 | Showcase renders full ARIA (nav `aria-current`, tab/tabpanel roles + `aria-selected`, label `for`) | showcase | live (#91) |
 | Showcase complete (`.rb-alert--warning`) and photographed per theme | showcase + `pnpm visual` (`scripts/visual.mjs`) | live (#50) |
 | Transitions reduced by one `--rb-transition: 0s` token block per theme, with every component transition reading the token (never a literal duration); every applied keyframe has a reduced-motion override | `contract.test.mjs` | live (#51) |
+| Decorative reduced-motion suppressions resolve to `transform: none` when rendered; transitions collapse and the spinner slows to 2s in every theme | `scripts/reduced-motion.mjs` | live (#125) |
 | Per-theme flattened `bundle.css` (+ `all.bundle.css`) generated at publish | `bundle.test.mjs` | live (#52) |
 | Shared structural base file (`_shared/structure.css`): box-sizing + page body reset | `base-typography.test.mjs` + `contract.test.mjs` | live (#52) |
 | `pnpm new-theme` scaffold | script | live (#53) |
