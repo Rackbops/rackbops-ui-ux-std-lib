@@ -100,6 +100,16 @@ const RENDERS: Array<{ component: string; el: ReactElement }> = [
   // Card: base and raised.
   { component: "Card", el: <UI.Card>c</UI.Card> },
   { component: "Card", el: <UI.Card raised>c</UI.Card> },
+  // EmptyState: composes Card (-> rb-card) and adds no class of its own; the action is a
+  // Button so the render is realistic, and rb-btn is already in the matrix via Button.
+  {
+    component: "EmptyState",
+    el: (
+      <UI.EmptyState title="No cards yet" action={<UI.Button>Add a card</UI.Button>}>
+        Add one from the rack.
+      </UI.EmptyState>
+    ),
+  },
   // NavLink: resting and active.
   { component: "NavLink", el: <UI.NavLink href="#">home</UI.NavLink> },
   { component: "NavLink", el: <UI.NavLink href="#" active>home</UI.NavLink> },

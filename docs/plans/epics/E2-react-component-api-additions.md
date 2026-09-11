@@ -144,3 +144,132 @@ After merge, from a scratch consumer with the packed `@rackbops/ui-react` instal
 - Report deviations as they arise (a line that moved, a test that cannot be written as named, a static-markup shape that differs from the regex given here -- adjust the regex to what React actually emits and say so).
 - Do not merge. Post the PR link, the pasted acceptance and mutation evidence, and the gate evidence to the orchestrator.
 
+# PR 2
+
+# E2 -- React component API additions: implementation plan, PR 2 (#173 `EmptyState`)
+
+Epic #178. This is the epic's second and last PR, entered via `/work-on 173`. Written by the orchestrator on 2026-09-11; **branch from `origin/main` only after PR #181 (E2 PR 1, #169 + #150) has merged**, because both PRs edit `skills/design-system/SKILL.md` and STANDARD.md section 12. Line numbers below are from `main` at `be09088` (v0.2.30) and will have moved by then -- re-check every one with `grep -n`. Append this plan as a new section at the end of the already-committed `docs/plans/epics/E2-react-component-api-additions.md` in the first commit (do not rewrite the PR 1 section).
+
+## Locked decisions (roshne, 2026-09-10, comment on #173)
+
+1. **Option (a): compose from `Card`, no new `rb-*` class.** The precedent is `LinksIndex` -- "React only, no CSS class of its own" (STANDARD.md `:495-497`, SKILL.md `:124-132`): it is not a `contract.json` component entry, it appears in the SKILL.md prose after the generated table, and it has a `RENDERS` entry in `contract-classes.test.tsx` because that test requires every export to be rendered (`:244-253`). `EmptyState` follows all three. No theme CSS, no `contract.json` change, no showcase tile, no visual baselines.
+2. **The accessibility contract is the component's substance:** `role="status"` on the wrapper, and it never renders a spinner or progress indicator -- an empty state is a fact stated in words. Both are tested.
+3. **Props:** `title: ReactNode` (required; a heading naming what is missing -- `ReactNode` rather than `string` so it matches `Alert`'s `title` and allows an inline code element), `children?: ReactNode` (guidance), `action?: ReactNode` (a `Button` or link, rendered last), `level?: 2 | 3 | 4` (heading level, default 3 -- the `LinksIndex` `level` precedent, so a consumer embedding the component under an `h2` keeps a valid heading order instead of a hard-coded `h3`). `className` and every other prop reach the `Card` root via rest-spread; `ref` forwards to it. `role="status"` is set before the rest-spread, so a consumer can override it deliberately, as `Alert` allows for `role="alert"`.
+
+## Build order (one commit per step, Conventional Commits, scope `react`)
+
+### 1. Plan section -- `docs(plans): E2 PR 2, EmptyState`
+
+Append this document under a `# PR 2` heading at the end of `docs/plans/epics/E2-react-component-api-additions.md`.
+
+### 2. `components/react/src/EmptyState.tsx` (new) + `index.ts` -- `feat(react): EmptyState, a role=status empty-guidance surface composed from Card (#173)`
+
+```tsx
+import { createElement, forwardRef, type HTMLAttributes, type ReactNode, type RefAttributes } from "react";
+import { Card } from "./Card.js";
+
+export interface EmptyStateProps
+  extends Omit<HTMLAttributes<HTMLDivElement>, "title">,
+    RefAttributes<HTMLDivElement> {
+  /** A heading naming what is missing ("No cards yet", "Select a panel"). */
+  title: ReactNode;
+  /** Optional call to action -- a Button or a link -- rendered after the guidance. */
+  action?: ReactNode;
+  /** Heading level for `title`; default 3. Match wherever the component is embedded, as
+   * LinksIndex's `level` does. */
+  level?: 2 | 3 | 4;
+}
+
+/**
+ * An empty-guidance surface: a Card with `role="status"` holding a heading, optional guidance
+ * (`children`) and an optional action. It never renders a spinner or progress indicator -- an
+ * empty state is a fact stated in words, so "still loading" and "genuinely empty" are never
+ * shown the same way as a stalled spinner. Composes `Card` and adds no class of its own (the
+ * LinksIndex precedent); first consumer Rackbops/artifact-console#45.
+ */
+export const EmptyState = forwardRef<HTMLDivElement, EmptyStateProps>(function EmptyState(
+  { title, action, level = 3, children, ...rest },
+  ref,
+) {
+  return (
+    <Card ref={ref} role="status" {...rest}>
+      {createElement(`h${level}`, null, title)}
+      {children}
+      {action}
+    </Card>
+  );
+});
+EmptyState.displayName = "EmptyState";
+```
+
+`index.ts`: add `export { EmptyState, type EmptyStateProps } from "./EmptyState.js";` after the `Card` line (`:2`), keeping the file's one-export-per-line shape.
+
+### 3. `components/react/src/EmptyState.test.tsx` (new) -- same commit as step 2
+
+Static markup via `renderToStaticMarkup`, the shape `Tabs.test.tsx:21-37` uses. Test names (exact):
+
+- `renders a Card with role="status" and the title as an h3 by default` -- `<EmptyState title="No cards yet" />` matches `/^<div class="rb-card" role="status"><h3>No cards yet<\/h3><\/div>$/` (if React emits the attributes in the other order, adjust the regex and say so in the PR).
+- `renders children as guidance and action last; nothing extra when both are omitted` -- with `children` = `<p>Add one from the rack.</p>` and `action` = `<Button>Add a card</Button>`: the `<p>` precedes the `<button`, and the button is the last child before `</div>`; the no-children/no-action render contains only the heading.
+- `level sets the heading element` -- `level={2}` renders `<h2>`, `level={4}` renders `<h4>`.
+- `className is appended after rb-card and arbitrary props reach the card root` -- `className="mine" data-testid="empty"` -> `class="rb-card mine"` and `data-testid="empty"` on the root.
+- `never renders a spinner or progress element` -- the markup of a fully populated render contains neither `rb-spinner` nor `<progress`.
+- `ref reaches the Card root` -- add one case to `refs.test.tsx`'s existing client-render list rather than a new jsdom bootstrap here (see how the other wrappers are listed there).
+
+### 4. `components/react/src/contract-classes.test.tsx` -- same commit as step 2
+
+Add a `RENDERS` entry (the `every value export is exercised` test at `:244-253` fails without it):
+
+```tsx
+  // EmptyState: composes Card (-> rb-card) and adds no class of its own; the action is a
+  // Button so the render is realistic, and rb-btn is already in the matrix via Button.
+  {
+    component: "EmptyState",
+    el: (
+      <UI.EmptyState title="No cards yet" action={<UI.Button>Add a card</UI.Button>}>
+        Add one from the rack.
+      </UI.EmptyState>
+    ),
+  },
+```
+
+`EMITTED` gains nothing new (`rb-card`, `rb-btn` are already emitted), so the two reconciliation tests stay green with **no `contract.json` edit** -- that is the "no new class" decision, mechanically checked.
+
+### 5. Documentation -- `docs: document EmptyState alongside LinksIndex`
+
+- `skills/design-system/SKILL.md`, after the LinksIndex paragraph (`:124-132`): one paragraph in the same voice: "`EmptyState` (React only, no CSS class of its own) composes `Card` into an empty-guidance surface: `title` (required heading, `level` 2-4, default 3), `children` as guidance, an optional `action` rendered last, `role="status"` on the root so the guidance is announced. It never renders a spinner -- an empty state is a fact stated in words, so use `Spinner` for loading and `EmptyState` for genuinely empty. Carries no theme obligation, so it isn't in the table above." Hand-written prose, outside the generated markers; `node scripts/generate-skill-table.mjs --check` must stay clean.
+- `STANDARD.md:495-497`: "`LinksIndex` is the model" becomes "`LinksIndex` and `EmptyState` are the models: each composes `Card` (and `Badge`, for `LinksIndex`) and adds no class of its own (`components/react/src/LinksIndex.tsx:<n>`, `EmptyState.tsx:<n>`)". Re-derive both citations.
+- `STANDARD.md:774` (native semantics row): add `role="status"` on `EmptyState` with its citation.
+- `STANDARD.md:778` (tests row): add `EmptyState.test.tsx` to the list; `:954` (status row "React prop -> class mapping, composition, passthrough"): add `EmptyState` to the parenthesised list.
+- README: no component list to update (verified: no Tabs/DataTable/LinksIndex rows there); nothing to do.
+
+## Mutation guards (each must turn the suite red; paste one failing assertion per row)
+
+| Change | Mutation | Failing test |
+| --- | --- | --- |
+| `role="status"` | delete the attribute | `renders a Card with role="status" ...` |
+| action last | render `{action}` before `{children}` | `renders children as guidance and action last ...` |
+| heading level | hard-code `h3`, ignore `level` | `level sets the heading element` |
+| rest-spread | drop `{...rest}` | `className is appended ...` |
+| export registered | remove the `RENDERS` entry | `every value export is exercised by the render matrix` |
+| no new class | add `className="rb-empty-state"` to the Card | `React emits no rb-* class outside contract.json's React-backed set` |
+
+## Acceptance to execute and paste (the #173 bullets, made executable)
+
+1. `pnpm --filter @rackbops/ui-react test` green with the six new test names visible (five in `EmptyState.test.tsx`, one in `refs.test.tsx`).
+2. `pnpm build`, then `grep -n 'EmptyState' components/react/dist/index.d.ts components/react/dist/EmptyState.d.ts` -- the export and its props type are in the published types; `git diff --stat main -- styles/` is empty (no CSS, no contract change).
+3. From a scratch consumer with the packed tarball installed (`pnpm pack` in `components/react`): `import { EmptyState } from "@rackbops/ui-react"; const e = <EmptyState title="x" />;` type-checks under `jsx: react-jsx` -- paste the `tsc` run.
+4. `node scripts/generate-skill-table.mjs --check` clean; paste the new SKILL.md paragraph and the three STANDARD.md rows after the edit.
+5. `pnpm test` (root) green.
+6. The mutation table, one pasted failure per row.
+
+## Exit demo (closes the epic's exit criterion together with PR 1)
+
+After merge and the automatic release: `npm view @rackbops/ui-react version` shows the new version, and a scratch consumer on it type-checks all three additions (`activeId`/`onChange`, `width`, `EmptyState`). The orchestrator then files the artifact-console follow-up: drop `packages/ui-shell/src/shell/EmptyState.tsx` and import the library's (`Rackbops/artifact-console#45`'s stand-in) -- that is artifact-console's PR, not this one.
+
+## Sub's operating rules
+
+- Read #173 and #178 in full, including the decision comment on #173, before touching anything.
+- Wait for PR #181 to merge; then own worktree from `origin/main`; never `git stash`; `git -C`, never `cd && git`; no force-push.
+- Run the review gate yourself (two read-only adversarial agents, different lenses: correctness/failure modes on the composition and heading semantics vs. claims-vs-code walking the acceptance list and the SKILL.md/STANDARD.md sentences), up to four rounds, then report the round count and findings to the orchestrator rather than starting a fifth.
+- Report deviations as they arise; do not merge.
+
