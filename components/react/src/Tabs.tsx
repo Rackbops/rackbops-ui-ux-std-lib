@@ -16,21 +16,40 @@ export interface TabItem {
   content: ReactNode;
 }
 
-export interface TabsProps extends HTMLAttributes<HTMLDivElement>, RefAttributes<HTMLDivElement> {
+// `Omit<..., "onChange">`: HTMLAttributes already types a DOM `onChange` (a ChangeEventHandler,
+// meaningless on a tablist div), and TS2430 refuses to narrow it to the id callback below.
+export interface TabsProps
+  extends Omit<HTMLAttributes<HTMLDivElement>, "onChange">,
+    RefAttributes<HTMLDivElement> {
   items: TabItem[];
-  /** Initially active tab id; defaults to the first item. */
+  /** Uncontrolled mode: the initially active tab id; defaults to the first item. Ignored when
+   * `activeId` is set. */
   defaultId?: string;
+  /** Controlled mode, mirroring NavRail's `activeId`: the active tab id, owned by the caller.
+   * When set the component keeps no selection state of its own -- `onChange` reports what the
+   * user picked and the parent re-renders with the new id (so it can live in a router or URL).
+   * An id matching no item selects the first tab, so exactly one tab is always selected. */
+  activeId?: string;
+  /** Called with the id the user selected (click, arrow keys, Home/End) in both modes; in
+   * uncontrolled mode the internal selection also updates. */
+  onChange?: (id: string) => void;
 }
 
 export const Tabs = forwardRef<HTMLDivElement, TabsProps>(function Tabs(
-  { items, defaultId, className, ...rest },
+  { items, defaultId, activeId: activeIdProp, onChange, className, ...rest },
   ref,
 ) {
   const base = useId();
-  const [active, setActive] = useState<string | undefined>(defaultId ?? items[0]?.id);
-  // Fall back to the first tab if `active` names no item, so exactly one tab is
-  // always selected (a defaultId that matches nothing still highlights a tab).
-  const activeId = items.some((t) => t.id === active) ? active : items[0]?.id;
+  const [internal, setInternal] = useState<string | undefined>(defaultId ?? items[0]?.id);
+  const controlled = activeIdProp !== undefined;
+  const requested = controlled ? activeIdProp : internal;
+  // Fall back to the first tab if `requested` names no item, so exactly one tab is
+  // always selected (a defaultId or activeId that matches nothing still highlights a tab).
+  const activeId = items.some((t) => t.id === requested) ? requested : items[0]?.id;
+  const select = (id: string) => {
+    if (!controlled) setInternal(id);
+    onChange?.(id);
+  };
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
   const onKeyDown = (e: KeyboardEvent<HTMLButtonElement>) => {
@@ -42,7 +61,8 @@ export const Tabs = forwardRef<HTMLDivElement, TabsProps>(function Tabs(
     else if (e.key === "End") next = items.length - 1;
     else return;
     e.preventDefault();
-    setActive(items[next]?.id);
+    const id = items[next]?.id;
+    if (id !== undefined) select(id);
     // Move focus with the selection — the whole point of the roving tabindex.
     tabRefs.current[next]?.focus();
   };
@@ -70,7 +90,7 @@ export const Tabs = forwardRef<HTMLDivElement, TabsProps>(function Tabs(
               aria-controls={`${base}-panel-${t.id}`}
               tabIndex={selected ? 0 : -1}
               className={cx("rb-tab", selected && "rb-tab--active")}
-              onClick={() => setActive(t.id)}
+              onClick={() => select(t.id)}
               onKeyDown={onKeyDown}
             >
               {t.label}
