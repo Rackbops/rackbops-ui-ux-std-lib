@@ -833,7 +833,18 @@ The showcase is the library's visual acceptance test. It MUST:
 - be photographed: a separate `pnpm visual` job screenshots every section
   under every theme against committed baselines `[tested: scripts/visual.mjs, #50]` --
   sections are snapped to integer document offsets before capture, so a tile
-  depends only on its own content (#186). A new
+  depends only on its own content (#186). The visual job disables
+  `backdrop-filter` globally before every capture, because Chromium renders
+  it nondeterministically across sessions (#190) -- in practice this only
+  visibly changes the three themes whose CSS spends `backdrop-filter` on
+  something other than the dialog backdrop (`luminous-precision`,
+  `neon-butterfly`, `summer-cloud`: cards, nav rail, alerts, and/or links)
+  (every other theme either uses `backdrop-filter` only on the native
+  `<dialog>`'s `::backdrop` -- which a `#demo-dialog` element capture
+  never includes, verified 0px either way -- or, for the concrete pair,
+  never applies it at all, `styles/concrete-signal/design.md:67-69`);
+  the glass effect itself is
+  reviewed by eye, not by baseline, until a deterministic fix lands. A new
   theme's PR carries its baseline set -- that is the review artefact for
   "does it look out of place".
 

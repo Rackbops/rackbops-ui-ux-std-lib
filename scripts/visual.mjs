@@ -77,6 +77,21 @@ await page.mouse.move(0, 0);
 await page.addStyleTag({
   content: "*, *::before, *::after { transition: none !important; caret-color: transparent !important; }",
 });
+// #190: Chromium picks the compositor's backdrop-filter path per session, not
+// per element -- glass-card tiles on luminous-precision and summer-cloud
+// (.rb-card / the nav rail, backdrop-filter over the ports' .rb-bg canvas)
+// therefore render in one of two stable ways depending on which path a given
+// session lands in, with the differing-pixel count recurring exactly across
+// sessions (not noise). Confirmed with ten no-edit control pairs, each pair
+// two separate browser launches (phase 1, #190): disabling backdrop-filter
+// entirely was 10/10 pixel-clean; CI caught the bimodality directly when
+// #191's bot regen landed one mode and the next compare run landed the
+// other, failing `main` outright. Disabling the filter for every capture is
+// a real loss of fidelity -- the glass effect itself goes untested here --
+// but an undeterministic acceptance test is worse than an incomplete one;
+// the filter's own rendering is reviewed by eye, not by baseline, until a
+// deterministic compositor pin replaces this (tracked separately).
+await page.addStyleTag({ content: "* { backdrop-filter: none !important; }" });
 
 // Section identity is its sc-title, slugified -- stable across reorders.
 const sections = await page.$$eval("main > section", (els) =>
