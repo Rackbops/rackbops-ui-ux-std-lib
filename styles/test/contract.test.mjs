@@ -100,6 +100,48 @@ function stripGuard(sel) {
   return m ? sel.slice(m[0].length) : sel;
 }
 
+/** The guard the contract allows: the theme attribute inside a LEADING
+ * zero-specificity :where() (STANDARD.md 6). Component rules use the exact
+ * descendant form (with the ` *` half so the guard scopes descendants without
+ * adding specificity); the two root-scope files, tokens.css and base.css, may
+ * also use the root forms `:where([data-rb-style="t"])` and
+ * `:where(html[data-rb-style="t"]) body`, which scope the canvas element
+ * itself. A bare attribute guard (`[data-rb-style="x"] .rb-btn`, specificity
+ * 0,2,0) contains the same substring and used to pass -- #42's overflow,
+ * fixed in #115. */
+function whereGuardDescendant(theme) {
+  return `:where([data-rb-style="${theme}"], [data-rb-style="${theme}"] *)`;
+}
+function assertWhereGuarded(sel, theme, label, { rootScope = false } = {}) {
+  const descendant = sel.startsWith(whereGuardDescendant(theme));
+  const leading = sel.match(/^:where\(([^)]*)\)/);
+  const rootForm = rootScope && leading !== null && leading[1].includes(`[data-rb-style="${theme}"]`);
+  assert.ok(
+    descendant || rootForm,
+    `${label}: selector is not guarded by the zero-specificity :where() form${rootScope ? "" : " (component files use the exact descendant form)"}: ${sel}`,
+  );
+}
+
+test("guard form: component tier accepts only the descendant :where() form; root tier also accepts the two root forms (#115)", () => {
+  // Component tier (rootScope off, the default): only the exact descendant
+  // form passes. A bare attribute guard, the :where() form with no descendant
+  // half, and either root-scope form must all throw.
+  assertWhereGuarded(':where([data-rb-style="x"], [data-rb-style="x"] *).rb-btn', "x", "t");
+  assert.throws(() => assertWhereGuarded('[data-rb-style="x"] .rb-btn', "x", "t"));
+  assert.throws(() => assertWhereGuarded(':where([data-rb-style="x"]) .rb-btn', "x", "t"));
+  assert.throws(() => assertWhereGuarded(':where([data-rb-style="x"])', "x", "t"));
+
+  // Root tier (rootScope on, tokens.css/base.css only): the descendant form
+  // still passes, and so do the two root-scope forms -- but a bare attribute
+  // guard (with or without `html`) still throws; the root tier admits only a
+  // LEADING :where(...) group, never a bare attribute selector.
+  assertWhereGuarded(':where([data-rb-style="x"], [data-rb-style="x"] *).rb-btn', "x", "t", { rootScope: true });
+  assertWhereGuarded(':where([data-rb-style="x"])', "x", "t", { rootScope: true });
+  assertWhereGuarded(':where(html[data-rb-style="x"]) body', "x", "t", { rootScope: true });
+  assert.throws(() => assertWhereGuarded('[data-rb-style="x"] .rb-btn', "x", "t", { rootScope: true }));
+  assert.throws(() => assertWhereGuarded('html[data-rb-style="x"] body', "x", "t", { rootScope: true }));
+});
+
 /** Split a selector into combinator-joined compounds (top level only -- commas
  * and combinators inside () and [] don't split). */
 function splitCompounds(sel) {
@@ -281,13 +323,12 @@ test('_shared ships in package.json "files" so the index.css import resolves (#5
 });
 
 for (const theme of themeDirs) {
-  const guard = `[data-rb-style="${theme}"]`;
-
   test(`${theme}: every selector is guarded by its own opt-in attribute`, () => {
     for (const file of themeCssFiles(theme)) {
       const { selectors } = parseCss(cssOf(file));
+      const rootScope = /(^|[\\/])(tokens|base)\.css$/.test(file);
       for (const sel of selectors) {
-        assert.ok(sel.includes(guard), `${file}: unguarded selector: ${sel}`);
+        assertWhereGuarded(sel, theme, file, { rootScope });
       }
     }
   });
@@ -410,7 +451,6 @@ for (const { file, class: cls } of REQUIRED_CLASSES) {
     const re = new RegExp(`\\.${escaped}(?![\\w-])`);
     for (const theme of themeDirs) {
       const allowed = CLASS_ALLOWLIST.find((a) => (a.theme === "*" || a.theme === theme) && a.class === cls);
-      const guard = `[data-rb-style="${theme}"]`;
       const cssFile = join(ROOT, theme, "components", file);
       const { selectors } = parseCss(cssOf(cssFile));
       const matches = selectors.filter((s) => re.test(s));
@@ -424,7 +464,7 @@ for (const { file, class: cls } of REQUIRED_CLASSES) {
       }
       assert.ok(matches.length > 0, `${theme}: ${file} is missing a .${cls} rule`);
       for (const sel of matches) {
-        assert.ok(sel.includes(guard), `${theme}: unguarded .${cls} selector: ${sel}`);
+        assertWhereGuarded(sel, theme, `${theme}: .${cls}`);
       }
     }
   });
@@ -630,7 +670,6 @@ test("every theme's progress.css styles the native <progress> pseudo-elements, n
   for (const theme of themeDirs) {
     const file = join(ROOT, theme, "components", "progress.css");
     const { selectors } = parseCss(cssOf(file));
-    const guard = `[data-rb-style="${theme}"]`;
     const barDiv = selectors.filter((s) => /\.rb-progress__bar/.test(s));
     assert.deepEqual(barDiv, [], `${theme}: progress.css still styles a .rb-progress__bar div`);
     const webkitValue = selectors.filter((s) => /\.rb-progress::-webkit-progress-value(?![\w-])/.test(s));
@@ -638,7 +677,7 @@ test("every theme's progress.css styles the native <progress> pseudo-elements, n
     assert.ok(webkitValue.length > 0, `${theme}: progress.css is missing a ::-webkit-progress-value rule`);
     assert.ok(mozBar.length > 0, `${theme}: progress.css is missing a ::-moz-progress-bar rule`);
     for (const sel of [...webkitValue, ...mozBar]) {
-      assert.ok(sel.includes(guard), `${theme}: unguarded progress fill selector: ${sel}`);
+      assertWhereGuarded(sel, theme, `${theme}: progress fill`);
     }
   }
 });
@@ -655,7 +694,6 @@ test("every theme's progress.css styles :indeterminate on both progress pseudo-e
     const file = join(ROOT, theme, "components", "progress.css");
     const raw = stripComments(cssOf(file));
     const { selectors, ruleGroups } = parseCss(raw);
-    const guard = `[data-rb-style="${theme}"]`;
     const webkitIndeterminate = selectors.filter((s) =>
       /\.rb-progress:indeterminate::-webkit-progress-bar(?![\w-])/.test(s)
     );
@@ -665,7 +703,7 @@ test("every theme's progress.css styles :indeterminate on both progress pseudo-e
     assert.ok(webkitIndeterminate.length > 0, `${theme}: progress.css has no :indeterminate::-webkit-progress-bar rule`);
     assert.ok(mozIndeterminate.length > 0, `${theme}: progress.css has no :indeterminate::-moz-progress-bar rule`);
     for (const sel of [...webkitIndeterminate, ...mozIndeterminate]) {
-      assert.ok(sel.includes(guard), `${theme}: unguarded indeterminate progress selector: ${sel}`);
+      assertWhereGuarded(sel, theme, `${theme}: indeterminate progress`);
     }
     for (const group of ruleGroups) {
       const hasWebkit = group.some((s) => /:indeterminate::-webkit-progress-bar(?![\w-])/.test(s));
