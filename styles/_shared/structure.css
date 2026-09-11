@@ -1,7 +1,7 @@
 /* Shared structural base (issue #52)
  *
  * The two rules that are byte-identical (modulo the guard string) AND
- * exception-free across all twelve base.css: the box-sizing reset and the
+ * exception-free across all fourteen base.css: the box-sizing reset and the
  * page-only body reset. Guarded by the BARE `[data-rb-style]` attribute (any
  * value) so it applies under every theme yet still nothing outside one, and
  * imported by each theme's index.css.
@@ -10,7 +10,7 @@
  * base.css: they carry per-theme values (the rackbops pair's 2.5px focus ring;
  * the noir / luminous-precision / neon-butterfly selection ink), and a bare
  * shared rule would re-apply after those overrides under `@rackbops/styles/all`
- * (twelve themes at once) and clobber them -- source order, equal `:where()`
+ * (fourteen themes at once) and clobber them -- source order, equal `:where()`
  * specificity. Box-sizing and the body reset are safe to share only because
  * their value is identical in every theme, so order can't change the result.
  * See STANDARD.md 6.
