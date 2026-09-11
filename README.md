@@ -161,7 +161,10 @@ every manifest-reading consumer.
 
 Merging package changes to `main` runs the `release` workflow: it bumps both
 package versions (patch by default; a `type!:` subject or `BREAKING CHANGE:`
-footer bumps the minor while the major is 0), commits, and tags -- the bump
+footer bumps the minor while the major is 0), commits, and tags, with the
+release notes grouped by commit type (`revert` has its own section) and a
+`type!:` subject marked `BREAKING:` (a `BREAKING CHANGE:` footer drives the
+bump but is not visible to the subjects-only notes, #113) -- the bump
 commit and its tag land in one atomic push (`git push --atomic origin main
 <tag>`, issue #88): either both land or neither does, so there's no partial
 state to ever resume. Pushing a `v*` tag triggers `publish.yml`, which runs
