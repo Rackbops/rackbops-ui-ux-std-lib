@@ -1,5 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
+import { createElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { Button } from "./Button.js";
 import { EmptyState } from "./EmptyState.js";
@@ -28,6 +29,30 @@ test("renders children as guidance and action last; nothing extra when both are 
 test("level sets the heading element", () => {
   assert.match(renderToStaticMarkup(<EmptyState title="x" level={2} />), /<h2>x<\/h2>/);
   assert.match(renderToStaticMarkup(<EmptyState title="x" level={4} />), /<h4>x<\/h4>/);
+});
+
+test("an out-of-range level (reached through an untyped caller) falls back to h3 instead of an invalid tag", () => {
+  // level is typed 2 | 3 | 4; the cast simulates a plain-JS caller or a value computed elsewhere
+  // and passed through untyped, bypassing that at compile time the way a real bad input would.
+  const props = { title: "x", level: 7 } as unknown as { title: string };
+  const html = renderToStaticMarkup(createElement(EmptyState, props));
+  assert.match(html, /<h3>x<\/h3>/);
+});
+
+test("title accepts an inline element, not just a string -- the ReactNode value renders as itself", () => {
+  // Review round 1, MAJOR: nothing previously exercised a non-string title, so a regression that
+  // stringified it first (String(title), producing "[object Object]") passed every other test.
+  const html = renderToStaticMarkup(<EmptyState title={<code>rack-01</code>} />);
+  assert.match(html, /^<div class="rb-card" role="status"><h3><code>rack-01<\/code><\/h3><\/div>$/);
+});
+
+test("raised reaches the composed Card, since EmptyStateProps now extends Card's own props", () => {
+  // Review round 1, MINOR: EmptyStateProps previously extended HTMLAttributes directly, so
+  // `raised` type-checked as an error even though it worked once forced through at runtime
+  // (Card destructures it from {...rest}). Extending Omit<CardProps, "title"> makes the type
+  // match what already worked.
+  const html = renderToStaticMarkup(<EmptyState title="x" raised />);
+  assert.match(html, /^<div class="rb-card rb-card--raised" role="status">/);
 });
 
 test("className is appended after rb-card and arbitrary props reach the card root", () => {
