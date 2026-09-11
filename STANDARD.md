@@ -514,8 +514,8 @@ pair and the Kenzen pair; `.rb-eyebrow` also in the studio pair; `.rb-rack`
 -- studio pair; `.rb-badge--primary`, `.rb-bg`, `.rb-progress--accent` -- the
 three ports; `.rb-chip` (+ `--selected`), `.rb-card--floating` -- summer-cloud.
 `.rb-eyebrow` is in six themes, not the shared set -- correctly filed
-under Theme-specific extras in SKILL.md, though the showcase's "Wordmark /
-Eyebrow" section still renders it without an extras label.
+under Theme-specific extras in SKILL.md, and shown in the showcase only
+under a labelled extras section (#168) `[tested: site/showcase-extras.test.mjs]`.
 
 ### 5.5 Naming
 
@@ -790,9 +790,9 @@ props to modifiers, and never branches on the theme.
 | The base class first, modifiers next, consumer `className` last, via `cx` | `Button.tsx:29-35`; tested in `Button.test.tsx:68-77` |
 | `...rest` spreads onto the root element so `id`, `data-*`, `aria-*`, handlers all reach it | every wrapper, since #31 (`Dialog`) and #84 (`Tabs`, onto its `role="tablist"` child -- the outer ref target is a structural wrapper spanning tabs+panels); a labelled `Checkbox`/`Radio`/`Switch` still puts `className`/rest on the inner `<input>`, with `wrapperClassName`/`wrapperStyle` for the `.rb-choice` row (`form.tsx:90-101`, the shared `choiceControl` factory, #84/#93) |
 | `forwardRef`, with `RefAttributes<T>` on the props type | every wrapper, since #30 (`Dialog` exposes its own internal show/close node to the forwarded ref via `useImperativeHandle`, #83) |
-| Native semantics by default: `type="button"`, `aria-current="page"` on an active link, `role="alert"`, `role="status"` + `aria-label` on the spinner, native `<dialog>` with `aria-labelledby`, ARIA tablist with roving tabindex | `Button.tsx:19`, `NavLink.tsx:18`, `feedback.tsx:61` (`role="alert"`) and `:82-85` (`role="status"`/`aria-label` passed into the shared `styled` factory, #93), `Dialog.tsx:61`, `Tabs.tsx:41-63` |
-| Controlled by the caller, no hidden state: `NavRail activeId`, `Dialog open` | `NavRail.tsx:25` (`activeId` prop), `:36` (destructured), `:42` (drives each `NavLink`'s `active`); `Dialog` reconciles `open` when it changes (`[open]` dependency on the sync effect) and REQUIRES `onClose`, so the parent is always told of a native close and keeps `open` in sync -- `open` is the single source of truth (#83, completing #31); `Tabs` MAY keep its selection until a controlled API is in scope |
-| No theme-specific class, no extra, no `style` that a theme would own. Structural layout a theme has no opinion on (a grid) MAY be inline, and says why in a comment | `LinksIndex.tsx:47-53` (`gridStyle` + its why-comment, used at `:112`) |
+| Native semantics by default: `type="button"`, `aria-current="page"` on an active link, `role="alert"`, `role="status"` + `aria-label` on the spinner, native `<dialog>` with `aria-labelledby`, ARIA tablist with roving tabindex | `Button.tsx:19`, `NavLink.tsx:18`, `feedback.tsx:61` (`role="alert"`) and `:82-85` (`role="status"`/`aria-label` passed into the shared `styled` factory, #93), `Dialog.tsx:61`, `Tabs.tsx:60-81` (the roving-tabindex key handler) and `:90-113` (the tablist) |
+| Controlled by the caller, no hidden state: `NavRail activeId`, `Dialog open` | `NavRail.tsx:25` (`activeId` prop), `:36` (destructured), `:42` (drives each `NavLink`'s `active`); `Dialog` reconciles `open` when it changes (`[open]` dependency on the sync effect) and REQUIRES `onClose`, so the parent is always told of a native close and keeps `open` in sync -- `open` is the single source of truth (#83, completing #31); `Tabs` takes an optional controlled `activeId`/`onChange` pair (`Tabs.tsx:30-40`, derived at `:49-53`, #169) and stays uncontrolled when `activeId` is omitted |
+| No theme-specific class, no extra, no `style` that a theme would own. Structural layout a theme has no opinion on (a grid) MAY be inline, and says why in a comment | `LinksIndex.tsx:47-53` (`gridStyle` + its why-comment, used at `:112`); `DataTable.tsx:145-149` (`hasWidths` puts the table in `table-layout: fixed` + its why-comment, #150) |
 | A prop that is a no-op in some theme MUST be a documented omission (section 5.3), not a bare JSDoc caveat | `Card.tsx`'s `raised` now is, for the three nazuraki ports (design.md + JSDoc + `contract.json`'s `allowlist`, #29) `[tested]` |
 | Tests render to static markup and assert the class list per prop, composition, and passthrough; the same renders feed the derived class set | `Button.test.tsx`, `NavRail.test.tsx`, `LinksIndex.test.tsx`, `Stepper.test.tsx`; `node:test` + `tsx` + `react-dom/server`; the derived class set is `contract-classes.test.tsx` (#48) `[tested]`. `refs.test.tsx` (#30) is the one exception -- ref attachment only happens on a real commit, so it client-renders via `react-dom/client` + `jsdom` instead |
 
@@ -809,12 +809,11 @@ The showcase is the library's visual acceptance test. It MUST:
   `aria-selected` / `role="tabpanel"`, label `for`) after #91; and the Alerts
   section renders all four semantic variants, `.rb-alert--warning` included
   (#50);
-- put theme extras only in sections labelled as extras
-  (`site/index.html:341-342`, the sole "Theme extras" section), never in a
-  generic section (the wordmark and eyebrow at lines 50-54, and the studio
-  pair's `rb-btn__arrow`/`rb-card__tag` wherever they render outside that one
-  section, are still out of contract -- no tracking issue open for this;
-  needs one filed);
+- put theme extras only in sections labelled as extras (`site/index.html`'s
+  two `Theme extras — …` sections), never in a generic section -- except the
+  ports' opt-in `.rb-bg` page canvas (`:570-571`), applied to `<body>` itself
+  rather than demoed in a section, since a page background is not a
+  component `[tested: site/showcase-extras.test.mjs, #168]`;
 - read the roster from the manifest and inject fonts on switch;
 - style its own chrome (`.sc-*`) with tokens only, so it is on-theme under
   every theme (`site/index.html:9-40`);
@@ -966,7 +965,7 @@ identity paragraph and the README table.
 | 38 baseline tokens + `color-scheme` per theme | `contract.test.mjs` | live |
 | `color-scheme` matches manifest | `contract.test.mjs` | live |
 | manifest / package.json / dirs / all.css agree | `contract.test.mjs` | live |
-| `index.css` imports every component file, no rules | `contract.test.mjs` | live |
+| `index.css` imports every component file, no rules, in the canonical order (structure, tokens, base, then shared components in `contract.json` key order, then extras) | `contract.test.mjs` | live (#115) |
 | Keyframes `rb-`-prefixed, unique | `contract.test.mjs` | live |
 | Bare h1-h6 / p / ul,ol property names | `base-typography.test.mjs` | live |
 | Every export type-checks under `noUncheckedSideEffectImports` | `types.test.mjs` | live |
@@ -992,7 +991,7 @@ identity paragraph and the README table.
 | `.rb-stepper--upcoming` styled or allowlisted; `[aria-current="step"]` paired | `contract.test.mjs` | allowlisted: live (#47). Paired: live, 14 of 14 themes comply (#65, #158) |
 | `Dialog` spreads rest, reconciles `open`, requires `onClose` | `Dialog.test.tsx` | live (#31, #83) |
 | `Tabs` spreads rest onto its tablist | `Tabs.test.tsx` | live (#84) |
-| `Tabs` controlled `activeId`/`onChange` to match `NavRail` | React fix | still pending -- surfaced as #42 overflow (that epic is now closed); never spun into its own issue, and `Tabs.tsx:33`'s `activeId` is still an internal local, not a prop |
+| `Tabs` controlled `activeId`/`onChange` to match `NavRail` | React fix | live (#169) |
 | `forwardRef` on every wrapper | `refs.test.tsx` | live (#30) |
 | SKILL.md matches the shipped contract | doc fix | live (#47, #39) -- inventory table generated + tested, extras paragraph and eyebrow classification accurate, roster paragraph correctly states 14 themes, manifest-fonts guidance and the add-theme recipe steps all accurate |
 | `design.md` counterpart and count claims true | doc fix | live (#47, #40 -- counterpart-shipped and stale-count claims fixed repo-wide) |
@@ -1003,7 +1002,7 @@ identity paragraph and the README table.
 | Dialog backdrop blurs via `var(--rb-blur)` | `contract.test.mjs` | live, 12 of 14 comply; concrete pair permanently exempt (`0px` by design) (#65) |
 | `Field` / `Spinner` named props types | `index.ts` exports | live (#30) |
 | Existing docs conform to the section 11 template; SKILL.md carries adoption guidance matching section 15 | doc sweep | live (#56) |
-| Extras only in labelled showcase sections | review | still out of contract (wordmark/eyebrow, and the studio pair's `rb-btn__arrow`/`rb-card__tag`, render outside the sole "Theme extras" section) -- no tracking issue open, needs one filed |
+| Extras only in labelled showcase sections | `site/showcase-extras.test.mjs` | live (#168) |
 | `:indeterminate <progress>` styled in every theme | `contract.test.mjs` | live (#86 -- #156, #160) |
 | `.rb-stepper--upcoming` allowlisted with one wildcard row, not per-theme | `contract.test.mjs` | live (#97 -- #159) |
 | Release: one range walk, one tag list, one-regex changelog classifier | `release.test.mjs` | live (#88 PR-A -- #161) |
