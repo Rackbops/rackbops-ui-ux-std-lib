@@ -814,9 +814,11 @@ The showcase is the library's visual acceptance test. It MUST:
   depends only on its own content (#186). The visual job disables
   `backdrop-filter` globally before every capture, because Chromium renders
   it nondeterministically across sessions (#190) -- in practice this only
-  visibly changes `luminous-precision`'s and `summer-cloud`'s glass-card and
-  nav-rail tiles (every other theme's own `backdrop-filter` use is on the
-  native `<dialog>`'s `::backdrop`, which a `#demo-dialog` element capture
+  visibly changes the three themes whose CSS spends `backdrop-filter` on
+  something other than the dialog backdrop (`luminous-precision`,
+  `neon-butterfly`, `summer-cloud`: cards, nav rail, alerts, and/or links)
+  (every other theme's own `backdrop-filter` use is only on the native
+  `<dialog>`'s `::backdrop`, which a `#demo-dialog` element capture
   never includes, verified 0px either way); the glass effect itself is
   reviewed by eye, not by baseline, until a deterministic fix lands. A new
   theme's PR carries its baseline set -- that is the review artefact for
