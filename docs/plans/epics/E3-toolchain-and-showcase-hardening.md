@@ -624,3 +624,30 @@ If no candidate is both 10/10 clean locally and 5/5 green in CI while keeping th
 - [ ] Five consecutive CI `visual` re-runs green on the branch with the override removed; one baseline regeneration reviewed by mechanism.
 - [ ] Mutation: removing the flags reproduces a regressed glass tile within five CI re-runs (state the count).
 - [ ] STANDARD.md section 13's limitation sentence from #190 replaced by the pin's description.
+
+## Outcome (deviation, recorded 2026-09-11)
+
+The experiment's own close condition fired: no candidate needed to reach
+5/5 CI green, because the "glass kept" proof it exists to protect measures
+zero everywhere, for any Chromium configuration, not just the candidates
+under test. Candidate A (`--disable-gpu-compositing`) skipped per
+Subordinate #3's prior 3/6 measurement; candidate B (`--disable-gpu`) went
+10/10 clean locally with the flag verified reaching the real spawned
+process's command line, but the mandated pixelmatch-vs-override proof came
+back 0 for B **and** for a completely vanilla Chromium launch with no
+flags at all. Two sanity checks (the `.rb-bg` underlay genuinely renders,
+double-digit-percent full-viewport difference on toggle; every affected
+theme's card is genuinely translucent with `blur(12px)` computed) ruled out
+a harness bug before trusting that. A full sweep -- 3 glass themes x 4
+named glass-bearing tiles, vanilla Chromium, `scripts/visual.mjs`'s own
+real thresholds -- came back zero on all 12 combinations (a raw byte-level
+check on one tile found only 1-unit-of-255 deltas: the effect is
+mathematically present, nowhere near perceptible). Full evidence:
+https://github.com/Rackbops/rackbops-ui-ux-std-lib/issues/192#issuecomment-5630039095.
+C and D were not run -- there was no bar left for them to clear against.
+Closed per the issue's own "if no candidate... close this issue... the
+override stays, documented" clause, in #195 (docs-only: STANDARD.md 13's
+limitation sentence and `scripts/visual.mjs`'s matching comment corrected
+to state the actual finding; candidate B's local result recorded there for
+the day a theme's glass is strong enough at a measured location to
+matter).
