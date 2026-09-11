@@ -97,33 +97,31 @@ accent and the three status colours.
 
 ## Accessibility
 
-The token pairs `styles/test/contrast.test.mjs` computes — `--rb-text` /
-`--rb-text-soft` on their surfaces, `--rb-accent-fg` on `--rb-accent`,
-`--rb-accent` as non-text on `--rb-bg`, and `--rb-text-faint` on
-`--rb-surface`/`--rb-bg` — all clear their WCAG targets (4.5:1 text, 3:1
-non-text) on this theme. No deviations on the automated fixed pairs.
+Every fixed token pair `styles/test/contrast.test.mjs` computes (the list is
+`styles/contract.json`'s `contrast.pairs`, not restated here so it cannot go
+stale) clears its WCAG target on this theme (4.5:1 text, 3:1 non-text),
+except the two `danger` pairs, allowlisted — the first bullet below.
 
-Two things worth stating that the fixed-pair test does not check, because the
-issue's acceptance bullet asked for status-colour ratios explicitly (computed
-by hand, `styles/test/contrast.test.mjs`'s own formula, reproduced in a
-throwaway script — not asserted as anything, this is documentation only):
+Two things worth stating explicitly, because the issue's acceptance bullet
+asked for status-colour ratios (computed by hand with
+`styles/test/contrast.test.mjs`'s own formula, reproduced in a throwaway
+script; since #163 the suite asserts the `danger` pairs itself, while the
+badge-tint figures remain documentation only):
 
 - **Status as large UI accents on `--rb-bg`:** success 11.97:1, warning
   8.58:1 — both comfortably clear AA (4.5:1) even as plain text. **Danger is
-  the exception: 3.08:1** — crimson and navy sit close in luminance on this
-  theme, so `--rb-danger` clears the 3:1 non-text floor (a border, an icon)
-  but not the 4.5:1 STANDARD.md 9 sets for a control label, which is exactly
-  what `.rb-btn--danger` uses it for (`color: var(--rb-danger)` on the
-  ghost button's label, `components/button.css:64`). This is not a
-  regression unique to kenzen: neither `contract.json`'s fixed pairs nor any
-  existing theme's `design.md` holds status colours to this bar as button
-  text, and arcane-parchment's own `--rb-danger` (`#d64550`) on its `--rb-bg`
-  is 4.06:1 — also under 4.5:1 — shipped with no equivalent note. Recorded
-  here rather than silently repeated, and filed as
-  [rackbops-ui-ux-std-lib#163](https://github.com/Rackbops/rackbops-ui-ux-std-lib/issues/163)
-  since fixing it (a token change, a component-CSS change, or a documented
-  allowlist entry, decided per theme) is out of this PR's scope — it
-  predates kenzen and affects other themes too.
+  the exception: 3.08:1 on `--rb-bg` and 2.72:1 on `--rb-surface`** —
+  crimson and navy sit close in luminance on this theme, so `--rb-danger`
+  clears the 3:1 non-text floor (a border, an icon) but not the 4.5:1
+  STANDARD.md 9 sets for a control label, which is exactly what
+  `.rb-btn--danger` uses it for (`color: var(--rb-danger)` on the ghost
+  button's label, `components/button.css:64`). Since #163 the fixed-pair
+  test holds `--rb-danger` to that bar on both surfaces, and this theme is
+  allowlisted in `contract.json`'s `contrast` block for both `danger` pairs:
+  the crimson is the brand's exact hex (kenzen#88, #171), and the ghost
+  button's text label and danger-tinted border (`color-mix(in srgb,
+  var(--rb-danger) 40%, var(--rb-border))`, `components/button.css:63`)
+  carry the meaning, never the colour alone.
 - **Status as small badge text on its own 16% tint fill** (`badge.css`'s
   `color-mix(in srgb, var(--rb-x) 16%, transparent)`, composited over
   `--rb-bg`): success 7.91:1, warning 6.36:1, info 5.17:1, **danger 2.89:1

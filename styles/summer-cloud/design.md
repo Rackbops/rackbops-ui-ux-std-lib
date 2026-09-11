@@ -118,7 +118,9 @@ family.
 
 ## Accessibility
 
-The token pairs `styles/test/contrast.test.mjs` computes -- `--rb-text` / `--rb-text-soft` on their surfaces, `--rb-accent-fg` on `--rb-accent`, `--rb-accent` as non-text on `--rb-bg`, and `--rb-text-faint` on `--rb-surface` -- all clear their WCAG targets (4.5:1 text, 3:1 non-text; faint clears AA here too). No deviations.
+Every fixed token pair `styles/test/contrast.test.mjs` computes (the list is `styles/contract.json`'s `contrast.pairs`, not restated here so it cannot go stale) clears its WCAG target on this theme (4.5:1 text, 3:1 non-text; faint clears AA here too), except the two `danger` pairs, allowlisted:
+
+- **`--rb-danger` (`#ff4d4d`) as text is 3.12:1 on `--rb-bg` and 3.27:1 on `--rb-surface`**, below the 4.5:1 control-label bar -- but no component renders it as a label: `.rb-btn--danger` is a solid `--rb-danger-deep` (`#cc1f1f`) fill with white `--rb-accent-fg` text (5.55:1), and the badge puts dark text on the red (see "Deviations from the Stitch source"). Allowlisted for both `danger` pairs so the fixed-pair test does not flag a pairing nothing uses.
 
 ## Components
 
