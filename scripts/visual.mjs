@@ -88,14 +88,16 @@ await page.addStyleTag({
 // #191's bot regen landed one mode and the next compare run landed the
 // other, failing `main` outright. #192 investigated pinning a deterministic
 // compositor path (a candidate flag set was 10/10 clean locally) to restore
-// the effect to these baselines instead, and found this override costs no
-// fidelity the job can measure: with the underlay confirmed rendering and
-// every affected card confirmed translucent, a vanilla capture with the
-// effect on versus off is identical at this job's own threshold on every
-// glass-bearing tile in all three affected themes -- the blur is real and
-// applied, just too subtle within the small region each tile crops to. The
-// filter's own rendering stays reviewed by eye, not by baseline, but not
-// because of nondeterminism this override is hiding.
+// the effect to these baselines instead, but did not adopt it: measured IN
+// THE MODE where an on-vs-off capture came out identical at this job's own
+// threshold on every glass-bearing tile in all three affected themes, the
+// blur's own contribution is at most one unit in 255 per channel -- so what
+// this override actually forfeits is the mode-dependent antialiasing
+// artifact above, not a blur effect the job could otherwise photograph.
+// #192's own audit reconfirmed the mode-flip is real and still present with
+// the filter on (neon-butterfly's Cards tile differed in 6 of 10 on-vs-on
+// session pairs, up to 1.68%, above the job's 0.1% threshold) -- so the
+// filter's own rendering stays reviewed by eye, not by baseline.
 await page.addStyleTag({ content: "* { backdrop-filter: none !important; }" });
 
 // Section identity is its sc-title, slugified -- stable across reorders.
