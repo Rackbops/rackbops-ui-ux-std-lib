@@ -57,31 +57,46 @@ await page.goto(url, { waitUntil: "networkidle" });
 // has `content: none` and would trivially satisfy any transform assertion
 // without ever exercising the real rule. Narrowed here, not in contract.json:
 // this is a showcase-fixture detail, not part of the contract the CSS makes.
+// Excludes both signals summer-cloud's own CSS treats as "active"
+// (link.css :38-39/:45-46: `.rb-link--active` OR `[aria-current="page"]`),
+// not just the class -- the showcase's link happens to carry both today, but
+// this doesn't depend on that coincidence.
 function resolveSelector(selector) {
-  if (selector === ".rb-link") return ".rb-link:not(.rb-link--active)";
+  if (selector === ".rb-link") return '.rb-link:not(.rb-link--active):not([aria-current="page"])';
   return selector;
 }
 
 // The floating card is a summer-cloud extra with no showcase demo (STANDARD.md
 // 13 lists .rb-card--floating among the "Theme extras", not the base
 // component set every theme's showcase section renders) -- inject one on
-// demand, remove it once a theme's suppressions are checked.
+// demand, remove it once a theme's suppressions are checked. Tracks whether
+// THIS script created it, so removal never deletes a real showcase demo if
+// one is ever added later.
+let weInjectedFloatingCard = false;
 async function ensureFloatingCard() {
-  await page.evaluate(() => {
-    if (document.querySelector(".rb-card--floating")) return;
+  const created = await page.evaluate(() => {
+    if (document.querySelector(".rb-card--floating")) return false;
     const el = document.createElement("div");
     el.className = "rb-card rb-card--floating";
     el.textContent = "probe";
     document.querySelector("main").appendChild(el);
+    return true;
   });
+  if (created) weInjectedFloatingCard = true;
 }
 async function removeFloatingCard() {
+  if (!weInjectedFloatingCard) return;
   await page.evaluate(() => document.querySelector(".rb-card--floating")?.remove());
+  weInjectedFloatingCard = false;
 }
 
 /** The CDP nodeId for `selector`, re-resolved from a fresh DOM.getDocument
- * each call rather than cached -- cheap, and avoids any risk of a stale
- * nodeId after the floating-card injection/removal mutates the tree. */
+ * each call rather than cached. This is NOT a general staleness guard -- a
+ * `DOM.getDocument` call itself hands out a fresh id for the same element
+ * (measured: two calls, same node, two different nodeIds; reusing the
+ * earlier one throws "Could not find node with given id"). It only works
+ * here because nothing between a force and its matching reset calls
+ * DOM.getDocument again -- callers must keep that invariant. */
 async function nodeIdFor(selector) {
   const { root } = await cdp.send("DOM.getDocument", { depth: -1, pierce: true });
   const { nodeId } = await cdp.send("DOM.querySelector", { nodeId: root.nodeId, selector });
@@ -89,27 +104,83 @@ async function nodeIdFor(selector) {
   return nodeId;
 }
 
+/** Wait for every CURRENTLY RUNNING, finite-duration transition/animation to
+ * finish (subtree, so a pseudo-element like ::after is included -- the
+ * "sc-switching" class below stops at plain elements, per its own CSS,
+ * `*, *::before, *::after` notwithstanding: `transition` is not inherited,
+ * so the selector reaching a pseudo-element doesn't mean the DECLARATION
+ * that actually drives its own transition is affected by a class on its
+ * host). Filtered to exclude infinite animations (the spinner's sweep) --
+ * `.finished` never resolves for those, which would hang this forever. */
+async function settleTransitions() {
+  await page.evaluate(() =>
+    Promise.all(
+      document
+        .getAnimations({ subtree: true })
+        .filter((a) => (a.effect?.getTiming?.().iterations ?? 1) !== Infinity)
+        .map((a) => a.finished.catch(() => {})),
+    ),
+  );
+}
+
+/** Tab through the page until the element `document.querySelector(selector)`
+ * itself resolves to is focused -- a real key press is what makes
+ * :focus-visible match; a programmatic .focus() does not reliably on every
+ * engine (decision 4). Checks node IDENTITY with querySelector's own result,
+ * not a loose `.matches(selector)`: `selector` here is a class-only selector
+ * like ".rb-btn", which several buttons share (variants), and Tab order can
+ * reach a DIFFERENT one first -- readTransform() always reads whichever
+ * element querySelector(selector) returns, so the two must be the same node
+ * or the force lands on one button while the read checks another (caught by
+ * temporarily forcing this fallback path live: it reached the showcase's
+ * "Open dialog" button, .rb-btn--primary, while the read kept checking the
+ * plain "Default" .rb-btn -- a real mismatch, not a hypothetical one).
+ * Bounded so an unreachable target fails loudly instead of hanging. */
+async function focusViaKeyboard(selector) {
+  for (let i = 0; i < 50; i++) {
+    const matched = await page.evaluate(
+      (sel) => document.activeElement === document.querySelector(sel),
+      selector,
+    );
+    if (matched) return;
+    await page.keyboard.press("Tab");
+  }
+  throw new Error(`reduced-motion: could not reach the element matching "${selector}" by Tab within 50 presses`);
+}
+
 // Chromium versions vary on whether CSS.forcePseudoState accepts
-// "focus-visible" in forcedPseudoClasses. Probed once, not per-call: a real
-// Tab keypress is what makes :focus-visible match at all (a programmatic
-// .focus() does not), so the fallback drives the keyboard instead of CDP.
+// "focus-visible" in forcedPseudoClasses. Probed once, not per-call.
 let focusVisibleForceable = true;
 try {
   const probeId = await nodeIdFor(".rb-btn:not(:disabled)");
   await cdp.send("CSS.forcePseudoState", { nodeId: probeId, forcedPseudoClasses: ["focus-visible"] });
-  await cdp.send("CSS.forcePseudoState", { nodeId: probeId, forcedPseudoClasses: [] });
 } catch {
   focusVisibleForceable = false;
   console.log("reduced-motion: CSS.forcePseudoState rejects focus-visible on this Chromium -- falling back to a real Tab keypress for that state");
+} finally {
+  // Always clear the probe's own force, even if it never took (an empty
+  // list is a harmless no-op on an unforced node) -- otherwise a force that
+  // succeeded but whose reset threw would leak into every theme this run
+  // reads (verified: a forced state survives a theme switch).
+  try {
+    const probeId = await nodeIdFor(".rb-btn:not(:disabled)");
+    await cdp.send("CSS.forcePseudoState", { nodeId: probeId, forcedPseudoClasses: [] });
+  } catch {
+    // Nothing more to do if even the reset's own lookup fails.
+  }
 }
 
 /** Force `state` (hover/active/focus-visible) on the element matching
- * `selector`, run `fn`, then always reset -- forcePseudoState with an empty
- * list clears it (decision 4); the keyboard fallback blurs afterward. */
+ * `selector`, wait for that force's own transition to settle (so a caller
+ * reading `transform` afterward gets the rule's real end-state, not a
+ * mid-tween value under no-preference), run `fn`, then always reset --
+ * forcePseudoState with an empty list clears it (decision 4); the keyboard
+ * fallback blurs afterward. */
 async function withForcedState(selector, state, fn) {
   const resolved = resolveSelector(selector);
   if (state === "focus-visible" && !focusVisibleForceable) {
-    await page.focus(resolved);
+    await focusViaKeyboard(resolved);
+    await settleTransitions();
     try {
       return await fn();
     } finally {
@@ -118,6 +189,7 @@ async function withForcedState(selector, state, fn) {
   }
   const nodeId = await nodeIdFor(resolved);
   await cdp.send("CSS.forcePseudoState", { nodeId, forcedPseudoClasses: [state] });
+  await settleTransitions();
   try {
     return await fn();
   } finally {
@@ -155,13 +227,20 @@ async function switchTheme(theme) {
   // theme's .rb-btn as instantaneous regardless of prefers-reduced-motion,
   // masking the real value it exists to check.
   await page.waitForFunction(() => !document.documentElement.classList.contains("sc-switching"));
+  // sc-switching's own CSS (`*, *::before, *::after { transition: none }`)
+  // reaches every element but not what drives a PSEUDO-element's transition,
+  // since `transition` isn't inherited -- so a flip can still leave the
+  // checked switch thumb's own ::after transform mid-tween between the old
+  // and new theme's end value. Settle it before anything reads computed
+  // style for this theme.
+  await settleTransitions();
 }
 
 async function readTheme(theme) {
   await switchTheme(theme);
 
   const btnDurations = await page.evaluate(() => {
-    const el = document.querySelector(".rb-btn:not([disabled])");
+    const el = document.querySelector(".rb-btn:not(:disabled)");
     return getComputedStyle(el)
       .transitionDuration.split(",")
       .map((s) => s.trim());
