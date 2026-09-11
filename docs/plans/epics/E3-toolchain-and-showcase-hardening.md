@@ -651,3 +651,5 @@ limitation sentence and `scripts/visual.mjs`'s matching comment corrected
 to state the actual finding; candidate B's local result recorded there for
 the day a theme's glass is strong enough at a measured location to
 matter).
+
+# #198 -- kept the #186/#190/#192 visual-job diagnostics as tracked, tested scripts (`scripts/visual-control.mjs`, `scripts/visual-diff-probe.mjs`); the issue body is the plan: https://github.com/Rackbops/rackbops-ui-ux-std-lib/issues/198

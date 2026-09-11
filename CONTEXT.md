@@ -34,8 +34,10 @@ The test runner is **`node --test` (node:test) everywhere** -- no vitest/jest. R
 - **`pnpm --filter @rackbops/ui-react test`** -- `tsc --noEmit`, then the component render tests
   (`node --import tsx --test "src/**/*.test.tsx"`, react-dom/server + jsdom).
 - **`pnpm --filter @rackbops/ui-react build`** -- strict `tsc`; the React package must typecheck + build.
-- **`node --test site/serve.test.mjs scripts/generate-skill-table.test.mjs scripts/copy-license.test.mjs scripts/new-theme.test.mjs`**
-  -- the showcase-server containment tests and the three generator/scaffold tests.
+- **`node --test site/serve.test.mjs site/showcase-extras.test.mjs scripts/generate-skill-table.test.mjs scripts/copy-license.test.mjs scripts/new-theme.test.mjs scripts/visual-control.test.mjs scripts/visual-diff-probe.test.mjs`**
+  -- the showcase-server containment tests, the theme-extras placement tests, the three
+  generator/scaffold tests, and the pure parts (shift arithmetic, output parsing, env wiring) of the
+  two visual-job diagnostics below.
 
 `pnpm test` chains `pnpm -r test` with those root tests; `pnpm build` = `pnpm -r build`. **The contract
 test is the definition-of-done gate** -- see `CLAUDE.md`.
@@ -43,6 +45,16 @@ test is the definition-of-done gate** -- see `CLAUDE.md`.
 **CI** ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs exactly that chain -- `pnpm install
 --frozen-lockfile`, `pnpm build`, `pnpm test` -- as its `test` job on Node 24, on **both** `pull_request`
 and `push:[main]`, plus a separate `visual` job (`pnpm visual`, Playwright container).
+
+**Visual-job diagnostics** (`scripts/visual-control.mjs`, `scripts/visual-diff-probe.mjs`, #198) are
+tracked scripts, not throwaways -- three separate sessions rebuilt an equivalent of each from scratch
+in one night (#186/#190/#192) because the working versions lived as untracked files. Reach for
+`visual-control.mjs` to ask "is the visual job deterministic here?" (N no-edit update-then-compare
+pairs against a scratch copy of the baselines, never the committed ones -- `--themes`/`--launch-args`/
+`--keep-glass` are the #192 compositor-pin experiment hooks). Reach for `visual-diff-probe.mjs` to ask
+"is this baseline diff a phase shift or a content change?" (raw pixel diff, a -2..+2 row-shift residual,
+and a bounding box, for two PNGs or `--theme/--tile/--old/--new` read straight from git -- the method
+#186's PR C used by hand to show 128 of 156 changed tiles were pure phase noise).
 
 ---
 

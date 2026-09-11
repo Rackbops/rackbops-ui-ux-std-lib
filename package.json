@@ -5,7 +5,7 @@
   "description": "UX/design-standards library for roshne's apps: CSS themes + React components, one --rb-* contract with swappable themes.",
   "scripts": {
     "build": "pnpm -r build",
-    "test": "pnpm -r test && node --test site/serve.test.mjs site/showcase-extras.test.mjs scripts/generate-skill-table.test.mjs scripts/copy-license.test.mjs scripts/new-theme.test.mjs",
+    "test": "pnpm -r test && node --test site/serve.test.mjs site/showcase-extras.test.mjs scripts/generate-skill-table.test.mjs scripts/copy-license.test.mjs scripts/new-theme.test.mjs scripts/visual-control.test.mjs scripts/visual-diff-probe.test.mjs",
     "showcase": "node site/serve.mjs",
     "visual": "node scripts/visual.mjs",
     "new-theme": "node scripts/new-theme.mjs"
