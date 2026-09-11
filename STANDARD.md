@@ -879,6 +879,17 @@ The showcase is the library's visual acceptance test. It MUST:
   theme's PR carries its baseline set -- that is the review artefact for
   "does it look out of place".
 
+Two tracked scripts diagnose the visual job itself, next to `scripts/visual.mjs`
+(#198, built from the #186/#190/#192 investigations above): `scripts/visual-control.mjs`
+runs N no-edit update-then-compare pairs against a scratch copy of the baselines
+to ask "is the job deterministic here?" (the method #190 used to find the
+compositor bimodality, and #192 used to test compositor-pin candidates);
+`scripts/visual-diff-probe.mjs` takes two baseline revisions and prints a raw
+pixel diff, a -2..+2 row-shift residual, and a bounding box, to ask "is this
+diff a phase shift or a content change?" (#186's method, applied by hand at the
+time to show 128 of a 156-tile baseline diff were pure phase noise around 28
+real changes).
+
 ---
 
 ## 14. Processes
