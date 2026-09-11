@@ -983,10 +983,16 @@ for (const theme of themeDirs) {
    * `.rb-btn:active::before`, a different, undeclared rule that a plain
    * `.includes` would wrongly treat as covered; anchoring at the end also
    * rejects a descendant selector like `.rb-card--floating:hover .child`,
-   * whose declared-looking prefix is followed by more selector, not the
-   * guard-prefix `:where(...)` this needs to tolerate on the other side).
-   * Selectors carry a `:where(...)` theme guard prefix, which is why the
-   * match is "ends with", not "equals". */
+   * whose declared-looking prefix is followed by more selector.
+   * Round 2 finding (MAJOR): "ends with" alone still isn't enough -- it
+   * has no opinion on what comes BEFORE the needle either, so an ANCESTOR
+   * combinator (`.sc-nav .rb-link:hover::after`) still ends with the exact
+   * needle after whitespace-stripping (`.sc-nav` and `.rb-link` collapse
+   * into one compound-looking string) and would wrongly pass. Selectors
+   * carry a `:where(...)` theme guard prefix, which is why the match
+   * strips that guard first (`stripGuard`, the same helper the nesting
+   * check above uses) and then requires EQUALITY with what remains --
+   * not a substring/suffix check on the raw selector. */
   const suppressionNeedle = ({ selector, state, target }) =>
     `${selector}:${state}${target === "self" ? "" : target}`.replace(/\s+/g, "");
 
@@ -1008,7 +1014,7 @@ for (const theme of themeDirs) {
         [...block.matchAll(/([^{}]+)\{([^{}]*)\}/g)].some(
           ([, prelude, decls]) =>
             /transform\s*:\s*none\s*;?/.test(decls) &&
-            splitSelectors(prelude).some((sel) => sel.replace(/\s+/g, "").endsWith(needle)),
+            splitSelectors(prelude).some((sel) => stripGuard(sel).replace(/\s+/g, "") === needle),
         ),
       );
       assert.ok(
@@ -1035,9 +1041,9 @@ for (const theme of themeDirs) {
         for (const [, prelude, decls] of block.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
           if (!/transform\s*:\s*none\s*;?/.test(decls)) continue;
           for (const sel of splitSelectors(prelude)) {
-            const normalized = sel.replace(/\s+/g, "");
+            const normalized = stripGuard(sel).replace(/\s+/g, "");
             assert.ok(
-              needles.some((needle) => normalized.endsWith(needle)),
+              needles.some((needle) => normalized === needle),
               `${theme}/${fileName}: "${sel.trim()}" sets transform: none inside a prefers-reduced-motion block, with no matching contract.json reducedMotion.suppressions[${theme}] entry`,
             );
           }
