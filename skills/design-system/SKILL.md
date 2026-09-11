@@ -131,6 +131,14 @@ level deeper — set it to match wherever LinksIndex is embedded. Each url's
 list key is `label + url`, not `url` alone, so two urls sharing one address
 with different labels ("prod" / "canonical") don't collide.
 
+`EmptyState` (React only, no CSS class of its own) composes `Card` into
+an empty-guidance surface: `title` (required heading, `level` 2-4, default
+3), `children` as guidance, an optional `action` rendered last, `role="status"`
+on the root so the guidance is announced. It never renders a spinner --
+an empty state is a fact stated in words, so use `Spinner` for loading and
+`EmptyState` for genuinely empty. Carries no theme obligation, so it isn't
+in the table above.
+
 Theme-specific extras (styled only under that theme — check before using): the
 arcane pair adds `.rb-wordmark`, `.rb-tabstrip`, and `.rb-eyebrow`; the
 rackbops pair adds `.rb-rack` (equaliser panel), `.rb-principles`/`.rb-principle`,
