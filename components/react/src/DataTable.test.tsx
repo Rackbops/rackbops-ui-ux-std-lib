@@ -135,6 +135,41 @@ test("sticky wraps the table in rb-table-scroll; not sticky renders no wrapper",
   assert.ok(!plainHtml.includes("rb-table-scroll"));
 });
 
+const WIDTH_COLUMNS: DataTableColumn<Row>[] = [
+  { key: "name", header: "Name", render: (r) => r.name, width: "20%" },
+  { key: "count", header: "Count", render: (r) => r.count, numeric: true },
+];
+
+test("columns with a width render a colgroup ahead of thead and switch the table to fixed layout", () => {
+  const html = renderToStaticMarkup(<DataTable columns={WIDTH_COLUMNS} rows={ROWS} rowKey={(r) => r.id} />);
+  // One <col> per column in column order -- a column without a width gets a bare <col> so it
+  // shares the remaining space -- and the table itself goes fixed so the widths are honoured.
+  assert.match(
+    html,
+    /^<table class="rb-table" style="table-layout:fixed"><colgroup><col style="width:20%"\/><col\/><\/colgroup><thead>/,
+  );
+});
+
+test("no column declares a width: no colgroup and no inline style, exactly as before", () => {
+  const html = renderToStaticMarkup(<DataTable columns={COLUMNS} rows={ROWS} rowKey={(r) => r.id} />);
+  assert.match(html, /^<table class="rb-table"><thead>/);
+  assert.ok(!html.includes("<colgroup"));
+});
+
+test("an empty-string width does not flip the table into fixed layout by itself", () => {
+  // Review round 1, MINOR: `width: ""` is falsy, so `columns.some((c) => c.width)` correctly
+  // treats it as "no width" -- a `!== undefined` check would not have.
+  const emptyWidthColumns: DataTableColumn<Row>[] = [
+    { key: "name", header: "Name", render: (r) => r.name, width: "" },
+    { key: "count", header: "Count", render: (r) => r.count, numeric: true },
+  ];
+  const html = renderToStaticMarkup(
+    <DataTable columns={emptyWidthColumns} rows={ROWS} rowKey={(r) => r.id} />,
+  );
+  assert.match(html, /^<table class="rb-table"><thead>/);
+  assert.ok(!html.includes("<colgroup"));
+});
+
 // The tests below need a real client render -- sort state only changes in response to a click,
 // which a rendered HTML string can't simulate. See test-dom.ts for what installing jsdom here
 // involves.

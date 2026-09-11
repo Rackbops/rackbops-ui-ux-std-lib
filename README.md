@@ -161,7 +161,10 @@ every manifest-reading consumer.
 
 Merging package changes to `main` runs the `release` workflow: it bumps both
 package versions (patch by default; a `type!:` subject or `BREAKING CHANGE:`
-footer bumps the minor while the major is 0), commits, and tags -- the bump
+footer bumps the minor while the major is 0), commits, and tags, with the
+release notes grouped by commit type (`revert` has its own section) and a
+`type!:` subject marked `BREAKING:` (a `BREAKING CHANGE:` footer drives the
+bump but is not visible to the subjects-only notes, #113) -- the bump
 commit and its tag land in one atomic push (`git push --atomic origin main
 <tag>`, issue #88): either both land or neither does, so there's no partial
 state to ever resume. Pushing a `v*` tag triggers `publish.yml`, which runs
@@ -172,17 +175,23 @@ after a publish failure completes both without duplicating either).
 
 The two steps authenticate differently:
 
-- **`release`** needs a `RELEASE_TOKEN` (a PAT that can push past branch
-  protection, and whose tag push actually triggers `publish.yml` below —
-  a plain `GITHUB_TOKEN` push wouldn't) to create the bump commit and tag.
-  That secret **is configured and live** — the workflow runs automatically
-  on qualifying merges to `main`, unattended; `v0.1.9` and `v0.1.10` were
-  both cut this way. If the secret were ever unset, the workflow no-ops
-  instead (`RELEASE_TOKEN not set — release/publish is inert. Skipping.`),
-  and a release can still be cut by running `.github/scripts/release.sh`
-  locally as a fallback — it commits the version bump, tags, and pushes both
-  atomically to `main`, triggering `publish.yml` to publish and create the
-  release exactly as the automated path does. It needs push rights to the
+- **`release`** needs **both** a `RELEASE_TOKEN` secret (a PAT that can push
+  past branch protection, and whose tag push actually triggers `publish.yml`
+  below — a plain `GITHUB_TOKEN` push wouldn't) to create the bump commit
+  and tag, and a `RELEASE_ENABLED` repository variable set to `true`, which
+  the job-level `if` reads (#114). Both **are configured and live** — the
+  workflow runs automatically on qualifying merges to `main`, unattended;
+  `v0.1.9` and `v0.1.10` were both cut this way. Without the variable the
+  job is skipped before a runner is provisioned (previously that inert
+  check lived only in the final step, so a repo without the secret would
+  still check out full history and set up the toolchain just to print
+  Skipping); without the secret it no-ops as before
+  (`RELEASE_TOKEN not set -- release/publish is inert. Skipping.`), and a
+  release can still be cut by running
+  `.github/scripts/release.sh` locally as a fallback — it commits the
+  version bump, tags, and pushes both atomically to `main`, triggering
+  `publish.yml` to publish and create the release exactly as the automated
+  path does. It needs push rights to the
   repo (release.sh itself never calls `gh` -- only publish.yml's own
   `publish-release.sh` step does, with `RELEASE_TOKEN` or the default
   `GITHUB_TOKEN`).

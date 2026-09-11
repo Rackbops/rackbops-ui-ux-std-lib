@@ -36,6 +36,7 @@
 #    so editing it rewrites every published bundle and must trigger a release,
 #    the same way copy-license.mjs does. The generated bundles are gitignored and
 #    never appear in the log, so the generator stands in for them here.
+# shellcheck disable=SC2034  # consumed by release.sh/release-notes.sh, which source this file -- shellcheck can't see the reverse direction
 PATHSPEC=(
   styles/
   ":(exclude)styles/test/"
@@ -60,16 +61,18 @@ PATHSPEC=(
 # its body would otherwise be dropped -- skipping its release, mis-scoping the
 # changelog, or hiding a breaking marker (issue #87). "(" and ")" need no
 # escaping: grep's basic regex treats them as literal.
+# shellcheck disable=SC2034  # consumed by release.sh/release-notes.sh, which source this file -- shellcheck can't see the reverse direction
 BUMP_GREP='^chore(release): v'
 
 # ── Commit-type display config ────────────────────────────────────────────────
 
 # Ordered list controls section order in the changelog.
-COMMIT_TYPES_ORDER=(feat fix perf refactor chore docs style test build ci)
+COMMIT_TYPES_ORDER=(feat fix revert perf refactor chore docs style test build ci)
 
 declare -A COMMIT_TYPE_NAMES=(
   [feat]="Features"
   [fix]="Bug Fixes"
+  [revert]="Reverts"
   [perf]="Performance"
   [refactor]="Refactoring"
   [chore]="Maintenance"
@@ -94,13 +97,19 @@ build_changelog_from_log() {
   for t in "${COMMIT_TYPES_ORDER[@]}"; do type_entries[$t]=""; done
   local other_entries=""
   local msg
-  # Matches: type(optional-scope)(optional !): description -- the optional !
-  # keeps breaking commits (feat!:, feat(scope)!:) under their own type
-  # instead of dropping them into "Other Changes". Stored in a variable
-  # (rather than written inline in the [[ =~ ]] below) since bash's
+  # Matches: type(optional-scope)(optional !): description -- groups are
+  # type (1), scope (2), bang (3), description (4). The bang is captured as
+  # its own group so a breaking subject (feat!:, feat(scope)!:) is both kept
+  # under its own type instead of dropping into "Other Changes" AND marked
+  # "BREAKING:" in the notes (issue #113). Only the subject is visible here
+  # (the caller, release-notes.sh, passes a %s subjects-only stream), so a
+  # "BREAKING CHANGE:" footer cannot be seen by the changelog -- it is
+  # visible only to next-version.sh, which reads full bodies for the bump.
+  # Stored in a
+  # variable (rather than written inline in the [[ =~ ]] below) since bash's
   # conditional parser doesn't reliably handle literal parens inside an
   # inline regex there.
-  local pattern='^([a-z]+)(\([^)]*\))?!?:[[:space:]]+(.+)$'
+  local pattern='^([a-z]+)(\([^)]*\))?(!?):[[:space:]]+(.+)$'
 
   while IFS= read -r msg; do
     [[ -z "$msg" ]] && continue
@@ -109,7 +118,9 @@ build_changelog_from_log() {
     # falls through to Other Changes exactly as it did when compared
     # type-by-type.
     if [[ "$msg" =~ $pattern ]] && [[ -n "${COMMIT_TYPE_NAMES[${BASH_REMATCH[1]}]+x}" ]]; then
-      type_entries[${BASH_REMATCH[1]}]+="- ${BASH_REMATCH[3]}"$'\n'
+      local marker=""
+      [[ -n "${BASH_REMATCH[3]}" ]] && marker="BREAKING: "
+      type_entries[${BASH_REMATCH[1]}]+="- ${marker}${BASH_REMATCH[4]}"$'\n'
     else
       other_entries+="- ${msg}"$'\n'
     fi

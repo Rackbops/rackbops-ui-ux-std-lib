@@ -8,6 +8,16 @@ export interface DataTableColumn<T> {
   render: (row: T) => ReactNode;
   /** Right-aligns the cell (rb-num, matching the existing numeric-column class). */
   numeric?: boolean;
+  /** CSS width for the column (`"20%"`, `"12rem"`), rendered as `<col style="width: ...">` in a
+   * `<colgroup>` ahead of `<thead>`. Declaring a width on any column also puts the table in
+   * `table-layout: fixed`, so the widths are honoured and stay identical across table instances
+   * instead of each auto-sizing from its own content (kenzen#70). Columns without a width share
+   * the remaining space. An empty string is treated as no width, not a zero-width column.
+   * Combined with `sticky`, `table-layout: fixed` also stops the table from growing past its
+   * scroll wrapper, so content that needed horizontal scrolling under `sticky` alone will instead
+   * wrap once a width is declared (no theme sets `white-space: nowrap` or hides overflow on a
+   * cell, so it never clips) -- pick column widths wide enough for their content. */
+  width?: string;
   /** Omit to make the column unsortable. Returning a number sorts numerically; a string sorts
    * lexicographically (case-insensitive). */
   sortValue?: (row: T) => string | number;
@@ -131,8 +141,22 @@ export function DataTable<T>({
       })()
     : [{ label: null, rows: sortRows(rows, columns, sort) }];
 
+  // Truthy, not `!== undefined`: an explicitly empty width ("") is "no width", not a
+  // zero-width column, so it must not flip the table into fixed layout on its own.
+  const hasWidths = columns.some((c) => c.width);
   const table = (
-    <table className="rb-table">
+    // table-layout is structural (which sizing algorithm), not a theme's visual opinion -- no
+    // theme CSS sets it -- so it is inline here, like LinksIndex's grid (STANDARD.md 12).
+    <table className="rb-table" style={hasWidths ? { tableLayout: "fixed" } : undefined}>
+      {hasWidths && (
+        <colgroup>
+          {columns.map((column) => (
+            // `style={{ width: undefined }}` renders no width attribute at all, so this needs
+            // no conditional -- a column with no width already gets a bare <col>.
+            <col key={column.key} style={{ width: column.width }} />
+          ))}
+        </colgroup>
+      )}
       <thead>
         <tr>
           {columns.map((column) => {

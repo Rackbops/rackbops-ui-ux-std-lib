@@ -15,11 +15,16 @@
 // MUST be generated in the same environment CI runs -- the official Playwright
 // container (mcr.microsoft.com/playwright). A baseline shot on another OS fails
 // against CI on antialiasing alone. See README "Developing".
+//
+// Each section is snapped to an integer document offset before capture (#186):
+// otherwise a tile's antialiasing depends on the fractional phase left by
+// everything above it, so an unrelated layout change elsewhere on the page
+// perturbs tiles whose own content never changed.
 import pixelmatch from "pixelmatch";
 import { PNG } from "pngjs";
 import { chromium } from "playwright-core";
 import { existsSync } from "node:fs";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { server } from "../site/serve.mjs";
@@ -62,11 +67,31 @@ const cdp = await page.context().newCDPSession(page);
 await cdp.send("Animation.enable");
 await cdp.send("Animation.setPlaybackRate", { playbackRate: 0 });
 await page.goto(url, { waitUntil: "networkidle" });
+// Park the pointer in the sticky header's top-left padding (.sc-head,
+// nothing interactive there) so no element captures a hover state that
+// would otherwise be baked into every baseline for the rest of the run
+// (#123).
+await page.mouse.move(0, 0);
 // Freeze transitions + the caret too -- `*` reaches every element and named
 // pseudo (::before/::after) for this, which is all it needs to reach.
 await page.addStyleTag({
   content: "*, *::before, *::after { transition: none !important; caret-color: transparent !important; }",
 });
+// #190: Chromium picks the compositor's backdrop-filter path per session, not
+// per element -- glass-card tiles on luminous-precision and summer-cloud
+// (.rb-card / the nav rail, backdrop-filter over the ports' .rb-bg canvas)
+// therefore render in one of two stable ways depending on which path a given
+// session lands in, with the differing-pixel count recurring exactly across
+// sessions (not noise). Confirmed with ten no-edit control pairs, each pair
+// two separate browser launches (phase 1, #190): disabling backdrop-filter
+// entirely was 10/10 pixel-clean; CI caught the bimodality directly when
+// #191's bot regen landed one mode and the next compare run landed the
+// other, failing `main` outright. Disabling the filter for every capture is
+// a real loss of fidelity -- the glass effect itself goes untested here --
+// but an undeterministic acceptance test is worse than an incomplete one;
+// the filter's own rendering is reviewed by eye, not by baseline, until a
+// deterministic compositor pin replaces this (tracked separately).
+await page.addStyleTag({ content: "* { backdrop-filter: none !important; }" });
 
 // Section identity is its sc-title, slugified -- stable across reorders.
 const sections = await page.$$eval("main > section", (els) =>
@@ -84,6 +109,23 @@ const slugs = sections.map(([, title]) => slugify(title));
 const dupes = [...new Set(slugs.filter((s, i) => slugs.indexOf(s) !== i))];
 if (dupes.length) {
   console.error(`visual: duplicate section slug(s): ${dupes.join(", ")}`);
+  process.exit(1);
+}
+
+// A baseline with no section is dead weight `--update` can never remove (it
+// only writes) -- a renamed section would leave the old tile green forever.
+const orphans = [];
+for (const theme of themes) {
+  const dir = join(SHOTS, theme);
+  if (!existsSync(dir)) continue;
+  for (const f of await readdir(dir)) {
+    if (!f.endsWith(".png") || f.endsWith(".actual.png") || f.endsWith(".diff.png")) continue;
+    if (!slugs.includes(f.slice(0, -4))) orphans.push(join(theme, f));
+  }
+}
+if (orphans.length) {
+  console.error(`visual: ${orphans.length} orphaned baseline(s) with no matching section -- delete them:`);
+  for (const o of orphans) console.error(`  ${o}`);
   process.exit(1);
 }
 
@@ -105,6 +147,30 @@ for (const theme of themes) {
   );
   await page.evaluate(() => document.fonts.ready);
 
+  // #186: a tile's antialiasing and clip rounding depend on the sub-pixel phase
+  // of its section's document offset, so any height change ABOVE a section used
+  // to re-render every tile below it (PR C: 128 of 156 changed tiles were phase
+  // noise). Give each section an inline margin-top that lifts its top to an
+  // integer, in document order so each snap accounts for the previous one; the
+  // margin sits outside the border box a screenshot captures, so tiles do not
+  // change. Cleared first: every theme has different heights.
+  const fractional = await page.evaluate(() => {
+    const sections = [...document.querySelectorAll("main > section")];
+    for (const s of sections) s.style.marginTop = "";
+    for (const s of sections) {
+      const top = s.getBoundingClientRect().top + window.scrollY;
+      const frac = top - Math.floor(top);
+      if (frac > 0) s.style.marginTop = `${1 - frac}px`;
+    }
+    return sections
+      .map((s) => s.getBoundingClientRect().top + window.scrollY)
+      .filter((t) => Math.abs(t - Math.round(t)) > 1e-6);
+  });
+  if (fractional.length) {
+    console.error(`visual: ${theme}: ${fractional.length} section(s) still at a fractional offset after snapping: ${fractional.join(", ")}`);
+    process.exit(1);
+  }
+
   for (const [i, title] of sections) {
     const rel = join(theme, `${slugify(title)}.png`);
     const baseline = join(SHOTS, rel);
@@ -117,6 +183,10 @@ for (const theme of themes) {
       buf = await page.locator("#demo-dialog").screenshot();
       await page.click("#close-dialog");
       await page.waitForSelector("#demo-dialog[open]", { state: "detached" }).catch(() => {});
+      // The dialog's close button sat under the pointer -- park it again so
+      // the remainder of this theme's sections, and every theme after it,
+      // don't capture a resting :hover there (#123).
+      await page.mouse.move(0, 0);
     } else {
       buf = await page.locator("main > section").nth(i).screenshot();
     }

@@ -1,6 +1,6 @@
 {
   "name": "@rackbops/ui-react",
-  "version": "0.2.30",
+  "version": "0.2.35",
   "description": "React components styled by @rackbops/styles rackbops themes.",
   "license": "MIT",
   "repository": {
@@ -17,6 +17,8 @@
     "LICENSE",
     "NOTICE"
   ],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

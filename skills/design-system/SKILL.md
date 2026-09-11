@@ -110,16 +110,16 @@ This table is generated from `styles/contract.json` — edit that file, then run
 | `Badge` | `.rb-badge` | semantic variants |
 | `Alert` | `.rb-alert` | variant + optional title (renders as a heading, replacing the native title tooltip attribute) |
 | `Dialog` | `.rb-dialog` | native <dialog>; required open + onClose (onClose keeps the parent in sync after a native Escape close, so it must set open=false to reopen); optional actions; __body is a documented no-op in four themes (section 5.3) |
-| `Tabs` | `.rb-tabs` | items: {id, label, content}[]; --active also matches [aria-selected="true"] in every theme; className/rest forward onto the tablist element -- ref targets the outer structural wrapper spanning tabs+panels (#84) |
-| `Tabstrip` | `.rb-tabstrip` | top-level view nav (bordered pill buttons), distinct from Tabs' text-underline tabs inside a panel; controlled tabs/selected/onSelect + label; formerly a two-theme extra (arcane-obsidian/arcane-parchment) -- now a shared component in all twelve, K4-10 give-back from Kenzen |
+| `Tabs` | `.rb-tabs` | items: {id, label, content}[]; --active also matches [aria-selected="true"] in every theme; className/rest forward onto the tablist element -- ref targets the outer structural wrapper spanning tabs+panels (#84); optional controlled activeId/onChange pair mirroring NavRail, uncontrolled via defaultId when activeId is omitted (#169) |
+| `Tabstrip` | `.rb-tabstrip` | top-level view nav (bordered pill buttons), distinct from Tabs' text-underline tabs inside a panel; controlled tabs/selected/onSelect + label; formerly a two-theme extra (arcane-obsidian/arcane-parchment) -- now a shared component in all fourteen, K4-10 give-back from Kenzen |
 | — | `.rb-wordmark` | brand mark: an h1 in the display face with a solid-accent __spark; the text is gradient-clipped only where a theme rations --rb-accent-grad to the wordmark (arcane + kenzen pairs), solid --rb-text everywhere else; formerly a four-theme extra -- shared in all fourteen since #185; markup + class, no React wrapper |
-| `DataTable` | `.rb-table` | columns/rows/rowKey; optional groupBy/groupOrder, defaultSortKey/defaultSortDirection, sticky (wraps in rb-table-scroll); numeric columns get rb-num; an inactive sortable header shows a muted rb-table__sort-icon affordance (#175), the active one shows the arrow instead |
+| `DataTable` | `.rb-table` | columns/rows/rowKey; optional groupBy/groupOrder, defaultSortKey/defaultSortDirection, sticky (wraps in rb-table-scroll); numeric columns get rb-num; an inactive sortable header shows a muted rb-table__sort-icon affordance (#175), the active one shows the arrow instead; per-column width renders a <colgroup> and switches to table-layout: fixed (#150) |
 | — | `.rb-table--interactive` | clickable-row utility, hand-applied by the consumer to any table (DataTable-rendered or not) -- DataTable itself never sets it, style directly |
 | `Progress`/`Spinner` | `.rb-progress` | native <progress> pseudo-element contract enforced separately (not class-based); omit value for the animated :indeterminate state |
+| `Stepper` | `.rb-stepper` | --upcoming is the resting state (allowlisted, no rule needed); --current also matches [aria-current="step"] in every theme |
 | — | `.rb-muted` | style directly, no React wrapper |
 | — | `.rb-pre` | style directly, no React wrapper |
 | — | `.rb-log` | pairs with .rb-pre; style directly, no React wrapper |
-| `Stepper` | `.rb-stepper` | --upcoming is the resting state (allowlisted, no rule needed); --current also matches [aria-current="step"] in every theme |
 <!-- contract-table:end -->
 
 `LinksIndex` (React only, no CSS class of its own) composes `Card`/`Badge` into
@@ -131,6 +131,18 @@ here before building a links/app index page from scratch. Its `level` prop
 level deeper — set it to match wherever LinksIndex is embedded. Each url's
 list key is `label + url`, not `url` alone, so two urls sharing one address
 with different labels ("prod" / "canonical") don't collide.
+
+`EmptyState` (React only, no CSS class of its own) composes `Card` into
+an empty-guidance surface: `title` (required heading, `level` 2-4, default
+3), `children` as guidance, an optional `action` rendered last, `role="status"`
+on the root. Like any live region it only announces a state that appears
+or changes after mount (content loading in, then coming back empty) --
+it says nothing on first paint, and reusing one instance for text that
+changes on every keystroke (a live search query) would re-announce the
+whole card on every character, so keep it for a stable empty state. It
+never renders a spinner -- an empty state is a fact stated in words, so
+use `Spinner` for loading and `EmptyState` for genuinely empty. Carries
+no theme obligation, so it isn't in the table above.
 
 Theme-specific extras (styled only under that theme — check before using): the
 arcane pair adds `.rb-eyebrow`; the

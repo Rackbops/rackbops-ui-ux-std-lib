@@ -61,7 +61,7 @@ rationed gradient on the active-tab underline only, and `0.1s`
 
 ## Accessibility
 
-The token pairs `styles/test/contrast.test.mjs` computes -- `--rb-text` / `--rb-text-soft` on their surfaces, `--rb-accent-fg` on `--rb-accent`, `--rb-accent` as non-text on `--rb-bg`, and `--rb-text-faint` on `--rb-surface` -- all clear their WCAG targets (4.5:1 text, 3:1 non-text; faint clears AA here too). One note beyond the tested pairs:
+Every fixed token pair `styles/test/contrast.test.mjs` computes (the list is `styles/contract.json`'s `contrast.pairs`, not restated here so it cannot go stale) clears its WCAG target on this theme (4.5:1 text, 3:1 non-text; faint clears AA here too). One note beyond the tested pairs:
 
 - **`--rb-accent` as bare `<a>` link text is below the 4.5:1 AA text bar** -- ~4.0:1 on `--rb-bg` and ~4.4:1 on `--rb-surface`. It clears the 3:1 non-text/focus target the test checks `--rb-accent` against (accent is contracted as a non-text element, not body text); reserve accent link text for non-essential navigation.
 

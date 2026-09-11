@@ -37,7 +37,7 @@ the shared components (progress trough, badges, alerts) the marketing site lacks
 | Info | `#1e6fd0` | Informational chips (std-lib addition; see the Accessibility note) |
 | Success | `#1f9d57` | Positive status |
 | Warning | `#c07d12` | Caution status |
-| Danger | `#d64550` | Destructive/error (distinct rose vs. the vermillion accent) |
+| Danger | `#cb2d39` | Destructive/error (distinct rose vs. the vermillion accent) |
 
 **Rules.** The canvas is calm and cool; vermillion is spent sparingly — CTAs,
 the eyebrow rule, the live dot, the equaliser. Elevation is soft shadow on white,
@@ -92,18 +92,23 @@ consumers can compensate rather than discover it:
   same reason above: accent-as-text is decorative-only here, and a bare link is
   ordinary body copy, not a decorative flourish. `.rb-link`'s nav component
   still carries its own accent-driven active state.
-- **`--rb-text-faint` (#8091a1) is below AA on both surfaces, and below even
-  the 3:1 non-text floor on bare `--rb-bg`** — ~3.2:1 on `--rb-surface`
-  (white), ~2.8:1 on `--rb-bg` (the `#eaeef1` page background). The `bg`
-  figure has no WCAG exemption at all, so `.rb-muted` (captions, meta,
-  empty-state text) must never be the only signal sitting directly on bare
-  `--rb-bg` — pair it with an icon or a bordered container, or keep it inside
-  a `--rb-surface`/`--rb-surface-2` context (as the source does for
-  footnotes, and as `.rb-stepper__node`'s idle background already does). The
-  shared `.rb-table` header uses `--rb-text-soft` instead, which passes.
+- **`--rb-text-faint` (#8091a1) is below AA on every surface, and below even
+  the 3:1 non-text floor on bare `--rb-bg` and on `--rb-surface-2`** —
+  ~3.2:1 on `--rb-surface` (white), ~2.8:1 on `--rb-bg` (the `#eaeef1` page
+  background), and ~3.0:1 (2.98) on `--rb-surface-2` (the `#f3f6f8` hover
+  wash). The `bg` and `surface-2` figures have no WCAG exemption at all, so
+  `.rb-muted` (captions, meta, empty-state text) must never be the only
+  signal sitting directly on bare `--rb-bg` or on a `--rb-surface-2` panel —
+  pair it with an icon or a bordered container, or keep it inside a
+  `--rb-surface` (white) context. The shared `.rb-table` header uses
+  `--rb-text-soft` instead, which passes.
 - **White on the vermillion fill is ~3.6:1** — the `.rb-btn--accent` fill and the
   `.rb-btn--primary` hover state. Fine for large/bold button text; for small
   labels prefer the default primary (ink fill, ~15:1).
+- **`--rb-danger` as the ghost danger button's label clears 4.5:1 on
+  `--rb-bg` and `--rb-surface`** (`#cb2d39`: 4.53 / 5.28) — raised from
+  `#d64550` for #163; the rose is a std-lib addition (see Color), so there
+  was no source value to keep.
 - **The semantic badge stays AA** by rendering a tint fill + ink text rather than
   coloured text on white.
 - The dark **arcane-obsidian** theme is much stronger on contrast (text ramp
@@ -111,11 +116,13 @@ consumers can compensate rather than discover it:
   default chip, the active link/tab — sit near ~4.3:1). Reach for it where
   full-contrast UI matters.
 
-These are the ratios `styles/test/contrast.test.mjs` checks: `--rb-accent-fg` on
-`--rb-accent` (~3.6:1) and `--rb-text-faint` on `--rb-bg` (~2.8:1, below the
-3:1 floor) are allowlisted in `contract.json`'s `contrast` block, citing this
-section; `--rb-text-faint` on `--rb-surface` (~3.2:1) is emitted as a below-AA
-warning; the remaining pairs clear their targets.
+Of the fixed pairs `styles/test/contrast.test.mjs` checks (the list is
+`styles/contract.json`'s `contrast.pairs`), three are allowlisted in
+`contract.json`'s `contrast` block, citing this section: `--rb-accent-fg` on
+`--rb-accent` (~3.6:1), and `--rb-text-faint` on `--rb-bg` (~2.8:1) and on
+`--rb-surface-2` (~3.0:1, both below the 3:1 floor); `--rb-text-faint` on
+`--rb-surface` (~3.2:1) is emitted as a below-AA warning; the remaining pairs
+clear their targets.
 
 ## Components
 

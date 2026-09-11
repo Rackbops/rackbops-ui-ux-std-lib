@@ -57,12 +57,12 @@
     "tabs": {
       "react": "Tabs",
       "classes": ["rb-tabs", "rb-tab", "rb-tab--active", "rb-tabpanel"],
-      "notes": "items: {id, label, content}[]; --active also matches [aria-selected=\"true\"] in every theme; className/rest forward onto the tablist element -- ref targets the outer structural wrapper spanning tabs+panels (#84)"
+      "notes": "items: {id, label, content}[]; --active also matches [aria-selected=\"true\"] in every theme; className/rest forward onto the tablist element -- ref targets the outer structural wrapper spanning tabs+panels (#84); optional controlled activeId/onChange pair mirroring NavRail, uncontrolled via defaultId when activeId is omitted (#169)"
     },
     "tabstrip": {
       "react": "Tabstrip",
       "classes": ["rb-tabstrip", "rb-tabstrip__tab", "rb-tabstrip__tab--active", "rb-tabstrip__badge"],
-      "notes": "top-level view nav (bordered pill buttons), distinct from Tabs' text-underline tabs inside a panel; controlled tabs/selected/onSelect + label; formerly a two-theme extra (arcane-obsidian/arcane-parchment) -- now a shared component in all twelve, K4-10 give-back from Kenzen"
+      "notes": "top-level view nav (bordered pill buttons), distinct from Tabs' text-underline tabs inside a panel; controlled tabs/selected/onSelect + label; formerly a two-theme extra (arcane-obsidian/arcane-parchment) -- now a shared component in all fourteen, K4-10 give-back from Kenzen"
     },
     "wordmark": {
       "react": null,
@@ -72,7 +72,7 @@
     "data-table": {
       "react": "DataTable",
       "classes": ["rb-table", "rb-num", "rb-table__group-row", "rb-table__sort", "rb-table__sort-icon", "rb-table-scroll"],
-      "notes": "columns/rows/rowKey; optional groupBy/groupOrder, defaultSortKey/defaultSortDirection, sticky (wraps in rb-table-scroll); numeric columns get rb-num; an inactive sortable header shows a muted rb-table__sort-icon affordance (#175), the active one shows the arrow instead"
+      "notes": "columns/rows/rowKey; optional groupBy/groupOrder, defaultSortKey/defaultSortDirection, sticky (wraps in rb-table-scroll); numeric columns get rb-num; an inactive sortable header shows a muted rb-table__sort-icon affordance (#175), the active one shows the arrow instead; per-column width renders a <colgroup> and switches to table-layout: fixed (#150)"
     },
     "table": {
       "react": null,
@@ -83,6 +83,11 @@
       "react": ["Progress", "Spinner"],
       "classes": ["rb-progress", "rb-spinner"],
       "notes": "native <progress> pseudo-element contract enforced separately (not class-based); omit value for the animated :indeterminate state"
+    },
+    "stepper": {
+      "react": "Stepper",
+      "classes": ["rb-stepper", "rb-stepper__step", "rb-stepper__node", "rb-stepper__label", "rb-stepper--complete", "rb-stepper--current", "rb-stepper--upcoming"],
+      "notes": "--upcoming is the resting state (allowlisted, no rule needed); --current also matches [aria-current=\"step\"] in every theme"
     },
     "muted": {
       "react": null,
@@ -98,11 +103,6 @@
       "react": null,
       "classes": ["rb-log"],
       "notes": "pairs with .rb-pre; style directly, no React wrapper"
-    },
-    "stepper": {
-      "react": "Stepper",
-      "classes": ["rb-stepper", "rb-stepper__step", "rb-stepper__node", "rb-stepper__label", "rb-stepper--complete", "rb-stepper--current", "rb-stepper--upcoming"],
-      "notes": "--upcoming is the resting state (allowlisted, no rule needed); --current also matches [aria-current=\"step\"] in every theme"
     }
   },
   "allowlist": [
@@ -164,7 +164,7 @@
   "focusRing": {
     "//": "Every theme's --rb-focus-ring MUST reference var(--rb-accent) (STANDARD.md, issue #54) unless listed here, checked by styles/test/contract.test.mjs.",
     "exempt": [
-      { "theme": "kenzen-cyberhealth", "reason": "the exact brand teal (rackbops-ui-ux-std-lib#171, kenzen#88) is only 2.21:1 as non-text on white, below the 3:1 floor for a focus indicator -- --rb-focus-ring keys off --rb-text (navy) instead so keyboard focus doesn't depend on it", "doc": "kenzen-cyberhealth/design.md:112-119" }
+      { "theme": "kenzen-cyberhealth", "reason": "the exact brand teal (rackbops-ui-ux-std-lib#171, kenzen#88) is only 2.21:1 as non-text on white, below the 3:1 floor for a focus indicator -- --rb-focus-ring keys off --rb-text (navy) instead so keyboard focus doesn't depend on it", "doc": "kenzen-cyberhealth/design.md:110-117" }
     ]
   },
   "permittedLiterals": {
@@ -186,12 +186,20 @@
       { "fg": "accent-fg", "bg": "accent", "min": 4.5 },
       { "fg": "accent", "bg": "bg", "min": 3.0 },
       { "fg": "text-faint", "bg": "surface", "min": 3.0, "warnBelow": 4.5 },
-      { "fg": "text-faint", "bg": "bg", "min": 3.0, "warnBelow": 4.5 }
+      { "fg": "text-faint", "bg": "bg", "min": 3.0, "warnBelow": 4.5 },
+      { "fg": "text-faint", "bg": "surface-2", "min": 3.0, "warnBelow": 4.5 },
+      { "fg": "danger", "bg": "bg", "min": 4.5 },
+      { "fg": "danger", "bg": "surface", "min": 4.5 }
     ],
     "allowlist": [
-      { "theme": "rackbops-studio", "fg": "accent-fg", "bg": "accent", "reason": "white on the vermillion accent fill is ~3.6:1 -- rackbops.com editorial fidelity; spent only on large/bold .rb-btn--accent and .rb-btn--primary hover text (large-text AA is 3:1), never small labels or essential body copy", "doc": "rackbops-studio/design.md:104-106" },
-      { "theme": "rackbops-studio", "fg": "text-faint", "bg": "bg", "reason": "text-faint on the page background is ~2.8:1, below even the 3:1 non-text floor -- .rb-muted must never be the sole signal on bare --rb-bg, only inside a --rb-surface/--rb-surface-2 context", "doc": "rackbops-studio/design.md:95-103" },
-      { "theme": "kenzen-cyberhealth", "fg": "accent", "bg": "bg", "reason": "exact brand palette by owner decision (kenzen#88, rackbops-ui-ux-std-lib#171) -- the source teal is 2.21:1 as non-text on white, below the 3:1 floor for a focus ring or hairline border; --rb-focus-ring keys off --rb-text instead so keyboard focus doesn't depend on this colour", "doc": "kenzen-cyberhealth/design.md:112-119" }
+      { "theme": "rackbops-studio", "fg": "accent-fg", "bg": "accent", "reason": "white on the vermillion accent fill is ~3.6:1 -- rackbops.com editorial fidelity; spent only on large/bold .rb-btn--accent and .rb-btn--primary hover text (large-text AA is 3:1), never small labels or essential body copy", "doc": "rackbops-studio/design.md:105-107" },
+      { "theme": "rackbops-studio", "fg": "text-faint", "bg": "bg", "reason": "text-faint on the page background is ~2.8:1, below even the 3:1 non-text floor -- .rb-muted must never be the sole signal on bare --rb-bg, only inside a --rb-surface context", "doc": "rackbops-studio/design.md:95-104" },
+      { "theme": "rackbops-studio", "fg": "text-faint", "bg": "surface-2", "reason": "text-faint on the surface-2 hover wash is ~3.0:1 (2.98), a hair below the 3:1 non-text floor -- the same rule as bare --rb-bg: .rb-muted is never the sole signal on a --rb-surface-2 panel, only inside a --rb-surface context", "doc": "rackbops-studio/design.md:95-104" },
+      { "theme": "kenzen-cyberhealth", "fg": "accent", "bg": "bg", "reason": "exact brand palette by owner decision (kenzen#88, rackbops-ui-ux-std-lib#171) -- the source teal is 2.21:1 as non-text on white, below the 3:1 floor for a focus ring or hairline border; --rb-focus-ring keys off --rb-text instead so keyboard focus doesn't depend on this colour", "doc": "kenzen-cyberhealth/design.md:110-117" },
+      { "theme": "kenzen-midnight", "fg": "danger", "bg": "bg", "reason": "the brand's exact crimson (kenzen#88, #171) is 3.08:1 as the ghost danger button's label on the navy page -- the button's text label and danger-tinted border carry the meaning, never the colour alone", "doc": "kenzen-midnight/design.md:111-124" },
+      { "theme": "kenzen-midnight", "fg": "danger", "bg": "surface", "reason": "the same crimson is 2.72:1 as the ghost danger button's label on --rb-surface -- same button, same label-plus-border mitigation", "doc": "kenzen-midnight/design.md:111-124" },
+      { "theme": "summer-cloud", "fg": "danger", "bg": "bg", "reason": "never rendered as a label -- solid --rb-danger-deep fill with --rb-accent-fg text (5.55:1)", "doc": "summer-cloud/design.md:123-123" },
+      { "theme": "summer-cloud", "fg": "danger", "bg": "surface", "reason": "never rendered as a label -- solid --rb-danger-deep fill with --rb-accent-fg text (5.55:1)", "doc": "summer-cloud/design.md:123-123" }
     ]
   }
 }
