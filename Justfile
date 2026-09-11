@@ -42,7 +42,7 @@ test:
 
 # Remove installed dependencies
 clean:
-    rm -rf node_modules
+    rm -rf node_modules components/react/node_modules styles/node_modules
 
 # Reinstall from a clean slate
 fresh: clean install
