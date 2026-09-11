@@ -175,17 +175,21 @@ after a publish failure completes both without duplicating either).
 
 The two steps authenticate differently:
 
-- **`release`** needs a `RELEASE_TOKEN` (a PAT that can push past branch
-  protection, and whose tag push actually triggers `publish.yml` below —
-  a plain `GITHUB_TOKEN` push wouldn't) to create the bump commit and tag.
-  That secret **is configured and live** — the workflow runs automatically
-  on qualifying merges to `main`, unattended; `v0.1.9` and `v0.1.10` were
-  both cut this way. If the secret were ever unset, the workflow no-ops
-  instead (`RELEASE_TOKEN not set — release/publish is inert. Skipping.`),
-  and a release can still be cut by running `.github/scripts/release.sh`
-  locally as a fallback — it commits the version bump, tags, and pushes both
-  atomically to `main`, triggering `publish.yml` to publish and create the
-  release exactly as the automated path does. It needs push rights to the
+- **`release`** needs **both** a `RELEASE_TOKEN` secret (a PAT that can push
+  past branch protection, and whose tag push actually triggers `publish.yml`
+  below — a plain `GITHUB_TOKEN` push wouldn't) to create the bump commit
+  and tag, and a `RELEASE_ENABLED` repository variable set to `true`, which
+  the job-level `if` reads (#114). Both **are configured and live** — the
+  workflow runs automatically on qualifying merges to `main`, unattended;
+  `v0.1.9` and `v0.1.10` were both cut this way. Without the variable the
+  job is skipped before a runner is provisioned (previously every non-bump
+  push checked out full history just to print Skipping); without the
+  secret it no-ops as before (`RELEASE_TOKEN not set -- release/publish is
+  inert. Skipping.`), and a release can still be cut by running
+  `.github/scripts/release.sh` locally as a fallback — it commits the
+  version bump, tags, and pushes both atomically to `main`, triggering
+  `publish.yml` to publish and create the release exactly as the automated
+  path does. It needs push rights to the
   repo (release.sh itself never calls `gh` -- only publish.yml's own
   `publish-release.sh` step does, with `RELEASE_TOKEN` or the default
   `GITHUB_TOKEN`).

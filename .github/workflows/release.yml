@@ -20,21 +20,37 @@ concurrency:
 
 jobs:
   release:
-    # Skip the bump commit re-releasing itself, and refuse a workflow_dispatch
-    # from any branch but main (issue #33) — a manual dispatch supplies no
-    # branch filter of its own the way `on.push.branches` does, so without
-    # this the job would check out, bump, tag, and publish whatever branch
-    # was dispatched. `github.ref` is the dispatched ref for workflow_dispatch
-    # and is already guaranteed to be main for push (the `on.push.branches`
-    # filter above), so this one check covers both trigger types. (The
-    # `secrets` context is NOT available in a job-level `if` — only
-    # github/needs/vars/inputs — so the "inert until RELEASE_TOKEN exists"
-    # gate lives in the release step below, which reads the token from
-    # step-level env where secrets ARE available.)
+    # Three job-level gates, so a run that should not release is skipped
+    # before any runner is provisioned (issue #114):
+    #
+    #  1. RELEASE_ENABLED -- the "release is inert" switch. The `secrets`
+    #     context is NOT available in a job-level `if` (only
+    #     github/needs/vars/inputs), so the gate is a repository VARIABLE,
+    #     which `vars` does expose here: a fork, or a repo without the
+    #     variable, skips before any checkout instead of checking out full
+    #     history and setting up pnpm/node just to print "Skipping". The
+    #     step-level RELEASE_TOKEN check below stays as defence in depth for
+    #     a repo that has the variable but not the secret.
+    #  2. main only -- refuse a workflow_dispatch from any branch but main
+    #     (issue #33): a manual dispatch supplies no branch filter of its
+    #     own the way `on.push.branches` does, so without this the job would
+    #     check out, bump, tag, and publish whatever branch was dispatched.
+    #     `github.ref` is the dispatched ref for workflow_dispatch and is
+    #     already guaranteed to be main for push (the `on.push.branches`
+    #     filter above), so this one check covers both trigger types.
+    #  3. not the bump commit re-releasing itself -- matched on BOTH the
+    #     subject prefix and the author identity the "Configure git
+    #     identity" step below sets, so a human commit that merely starts
+    #     with "chore(release): v" is still released. workflow_dispatch
+    #     carries no head_commit, so startsWith(null, ...) is false and the
+    #     negated clause is true: a dispatch passes this guard exactly as it
+    #     did before the author check existed.
     if: >-
-      ${{ github.ref == 'refs/heads/main' &&
+      ${{ vars.RELEASE_ENABLED == 'true' &&
+      github.ref == 'refs/heads/main' &&
       (github.event_name == 'workflow_dispatch' ||
-      !startsWith(github.event.head_commit.message, 'chore(release): v')) }}
+      !(startsWith(github.event.head_commit.message, 'chore(release): v') &&
+      github.event.head_commit.author.name == 'github-actions[bot]')) }}
     runs-on: ubuntu-latest
 
     steps:
@@ -68,7 +84,8 @@ jobs:
           # a push doomed to fail against branch protection.
           GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         run: |
-          if [ -z "${GH_TOKEN}" ]; then
+          set -u
+          if [[ -z "${GH_TOKEN:-}" ]]; then
             echo "RELEASE_TOKEN not set -- release/publish is inert. Skipping."
             exit 0
           fi
