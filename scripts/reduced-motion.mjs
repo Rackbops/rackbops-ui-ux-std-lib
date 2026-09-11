@@ -246,10 +246,12 @@ async function readTheme(theme) {
   // apply" -- the actual mechanism was never pinned down. Rather than wave
   // it off, capture the ONE fact that would distinguish "emulation didn't
   // take" from "a real CSS regression": what the page's own matchMedia
-  // reports, read in the SAME evaluate() round-trip a value like this
-  // would need it to be consistent with. If this is ever wrong, the
-  // failure below says so explicitly instead of reporting a confusing
-  // transform/duration mismatch with no diagnosis.
+  // reports right now, for this theme/mode. It's its own evaluate() call
+  // (not bundled with the duration/transform reads below), taken as soon
+  // as switchTheme() settles and before anything else for this theme is
+  // read. If this is ever wrong, the failure below says so explicitly
+  // instead of reporting a confusing transform/duration mismatch with no
+  // diagnosis.
   const mediaMatches = await page.evaluate(
     () => matchMedia("(prefers-reduced-motion: reduce)").matches,
   );
