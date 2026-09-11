@@ -278,3 +278,100 @@ On `main`: the showcase renders its extras only under the two `Theme extras` hea
 - Own worktree from `origin/main`; never `git stash`; `git -C`, never `cd && git`; no force-push.
 - Stop conditions -- message the orchestrator: a baseline diff outside the expected set; the orphan scan not reachable without a browser; any `nginx.conf` claim you cannot verify (leave it out instead).
 - Review gate as before (two read-only adversarial agents: correctness on the conditional-request logic and the visual script vs. claims-vs-code on the acceptance and STANDARD.md sentences), up to four rounds; report round count and findings; do not merge.
+
+# E3 -- Toolchain and showcase hardening: implementation plan, #186 (snap section captures to integer offsets)
+
+Epic #179. #186 is its own PR, entered via `/work-on 186`. Written by the orchestrator on 2026-09-11 against `origin/main` at `fce6eaf` (PR C merged); line numbers are from that commit -- re-check with `grep -n`. Append this plan as a `# #186` section at the end of the committed `docs/plans/epics/E3-toolchain-and-showcase-hardening.md` in the first commit.
+
+## Locked decisions
+
+1. **Mechanism: per theme, after fonts settle, walk `main > section` in document order and give each section an inline `margin-top` equal to the fractional remainder that brings its document top to an integer.** Sections stack as blocks with no margin rule of their own in the showcase chrome (`site/index.html`'s `<style>`: `section { padding: 1.75rem 0; border-top: ... }`), so a sub-pixel margin is invisible and outside every tile (a `locator.screenshot()` captures the border box, never the margin). Chromium lays out in 1/64 px units, so `1 - frac` (with `frac` read from `getBoundingClientRect().top + scrollY`) lands the next top on an integer; the script **verifies** that after snapping and exits 1 if any section top is still fractional, so a layout-engine surprise cannot pass silently.
+2. **Reset before re-measure.** The margins are cleared at the start of every theme's pass (each theme has different heights), then re-derived. Measurement happens at `scrollY` whatever it is -- the document offset is `rect.top + window.scrollY`, so scroll position is irrelevant.
+3. **One final baseline regeneration is expected to touch most tiles**, because the snap itself is a phase change for every section that sat at a fractional offset. That is the last time a layout change above a section perturbs the tiles below it; the mutation guard proves it. The regen is reviewed by mechanism (the integer-top probe and the guard), not tile by tile; the PR C shift-residual script may be run on three tiles as a spot check but is not required.
+4. **Local `pnpm visual` is valid for the mutation guard even on Windows**, because the guard compares two local runs against each other (with and without the spacer), never against the committed baselines.
+
+## Build order (one commit per step, Conventional Commits)
+
+### 1. Plan section -- `docs(plans): E3 #186, snap section captures to integer offsets`
+
+### 2. The snap -- `ci(visual): snap every section to an integer document offset before capture (#186)`
+
+`scripts/visual.mjs`, inside the per-theme loop, after `await page.evaluate(() => document.fonts.ready);` (`:126` at HEAD; the line after the stylesheet wait) and before `for (const [i, title] of sections)`:
+
+```js
+  // #186: a tile's antialiasing and clip rounding depend on the sub-pixel phase
+  // of its section's document offset, so any height change ABOVE a section used
+  // to re-render every tile below it (PR C: 128 of 156 changed tiles were phase
+  // noise). Give each section an inline margin-top that lifts its top to an
+  // integer, in document order so each snap accounts for the previous one; the
+  // margin sits outside the border box a screenshot captures, so tiles do not
+  // change. Cleared first: every theme has different heights.
+  const fractional = await page.evaluate(() => {
+    const sections = [...document.querySelectorAll("main > section")];
+    for (const s of sections) s.style.marginTop = "";
+    for (const s of sections) {
+      const top = s.getBoundingClientRect().top + window.scrollY;
+      const frac = top - Math.floor(top);
+      if (frac > 0) s.style.marginTop = `${1 - frac}px`;
+    }
+    return sections
+      .map((s) => s.getBoundingClientRect().top + window.scrollY)
+      .filter((t) => Math.abs(t - Math.round(t)) > 1e-6);
+  });
+  if (fractional.length) {
+    console.error(`visual: ${theme}: ${fractional.length} section(s) still at a fractional offset after snapping: ${fractional.join(", ")}`);
+    process.exit(1);
+  }
+```
+
+Also update the header comment (`:1-27`) with one sentence on the snap, and STANDARD.md's section-13 `pnpm visual` bullet (`grep -n 'be photographed' STANDARD.md`) with: "sections are snapped to integer document offsets before capture, so a tile depends only on its own content (#186)".
+
+### 3. Mutation guard, executed locally and pasted -- part of the PR body, no commit
+
+Two self-consistent local pairs (each pair generated in the same environment, so Windows-vs-CI rendering differences cancel):
+
+```
+# A. with the snap (this branch)
+pnpm visual --update                    # local set A over the committed files
+<insert a spacer: in site/index.html, before the Alerts <section>, add <div style="height:0.5px"></div>>
+pnpm visual                             # expect: "visual: N tiles match their baselines" -- zero regressed
+git checkout -- site/index.html site/__screenshots__
+
+# B. without the snap (temporarily stash-free: comment out the snap block, or `git stash` is forbidden -- edit and revert)
+<comment out the #186 block>
+pnpm visual --update                    # local set B
+<insert the same spacer>
+pnpm visual                             # expect: many tiles below Alerts regressed
+git checkout -- scripts/visual.mjs site/index.html site/__screenshots__
+```
+
+Paste both `pnpm visual` compare outputs (the first must be green with zero regressed; the second must list regressed tiles below Alerts). Confirm `git status --short` is empty afterwards.
+
+### 4. Baseline regeneration -- bot commit `chore(visual): update showcase baselines`
+
+`gh workflow run update-visual-baselines.yml --ref <branch>`; wait; pull; paste `git show --stat HEAD -- site/__screenshots__`. Expected: many or all tiles change (each theme's sections were at fractional offsets). Paste the integer-top probe from a CI-equivalent run if available; otherwise the script's own exit-1 check is the guard (it ran green in the bot's `--update` pass, which would have exited 1 otherwise -- cite the workflow run log line). Optional spot check: the PR C shift-residual script on three tiles, showing phase-only differences.
+
+## Mutation guards (paste one failing output per row)
+
+| Change | Mutation | Failing check |
+| --- | --- | --- |
+| the snap | comment out the block, spacer above Alerts | step 3 pair B: tiles below Alerts regress (pair A: none) |
+| the verification | change the `1e-6` tolerance to `1` (accept anything) and force a fractional top by setting one section's `marginTop` to `0.25px` after snapping (temporary edit) | the script must exit 1 naming the section; with the tolerance loosened it does not -- paste both |
+
+## Acceptance to execute and paste
+
+1. Step 3's two pasted `pnpm visual` outputs (pair A green, pair B regressed) and the clean `git status --short`.
+2. The `update-visual-baselines` bot commit's stat, and CI's `visual` job green on the branch afterwards.
+3. `grep -n '#186' scripts/visual.mjs STANDARD.md` showing the comment and the section-13 clause.
+4. `pnpm test` (root) green (the script has no unit tests; nothing else changes).
+
+## Exit demo
+
+On `main`: inserting a 0.5px spacer above any section and running `pnpm visual` against fresh local baselines changes zero tiles; `scripts/visual.mjs` refuses to capture if any section top is fractional.
+
+## Sub's operating rules
+
+- Read #186 and #179 in full before touching anything; the diagnosis on PR #187's body is the background.
+- Own worktree from `origin/main` (fetch first); never `git stash` (step 3 says edit-and-revert instead); `git -C`, never `cd && git`; no force-push.
+- Stop conditions -- message the orchestrator: the post-snap probe finding a fractional top (the 1/64 assumption failed); pair A of the guard regressing any tile; the bot regen leaving any theme's tiles unchanged when its sections were at fractional offsets (means the snap did not run in CI).
+- Review gate as before (two read-only adversarial agents: correctness on the evaluate block and its verification vs. claims-vs-code on the pasted pairs), up to four rounds; report round count and findings; do not merge.

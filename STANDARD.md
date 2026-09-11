@@ -809,7 +809,9 @@ The showcase is the library's visual acceptance test. It MUST:
   every theme (`site/index.html:9-40`);
 - demonstrate a new component in every state in the same PR that adds it;
 - be photographed: a separate `pnpm visual` job screenshots every section
-  under every theme against committed baselines `[tested: scripts/visual.mjs, #50]`. A new
+  under every theme against committed baselines `[tested: scripts/visual.mjs, #50]` --
+  sections are snapped to integer document offsets before capture, so a tile
+  depends only on its own content (#186). A new
   theme's PR carries its baseline set -- that is the review artefact for
   "does it look out of place".
 

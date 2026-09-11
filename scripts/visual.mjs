@@ -15,6 +15,11 @@
 // MUST be generated in the same environment CI runs -- the official Playwright
 // container (mcr.microsoft.com/playwright). A baseline shot on another OS fails
 // against CI on antialiasing alone. See README "Developing".
+//
+// Each section is snapped to an integer document offset before capture (#186):
+// otherwise a tile's antialiasing depends on the fractional phase left by
+// everything above it, so an unrelated layout change elsewhere on the page
+// perturbs tiles whose own content never changed.
 import pixelmatch from "pixelmatch";
 import { PNG } from "pngjs";
 import { chromium } from "playwright-core";
@@ -126,6 +131,30 @@ for (const theme of themes) {
     [...document.querySelectorAll('link[rel="stylesheet"]')].every((l) => l.sheet),
   );
   await page.evaluate(() => document.fonts.ready);
+
+  // #186: a tile's antialiasing and clip rounding depend on the sub-pixel phase
+  // of its section's document offset, so any height change ABOVE a section used
+  // to re-render every tile below it (PR C: 128 of 156 changed tiles were phase
+  // noise). Give each section an inline margin-top that lifts its top to an
+  // integer, in document order so each snap accounts for the previous one; the
+  // margin sits outside the border box a screenshot captures, so tiles do not
+  // change. Cleared first: every theme has different heights.
+  const fractional = await page.evaluate(() => {
+    const sections = [...document.querySelectorAll("main > section")];
+    for (const s of sections) s.style.marginTop = "";
+    for (const s of sections) {
+      const top = s.getBoundingClientRect().top + window.scrollY;
+      const frac = top - Math.floor(top);
+      if (frac > 0) s.style.marginTop = `${1 - frac}px`;
+    }
+    return sections
+      .map((s) => s.getBoundingClientRect().top + window.scrollY)
+      .filter((t) => Math.abs(t - Math.round(t)) > 1e-6);
+  });
+  if (fractional.length) {
+    console.error(`visual: ${theme}: ${fractional.length} section(s) still at a fractional offset after snapping: ${fractional.join(", ")}`);
+    process.exit(1);
+  }
 
   for (const [i, title] of sections) {
     const rel = join(theme, `${slugify(title)}.png`);
