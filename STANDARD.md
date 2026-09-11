@@ -504,8 +504,8 @@ pair and the Kenzen pair; `.rb-eyebrow` also in the studio pair; `.rb-rack`
 -- studio pair; `.rb-badge--primary`, `.rb-bg`, `.rb-progress--accent` -- the
 three ports; `.rb-chip` (+ `--selected`), `.rb-card--floating` -- summer-cloud.
 `.rb-eyebrow` is in six themes, not the shared set -- correctly filed
-under Theme-specific extras in SKILL.md, though the showcase's "Wordmark /
-Eyebrow" section still renders it without an extras label.
+under Theme-specific extras in SKILL.md, and shown in the showcase only
+under a labelled extras section (#168) `[tested: site/showcase-extras.test.mjs]`.
 
 ### 5.5 Naming
 
@@ -799,12 +799,11 @@ The showcase is the library's visual acceptance test. It MUST:
   `aria-selected` / `role="tabpanel"`, label `for`) after #91; and the Alerts
   section renders all four semantic variants, `.rb-alert--warning` included
   (#50);
-- put theme extras only in sections labelled as extras
-  (`site/index.html:341-342`, the sole "Theme extras" section), never in a
-  generic section (the wordmark and eyebrow at lines 50-54, and the studio
-  pair's `rb-btn__arrow`/`rb-card__tag` wherever they render outside that one
-  section, are still out of contract -- no tracking issue open for this;
-  needs one filed);
+- put theme extras only in sections labelled as extras (`site/index.html`'s
+  two `Theme extras — …` sections), never in a generic section -- except the
+  ports' opt-in `.rb-bg` page canvas (`:570-571`), applied to `<body>` itself
+  rather than demoed in a section, since a page background is not a
+  component `[tested: site/showcase-extras.test.mjs, #168]`;
 - read the roster from the manifest and inject fonts on switch;
 - style its own chrome (`.sc-*`) with tokens only, so it is on-theme under
   every theme (`site/index.html:9-40`);
@@ -992,7 +991,7 @@ identity paragraph and the README table.
 | Dialog backdrop blurs via `var(--rb-blur)` | `contract.test.mjs` | live, 12 of 14 comply; concrete pair permanently exempt (`0px` by design) (#65) |
 | `Field` / `Spinner` named props types | `index.ts` exports | live (#30) |
 | Existing docs conform to the section 11 template; SKILL.md carries adoption guidance matching section 15 | doc sweep | live (#56) |
-| Extras only in labelled showcase sections | review | still out of contract (wordmark/eyebrow, and the studio pair's `rb-btn__arrow`/`rb-card__tag`, render outside the sole "Theme extras" section) -- no tracking issue open, needs one filed |
+| Extras only in labelled showcase sections | `site/showcase-extras.test.mjs` | live (#168) |
 | `:indeterminate <progress>` styled in every theme | `contract.test.mjs` | live (#86 -- #156, #160) |
 | `.rb-stepper--upcoming` allowlisted with one wildcard row, not per-theme | `contract.test.mjs` | live (#97 -- #159) |
 | Release: one range walk, one tag list, one-regex changelog classifier | `release.test.mjs` | live (#88 PR-A -- #161) |

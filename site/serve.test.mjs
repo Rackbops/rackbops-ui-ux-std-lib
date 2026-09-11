@@ -8,7 +8,7 @@
 import { test, before, after } from "node:test";
 import assert from "node:assert/strict";
 import { resolve, sep } from "node:path";
-import { decodePathname, isForbiddenRelativePath, resolveSafePath, server } from "./serve.mjs";
+import { decodePathname, isForbiddenRelativePath, isFresh, resolveSafePath, server } from "./serve.mjs";
 
 /** Whether resolveSafePath rejects a pathname at all -- outside the
  * allowlist, an escape attempt, or genuinely missing all reject the same
@@ -207,4 +207,48 @@ test("a non-allowlisted path answers the same status whether or not it actually 
     assert.equal(existingRes.status, missingRes.status, `${existing} vs ${missing}`);
     assert.equal(existingRes.status, 404, existing);
   }
+});
+
+// -- Conditional requests (#116): a 200 carries validators; a matching
+// If-None-Match or If-Modified-Since gets a 304 with no body; a stale one
+// gets a fresh 200. A 404 is unaffected -- it sends no validators at all
+// (asserted by the existing 404 tests above, unmodified).
+
+test("a 200 carries ETag, Last-Modified and Cache-Control: no-cache (#116)", async () => {
+  const res = await fetch(`${baseUrl}/styles/manifest.json`);
+  assert.equal(res.status, 200);
+  assert.match(res.headers.get("etag"), /^"[0-9a-f]+-[0-9a-f]+"$/);
+  assert.ok(!Number.isNaN(Date.parse(res.headers.get("last-modified"))), "last-modified must be a parseable HTTP date");
+  assert.equal(res.headers.get("cache-control"), "no-cache");
+});
+
+test("If-None-Match with the current ETag answers 304 with no body", async () => {
+  const first = await fetch(`${baseUrl}/styles/manifest.json`);
+  const etag = first.headers.get("etag");
+  const res = await fetch(`${baseUrl}/styles/manifest.json`, { headers: { "if-none-match": etag } });
+  assert.equal(res.status, 304);
+  assert.equal(await res.text(), "");
+  assert.equal(res.headers.get("etag"), etag);
+});
+
+test("If-None-Match with a stale tag answers 200 with the body", async () => {
+  const res = await fetch(`${baseUrl}/styles/manifest.json`, { headers: { "if-none-match": '"stale"' } });
+  assert.equal(res.status, 200);
+  assert.ok((await res.text()).length > 0);
+});
+
+test("If-Modified-Since equal to Last-Modified answers 304; an older date answers 200", async () => {
+  const first = await fetch(`${baseUrl}/styles/manifest.json`);
+  const lastModified = first.headers.get("last-modified");
+  const fresh = await fetch(`${baseUrl}/styles/manifest.json`, { headers: { "if-modified-since": lastModified } });
+  assert.equal(fresh.status, 304);
+  const stale = await fetch(`${baseUrl}/styles/manifest.json`, {
+    headers: { "if-modified-since": new Date(Date.parse(lastModified) - 1000 * 60 * 60).toUTCString() },
+  });
+  assert.equal(stale.status, 200);
+});
+
+test("isFresh: a comma-separated If-None-Match list matches any member", () => {
+  assert.equal(isFresh({ "if-none-match": '"a", "b", "c"' }, '"b"', 0), true);
+  assert.equal(isFresh({ "if-none-match": '"a", "b", "c"' }, '"z"', 0), false);
 });

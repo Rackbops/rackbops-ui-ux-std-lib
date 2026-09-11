@@ -19,7 +19,7 @@ import pixelmatch from "pixelmatch";
 import { PNG } from "pngjs";
 import { chromium } from "playwright-core";
 import { existsSync } from "node:fs";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { server } from "../site/serve.mjs";
@@ -62,6 +62,11 @@ const cdp = await page.context().newCDPSession(page);
 await cdp.send("Animation.enable");
 await cdp.send("Animation.setPlaybackRate", { playbackRate: 0 });
 await page.goto(url, { waitUntil: "networkidle" });
+// Park the pointer in the sticky header's top-left padding (.sc-head,
+// nothing interactive there) so no element captures a hover state that
+// would otherwise be baked into every baseline for the rest of the run
+// (#123).
+await page.mouse.move(0, 0);
 // Freeze transitions + the caret too -- `*` reaches every element and named
 // pseudo (::before/::after) for this, which is all it needs to reach.
 await page.addStyleTag({
@@ -84,6 +89,23 @@ const slugs = sections.map(([, title]) => slugify(title));
 const dupes = [...new Set(slugs.filter((s, i) => slugs.indexOf(s) !== i))];
 if (dupes.length) {
   console.error(`visual: duplicate section slug(s): ${dupes.join(", ")}`);
+  process.exit(1);
+}
+
+// A baseline with no section is dead weight `--update` can never remove (it
+// only writes) -- a renamed section would leave the old tile green forever.
+const orphans = [];
+for (const theme of themes) {
+  const dir = join(SHOTS, theme);
+  if (!existsSync(dir)) continue;
+  for (const f of await readdir(dir)) {
+    if (!f.endsWith(".png") || f.endsWith(".actual.png") || f.endsWith(".diff.png")) continue;
+    if (!slugs.includes(f.slice(0, -4))) orphans.push(join(theme, f));
+  }
+}
+if (orphans.length) {
+  console.error(`visual: ${orphans.length} orphaned baseline(s) with no matching section -- delete them:`);
+  for (const o of orphans) console.error(`  ${o}`);
   process.exit(1);
 }
 
@@ -117,6 +139,10 @@ for (const theme of themes) {
       buf = await page.locator("#demo-dialog").screenshot();
       await page.click("#close-dialog");
       await page.waitForSelector("#demo-dialog[open]", { state: "detached" }).catch(() => {});
+      // The dialog's close button sat under the pointer -- park it again so
+      // the remainder of this theme's sections, and every theme after it,
+      // don't capture a resting :hover there (#123).
+      await page.mouse.move(0, 0);
     } else {
       buf = await page.locator("main > section").nth(i).screenshot();
     }

@@ -25,9 +25,13 @@
 //   top segment (e.g. /SITE/, /Styles/) is caught by the pre-filesystem
 //   allowlist check below regardless of platform, since that check compares
 //   the literal request text, not a realpath-canonicalised one.
+// A 200 also carries ETag/Last-Modified/Cache-Control: no-cache, and an
+// If-None-Match or If-Modified-Since match gets a 304 with no body (#116) --
+// so a reload during theme-switch iteration doesn't refetch ~231 unchanged
+// CSS files every time.
 //   pnpm showcase   ->   http://localhost:5177/site/
 import { createServer } from "node:http";
-import { readFile, realpath } from "node:fs/promises";
+import { readFile, realpath, stat } from "node:fs/promises";
 import { realpathSync } from "node:fs";
 import { extname, isAbsolute, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -53,6 +57,18 @@ const TYPES = {
  * an already-decoded pathname that skips the encoding tricks this guards. */
 export function decodePathname(rawUrl) {
   return decodeURIComponent(new URL(rawUrl, "http://x").pathname);
+}
+
+/** Conditional-request freshness: If-None-Match (any listed tag matches the
+ * current one) wins over If-Modified-Since (HTTP dates have one-second
+ * granularity, so compare the mtime floored to seconds). (#116) */
+export function isFresh(headers, etag, mtimeMs) {
+  const inm = headers["if-none-match"];
+  if (inm !== undefined) return inm.split(",").map((s) => s.trim()).includes(etag);
+  const ims = headers["if-modified-since"];
+  if (ims === undefined) return false;
+  const since = Date.parse(ims);
+  return !Number.isNaN(since) && Math.floor(mtimeMs / 1000) * 1000 <= since;
 }
 
 /** Top-level directories the showcase actually needs: site/ (the page itself)
@@ -114,8 +130,19 @@ export const server = createServer(async (req, res) => {
   try {
     const pathname = decodePathname(req.url);
     const filePath = await resolveSafePath(pathname);
+    const st = await stat(filePath);
+    const etag = `"${st.size.toString(16)}-${Math.floor(st.mtimeMs).toString(16)}"`;
+    const validators = {
+      etag,
+      "last-modified": st.mtime.toUTCString(),
+      "cache-control": "no-cache",
+    };
+    if (isFresh(req.headers, etag, st.mtimeMs)) {
+      res.writeHead(304, validators).end();
+      return;
+    }
     const body = await readFile(filePath);
-    res.writeHead(200, { "content-type": TYPES[extname(filePath)] ?? "application/octet-stream" });
+    res.writeHead(200, { ...validators, "content-type": TYPES[extname(filePath)] ?? "application/octet-stream" });
     res.end(body);
   } catch {
     // Uniform 404 for every rejection -- outside the allowlist, an escape
