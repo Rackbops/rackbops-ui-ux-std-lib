@@ -77,7 +77,9 @@ same mono voice with `--rb-space-3` margin, and bare `ul`/`ol` add
 
 ## Accessibility
 
-The token pairs `styles/test/contrast.test.mjs` computes -- `--rb-text` / `--rb-text-soft` on their surfaces, `--rb-accent-fg` on `--rb-accent`, `--rb-accent` as non-text on `--rb-bg`, and `--rb-text-faint` on `--rb-surface` -- all clear their WCAG targets (4.5:1 text, 3:1 non-text; faint clears AA here too). No deviations.
+Every fixed token pair `styles/test/contrast.test.mjs` computes (the list is `styles/contract.json`'s `contrast.pairs`, not restated here so it cannot go stale) clears its WCAG target on this theme (4.5:1 text, 3:1 non-text; faint clears AA here too). No deviations.
+
+- **`--rb-danger` as the ghost danger button's label clears 4.5:1 on `--rb-bg` and `--rb-surface`** (`#d23440`: 4.55 / 4.88) -- raised from artifact-console's `#d64550` for #163; see the provenance note under Color.
 
 ## Components
 
