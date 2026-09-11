@@ -36,6 +36,7 @@
 #    so editing it rewrites every published bundle and must trigger a release,
 #    the same way copy-license.mjs does. The generated bundles are gitignored and
 #    never appear in the log, so the generator stands in for them here.
+# shellcheck disable=SC2034  # consumed by release.sh/release-notes.sh, which source this file -- shellcheck can't see the reverse direction
 PATHSPEC=(
   styles/
   ":(exclude)styles/test/"
@@ -60,6 +61,7 @@ PATHSPEC=(
 # its body would otherwise be dropped -- skipping its release, mis-scoping the
 # changelog, or hiding a breaking marker (issue #87). "(" and ")" need no
 # escaping: grep's basic regex treats them as literal.
+# shellcheck disable=SC2034  # consumed by release.sh/release-notes.sh, which source this file -- shellcheck can't see the reverse direction
 BUMP_GREP='^chore(release): v'
 
 # ── Commit-type display config ────────────────────────────────────────────────
