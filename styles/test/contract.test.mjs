@@ -881,6 +881,65 @@ for (const theme of themeDirs) {
       }
     }
   });
+
+  // -- decorative reduced-motion suppressions (STANDARD.md 7, issue #125) ----
+  // A decorative hover/press/focus transform a theme wants GONE (not merely
+  // instant) under reduced motion is a per-theme choice (dropping vs. instant
+  // is legitimate either way), so it can't be a blanket source-level rule --
+  // it's data, in contract.json's reducedMotion.suppressions[theme], checked
+  // here in both directions. scripts/reduced-motion.mjs renders every declared
+  // entry under emulated reduced motion; this only proves the CSS text agrees
+  // with the declaration, not that it actually computes to `none` on screen.
+  const declaredSuppressions = contract.reducedMotion?.suppressions?.[theme] ?? [];
+  /** `<selector>:<state>` plus the target pseudo-element when target isn't the
+   * bare element itself -- the substring every matching source selector must
+   * contain, per the plan's "contains" rule (selectors carry a :where(...)
+   * theme guard prefix a strict equality check would have to reproduce). */
+  const suppressionNeedle = ({ selector, state, target }) =>
+    `${selector}:${state}${target === "self" ? "" : target}`.replace(/\s+/g, "");
+
+  test(`${theme}: every declared reduced-motion suppression exists in source (#125)`, () => {
+    for (const entry of declaredSuppressions) {
+      const raw = stripComments(cssOf(join(ROOT, theme, "components", entry.file)));
+      const needle = suppressionNeedle(entry);
+      const found = reducedMotionBlocks(raw).some((block) =>
+        [...block.matchAll(/([^{}]+)\{([^{}]*)\}/g)].some(
+          ([, prelude, decls]) =>
+            /transform\s*:\s*none\s*;?/.test(decls) &&
+            splitSelectors(prelude).some((sel) => sel.replace(/\s+/g, "").includes(needle)),
+        ),
+      );
+      assert.ok(
+        found,
+        `${theme}/${entry.file}: contract.json declares ${needle} -> transform: none, but no rule inside a prefers-reduced-motion block matches it`,
+      );
+    }
+  });
+
+  test(`${theme}: every transform: none inside a reduced-motion block is declared in contract.json (#125)`, () => {
+    // Closed-world, the reverse direction: a transform: none inside a reduced-
+    // motion block that contract.json does not declare is either an undeclared
+    // suppression on THIS theme (add the entry) or evidence another theme also
+    // carries this class of override (a finding about main, not this test).
+    const needles = declaredSuppressions.map(suppressionNeedle);
+    for (const file of themeCssFiles(theme)) {
+      if (!/[\\/]components[\\/]/.test(file)) continue;
+      const fileName = file.split(/[\\/]/).pop();
+      const raw = stripComments(cssOf(file));
+      for (const block of reducedMotionBlocks(raw)) {
+        for (const [, prelude, decls] of block.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+          if (!/transform\s*:\s*none\s*;?/.test(decls)) continue;
+          for (const sel of splitSelectors(prelude)) {
+            const normalized = sel.replace(/\s+/g, "");
+            assert.ok(
+              needles.some((needle) => normalized.includes(needle)),
+              `${theme}/${fileName}: "${sel.trim()}" sets transform: none inside a prefers-reduced-motion block, with no matching contract.json reducedMotion.suppressions[${theme}] entry`,
+            );
+          }
+        }
+      }
+    }
+  });
 }
 
 // -- contract 2: --rb-focus-ring + --rb-ease (issue #54) ----------------------

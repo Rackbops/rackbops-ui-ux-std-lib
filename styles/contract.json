@@ -196,5 +196,19 @@
       { "theme": "summer-cloud", "fg": "danger", "bg": "bg", "reason": "never rendered as a label -- solid --rb-danger-deep fill with --rb-accent-fg text (5.55:1)", "doc": "summer-cloud/design.md:123-123" },
       { "theme": "summer-cloud", "fg": "danger", "bg": "surface", "reason": "never rendered as a label -- solid --rb-danger-deep fill with --rb-accent-fg text (5.55:1)", "doc": "summer-cloud/design.md:123-123" }
     ]
+  },
+  "reducedMotion": {
+    "//": "A theme's decorative hover/press/focus transform that should DISAPPEAR (not merely go instant) under prefers-reduced-motion: reduce is a per-theme choice -- dropping vs. instant is not a rule every theme must follow (STANDARD.md 7). Each entry here is one such suppression: file/selector/state name the source rule, target is 'self' or a pseudo-element like '::after'. scripts/reduced-motion.mjs renders every entry under emulated reduced motion; styles/test/contract.test.mjs checks both directions against source (#125).",
+    "suppressions": {
+      "summer-cloud": [
+        { "file": "card.css", "selector": ".rb-card--floating", "state": "hover", "target": "self" },
+        { "file": "link.css", "selector": ".rb-link", "state": "hover", "target": "::after" },
+        { "file": "link.css", "selector": ".rb-link", "state": "focus-visible", "target": "::after" },
+        { "file": "link.css", "selector": ".rb-link", "state": "active", "target": "self" },
+        { "file": "button.css", "selector": ".rb-btn:not(:disabled)", "state": "hover", "target": "self" },
+        { "file": "button.css", "selector": ".rb-btn", "state": "focus-visible", "target": "self" },
+        { "file": "button.css", "selector": ".rb-btn", "state": "active", "target": "self" }
+      ]
+    }
   }
 }

@@ -611,7 +611,10 @@ Transitions and animations:
   hover/press transform gone (not merely instant) also keeps a per-file
   `transform: none` override for it -- summer-cloud drops its card lift, link
   slide and button scale this way -- while a functional transform, the switch
-  thumb's checked-position offset, is kept and simply snaps.
+  thumb's checked-position offset, is kept and simply snaps. Each such
+  suppression is declared in `contract.json`'s `reducedMotion.suppressions`
+  `[tested: contract.test.mjs, both directions, #125]`, and rendered under
+  emulated `prefers-reduced-motion` by `scripts/reduced-motion.mjs`.
 
 ---
 
