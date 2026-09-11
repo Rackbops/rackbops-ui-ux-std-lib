@@ -207,6 +207,8 @@ from tokens: `.rb-btn` (+ `--primary/--accent/--danger/--ghost`, `--sm`
 compact size, `.rb-icon-btn` icon-only square), `.rb-card` (+ `--raised`),
 `.rb-link`, `.rb-nav-rail`, the form set, `.rb-badge`, `.rb-alert`,
 `.rb-dialog`, `.rb-tabs`, `.rb-tabstrip` (+ `__tab`, `--active`, `__badge`),
+`.rb-wordmark` (+ `__spark`; the Sora h1 at `15px` with the rationed brand
+gradient clipped into the text, solid-accent spark),
 `.rb-table` (+ `.rb-num`, `--interactive`, `__group-row`, `__sort`,
 `.rb-table-scroll`), `.rb-progress` / `.rb-spinner`, `.rb-muted`, `.rb-pre`
 (+ `.rb-log`), `.rb-stepper`. See kenzen-midnight's `design.md` for the
@@ -222,10 +224,11 @@ CSS file. Otherwise only the palette is light.
 
 ### Theme extras
 
-`.rb-wordmark` (+ `__spark`) and `.rb-eyebrow` — identical to kenzen-midnight's;
-carried over from the arcane pair this was scaffolded from, token-driven, not
-currently used by Kenzen's own app. See kenzen-midnight's `design.md` for the
-per-extra notes.
+`.rb-eyebrow` — identical to kenzen-midnight's; carried over from the arcane
+pair this was scaffolded from, token-driven, not currently used by Kenzen's
+own app. See kenzen-midnight's `design.md` for the per-extra notes.
+(`.rb-wordmark` was this pair's extra too until #185 made it a shared
+component.)
 
 ## Dark counterpart
 

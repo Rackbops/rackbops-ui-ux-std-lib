@@ -142,6 +142,13 @@ extras.
   Shared identically across every theme via `--rb-*` tokens (K4-10 give-back
   from Kenzen; previously arcane-obsidian/arcane-parchment's own two-theme
   extra, reverse-documented from artifact-console).
+- **Wordmark** `.rb-wordmark` (+ `__spark`) — the brand mark: an inline-flex
+  h1 in the display voice (`system-ui`, weight 600 via
+  `--rb-font-weight-medium`, tracking `0.01em`) at `1rem`, painted solid
+  `--rb-text` — the one 2-stop gradient stays rationed to the active-tab
+  underline and is never spent here; the spark mark is solid accent. Shared
+  in all fourteen themes since #185 (formerly an arcane/kenzen-pair extra,
+  where the gradient is clipped into the text instead).
 - **Table** `.rb-table` (+ `.rb-num`) — dense, uppercase weight-700 headers,
   1px `border-strong` rules throughout (a spec-sheet read, not faint
   hairlines), tabular numerals, instant row hover to surface-2.

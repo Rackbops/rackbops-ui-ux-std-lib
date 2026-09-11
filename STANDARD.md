@@ -406,6 +406,7 @@ extras), so an undocumented class fails too]`. The React column is the
 | `dialog.css` | `.rb-dialog`, `__title`, `__actions`; `__body` | `Dialog` | `__body` is a no-op in four themes that pad `.rb-dialog` instead -- sanctioned by #42's verdict, allowlisted in `contract.json` (section 5.3) `[tested]` |
 | `tabs.css` | `.rb-tabs`, `.rb-tab`, `.rb-tab--active`, `.rb-tabpanel` | `Tabs` | SHOULD pair `--active` with `[aria-selected="true"]`; checked by `contract.test.mjs` against `contract.json`'s `ariaPairs`, all fourteen comply `[tested]` |
 | `tabstrip.css` | `.rb-tabstrip`, `__tab`, `__tab--active`, `__badge` | `Tabstrip` | Top-level view nav (bordered pill buttons), distinct from `tabs.css`'s text-underline tabs inside a panel; formerly a two-theme extra (arcane-obsidian/arcane-parchment, reverse-documented from artifact-console) with no React wrapper, now shared in all fourteen (K4-10 give-back from Kenzen) |
+| `wordmark.css` | `.rb-wordmark`, `__spark` | -- | The brand mark: an inline-flex `h1` in `--rb-font-display` (`--rb-font-weight-medium`, `--rb-heading-tracking`, `width: fit-content`) with a solid-`--rb-accent` `__spark`. Paint follows each theme's own gradient ration: the arcane and kenzen pairs clip `--rb-accent-grad` into the text (at their `15px` console size); the other ten paint it solid `--rb-text` at `1rem` and spend no gradient. Formerly a four-theme extra (arcane + kenzen pairs, reverse-documented from artifact-console), shared in all fourteen since #185 (give-back from artifact-console 2.0); markup + class, no React wrapper |
 | `data-table.css` | `.rb-table`, `.rb-num`, `__group-row`, `__sort`, `__sort-icon`, `.rb-table-scroll` | `DataTable` | Split from `table.css` at K4-10 so each `contract.json` component key maps to its own file `[tested]`; `__sort-icon` is the muted affordance on an inactive sortable header, `--rb-text-faint` at rest / `--rb-text` on hover -- the active header's arrow carries no class of its own (#175) |
 | `table.css` | `.rb-table--interactive` | -- | Hand-applied by the consumer -- `DataTable` never sets it |
 | `progress.css` | `.rb-progress` on a native `<progress>` (`appearance: none`, `::-webkit-progress-bar`, `::-webkit-progress-value`, `::-moz-progress-bar`); `.rb-spinner` | `Progress`, `Spinner` | Omitting `value` puts `<progress>` in the `:indeterminate` state, styled with an animated sweep on `:indeterminate::-webkit-progress-bar` and `:indeterminate::-moz-progress-bar` -- always two separate rules, never comma-joined, since an engine that doesn't recognise one vendor pseudo-element drops the whole selector list `[tested]` |
@@ -497,15 +498,16 @@ A theme MAY ship classes beyond the shared set. Rules:
   (`components/react/src/LinksIndex.tsx:28-30`).
 - Shown in the showcase only in a section labelled as extras (section 13).
 
-Extras shipping today: `.rb-wordmark` (+ `__spark`), `.rb-eyebrow` -- arcane
-pair and the Kenzen pair; `.rb-eyebrow` also in the studio pair; `.rb-rack`
-(+ `__top`, `__live`, `__bars`, `__foot`), `.rb-principles`, `.rb-principle`
-(+ `__n`, `__body`), `.rb-tags`, `.rb-tag`, `.rb-card__tag`, `.rb-btn__arrow`
--- studio pair; `.rb-badge--primary`, `.rb-bg`, `.rb-progress--accent` -- the
-three ports; `.rb-chip` (+ `--selected`), `.rb-card--floating` -- summer-cloud.
-`.rb-eyebrow` is in six themes, not the shared set -- correctly filed
-under Theme-specific extras in SKILL.md, though the showcase's "Wordmark /
-Eyebrow" section still renders it without an extras label.
+Extras shipping today: `.rb-eyebrow` -- arcane pair, Kenzen pair, and the
+studio pair; `.rb-rack` (+ `__top`, `__live`, `__bars`, `__foot`),
+`.rb-principles`, `.rb-principle` (+ `__n`, `__body`), `.rb-tags`, `.rb-tag`,
+`.rb-card__tag`, `.rb-btn__arrow` -- studio pair; `.rb-badge--primary`,
+`.rb-bg`, `.rb-progress--accent` -- the three ports; `.rb-chip` (+
+`--selected`), `.rb-card--floating` -- summer-cloud. `.rb-wordmark` (+
+`__spark`) was the arcane and Kenzen pairs' extra until #185 promoted it to the
+shared set (5.1). `.rb-eyebrow` is in six themes, not the shared set --
+correctly filed under Theme-specific extras in SKILL.md, though the showcase's
+"Wordmark / Eyebrow" section still renders it without an extras label.
 
 ### 5.5 Naming
 
@@ -792,10 +794,11 @@ The showcase is the library's visual acceptance test. It MUST:
   (#50);
 - put theme extras only in sections labelled as extras
   (`site/index.html:341-342`, the sole "Theme extras" section), never in a
-  generic section (the wordmark and eyebrow at lines 50-54, and the studio
-  pair's `rb-btn__arrow`/`rb-card__tag` wherever they render outside that one
+  generic section (the eyebrow at lines 50-54, and the studio pair's
+  `rb-btn__arrow`/`rb-card__tag` wherever they render outside that one
   section, are still out of contract -- no tracking issue open for this;
-  needs one filed);
+  needs one filed; the wordmark beside the eyebrow is a shared component
+  since #185, so it belongs in that generic section);
 - read the roster from the manifest and inject fonts on switch;
 - style its own chrome (`.sc-*`) with tokens only, so it is on-theme under
   every theme (`site/index.html:9-40`);
@@ -983,7 +986,7 @@ identity paragraph and the README table.
 | Dialog backdrop blurs via `var(--rb-blur)` | `contract.test.mjs` | live, 12 of 14 comply; concrete pair permanently exempt (`0px` by design) (#65) |
 | `Field` / `Spinner` named props types | `index.ts` exports | live (#30) |
 | Existing docs conform to the section 11 template; SKILL.md carries adoption guidance matching section 15 | doc sweep | live (#56) |
-| Extras only in labelled showcase sections | review | still out of contract (wordmark/eyebrow, and the studio pair's `rb-btn__arrow`/`rb-card__tag`, render outside the sole "Theme extras" section) -- no tracking issue open, needs one filed |
+| Extras only in labelled showcase sections | review | still out of contract (the eyebrow, and the studio pair's `rb-btn__arrow`/`rb-card__tag`, render outside the sole "Theme extras" section; the wordmark beside the eyebrow stopped being an extra at #185) -- no tracking issue open, needs one filed |
 | `:indeterminate <progress>` styled in every theme | `contract.test.mjs` | live (#86 -- #156, #160) |
 | `.rb-stepper--upcoming` allowlisted with one wildcard row, not per-theme | `contract.test.mjs` | live (#97 -- #159) |
 | Release: one range walk, one tag list, one-regex changelog classifier | `release.test.mjs` | live (#88 PR-A -- #161) |

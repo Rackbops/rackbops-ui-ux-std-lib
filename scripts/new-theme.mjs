@@ -171,8 +171,7 @@ export function upsertAllCss(allCssText, id) {
  * file -- see that function's own comment for why). Required, not cosmetic:
  *  - extras: the new theme's components/ dir is a verbatim copy of --from's,
  *    so any theme-specific extra class --from declares (e.g. arcane-obsidian's
- *    rb-wordmark, rb-tabstrip (+ modifiers), rb-eyebrow, from wordmark.css,
- *    tabstrip.css, eyebrow.css) is now ALSO present in the new theme's CSS --
+ *    rb-eyebrow from eyebrow.css) is now ALSO present in the new theme's CSS --
  *    extras must mirror --from's list, not default to empty, or the new
  *    theme's own extra classes read as undocumented scope creep and fail
  *    class-parity.
@@ -425,7 +424,7 @@ export function renderComponentsSection(contract) {
 
 /** STANDARD.md 11's item 10, "### Theme extras (if any)": the classes carried
  * over from --from that sit outside the shared baseline component set (e.g.
- * arcane-obsidian's rb-wordmark, rb-tabstrip (+ modifiers), rb-eyebrow).
+ * arcane-obsidian's rb-eyebrow).
  * Omitted entirely when the theme has none. */
 export function renderThemeExtrasSection(extras) {
   if (!extras.length) return null;

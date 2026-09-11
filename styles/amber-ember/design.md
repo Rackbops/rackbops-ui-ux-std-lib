@@ -67,7 +67,9 @@ tokens: `.rb-btn` (+ `--primary/--accent/--danger/--ghost`, `--sm` compact size,
 `.rb-textarea` / `.rb-select` / `.rb-label` / `.rb-field` / `.rb-choice` /
 `.rb-checkbox` / `.rb-radio` / `.rb-switch`), `.rb-badge`, `.rb-alert`,
 `.rb-dialog`, `.rb-tabs` / `.rb-tab` / `.rb-tabpanel`, `.rb-tabstrip` (+
-`__tab`, `--active`, `__badge`), `.rb-table` (+
+`__tab`, `--active`, `__badge`), `.rb-wordmark` (+ `__spark`; solid
+`--rb-text` at `1rem` in the serif display voice, weight 600 — the gradient
+stays on the active-tab underline), `.rb-table` (+
 `.rb-num`, `--interactive`, `__group-row`, `__sort`, `.rb-table-scroll`), `.rb-progress` / `.rb-spinner` (keyframe `rb-ember-spin`),
 `.rb-muted`, `.rb-pre` (+ `.rb-log`), `.rb-stepper`. See amber-hearth's `design.md` for the per-component
 notes — the behaviour is the same, with one exception:
