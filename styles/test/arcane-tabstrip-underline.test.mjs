@@ -60,6 +60,13 @@ for (const theme of ARCANE) {
     assert.equal(decl.height, "2px", `${theme}: the underline is 2px, as artifact-console 1.x draws it`);
     assert.equal(decl.content, '""', `${theme}: a ::after with no content never renders`);
     assert.equal(decl.position, "absolute", `${theme}: the underline is positioned within the tab`);
+    // Geometry: inset by --rb-space-3 either side, sitting on the pill's
+    // 1px bottom border, rounded on top only (1.x: left/right 12px,
+    // border-radius 2px 2px 0 0).
+    assert.equal(decl.left, "var(--rb-space-3)", `${theme}: the underline is inset --rb-space-3 from the left`);
+    assert.equal(decl.right, "var(--rb-space-3)", `${theme}: the underline is inset --rb-space-3 from the right`);
+    assert.equal(decl.bottom, "-1px", `${theme}: the underline sits on the pill's bottom border`);
+    assert.equal(decl["border-radius"], "2px 2px 0 0", `${theme}: the underline is rounded on top only`);
     // A decorative indicator that appears/disappears with the active class --
     // no transition of its own, so there is nothing for prefers-reduced-motion
     // to have to suppress.
