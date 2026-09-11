@@ -603,3 +603,51 @@ For each candidate set in order: edit `chromium.launch()` in `scripts/visual.mjs
 - Ten-pair loops are long: run them in the background, check in, report a decisive candidate as soon as it lands.
 - Stop conditions -- message the orchestrator: a candidate that is clean but whose `chrome://version` shows the switch was not applied; a winning set that changes the rendering of NON-glass themes' tiles in the regen by more than phase-shift-scale noise (that is a fidelity question); the fallback being needed (report before committing it).
 - Review gate as before, up to four rounds; report; do not merge.
+
+# #192
+
+# Visual job: pin Chromium's compositor path so glass tiles can be photographed deterministically (restore backdrop-filter to the baselines)
+
+## Scope
+
+#190's hotfix makes the visual job deterministic by capturing every theme with `backdrop-filter: none` injected, which means the baselines no longer photograph the glass effect that defines luminous-precision, neon-butterfly and summer-cloud (STANDARD.md 10, "glow and glass"). This issue restores it: find a `chromium.launch({ args })` flag set under which Chromium's compositor renders `backdrop-filter` the same way in every session, prove the glass is still rendered, and remove the override.
+
+Bounded experiment (from #190's phase-2 plan), in order, ten no-edit control pairs each **locally**, stop at the first 10/10 clean: A `--disable-gpu-compositing`; B `--disable-gpu`; C `--use-gl=angle --use-angle=swiftshader`; D a feature-disable set checked against the pinned Chromium's actual switches. For the winner, the "glass kept" proof: a luminous-precision Cards capture with the flags must differ (pixelmatch > 0) from the same capture with the override still injected. Then -- the part #190's local experiment could not give -- **CI proof**: with the override removed and the flags in place, re-run the branch's `visual` job at least five times; all green. Local determinism did not predict CI's (#190 went live in CI at 04:12Z on 2026-09-11 after weeks of green), so CI re-runs are the acceptance, not the local pairs.
+
+If no candidate is both 10/10 clean locally and 5/5 green in CI while keeping the glass, close this issue with the experiment table and the override stays, documented.
+
+
+## Acceptance
+
+- [ ] The experiment table (candidate, ten pair results with tile names and counts) pasted.
+- [ ] Glass kept: the non-zero pixelmatch count between the flagged capture and the override capture, pasted.
+- [ ] Five consecutive CI `visual` re-runs green on the branch with the override removed; one baseline regeneration reviewed by mechanism.
+- [ ] Mutation: removing the flags reproduces a regressed glass tile within five CI re-runs (state the count).
+- [ ] STANDARD.md section 13's limitation sentence from #190 replaced by the pin's description.
+
+## Outcome (deviation, recorded 2026-09-11)
+
+The experiment's own close condition fired: no candidate needed to reach
+5/5 CI green, because the "glass kept" proof it exists to protect measures
+zero everywhere, for any Chromium configuration, not just the candidates
+under test. Candidate A (`--disable-gpu-compositing`) skipped per
+Subordinate #3's prior 3/6 measurement; candidate B (`--disable-gpu`) went
+10/10 clean locally with the flag verified reaching the real spawned
+process's command line, but the mandated pixelmatch-vs-override proof came
+back 0 for B **and** for a completely vanilla Chromium launch with no
+flags at all. Two sanity checks (the `.rb-bg` underlay genuinely renders,
+double-digit-percent full-viewport difference on toggle; every affected
+theme's card is genuinely translucent with `blur(12px)` computed) ruled out
+a harness bug before trusting that. A full sweep -- 3 glass themes x 4
+named glass-bearing tiles, vanilla Chromium, `scripts/visual.mjs`'s own
+real thresholds -- came back zero on all 12 combinations (a raw byte-level
+check on one tile found only 1-unit-of-255 deltas: the effect is
+mathematically present, nowhere near perceptible). Full evidence:
+https://github.com/Rackbops/rackbops-ui-ux-std-lib/issues/192#issuecomment-5630039095.
+C and D were not run -- there was no bar left for them to clear against.
+Closed per the issue's own "if no candidate... close this issue... the
+override stays, documented" clause, in #195 (docs-only: STANDARD.md 13's
+limitation sentence and `scripts/visual.mjs`'s matching comment corrected
+to state the actual finding; candidate B's local result recorded there for
+the day a theme's glass is strong enough at a measured location to
+matter).

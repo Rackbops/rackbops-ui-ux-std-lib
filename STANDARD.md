@@ -843,15 +843,39 @@ The showcase is the library's visual acceptance test. It MUST:
   depends only on its own content (#186). The visual job disables
   `backdrop-filter` globally before every capture, because Chromium renders
   it nondeterministically across sessions (#190) -- in practice this only
-  visibly changes the three themes whose CSS spends `backdrop-filter` on
+  applies to the three themes whose CSS spends `backdrop-filter` on
   something other than the dialog backdrop (`luminous-precision`,
   `neon-butterfly`, `summer-cloud`: cards, nav rail, alerts, and/or links)
   (every other theme either uses `backdrop-filter` only on the native
   `<dialog>`'s `::backdrop` -- which a `#demo-dialog` element capture
   never includes, verified 0px either way -- or, for the concrete pair,
-  never applies it at all, `styles/concrete-signal/design.md:67-69`);
-  the glass effect itself is
-  reviewed by eye, not by baseline, until a deterministic fix lands. A new
+  never applies it at all, `styles/concrete-signal/design.md:67-69`).
+  Precisely: Chromium composites a `backdrop-filter` layer in one of two
+  stable modes, chosen per session (not per element), and text drawn over
+  that layer re-antialiases with whichever mode won -- the actual mechanism,
+  not mere noise (confirmed: CI stayed in one mode in every one of its runs
+  on main until #191's regen landed the other mode (2026-09-11), failing
+  `main` outright -- verified against the job's full recorded run history,
+  `gh run list --workflow=ci.yml --branch main`, 155 runs back to
+  2026-08-31). With the filter on, captures of the glass-bearing tiles are
+  therefore NOT stable
+  across sessions or machines -- reconfirmed by #192's audit, which found
+  `neon-butterfly`'s Cards tile differing in 6 of 10 independent on-vs-on
+  session pairs, up to 1.68% -- above the job's own 0.1% ratio threshold.
+  #192 also investigated pinning a deterministic compositor path to restore
+  the effect to the baselines (a `--disable-gpu` candidate went 10/10 clean
+  in a local determinism experiment, with the flag verified reaching the
+  real spawned process's command line) but did not adopt it: measured in a
+  session where an on-vs-off capture came out identical at the job's
+  thresholds on all twelve glass-bearing tiles, the blur's own contribution
+  differs by at most one unit in 255 per channel -- below the pixel
+  threshold (0.1) -- so what the override actually forfeits is the
+  mode-dependent antialiasing artifact above, not a blur effect the job
+  could otherwise photograph; there is nothing measurable left for a
+  compositor pin to restore. `--disable-gpu`'s 10/10 local result is
+  recorded on #192 for the day a theme's glass effect is strong enough at a
+  measured location to matter. The effect stays reviewed by eye, not by
+  baseline. A new
   theme's PR carries its baseline set -- that is the review artefact for
   "does it look out of place".
 

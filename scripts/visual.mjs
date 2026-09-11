@@ -86,11 +86,18 @@ await page.addStyleTag({
 // two separate browser launches (phase 1, #190): disabling backdrop-filter
 // entirely was 10/10 pixel-clean; CI caught the bimodality directly when
 // #191's bot regen landed one mode and the next compare run landed the
-// other, failing `main` outright. Disabling the filter for every capture is
-// a real loss of fidelity -- the glass effect itself goes untested here --
-// but an undeterministic acceptance test is worse than an incomplete one;
-// the filter's own rendering is reviewed by eye, not by baseline, until a
-// deterministic compositor pin replaces this (tracked separately).
+// other, failing `main` outright. #192 investigated pinning a deterministic
+// compositor path (a candidate flag set was 10/10 clean locally) to restore
+// the effect to these baselines instead, but did not adopt it: measured IN
+// THE MODE where an on-vs-off capture came out identical at this job's own
+// threshold on every glass-bearing tile in all three affected themes, the
+// blur's own contribution is at most one unit in 255 per channel -- so what
+// this override actually forfeits is the mode-dependent antialiasing
+// artifact above, not a blur effect the job could otherwise photograph.
+// #192's own audit reconfirmed the mode-flip is real and still present with
+// the filter on (neon-butterfly's Cards tile differed in 6 of 10 on-vs-on
+// session pairs, up to 1.68%, above the job's 0.1% threshold) -- so the
+// filter's own rendering stays reviewed by eye, not by baseline.
 await page.addStyleTag({ content: "* { backdrop-filter: none !important; }" });
 
 // Section identity is its sc-title, slugified -- stable across reorders.
