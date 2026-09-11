@@ -892,21 +892,37 @@ for (const theme of themeDirs) {
   // with the declaration, not that it actually computes to `none` on screen.
   const declaredSuppressions = contract.reducedMotion?.suppressions?.[theme] ?? [];
   /** `<selector>:<state>` plus the target pseudo-element when target isn't the
-   * bare element itself -- the substring every matching source selector must
-   * contain, per the plan's "contains" rule (selectors carry a :where(...)
-   * theme guard prefix a strict equality check would have to reproduce). */
+   * bare element itself -- the tail every matching source selector's compound
+   * must END WITH (not merely contain -- `.rb-btn:active` is a PREFIX of
+   * `.rb-btn:active::before`, a different, undeclared rule that a plain
+   * `.includes` would wrongly treat as covered; anchoring at the end also
+   * rejects a descendant selector like `.rb-card--floating:hover .child`,
+   * whose declared-looking prefix is followed by more selector, not the
+   * guard-prefix `:where(...)` this needs to tolerate on the other side).
+   * Selectors carry a `:where(...)` theme guard prefix, which is why the
+   * match is "ends with", not "equals". */
   const suppressionNeedle = ({ selector, state, target }) =>
     `${selector}:${state}${target === "self" ? "" : target}`.replace(/\s+/g, "");
 
+  /** entry.file is a bare component filename ("card.css") for the common
+   * case, but STANDARD.md 7's token collapse and any future base-level
+   * suppression live in tokens.css/base.css instead -- try the theme root
+   * first (where those two files live), then components/. */
+  function themeFilePath(file) {
+    const direct = join(ROOT, theme, file);
+    if (existsSync(direct)) return direct;
+    return join(ROOT, theme, "components", file);
+  }
+
   test(`${theme}: every declared reduced-motion suppression exists in source (#125)`, () => {
     for (const entry of declaredSuppressions) {
-      const raw = stripComments(cssOf(join(ROOT, theme, "components", entry.file)));
+      const raw = stripComments(cssOf(themeFilePath(entry.file)));
       const needle = suppressionNeedle(entry);
       const found = reducedMotionBlocks(raw).some((block) =>
         [...block.matchAll(/([^{}]+)\{([^{}]*)\}/g)].some(
           ([, prelude, decls]) =>
             /transform\s*:\s*none\s*;?/.test(decls) &&
-            splitSelectors(prelude).some((sel) => sel.replace(/\s+/g, "").includes(needle)),
+            splitSelectors(prelude).some((sel) => sel.replace(/\s+/g, "").endsWith(needle)),
         ),
       );
       assert.ok(
@@ -921,9 +937,12 @@ for (const theme of themeDirs) {
     // motion block that contract.json does not declare is either an undeclared
     // suppression on THIS theme (add the entry) or evidence another theme also
     // carries this class of override (a finding about main, not this test).
+    // Every theme CSS file, not just components/ -- tokens.css and base.css
+    // can carry a reduced-motion block too (tokens.css already does, for the
+    // --rb-transition collapse, though that block overrides a custom
+    // property, never transform, so it never trips this).
     const needles = declaredSuppressions.map(suppressionNeedle);
     for (const file of themeCssFiles(theme)) {
-      if (!/[\\/]components[\\/]/.test(file)) continue;
       const fileName = file.split(/[\\/]/).pop();
       const raw = stripComments(cssOf(file));
       for (const block of reducedMotionBlocks(raw)) {
@@ -932,7 +951,7 @@ for (const theme of themeDirs) {
           for (const sel of splitSelectors(prelude)) {
             const normalized = sel.replace(/\s+/g, "");
             assert.ok(
-              needles.some((needle) => normalized.includes(needle)),
+              needles.some((needle) => normalized.endsWith(needle)),
               `${theme}/${fileName}: "${sel.trim()}" sets transform: none inside a prefers-reduced-motion block, with no matching contract.json reducedMotion.suppressions[${theme}] entry`,
             );
           }
