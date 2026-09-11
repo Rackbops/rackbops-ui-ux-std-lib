@@ -80,7 +80,7 @@ progress fill and every other surface stay solid.
 
 ## Accessibility
 
-The token pairs `styles/test/contrast.test.mjs` computes -- `--rb-text` / `--rb-text-soft` on their surfaces, `--rb-accent-fg` on `--rb-accent`, `--rb-accent` as non-text on `--rb-bg`, and `--rb-text-faint` on `--rb-surface` -- all clear their WCAG targets (4.5:1 text, 3:1 non-text; faint clears AA here too). One note beyond the tested pairs:
+Every fixed token pair `styles/test/contrast.test.mjs` computes (the list is `styles/contract.json`'s `contrast.pairs`, not restated here so it cannot go stale) clears its WCAG target on this theme (4.5:1 text, 3:1 non-text; faint clears AA here too). One note beyond the tested pairs:
 
 - **`--rb-accent` as bare `<a>` link text is ~4.47:1 on `--rb-bg`** -- essentially at the 4.5:1 AA text bar, and ~4.9:1 on `--rb-surface`, which clears it. It clears the 3:1 non-text/focus target the test checks `--rb-accent` against (accent is contracted as a non-text element, not body text).
 

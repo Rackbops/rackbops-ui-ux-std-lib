@@ -400,7 +400,7 @@ extras), so an undocumented class fails too]`. The React column is the
 | `card.css` | `.rb-card`, `--raised` | `Card` | `--raised` is a documented no-op in the three nazuraki ports (section 5.3, `contract.test.mjs`'s `CLASS_ALLOWLIST`): luminous-precision and neon-butterfly have no second elevation tier upstream at all; summer-cloud's upstream second tier is `--floating`, already carried over, so the port doesn't also add a near-duplicate `--raised` |
 | `link.css` | `.rb-link`, `--active` | `NavLink` | SHOULD also match `[aria-current="page"]`; checked by `contract.test.mjs` against `contract.json`'s `ariaPairs`, all fourteen comply `[tested]` |
 | `nav-rail.css` | `.rb-nav-rail` | `NavRail` | Composes `.rb-link`; owns no active convention |
-| `form.css` | `.rb-field`, `.rb-label`, `.rb-input`, `.rb-textarea`, `.rb-select`, `.rb-choice`, `.rb-checkbox`, `.rb-radio`, `.rb-switch` | `Field`, `Label`, `Input`, `Textarea`, `Select`, `Checkbox`, `Radio`, `Switch` | Choice controls SHOULD use `accent-color` (seven themes do; the concrete pair draws checked states as a flat accent fill by design, `styles/concrete-signal/design.md:104-106`; the ports hand-style them) |
+| `form.css` | `.rb-field`, `.rb-label`, `.rb-input`, `.rb-textarea`, `.rb-select`, `.rb-choice`, `.rb-checkbox`, `.rb-radio`, `.rb-switch` | `Field`, `Label`, `Input`, `Textarea`, `Select`, `Checkbox`, `Radio`, `Switch` | Choice controls SHOULD use `accent-color` (seven themes do; the concrete pair draws checked states as a flat accent fill by design, `styles/concrete-signal/design.md:123-124`; the ports hand-style them) |
 | `badge.css` | `.rb-badge`, `--info`, `--success`, `--warning`, `--danger` | `Badge` | Status text is never colour-only: the label carries the meaning |
 | `alert.css` | `.rb-alert`, `__title`, `--info`, `--success`, `--warning`, `--danger` | `Alert` | |
 | `dialog.css` | `.rb-dialog`, `__title`, `__actions`; `__body` | `Dialog` | `__body` is a no-op in four themes that pad `.rb-dialog` instead -- sanctioned by #42's verdict, allowlisted in `contract.json` (section 5.3) `[tested]` |
@@ -664,11 +664,19 @@ Transitions and animations:
 - **Deviations are documented, never discovered.** Every place a theme sits
   below those targets is listed in a `## Accessibility` section of its
   `design.md` with the ratio and the compensating rule
-  (`styles/rackbops-studio/design.md:77-100` is the model: vermillion as
+  (`styles/rackbops-studio/design.md:80-125` is the model: vermillion as
   text is ~3.6:1, so accent-coloured text is decorative only). Every theme
   MUST carry the section, even if it reads "the computed pairs pass; no
-  deviations" `[tested: all fourteen carry the section; contrast.test.mjs is the
-  cited test, #49]`.
+  deviations" `[tested: styles/test/accessibility-docs.test.mjs -- all
+  fourteen carry the section and cite contrast.test.mjs from it, and every
+  contrast allowlist entry's design.md range sits inside it, #64]`.
+- **Raise or document, by provenance (#64, #163).** A theme
+  reverse-documented from a live app or ported from an upstream keeps its
+  source palette and documents every below-target pair (a `contract.json`
+  allowlist entry citing the `design.md` line). An original theme has no
+  source to be faithful to: it raises the token until the pair clears. A
+  documented divergence from the source (arcane-parchment's `--rb-danger`)
+  is stated in that theme's `design.md` where it states its provenance.
 - **Status is never colour-only.** Badges carry text, alerts carry a title
   or body, stepper nodes differ by icon and border (#18, shipped in #55).
 - Dark resting palettes SHOULD avoid pure white and pure black
@@ -739,7 +747,8 @@ Sections in this order. Required unless marked.
    transition duration and easing, spacing.
 8. `## Accessibility` -- every below-target ratio with its compensating
    rule, or "no deviations", citing the contrast test
-   (`styles/test/contrast.test.mjs`) `[tested; all fourteen adopted, #49]`.
+   (`styles/test/contrast.test.mjs`) `[tested: styles/test/accessibility-docs.test.mjs;
+   all fourteen adopted, #49, #64]`.
 9. `## Components` -- one bullet per shared component in the order of the
    section 5.1 table, each naming its modifiers and how the theme reads
    them. No counts.
@@ -976,7 +985,7 @@ identity paragraph and the README table.
 | `forwardRef` on every wrapper | `refs.test.tsx` | live (#30) |
 | SKILL.md matches the shipped contract | doc fix | live (#47, #39) -- inventory table generated + tested, extras paragraph and eyebrow classification accurate, roster paragraph correctly states 14 themes, manifest-fonts guidance and the add-theme recipe steps all accurate |
 | `design.md` counterpart and count claims true | doc fix | live (#47, #40 -- counterpart-shipped and stale-count claims fixed repo-wide) |
-| `## Accessibility` section in every `design.md` | review + `contrast.test.mjs` cite | 14 of 14 (#49, kenzen pair added #158) |
+| `## Accessibility` section in every `design.md`, citing the contrast test, with every contrast allowlist `doc` range inside it | `accessibility-docs.test.mjs` | live, 14 of 14 (#49, kenzen pair added #158, tested #64) |
 | `.rb-tab--active` paired with `[aria-selected="true"]` | `contract.test.mjs` | live, 14 of 14 comply (#65, #158) |
 | `.rb-link--active` paired with `[aria-current="page"]` | `contract.test.mjs` | live, 14 of 14 comply (#65, #158) |
 | Choice controls use `accent-color` | review | 9 of 14 (concrete pair by design; ports hand-styled) |

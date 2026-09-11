@@ -103,11 +103,9 @@ that fails) or recorded here as a documented-only gap (the two pairs the
 automated suite doesn't check at all), and the theme carries two compensating
 mitigations that leave the hexes untouched.
 
-The token pairs `styles/test/contrast.test.mjs` computes — `--rb-text` /
-`--rb-text-soft` on their surfaces, `--rb-accent-fg` on `--rb-accent`,
-`--rb-accent` as non-text on `--rb-bg`, and `--rb-text-faint` on
-`--rb-surface`/`--rb-bg` — all clear their required 3:1/4.5:1 floors on this
-theme **except one**:
+Every fixed token pair `styles/test/contrast.test.mjs` computes (the list is
+`styles/contract.json`'s `contrast.pairs`, not restated here so it cannot go
+stale) clears its required 3:1/4.5:1 floor on this theme **except one**:
 
 - **Accent as non-text, allowlisted.** The exact teal, `#18c0d0`, is only
   **2.21:1** as non-text on `--rb-bg` — below the 3:1 floor
@@ -125,12 +123,22 @@ theme **except one**:
   button hover/focus fill (`color-mix(in srgb, var(--rb-accent), var(--rb-text)
   12%)` → darkens further; navy text stays comfortably above 4.5:1 there too)
   is unaffected by this change since it never carried the accent-fg pairing.
-- **Danger.** The source crimson, `#d02030`, is unchanged: it already clears
-  4.5:1 on white (5.34:1) as plain text (matches kenzen-midnight).
+- **Danger.** The source crimson, `#d02030`, is unchanged: it clears the
+  4.5:1 control-label bar the fixed-pair test holds `--rb-danger` to since
+  #163 — 5.34:1 on `--rb-bg` (white) and 4.93:1 on `--rb-surface` (the same
+  hex as kenzen-midnight, whose navy ground is what fails there).
+- **`--rb-text-faint` is below AA on every surface** — it is the navy at 60%
+  (`rgba(10, 32, 56, 0.6)`), which the test composites over each opaque
+  surface: ~4.4:1 on `--rb-bg`, ~4.3:1 on `--rb-surface`, ~4.1:1 on
+  `--rb-surface-2`. All three clear the 3:1 non-text floor, so the suite
+  warns rather than fails; the usual rule applies — `.rb-muted` and other
+  faint uses carry non-essential meta only, never the sole label of
+  essential content.
 
 **Success / warning as plain text — documented-only, no automated pair.**
 `contract.json`'s `contrast.pairs` list has no entry for `success`/`bg` or
-`warning`/`bg` (only the nine pairs above are checked at all), so there is
+`warning`/`bg` (by decision, #163: both are designed as fills, and a text
+pair would fail half the library for a pairing nothing renders), so there is
 nothing to allowlist and no automated check to fail if this regresses —
 recorded here instead, per STANDARD.md 9's "every deviation is documented,
 never discovered." The exact mint `#50f8a0` and amber `#f0b030` are **1.37:1**
