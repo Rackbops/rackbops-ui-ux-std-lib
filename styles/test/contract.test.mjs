@@ -967,6 +967,90 @@ for (const theme of themeDirs) {
       }
     }
   });
+
+  // -- decorative reduced-motion suppressions (STANDARD.md 7, issue #125) ----
+  // A decorative hover/press/focus transform a theme wants GONE (not merely
+  // instant) under reduced motion is a per-theme choice (dropping vs. instant
+  // is legitimate either way), so it can't be a blanket source-level rule --
+  // it's data, in contract.json's reducedMotion.suppressions[theme], checked
+  // here in both directions. scripts/reduced-motion.mjs renders every declared
+  // entry under emulated reduced motion; this only proves the CSS text agrees
+  // with the declaration, not that it actually computes to `none` on screen.
+  const declaredSuppressions = contract.reducedMotion?.suppressions?.[theme] ?? [];
+  /** `<selector>:<state>` plus the target pseudo-element when target isn't the
+   * bare element itself -- the tail every matching source selector's compound
+   * must END WITH (not merely contain -- `.rb-btn:active` is a PREFIX of
+   * `.rb-btn:active::before`, a different, undeclared rule that a plain
+   * `.includes` would wrongly treat as covered; anchoring at the end also
+   * rejects a descendant selector like `.rb-card--floating:hover .child`,
+   * whose declared-looking prefix is followed by more selector.
+   * Round 2 finding (MAJOR): "ends with" alone still isn't enough -- it
+   * has no opinion on what comes BEFORE the needle either, so an ANCESTOR
+   * combinator (`.sc-nav .rb-link:hover::after`) still ends with the exact
+   * needle after whitespace-stripping (`.sc-nav` and `.rb-link` collapse
+   * into one compound-looking string) and would wrongly pass. Selectors
+   * carry a `:where(...)` theme guard prefix, which is why the match
+   * strips that guard first (`stripGuard`, the same helper the nesting
+   * check above uses) and then requires EQUALITY with what remains --
+   * not a substring/suffix check on the raw selector. */
+  const suppressionNeedle = ({ selector, state, target }) =>
+    `${selector}:${state}${target === "self" ? "" : target}`.replace(/\s+/g, "");
+
+  /** entry.file is a bare component filename ("card.css") for the common
+   * case, but STANDARD.md 7's token collapse and any future base-level
+   * suppression live in tokens.css/base.css instead -- try the theme root
+   * first (where those two files live), then components/. */
+  function themeFilePath(file) {
+    const direct = join(ROOT, theme, file);
+    if (existsSync(direct)) return direct;
+    return join(ROOT, theme, "components", file);
+  }
+
+  test(`${theme}: every declared reduced-motion suppression exists in source (#125)`, () => {
+    for (const entry of declaredSuppressions) {
+      const raw = stripComments(cssOf(themeFilePath(entry.file)));
+      const needle = suppressionNeedle(entry);
+      const found = reducedMotionBlocks(raw).some((block) =>
+        [...block.matchAll(/([^{}]+)\{([^{}]*)\}/g)].some(
+          ([, prelude, decls]) =>
+            /transform\s*:\s*none\s*;?/.test(decls) &&
+            splitSelectors(prelude).some((sel) => stripGuard(sel).replace(/\s+/g, "") === needle),
+        ),
+      );
+      assert.ok(
+        found,
+        `${theme}/${entry.file}: contract.json declares ${needle} -> transform: none, but no rule inside a prefers-reduced-motion block matches it`,
+      );
+    }
+  });
+
+  test(`${theme}: every transform: none inside a reduced-motion block is declared in contract.json (#125)`, () => {
+    // Closed-world, the reverse direction: a transform: none inside a reduced-
+    // motion block that contract.json does not declare is either an undeclared
+    // suppression on THIS theme (add the entry) or evidence another theme also
+    // carries this class of override (a finding about main, not this test).
+    // Every theme CSS file, not just components/ -- tokens.css and base.css
+    // can carry a reduced-motion block too (tokens.css already does, for the
+    // --rb-transition collapse, though that block overrides a custom
+    // property, never transform, so it never trips this).
+    const needles = declaredSuppressions.map(suppressionNeedle);
+    for (const file of themeCssFiles(theme)) {
+      const fileName = file.split(/[\\/]/).pop();
+      const raw = stripComments(cssOf(file));
+      for (const block of reducedMotionBlocks(raw)) {
+        for (const [, prelude, decls] of block.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+          if (!/transform\s*:\s*none\s*;?/.test(decls)) continue;
+          for (const sel of splitSelectors(prelude)) {
+            const normalized = stripGuard(sel).replace(/\s+/g, "");
+            assert.ok(
+              needles.some((needle) => normalized === needle),
+              `${theme}/${fileName}: "${sel.trim()}" sets transform: none inside a prefers-reduced-motion block, with no matching contract.json reducedMotion.suppressions[${theme}] entry`,
+            );
+          }
+        }
+      }
+    }
+  });
 }
 
 // -- contract 2: --rb-focus-ring + --rb-ease (issue #54) ----------------------
