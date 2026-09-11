@@ -239,6 +239,21 @@ async function switchTheme(theme) {
 async function readTheme(theme) {
   await switchTheme(theme);
 
+  // Round 2, MAJOR: an observed-but-unreproduced flake (6 consecutive
+  // failures on a freshly-verified-clean tree, then 52 consecutive clean
+  // runs across warm/loaded/concurrent/instrumented attempts trying to
+  // reproduce it) looked exactly like "reduced-motion styling didn't
+  // apply" -- the actual mechanism was never pinned down. Rather than wave
+  // it off, capture the ONE fact that would distinguish "emulation didn't
+  // take" from "a real CSS regression": what the page's own matchMedia
+  // reports, read in the SAME evaluate() round-trip a value like this
+  // would need it to be consistent with. If this is ever wrong, the
+  // failure below says so explicitly instead of reporting a confusing
+  // transform/duration mismatch with no diagnosis.
+  const mediaMatches = await page.evaluate(
+    () => matchMedia("(prefers-reduced-motion: reduce)").matches,
+  );
+
   const btnDurations = await page.evaluate(() => {
     const el = document.querySelector(".rb-btn:not(:disabled)");
     return getComputedStyle(el)
@@ -271,7 +286,7 @@ async function readTheme(theme) {
   }
   await removeFloatingCard();
 
-  return { btnDurations, spin, thumb, suppressions };
+  return { mediaMatches, btnDurations, spin, thumb, suppressions };
 }
 
 const suppressionLabel = (s) => `${s.file} ${s.selector}:${s.state}${s.target === "self" ? "" : s.target}`;
@@ -280,6 +295,14 @@ const IDENTITY = "matrix(1, 0, 0, 1, 0, 0)";
 const records = {};
 for (const mode of ["reduce", "no-preference"]) {
   await page.emulateMedia({ reducedMotion: mode });
+  // page.emulateMedia()'s promise resolving is not the same guarantee as the
+  // page's own matchMedia() reflecting it on the very next read -- round 2's
+  // unreproduced flake looked exactly like that gap. Block here until it
+  // does, rather than assuming the awaited call was enough.
+  await page.waitForFunction(
+    (expectReduce) => matchMedia("(prefers-reduced-motion: reduce)").matches === expectReduce,
+    mode === "reduce",
+  );
   records[mode] = {};
   for (const theme of themes) {
     records[mode][theme] = await readTheme(theme);
@@ -295,6 +318,16 @@ for (const theme of themes) {
   const reduce = records.reduce[theme];
   const noPref = records["no-preference"][theme];
   const problems = [];
+
+  // Diagnostic for round 2's unreproduced flake (see readTheme): if this
+  // is ever false/true the wrong way round, every other problem below is
+  // a symptom, not the cause -- say so first.
+  if (reduce.mediaMatches !== true) {
+    problems.push(`reduce: matchMedia("(prefers-reduced-motion: reduce)").matches was ${reduce.mediaMatches}, not true -- the emulation did not apply for this read, not a CSS regression`);
+  }
+  if (noPref.mediaMatches !== false) {
+    problems.push(`no-preference: matchMedia("(prefers-reduced-motion: reduce)").matches was ${noPref.mediaMatches}, not false -- the emulation did not apply for this read, not a CSS regression`);
+  }
 
   if (!reduce.btnDurations.every((d) => d === "0s")) {
     problems.push(`reduce: .rb-btn transition-duration not all 0s (${reduce.btnDurations.join(", ")})`);
