@@ -375,3 +375,55 @@ On `main`: inserting a 0.5px spacer above any section and running `pnpm visual` 
 - Own worktree from `origin/main` (fetch first); never `git stash` (step 3 says edit-and-revert instead); `git -C`, never `cd && git`; no force-push.
 - Stop conditions -- message the orchestrator: the post-snap probe finding a fractional top (the 1/64 assumption failed); pair A of the guard regressing any tile; the bot regen leaving any theme's tiles unchanged when its sections were at fractional offsets (means the snap did not run in CI).
 - Review gate as before (two read-only adversarial agents: correctness on the evaluate block and its verification vs. claims-vs-code on the pasted pairs), up to four rounds; report round count and findings; do not merge.
+
+# E3 -- #190, phase 2: the fix
+
+Follows phase 1 (comment on #190, 2026-09-11): the compositor's `backdrop-filter` path is chosen per Chromium session, so glass-card tiles on luminous-precision and summer-cloud render in one of two stable ways; with `backdrop-filter: none` injected, ten of ten no-edit control pairs are pixel-clean. Written 2026-09-11 against `origin/main` at `9642b63`. Entered via `/work-on 190`; one PR; plan section appended as `# #190` at the end of `docs/plans/epics/E3-toolchain-and-showcase-hardening.md` (merge `origin/main` into the branch if PR B's or PR D's section landed meanwhile; landing order, yours last).
+
+## Locked decisions
+
+1. **Preferred fix: pin the rendering path, keep the glass.** The baselines are the showcase's visual acceptance test; a job that photographs the three glass themes without their signature effect would stop testing the thing that makes them those themes. So the first attempt is a `chromium.launch({ args })` flag set that makes the compositor's choice deterministic while `backdrop-filter` still renders. Bounded experiment, in this order, ten no-edit control pairs each, **stop at the first set that is 10/10 clean**:
+   - A: `["--disable-gpu-compositing"]`
+   - B: `["--disable-gpu"]`
+   - C: `["--use-gl=angle", "--use-angle=swiftshader"]`
+   - D: `["--disable-features=CanvasOopRasterization,UseSkiaRenderer"]` (last resort; feature names must be checked against the pinned Chromium's `chrome://flags`-equivalent -- if a name is unknown, Chromium ignores it silently, so also confirm via `chrome://version` that the switch was applied)
+   For the winning set, prove the glass is still rendered: capture luminous-precision Cards once with the flags and once with the flags plus the `backdrop-filter: none !important` style tag; the two must differ (pixelmatch count > 0) -- that is the "kept the glass" proof, without which a flag that merely disabled the filter would look like a win.
+2. **Fallback, only if A-D all fail: the override, documented as a limitation.** `page.addStyleTag({ content: "* { backdrop-filter: none !important; }" })` right after the transitions-off tag in `scripts/visual.mjs`, with a header comment naming #190, and a sentence in STANDARD.md section 13's "be photographed" bullet: the visual job captures the three glass themes with `backdrop-filter` disabled because Chromium renders it nondeterministically across sessions (#190); the filter's own rendering is reviewed by eye, not by baseline.
+3. **One baseline regeneration either way,** reviewed by mechanism: with a flag set, every tile may change (a different raster path); with the override, only the glass themes' glass tiles change. The stat is pasted and explained by which path was taken. After it, the ten-pair control must be clean on the branch.
+4. **The `rackbops-noir/badges` single anomaly is out of scope** here (phase 1 could not reproduce it in a within-session or a one-pair between-session check); if it recurs after this lands, it becomes its own issue. Say so in the PR body.
+
+## Build order
+
+### 1. Plan section -- `docs(plans): E3 #190 phase 2, pin the compositor path`
+
+### 2. The experiment (no commit; results pasted in the PR body and on #190)
+
+For each candidate set in order: edit `chromium.launch()` in `scripts/visual.mjs` (`grep -n 'chromium.launch'`) to pass `{ args }`, run ten no-edit pairs (`pnpm visual --update` then `pnpm visual`, separate processes), record clean/regressed per pair with the tile names and pixel counts. Stop at 10/10 clean. Then the "glass kept" check from decision 1. If every set fails or none keeps the glass, go to the fallback. Paste the full table of what was tried.
+
+### 3. The fix -- `ci(visual): pin Chromium's compositor path so glass tiles render deterministically (#190)` (or `... capture glass themes without backdrop-filter ...` for the fallback)
+
+`scripts/visual.mjs`: the winning `args` (or the override style tag), with a header-comment paragraph: the symptom, the mechanism from phase 1, what was tried (one line per candidate with its pair score), and why this one. STANDARD.md section 13: one clause naming the pin (or the limitation). `scripts/reduced-motion.mjs` (PR D, if merged by then) reads computed styles only and needs no change -- say so.
+
+### 4. Baseline regeneration -- bot commit, then the ten-pair control on the branch, pasted clean
+
+## Mutation guards (paste one output per row)
+
+| Change | Mutation | Failing check |
+| --- | --- | --- |
+| the pin / override | remove it | the no-edit control regresses a glass tile within five pairs (state the attempt count; environment-dependent) |
+| glass kept (flag path only) | none needed -- it is an acceptance item, paste the non-zero pixelmatch count |
+
+## Acceptance to execute and paste
+
+1. The experiment table (candidates, pairs, tiles, counts) and the decision.
+2. Ten no-edit control pairs on the final branch: all clean, all fourteen themes.
+3. Flag path: the "glass kept" pixelmatch count for luminous-precision Cards (> 0). Fallback path: the STANDARD.md limitation sentence.
+4. The bot regen stat, explained by path; CI `visual` green on the branch afterwards.
+5. `pnpm test` (root) green.
+
+## Sub's operating rules
+
+- Own worktree from `origin/main`; never `git stash`; `git -C`, never `cd && git`; no force-push; the experiment's edits are reverted between candidates (`git checkout -- scripts/visual.mjs`).
+- Ten-pair loops are long: run them in the background, check in, report a decisive candidate as soon as it lands.
+- Stop conditions -- message the orchestrator: a candidate that is clean but whose `chrome://version` shows the switch was not applied; a winning set that changes the rendering of NON-glass themes' tiles in the regen by more than phase-shift-scale noise (that is a fidelity question); the fallback being needed (report before committing it).
+- Review gate as before, up to four rounds; report; do not merge.
