@@ -11,6 +11,8 @@ import {
 import { cx } from "./cx.js";
 
 export interface TabItem {
+  /** Unique among this tablist's items -- a duplicate id renders two "selected" tabs at once,
+   * breaking the "exactly one tab is always selected" guarantee below. */
   id: string;
   label: ReactNode;
   content: ReactNode;
@@ -28,7 +30,10 @@ export interface TabsProps
   /** Controlled mode, mirroring NavRail's `activeId`: the active tab id, owned by the caller.
    * When set the component keeps no selection state of its own -- `onChange` reports what the
    * user picked and the parent re-renders with the new id (so it can live in a router or URL).
-   * An id matching no item selects the first tab, so exactly one tab is always selected. */
+   * An id matching no item selects the first tab, so exactly one tab is always selected.
+   * Switching between controlled and uncontrolled across the component's lifetime is not
+   * supported: the internal selection kept for uncontrolled mode is frozen (not updated) while
+   * `activeId` is set, so removing `activeId` later reverts to whatever it was last. */
   activeId?: string;
   /** Called with the id the user selected (click, arrow keys, Home/End) in both modes; in
    * uncontrolled mode the internal selection also updates. */
@@ -53,7 +58,13 @@ export const Tabs = forwardRef<HTMLDivElement, TabsProps>(function Tabs(
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
   const onKeyDown = (e: KeyboardEvent<HTMLButtonElement>) => {
-    const i = items.findIndex((t) => t.id === activeId);
+    // Index from the tab that received the event -- which already has DOM focus, since a
+    // previous keypress moves focus imperatively below regardless of selection -- rather than
+    // from `activeId`. A controlled parent that commits the new activeId asynchronously (a
+    // router transition, a debounce) would otherwise leave `activeId` unchanged between
+    // keystrokes, so every consecutive press would recompute the same "next" tab from the same
+    // stale index instead of advancing (#169 review round 1, MAJOR finding).
+    const i = tabRefs.current.indexOf(e.currentTarget);
     let next = i;
     if (e.key === "ArrowRight" || e.key === "ArrowDown") next = (i + 1) % items.length;
     else if (e.key === "ArrowLeft" || e.key === "ArrowUp") next = (i - 1 + items.length) % items.length;
@@ -61,8 +72,10 @@ export const Tabs = forwardRef<HTMLDivElement, TabsProps>(function Tabs(
     else if (e.key === "End") next = items.length - 1;
     else return;
     e.preventDefault();
-    const id = items[next]?.id;
-    if (id !== undefined) select(id);
+    // Safe: onKeyDown only fires from a rendered tab button, so items is non-empty and next is
+    // always a valid index into it (arithmetic above is mod items.length, or an explicit 0 /
+    // items.length - 1 for Home/End).
+    select(items[next]!.id);
     // Move focus with the selection — the whole point of the roving tabindex.
     tabRefs.current[next]?.focus();
   };

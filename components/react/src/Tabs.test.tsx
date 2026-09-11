@@ -158,3 +158,66 @@ test("uncontrolled: defaultId still picks the initial tab and is ignored once ac
   assert.equal(selectedTab(overridden.container), "A", "activeId wins over defaultId");
   overridden.cleanup();
 });
+
+const threeItems = [
+  { id: "a", label: "A", content: "Content A" },
+  { id: "b", label: "B", content: "Content B" },
+  { id: "c", label: "C", content: "Content C" },
+];
+
+test("controlled: consecutive ArrowRights advance correctly even when the parent never commits the new activeId", () => {
+  // Review round 1, MAJOR: computing the next index from `activeId` (rather than from the tab
+  // that actually received the keydown) got stuck repeating the same "next" tab whenever a
+  // controlled parent doesn't re-render synchronously after onChange -- a router transition or
+  // a debounce, exactly the use case activeId's own JSDoc advertises. This parent ignores
+  // onChange entirely (the worst case: activeId never changes), which must not stop each
+  // keypress from advancing from wherever focus actually is.
+  const calls: string[] = [];
+  const { container, cleanup } = mount(
+    <Tabs items={threeItems} activeId="a" onChange={(id) => { calls.push(id); }} />,
+  );
+  pressKeyOn(container, "A", "ArrowRight");
+  pressKeyOn(container, "B", "ArrowRight");
+  assert.deepEqual(calls, ["b", "c"], "each press advances from the focused tab, not a stale activeId");
+  cleanup();
+});
+
+test("controlled: ArrowLeft, ArrowUp, ArrowDown, Home and End all call onChange with the correct id", () => {
+  const calls: string[] = [];
+  const onChange = (id: string) => {
+    calls.push(id);
+  };
+
+  const left = mount(<Tabs items={threeItems} activeId="b" onChange={onChange} />);
+  pressKeyOn(left.container, "B", "ArrowLeft");
+  left.cleanup();
+
+  const up = mount(<Tabs items={threeItems} activeId="b" onChange={onChange} />);
+  pressKeyOn(up.container, "B", "ArrowUp");
+  up.cleanup();
+
+  const down = mount(<Tabs items={threeItems} activeId="b" onChange={onChange} />);
+  pressKeyOn(down.container, "B", "ArrowDown");
+  down.cleanup();
+
+  const home = mount(<Tabs items={threeItems} activeId="c" onChange={onChange} />);
+  pressKeyOn(home.container, "C", "Home");
+  home.cleanup();
+
+  const end = mount(<Tabs items={threeItems} activeId="a" onChange={onChange} />);
+  pressKeyOn(end.container, "A", "End");
+  end.cleanup();
+
+  assert.deepEqual(calls, ["a", "a", "c", "a", "c"], "Left->a, Up->a (both 'previous'), Down->c (same as Right), Home->a, End->c");
+});
+
+test("an unrelated key (Tab, Enter) does not call onChange", () => {
+  const calls: string[] = [];
+  const { container, cleanup } = mount(
+    <Tabs items={items} activeId="a" onChange={(id) => { calls.push(id); }} />,
+  );
+  pressKeyOn(container, "A", "Tab");
+  pressKeyOn(container, "A", "Enter");
+  assert.deepEqual(calls, []);
+  cleanup();
+});
