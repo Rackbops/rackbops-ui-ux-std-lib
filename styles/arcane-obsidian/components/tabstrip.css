@@ -1,8 +1,8 @@
 /* arcane-obsidian — tabstrip
  * The console's top-level view nav: natural-width bordered pill buttons.
  * The active button gets accent text + a faint wash and an accent-tinted
- * border + the rationed gradient underline; distinct from the borderless
- * text .rb-tabs used inside a panel. */
+ * border + the rationed gradient underline; distinct from the text-underline
+ * .rb-tabs used inside a panel. */
 :where([data-rb-style="arcane-obsidian"], [data-rb-style="arcane-obsidian"] *).rb-tabstrip {
   display: flex;
   gap: var(--rb-space-2);

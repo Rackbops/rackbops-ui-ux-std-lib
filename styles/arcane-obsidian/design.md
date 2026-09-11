@@ -120,9 +120,11 @@ Class prefix `rb-`; shared token/class contract with the other themes.
 - **Tabstrip** `.rb-tabstrip` (+ `__tab`, `--active`, `__badge`) — top-level view
   nav: bordered pill buttons on surface-2; the active tab gets accent text, an
   accent-tinted border, and the accent wash, with the rationed gradient
-  underline (2px, sitting on the pill's bottom border, as artifact-console 1.x
-  draws it); an optional trailing badge in faint text. Distinct from `Tabs`'
-  borderless text tabs used inside a panel.
+  underline (2px, sitting on the pill's bottom border -- artifact-console 1.x
+  anchors it 9px below the pill on the strip's own base line, and tucks it 3px
+  inside the pill only on mobile; this `.rb-tabstrip` has no base line, so the
+  pill's border is the nearest honest analogue); an optional trailing badge in
+  faint text. Distinct from `Tabs`' text-underline tabs used inside a panel.
   Was this theme's own two-theme extra (with arcane-parchment) before K4-10
   gave it a React wrapper and the same token-driven look to every theme.
 - **Table** `.rb-table` (+ `.rb-num`) — dense data table, faint header rule,
