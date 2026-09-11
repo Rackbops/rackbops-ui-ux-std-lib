@@ -127,3 +127,163 @@ No unit test can exercise a workflow file; step 5 of Acceptance is the guard.
 - Decision 5 above is absolute: the release scripts run only inside the test harness.
 - Run the review gate yourself (two read-only adversarial agents, different lenses: correctness/failure modes on the bash regex change and the workflow expression vs. claims-vs-code walking the acceptance list and the README/CONTEXT sentences), up to four rounds, then report the round count and findings to the orchestrator rather than starting a fifth.
 - Report deviations as they arise. Do not merge; Acceptance 5 happens after the orchestrator merges and is pasted by whoever runs it -- the orchestrator will ask you to.
+
+# PR B
+
+# E3 -- Toolchain and showcase hardening: implementation plan, PR B (#115 + #118)
+
+Epic #179. PR B closes #115 (two `contract.test.mjs` guards that accept what they should reject) and #118 (the React class-derivation matrix's residual gap), entered via `/work-on 115`. Written by the orchestrator on 2026-09-11 against `origin/main` at `30d2869` (v0.2.31, PR A merged); line numbers are from that commit -- re-check with `grep -n` before editing. Append this plan as a `# PR B` section at the end of the already-committed `docs/plans/epics/E3-toolchain-and-showcase-hardening.md` in the first commit; do not rewrite the PR A section.
+
+## Locked decisions
+
+1. **#115 guard form, two tiers.** (Amended 2026-09-11 after Subordinate #2's pre-implementation scan: site `:290` iterates `themeCssFiles(theme)`, which is `tokens.css` + `base.css` + every component file, and those two root-scope files legitimately use forms the strict prefix rejects -- `:where([data-rb-style="<t>"])` in every `tokens.css` and `:where(html[data-rb-style="<t>"]) body` in every `base.css`, 14 each.) The invariant is: the theme attribute sits inside a **leading `:where(...)`**, never bare. One helper, `assertWhereGuarded(sel, theme, label, { rootScope })`:
+   - **Component files (`rootScope: false`, the default):** the selector must *start with* the exact descendant form `:where([data-rb-style="<theme>"], [data-rb-style="<theme>"] *)`, the one string every component rule uses today. Sites `:427`, `:641`, `:668` are component-only and use this tier.
+   - **Root-scope files (`rootScope: true`, applied at site `:290` when the file is `tokens.css` or `base.css`):** the selector must either satisfy the tier above or begin with a `:where(...)` group that contains `[data-rb-style="<theme>"]` -- which admits the two root forms and nothing bare.
+   A bare-attribute guard (`[data-rb-style="x"] .rb-btn`, specificity 0,2,0) fails both tiers; `:where([data-rb-style="x"]) .rb-btn` fails the component tier (it never matches the canvas element itself and is not the repo's form). `stripGuard` (`:98-101`) stays as the helper the nesting check uses; its `^:where\([^)]*\)` regex is the same "leading `:where`" notion.
+2. **#115 import order: a canonical order, not just a set.** Verified across all fourteen `index.css` today: three different orderings (arcane/kenzen pairs and the studio pair start with `button`; the three ports and the four originals start with `card link nav-rail button`; mono-field is alphabetical). Cross-file class references among component sheets (amended 2026-09-11 -- the orchestrator's first scan named only one): there are **four**, each a file referencing a block another file owns per `contract.json`'s `components` -- `nav-rail.css` -> `.rb-link` (owned by `link`), `table.css` -> `.rb-table` (owned by `data-table`, which lists `rb-table` and its `__group-row`/`__sort`/`__sort-icon`/`-scroll` elements; `table` owns only `rb-table--interactive`), `log.css` -> `.rb-pre` (owned by `pre`), `tabstrip.css` -> `.rb-tabs` (owned by `tabs`). Every one of the fourteen current orders already imports the owner before the referrer in all four cases, and the canonical order below does too (`link` < `nav-rail`, `data-table` < `table`, `pre` < `log`, `tabs` < `tabstrip`), so no relative order that could matter flips. Whether any of the four depends on cascade order *at all* is not decidable from source (equal `:where()` specificity plus overlapping targets is what would make it matter); that is exactly what the zero-diff `pnpm visual` run settles -- it is the proof, not a formality. `card.css`'s apparent `.rb-btn` hits were its own `.rb-card` selectors. The canonical order is: `../_shared/structure.css`, `./tokens.css`, `./base.css`, then the shared component files in **`contract.json`'s `components` key order**, then that theme's extras files in any order. To make "utilities last" true, `stepper` moves before `muted` in `contract.json` (a surgical cut-and-paste of its five-line block from after `log` to after `progress`); the SKILL.md table regenerates and STANDARD.md 5.1's `stepper.css` row (`:415`) moves above `muted.css` (`:412`) to match. Result: every theme's shared-component import order becomes `button card link nav-rail form badge alert dialog tabs tabstrip data-table table progress stepper muted pre log`.
+3. **#118: a compiler-backed source scan, not a hand-maintained list.** A new test in `contract-classes.test.tsx` loads the package's real `tsconfig.json` through the TypeScript API (already a devDependency), walks every non-test source file, and collects (a) every string literal or no-substitution template matching `^rb-[\w-]+$`, and (b) for every template expression whose head matches `^rb-[\w-]+$` and whose single interpolated expression's *checked type* is a union of string literals, `head + literal` for each member. Every collected class must be in `EMITTED`. This is the issue's option 2, cheaper than it sounds because `checker.getTypeAtLocation` on the interpolated identifier returns the *narrowed* type -- `Button.tsx:30`'s `variant !== "default" && \`rb-btn--${variant}\`` yields `primary|accent|danger|ghost` (no phantom `rb-btn--default`), and `Stepper.tsx:53`'s local `state` yields its three literals with no prop involved. A template whose expression is not a literal union fails the test by name, so a future `rb-${anything}` cannot slip past as "unscannable".
+4. **No theme CSS rule changes, no `contract.json` class changes, no visual change.** The only `styles/` edits are the fourteen `index.css` reorders and the `contract.json` key move. `pnpm visual` must be byte-clean.
+
+## Build order (one commit per step, Conventional Commits)
+
+### 1. Plan section -- `docs(plans): E3 PR B, contract-test guards and the class-derivation scan`
+
+Append this document under `# PR B` at the end of `docs/plans/epics/E3-toolchain-and-showcase-hardening.md`.
+
+### 2. #115 guard helper -- `test(styles): require the :where() zero-specificity guard form at every guard site`
+
+In `styles/test/contract.test.mjs`, next to `stripGuard` (`:97-101`):
+
+```js
+/** The guard the contract allows: the theme attribute inside a LEADING
+ * zero-specificity :where() (STANDARD.md 6). Component rules use the exact
+ * descendant form (with the ` *` half so the guard scopes descendants without
+ * adding specificity); the two root-scope files, tokens.css and base.css, may
+ * also use the root forms `:where([data-rb-style="t"])` and
+ * `:where(html[data-rb-style="t"]) body`, which scope the canvas element
+ * itself. A bare attribute guard (`[data-rb-style="x"] .rb-btn`, specificity
+ * 0,2,0) contains the same substring and used to pass -- #42's overflow,
+ * fixed in #115. */
+function whereGuardDescendant(theme) {
+  return `:where([data-rb-style="${theme}"], [data-rb-style="${theme}"] *)`;
+}
+function assertWhereGuarded(sel, theme, label, { rootScope = false } = {}) {
+  const descendant = sel.startsWith(whereGuardDescendant(theme));
+  const leading = sel.match(/^:where\(([^)]*)\)/);
+  const rootForm = rootScope && leading !== null && leading[1].includes(`[data-rb-style="${theme}"]`);
+  assert.ok(
+    descendant || rootForm,
+    `${label}: selector is not guarded by the zero-specificity :where() form${rootScope ? "" : " (component files use the exact descendant form)"}: ${sel}`,
+  );
+}
+```
+
+Replace the four sites: `:290` -> `assertWhereGuarded(sel, theme, file, { rootScope: /(^|[\\/])(tokens|base)\.css$/.test(file) })` (the `rootScope` flag is keyed off the file, so a component file can never claim it); `:427` -> `assertWhereGuarded(sel, theme, \`${theme}: .${cls}\`)`; `:641` and `:668` likewise with their existing message prefixes. Delete each site's now-unused `guard` local **only if** nothing else in that test reads it (`:284`'s `guard` is also used by `:771`'s reduced-motion check -- grep before deleting). Run the suite: all fourteen themes must still pass with no CSS change, which itself proves every real selector already uses one of the admitted forms -- and paste, per theme, how many selectors took the root tier (expected: exactly the 2 root forms, 14 themes, plus base.css's own descendant-form rules on the strict tier).
+
+Unit-level pins, in the same file, as one test `guard form: component tier accepts only the descendant :where() form; root tier also accepts the two root forms (#115)`: with `rootScope` off, `':where([data-rb-style="x"], [data-rb-style="x"] *).rb-btn'` passes and `'[data-rb-style="x"] .rb-btn'`, `':where([data-rb-style="x"]) .rb-btn'`, `':where([data-rb-style="x"])'` all throw; with `rootScope` on, `':where([data-rb-style="x"])'` and `':where(html[data-rb-style="x"]) body'` pass and `'[data-rb-style="x"] .rb-btn'` and `'html[data-rb-style="x"] body'` still throw.
+
+### 3. #115 import order -- `test(styles): check index.css import order against the canonical sequence`
+
+- `styles/contract.json`: move the `"stepper"` block from after `"log"` to immediately after `"progress"`. Surgical text edit; verify with `node -e "console.log(Object.keys(require('./styles/contract.json').components).join(' '))"` -> `... progress stepper muted pre log`.
+- `node scripts/generate-skill-table.mjs` (rewrite), then `--check` clean. STANDARD.md 5.1: move the `stepper.css` row above `muted.css`.
+- The fourteen `index.css`: reorder the `@import` lines to structure, tokens, base, the seventeen shared files in contract order, then extras. Extras files per theme (from today's listings): arcane pair and kenzen pair `eyebrow wordmark`; studio pair `eyebrow rack principle tag`; the other eight none. Keep each file's header comment; change nothing but line order.
+- `contract.test.mjs:295-311`: keep the completeness assertion (`:310`) and add, before it, the order assertion: `imports[0]` includes `../_shared/structure.css`; `names[0] === "tokens"`, `names[1] === "base"`; `names.filter((n) => SHARED.has(n))` deep-equals `Object.keys(contract.components)` (where `SHARED = new Set(Object.keys(contract.components))` and names are `components/<x>` stripped to `<x>`). Extras (`names` not in `SHARED`) are unconstrained beyond appearing in the set check. Rename the test to `${theme}: index.css imports structure, tokens, base, then every shared component in contract order, then its extras`.
+- Find the STANDARD.md sentence that describes what `index.css` imports (grep `index.css` in STANDARD.md; it is in section 6 or the 5.1 preamble) and state the canonical order there with a `[tested: contract.test.mjs, #115]` marker.
+- `scripts/new-theme.mjs` copies `index.css` from the `--from` theme, so a new theme inherits the order; no change there. Run `node --test scripts/new-theme.test.mjs` to confirm.
+
+### 4. #118 source scan -- `test(react): scan component sources for every rb-* literal and literal-union template, and require the matrix to emit them`
+
+In `components/react/src/contract-classes.test.tsx`, after the `EMITTED` derivation (`:223-226`):
+
+```tsx
+import ts from "typescript";
+import { basename, dirname, join } from "node:path";
+
+// #118: close the matrix gap. Every rb-* class a component can emit is either a
+// literal in its source or `rb-<block>--${x}` where x is a string-literal union;
+// collect both from the real TypeScript program and require the matrix to have
+// emitted each one. A class that exists only in source -- the #48 counterexample,
+// `rb-btn--lg` behind a size the matrix never renders -- fails here, before it
+// can reach a consumer unstyled.
+function sourceClassSet(): Set<string> {
+  const srcDir = dirname(fileURLToPath(import.meta.url));
+  const configPath = join(srcDir, "..", "tsconfig.json");
+  const cfg = ts.readConfigFile(configPath, ts.sys.readFile);
+  const parsed = ts.parseJsonConfigFileContent(cfg.config, ts.sys, dirname(configPath));
+  const sources = parsed.fileNames.filter(
+    (f) => !/\.test\.tsx?$/.test(f) && basename(f) !== "test-dom.ts",
+  );
+  const program = ts.createProgram(sources, parsed.options);
+  const checker = program.getTypeChecker();
+  const out = new Set<string>();
+  for (const sf of program.getSourceFiles()) {
+    if (!sources.includes(sf.fileName)) continue;
+    const visit = (node: ts.Node): void => {
+      if ((ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) && /^rb-[\w-]+$/.test(node.text)) {
+        out.add(node.text);
+      } else if (ts.isTemplateExpression(node) && /^rb-[\w-]+$/.test(node.head.text)) {
+        assert.equal(node.templateSpans.length, 1, `${basename(sf.fileName)}: rb-* template with more than one interpolation`);
+        const span = node.templateSpans[0];
+        assert.equal(span.literal.text, "", `${basename(sf.fileName)}: rb-* template with a trailing literal`);
+        const type = checker.getTypeAtLocation(span.expression);
+        const members = type.isUnion() ? type.types : [type];
+        assert.ok(
+          members.length > 0 && members.every((m) => m.isStringLiteral()),
+          `${basename(sf.fileName)}: ${node.head.text}\${...} interpolates ${checker.typeToString(type)}, not a string-literal union -- the scan cannot enumerate it`,
+        );
+        for (const m of members) if (m.isStringLiteral()) out.add(node.head.text + m.value);
+      }
+      ts.forEachChild(node, visit);
+    };
+    visit(sf);
+  }
+  return out;
+}
+
+test("every rb-* class reachable from the component sources is emitted by the render matrix (#118)", () => {
+  const unexercised = [...sourceClassSet()].filter((c) => !EMITTED.has(c)).sort();
+  assert.deepEqual(unexercised, [], `in source but never rendered by RENDERS: ${unexercised.join(", ")} -- add the prop value to the matrix`);
+});
+```
+
+Then rewrite the file header (`:21-27`) and STANDARD.md 5.2 (`:430-434`): the residual gap is closed by the scan; the closed-world check remains the downstream guard for CSS. Update the status row for #48 (`:958`) or add a row for #118 beside it. Expected on a clean tree: the test passes with no matrix change (every literal and union member today is already rendered -- if one is not, that is a finding: report it, then add the matrix entry).
+
+Note `tsx` runs the test file; `import ts from "typescript"` is the CJS default import and works under it. The program load costs a couple of seconds; keep it inside the one test, not at module top level, so the other tests' timing is unchanged.
+
+## Mutation guards (each must turn the suite red; paste one failing assertion per row)
+
+| Change | Mutation | Failing test |
+| --- | --- | --- |
+| #115 guard form | in one theme's `button.css`, rewrite one selector to `[data-rb-style="<theme>"] .rb-btn--ghost` (no `:where`) | `<theme>: every selector is guarded ...` and `<theme>: ... .rb-btn--ghost` (site 2) |
+| #115 guard form, pseudo-element site | same rewrite on a `::-webkit-progress-value` selector in `progress.css` | the progress-fill test (site 3) |
+| #115 guard form, root tier | in one theme's `tokens.css`, change `:where([data-rb-style="<t>"])` to the bare `[data-rb-style="<t>"]` | that theme's `every selector is guarded ...` (root tier rejects a bare attribute) |
+| #115 guard form, root tier is file-keyed | move a root-form selector `:where([data-rb-style="<t>"])` into that theme's `button.css` | same test (component files never get the root tier) |
+| #115 order | swap `card` and `button` in one theme's `index.css` | that theme's `index.css imports ... in contract order` |
+| #115 order, prefix | move `base` above `tokens` in one `index.css` | same test (`names[1] === "base"` clause) |
+| #115 stepper key | put `stepper` back after `log` in `contract.json` | fourteen order failures **and** `generate-skill-table --check` |
+| #118 static literal | in `Button.tsx`, widen `size` to `"sm" \| "md" \| "lg"` and add `size === "lg" && "rb-btn--lg"` | `every rb-* class reachable ... (#118)` names `rb-btn--lg` (the #48 counterexample, reproduced) |
+| #118 union member | add `"outline"` to `ButtonProps.variant` with no `RENDERS` entry | same test names `rb-btn--outline` |
+| #118 non-enumerable template | change `rb-stepper--${state}` to `rb-stepper--${String(state)}` | same test fails with the "not a string-literal union" message |
+
+## Acceptance to execute and paste
+
+1. `pnpm --filter @rackbops/styles test` green; paste the renamed order test for two themes (one from each old ordering family, e.g. `rackbops-studio` and `summer-cloud`) and the guard-form unit test.
+2. `node -e "console.log(Object.keys(require('./styles/contract.json').components).join(' '))"` -> `... progress stepper muted pre log`; `node scripts/generate-skill-table.mjs --check` clean; paste the SKILL.md rows around `stepper`.
+3. `git diff --stat main -- styles/*/index.css` shows exactly fourteen files; `git diff main -- styles/*/components styles/*/tokens.css styles/*/base.css` is **empty**.
+4. `pnpm visual` green with **zero** baseline changes (no `[gen-baselines]` commit, no `update-visual-baselines` dispatch) -- paste the CI job link. A diff here is a finding (a cross-file cascade the analysis missed), not something to regenerate over.
+5. `pnpm --filter @rackbops/ui-react test` green with the #118 test visible; paste its runtime.
+6. `grep -n 'residual' components/react/src/contract-classes.test.tsx STANDARD.md` -> no remaining claim that the gap is open; paste the rewritten STANDARD.md 5.2 sentence.
+7. The mutation table, one pasted failure per row.
+8. `pnpm test` (root) and `pnpm build` green.
+
+## Exit demo (PR B's share of the epic's exit criterion)
+
+On `main`: a `[data-rb-style="x"] .rb-btn` descendant guard fails the contract test; an orphaned `rb-*` class fails the React derivation test; every theme's `index.css` imports in one order the test states.
+
+## Sub's operating rules
+
+- Read #115, #118 and #179 in full, including comments, before touching anything.
+- Own worktree from `origin/main` (fetch first); never `git stash`; `git -C`, never `cd && git`; no force-push.
+- Stop conditions -- message the orchestrator, do not resolve yourself: any theme's selector that is NOT already in the exact `:where(...)` form once the helper lands (means the analysis missed a form); any `pnpm visual` diff after the reorder; the #118 scan reporting a class on a clean tree; `typescript` failing to load the package tsconfig under `tsx`.
+- Run the review gate yourself (two read-only adversarial agents, different lenses: correctness/failure modes on the AST scan and the guard regex vs. claims-vs-code walking the acceptance list and the STANDARD.md sentences), up to four rounds, then report the round count and findings rather than starting a fifth.
+- Report deviations as they arise; do not merge.
