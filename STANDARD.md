@@ -844,13 +844,17 @@ The showcase is the library's visual acceptance test. It MUST:
   never includes, verified 0px either way -- or, for the concrete pair,
   never applies it at all, `styles/concrete-signal/design.md:67-69`).
   #192 investigated pinning a deterministic compositor path to restore the
-  effect to the baselines and found the override costs no fidelity the job
+  effect to the baselines (a `--disable-gpu` candidate went 10/10 clean in a
+  local determinism experiment, with the flag verified reaching the real
+  spawned process's command line -- recorded for the day a theme's glass is
+  strong enough to matter) and found the override costs no fidelity the job
   can measure in the first place: with the effect genuinely rendering (the
   underlay behind each card, verified present and visually strong at the
   page level) and every affected card genuinely translucent (verified, not
-  opaque by mistake), a vanilla capture with the effect on versus off is
-  byte-for-byte identical, at the job's own pixel and ratio thresholds, on
-  every glass-bearing tile in all three themes -- the blur is real and
+  opaque by mistake), a vanilla capture with the effect on versus off
+  differs by at most one unit in 255 per channel -- below the job's own
+  pixel threshold (0.1), so it registers as zero differing pixels -- on
+  every glass-bearing tile in all three themes. The blur is real and
   applied but too subtle, within the small region each tile crops to, to
   register as a difference the job would ever catch. The effect stays
   reviewed by eye, not by baseline, but not because of nondeterminism the
