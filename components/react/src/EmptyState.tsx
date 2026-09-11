@@ -1,9 +1,11 @@
-import { createElement, forwardRef, type ReactNode, type RefAttributes } from "react";
+import { createElement, forwardRef, type ReactNode } from "react";
 import { Card, type CardProps } from "./Card.js";
 
+// Must stay in sync with the `level` union below -- a caller relying on this list to guard
+// every valid level would silently stop doing so if the type widened without this following.
 const VALID_LEVELS = [2, 3, 4] as const;
 
-export interface EmptyStateProps extends Omit<CardProps, "title">, RefAttributes<HTMLDivElement> {
+export interface EmptyStateProps extends Omit<CardProps, "title"> {
   /**
    * A heading naming what is missing ("No cards yet", "Select a panel"), replacing the native
    * HTML `title` tooltip attribute -- there's no way to set a real tooltip through this
@@ -11,9 +13,11 @@ export interface EmptyStateProps extends Omit<CardProps, "title">, RefAttributes
    * `NonNullable<ReactNode>` (not plain `ReactNode`) so passing an optional value straight
    * through (`title={label}` where `label?: string`) is a compile error rather than a silently
    * empty, unlabelled heading inside the `role="status"` region -- the one thing this component
-   * exists to avoid. An explicit `false` or `""` still compiles (same as anywhere else `ReactNode`
-   * is accepted) and is the caller's responsibility, same as passing empty `children` anywhere
-   * else in this library.
+   * exists to avoid. `NonNullable` only catches an explicit `null`/`undefined` reaching the prop
+   * directly: an explicit `false`/`""`/`0`, an empty array, or `undefined` laundered through a
+   * fragment (`title={<>{maybeLabel}</>}`) all still compile and still render an empty heading --
+   * each is the caller's responsibility, same as passing empty `children` anywhere else in this
+   * library.
    */
   title: NonNullable<ReactNode>;
   /** Optional call to action -- a Button or a link -- rendered after the guidance. */

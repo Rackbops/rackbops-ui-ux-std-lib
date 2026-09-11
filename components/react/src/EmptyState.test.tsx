@@ -5,6 +5,23 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { Button } from "./Button.js";
 import { EmptyState } from "./EmptyState.js";
 
+// Review round 2, MAJOR: `title: NonNullable<ReactNode>` (round 1's fix for the empty-heading
+// bug) is a type-only change -- no runtime assertion can distinguish it from plain `ReactNode`,
+// since both compile the same markup once a value is actually supplied. Reverting it to
+// `ReactNode` left the entire suite green. `tsc -p tsconfig.json --noEmit` runs before this file
+// (package.json's test script), so this function's body must fail to COMPILE if the type ever
+// regresses -- that failure IS the guard. It is never called (only type-checked, never executed),
+// so it has no runtime effect on the suite.
+function _titleTypeGuards() {
+  const maybeLabel: string | undefined = undefined;
+  // @ts-expect-error an optional value must not satisfy the required, NonNullable `title`
+  const g1 = <EmptyState title={maybeLabel} />;
+  // @ts-expect-error an explicit undefined must not satisfy it either
+  const g2 = <EmptyState title={undefined} />;
+  return [g1, g2];
+}
+void _titleTypeGuards;
+
 test('renders a Card with role="status" and the title as an h3 by default', () => {
   const html = renderToStaticMarkup(<EmptyState title="No cards yet" />);
   assert.match(html, /^<div class="rb-card" role="status"><h3>No cards yet<\/h3><\/div>$/);
