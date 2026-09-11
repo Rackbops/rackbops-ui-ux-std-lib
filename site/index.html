@@ -47,14 +47,6 @@
 
     <main>
       <section>
-        <h2 class="sc-title">Wordmark / Eyebrow</h2>
-        <div class="stack">
-          <h1 class="rb-wordmark"><span class="rb-wordmark__spark">&#9670;</span>rackbops console</h1>
-          <span class="rb-eyebrow">Design standards</span>
-        </div>
-      </section>
-
-      <section>
         <h2 class="sc-title">Buttons</h2>
         <div class="row">
           <button class="rb-btn">Default</button>
@@ -63,7 +55,6 @@
           <button class="rb-btn rb-btn--ghost">Ghost</button>
           <button class="rb-btn rb-btn--danger">Danger</button>
           <button class="rb-btn" disabled>Disabled</button>
-          <button class="rb-btn rb-btn--primary">Next <span class="rb-btn__arrow">&rarr;</span></button>
         </div>
         <!-- Same variants at the compact --sm size, for a default-vs-sm comparison. -->
         <div class="row" style="margin-top: 0.75rem">
@@ -73,7 +64,6 @@
           <button class="rb-btn rb-btn--sm rb-btn--ghost">Ghost</button>
           <button class="rb-btn rb-btn--sm rb-btn--danger">Danger</button>
           <button class="rb-btn rb-btn--sm" disabled>Disabled</button>
-          <button class="rb-btn rb-btn--sm rb-btn--primary">Next <span class="rb-btn__arrow">&rarr;</span></button>
         </div>
         <!-- Icon-only buttons: square hit target, paired with .rb-btn (+ an
              optional color variant). SVGs use currentColor so they pick up
@@ -98,17 +88,14 @@
         <h2 class="sc-title">Cards</h2>
         <div class="grid3">
           <div class="rb-card">
-            <div class="rb-card__tag"><span>Design</span><span>01</span></div>
             <h3>Product &amp; interface</h3>
             <p>Flows, interfaces, and the small details that make software feel effortless.</p>
           </div>
           <div class="rb-card">
-            <div class="rb-card__tag"><span>Build</span><span>02</span></div>
             <h3>Software engineering</h3>
             <p>Typed, tested, documented — built to last, not shipped once and abandoned.</p>
           </div>
           <div class="rb-card rb-card--raised">
-            <div class="rb-card__tag"><span>Run</span><span>03</span></div>
             <h3>Infrastructure &amp; ops</h3>
             <p>Deployment, hosting, and the quiet plumbing that keeps it running.</p>
           </div>
@@ -339,7 +326,15 @@ ok 12 - keyframe names are rb-prefixed and unique across all themes</pre>
       </section>
 
       <section>
-        <h2 class="sc-title">Theme extras — rack / principles / tags (rackbops-studio)</h2>
+        <h2 class="sc-title">Theme extras — wordmark / eyebrow (arcane + kenzen pairs; eyebrow also studio pair)</h2>
+        <div class="stack">
+          <h1 class="rb-wordmark"><span class="rb-wordmark__spark">&#9670;</span>rackbops console</h1>
+          <span class="rb-eyebrow">Design standards</span>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="sc-title">Theme extras — rack / principles / tags / arrow / card tag (rackbops-studio pair)</h2>
         <div class="grid3" style="align-items: start">
           <aside class="rb-rack">
             <div class="rb-rack__top"><span>rackbops / unit 01</span><span class="rb-rack__live">Live</span></div>
@@ -350,12 +345,21 @@ ok 12 - keyframe names are rb-prefixed and unique across all themes</pre>
             <div class="rb-principle"><div class="rb-principle__n">/01</div><div class="rb-principle__body"><h3>Design and engineering, together</h3><p>The people drawing the screens write the code.</p></div></div>
             <div class="rb-principle"><div class="rb-principle__n">/02</div><div class="rb-principle__body"><h3>Built to be handed over</h3><p>Typed, tested, documented. You own it.</p></div></div>
           </div>
-          <ul class="rb-tags">
-            <li class="rb-tag">UX &amp; flows</li>
-            <li class="rb-tag">UI design</li>
-            <li class="rb-tag">prototypes</li>
-            <li class="rb-tag">design systems</li>
-          </ul>
+          <div class="stack">
+            <ul class="rb-tags">
+              <li class="rb-tag">UX &amp; flows</li>
+              <li class="rb-tag">UI design</li>
+              <li class="rb-tag">prototypes</li>
+              <li class="rb-tag">design systems</li>
+            </ul>
+            <button class="rb-btn rb-btn--primary">Next <span class="rb-btn__arrow">&rarr;</span></button>
+            <button class="rb-btn rb-btn--sm rb-btn--primary">Next <span class="rb-btn__arrow">&rarr;</span></button>
+            <div class="rb-card">
+              <div class="rb-card__tag"><span>Design</span><span>01</span></div>
+              <h3>Product &amp; interface</h3>
+              <p>Flows, interfaces, and the small details that make software feel effortless.</p>
+            </div>
+          </div>
         </div>
       </section>
     </main>

@@ -89,7 +89,7 @@ A theme is a directory `styles/<theme-id>/` with exactly this layout:
 | `base.css` | Canvas rule, page-only body canvas, bare-element typography, links, focus, selection (the box-sizing reset and body `margin`/`min-height` moved to `_shared/structure.css`) | MUST carry the bare-element property set (section 6) `[tested]` |
 | `_shared/structure.css` | The box-sizing reset and the page body reset (`margin`/`min-height`), guarded by the bare `[data-rb-style]` and imported by every `index.css` | Theme-agnostic; the one place the bare-attribute guard is allowed (#52) `[tested]` |
 | `components/<name>.css` | One file per component: the shared set (section 5.1) plus any extras | MUST exist for every shared component `[tested]`; every selector guarded `[tested]` |
-| `index.css` | `@import` of the shared structure, tokens, base, and every file in `components/` | MUST import the shared structure and every component file, and contain no rules of its own `[tested]` |
+| `index.css` | `@import` of the shared structure, tokens, base, and every file in `components/`, in the canonical order: `../_shared/structure.css`, `./tokens.css`, `./base.css`, then the shared component files in `contract.json`'s `components` key order (`button card link nav-rail form badge alert dialog tabs tabstrip data-table table progress stepper muted pre log`), then that theme's extras files in any order | MUST import the shared structure and every component file, in that order, and contain no rules of its own `[tested: contract.test.mjs, #115]` |
 | `design.md` | The written spec (section 11) | MUST follow the template; every claim verified against the CSS `[reviewed]` |
 | `assets/` | Optional binaries (`rackbops-studio/assets/boppy.svg`, `neon-butterfly/assets/butterfly-circuit.png`) | MAY. Keep small: issue #42 measures the 1.3 MB PNG at 76% of the unpacked tarball |
 
@@ -409,10 +409,10 @@ extras), so an undocumented class fails too]`. The React column is the
 | `data-table.css` | `.rb-table`, `.rb-num`, `__group-row`, `__sort`, `__sort-icon`, `.rb-table-scroll` | `DataTable` | Split from `table.css` at K4-10 so each `contract.json` component key maps to its own file `[tested]`; `__sort-icon` is the muted affordance on an inactive sortable header, `--rb-text-faint` at rest / `--rb-text` on hover -- the active header's arrow carries no class of its own (#175) |
 | `table.css` | `.rb-table--interactive` | -- | Hand-applied by the consumer -- `DataTable` never sets it |
 | `progress.css` | `.rb-progress` on a native `<progress>` (`appearance: none`, `::-webkit-progress-bar`, `::-webkit-progress-value`, `::-moz-progress-bar`); `.rb-spinner` | `Progress`, `Spinner` | Omitting `value` puts `<progress>` in the `:indeterminate` state, styled with an animated sweep on `:indeterminate::-webkit-progress-bar` and `:indeterminate::-moz-progress-bar` -- always two separate rules, never comma-joined, since an engine that doesn't recognise one vendor pseudo-element drops the whole selector list `[tested]` |
+| `stepper.css` | `.rb-stepper`, `__step`, `__node`, `__label`, `--complete`, `--current` | `Stepper` | In all fourteen since #55 (closes #18). `--upcoming` is emitted by `Stepper` as the resting state and no theme declares a rule for it -- allowlisted in `contract.json` as "default state" `[tested]`; SHOULD match `[aria-current="step"]`; checked by `contract.test.mjs` against `contract.json`'s `ariaPairs`, all fourteen comply `[tested]` |
 | `muted.css` | `.rb-muted` | -- | |
 | `pre.css` | `.rb-pre` | -- | |
 | `log.css` | `.rb-log` (pairs with `.rb-pre`) | -- | |
-| `stepper.css` | `.rb-stepper`, `__step`, `__node`, `__label`, `--complete`, `--current` | `Stepper` | In all fourteen since #55 (closes #18). `--upcoming` is emitted by `Stepper` as the resting state and no theme declares a rule for it -- allowlisted in `contract.json` as "default state" `[tested]`; SHOULD match `[aria-current="step"]`; checked by `contract.test.mjs` against `contract.json`'s `ariaPairs`, all fourteen comply `[tested]` |
 
 Do not state the *count* of shared files in prose anywhere -- `design.md`
 files that said "the baseline ten" and "twelve" were both stale before #55
@@ -427,11 +427,33 @@ in turn reconciled against what `@rackbops/ui-react` emits: a test renders
 every export across a matrix of its class-adding props and asserts the emitted
 `rb-*` set equals that class set in both directions -- no emission missing from
 the contract, no contract entry unrendered
-`[tested: components/react/src/contract-classes.test.tsx, #48]`. The matrix is
-maintained by hand, so a class reachable only through a prop it does not cover
-is caught not there but by the closed-world check below, once any theme styles
-it. The CSS-only utilities (no React wrapper) stay listed in `contract.json`
-and are covered by the theme-parity check alone.
+`[tested: components/react/src/contract-classes.test.tsx, #48]`. The matrix
+(`RENDERS`) is maintained by hand, but the gap that leaves open is closed
+mechanically two ways, not left to the closed-world check below (#118): every
+static `rb-*` class literal anywhere in the component sources must be exercised
+by the matrix (a source scan), and every exported class-bearing prop union
+(Button's `variant`, the shared `SemanticVariant`) is rendered from a value
+list declared `as const satisfies readonly <Union>[]` paired with a
+compile-time exhaustiveness assertion, so widening the union without
+extending the list fails `tsc --noEmit` before any test runs
+`[tested: components/react/src/contract-classes.test.tsx, #118]`. The one
+residual is a dynamic template over a local, non-exported union -- today only
+`Stepper`'s three index-derived states -- which has no exported type to check
+exhaustiveness against; it is pinned by its own test instead of hidden. The
+source scan reads RAW source, comments included, with no comment-stripping
+step: three review rounds each found real ways a hand-rolled JS/TSX comment
+tokenizer could be defeated (deleting real code, or missing a real class),
+and a correct parser is real-compiler-API territory, which #118 exists
+specifically to avoid. The constraint this scan enforces instead needs no
+parser: a BARE quoted `rb-*` name -- the entire quoted content, nothing else
+-- counts as a class the component can emit wherever it appears in a
+non-test source file, comments included. A comment naming a class is written
+with a leading dot (`` `.rb-foo` ``), exactly as every real comment in this
+package's sources already does, so it is invisible to the scan by
+construction, not by parsing; a comment the scan flags is fixed by rewording
+it to the dotted form, never by adding parser sophistication here. The
+CSS-only utilities (no React wrapper) stay listed in `contract.json` and are
+covered by the theme-parity check alone.
 A class in the list is either styled in every theme, entered in the
 allowlist below, or -- for the three ARIA-pairing checks and the dialog-blur
 check -- listed in that check's `exempt` array (only the concrete pair's
@@ -505,8 +527,8 @@ pair and the Kenzen pair; `.rb-eyebrow` also in the studio pair; `.rb-rack`
 -- studio pair; `.rb-badge--primary`, `.rb-bg`, `.rb-progress--accent` -- the
 three ports; `.rb-chip` (+ `--selected`), `.rb-card--floating` -- summer-cloud.
 `.rb-eyebrow` is in six themes, not the shared set -- correctly filed
-under Theme-specific extras in SKILL.md, though the showcase's "Wordmark /
-Eyebrow" section still renders it without an extras label.
+under Theme-specific extras in SKILL.md, and shown in the showcase only
+under a labelled extras section (#168) `[tested: site/showcase-extras.test.mjs]`.
 
 ### 5.5 Naming
 
@@ -800,18 +822,30 @@ The showcase is the library's visual acceptance test. It MUST:
   `aria-selected` / `role="tabpanel"`, label `for`) after #91; and the Alerts
   section renders all four semantic variants, `.rb-alert--warning` included
   (#50);
-- put theme extras only in sections labelled as extras
-  (`site/index.html:341-342`, the sole "Theme extras" section), never in a
-  generic section (the wordmark and eyebrow at lines 50-54, and the studio
-  pair's `rb-btn__arrow`/`rb-card__tag` wherever they render outside that one
-  section, are still out of contract -- no tracking issue open for this;
-  needs one filed);
+- put theme extras only in sections labelled as extras (`site/index.html`'s
+  two `Theme extras — …` sections), never in a generic section -- except the
+  ports' opt-in `.rb-bg` page canvas (`:570-571`), applied to `<body>` itself
+  rather than demoed in a section, since a page background is not a
+  component `[tested: site/showcase-extras.test.mjs, #168]`;
 - read the roster from the manifest and inject fonts on switch;
 - style its own chrome (`.sc-*`) with tokens only, so it is on-theme under
   every theme (`site/index.html:9-40`);
 - demonstrate a new component in every state in the same PR that adds it;
 - be photographed: a separate `pnpm visual` job screenshots every section
-  under every theme against committed baselines `[tested: scripts/visual.mjs, #50]`. A new
+  under every theme against committed baselines `[tested: scripts/visual.mjs, #50]` --
+  sections are snapped to integer document offsets before capture, so a tile
+  depends only on its own content (#186). The visual job disables
+  `backdrop-filter` globally before every capture, because Chromium renders
+  it nondeterministically across sessions (#190) -- in practice this only
+  visibly changes the three themes whose CSS spends `backdrop-filter` on
+  something other than the dialog backdrop (`luminous-precision`,
+  `neon-butterfly`, `summer-cloud`: cards, nav rail, alerts, and/or links)
+  (every other theme either uses `backdrop-filter` only on the native
+  `<dialog>`'s `::backdrop` -- which a `#demo-dialog` element capture
+  never includes, verified 0px either way -- or, for the concrete pair,
+  never applies it at all, `styles/concrete-signal/design.md:67-69`);
+  the glass effect itself is
+  reviewed by eye, not by baseline, until a deterministic fix lands. A new
   theme's PR carries its baseline set -- that is the review artefact for
   "does it look out of place".
 
@@ -957,7 +991,7 @@ identity paragraph and the README table.
 | 38 baseline tokens + `color-scheme` per theme | `contract.test.mjs` | live |
 | `color-scheme` matches manifest | `contract.test.mjs` | live |
 | manifest / package.json / dirs / all.css agree | `contract.test.mjs` | live |
-| `index.css` imports every component file, no rules | `contract.test.mjs` | live |
+| `index.css` imports every component file, no rules, in the canonical order (structure, tokens, base, then shared components in `contract.json` key order, then extras) | `contract.test.mjs` | live (#115) |
 | Keyframes `rb-`-prefixed, unique | `contract.test.mjs` | live |
 | Bare h1-h6 / p / ul,ol property names | `base-typography.test.mjs` | live |
 | Every export type-checks under `noUncheckedSideEffectImports` | `types.test.mjs` | live |
@@ -966,6 +1000,7 @@ identity paragraph and the README table.
 | Contract as data (`contract.json`), SKILL.md generated, pair parity | `contract.test.mjs`, `pair-parity.test.mjs`, `scripts/generate-skill-table.mjs` | live (#47) |
 | Full `REQUIRED_CLASSES` parity (every shared component's full class set) + data-driven allowlist + closed-world "no undocumented class" check | `contract.test.mjs` | live (#47) |
 | Required class set derived from React emissions (emitted `rb-*` set == `contract.json`'s React-backed classes) | `components/react/src/contract-classes.test.tsx` | live (#48) |
+| Matrix-exhaustiveness gap closed: every static `rb-*` source literal exercised (scan) and every exported class-bearing union exhaustive at compile time; only a local, non-exported union (Stepper's derived states) stays a pinned residual | `components/react/src/contract-classes.test.tsx` | live (#118) |
 | Every shared component file exists per theme | `contract.test.mjs` | live (#47) |
 | Contrast ratios for the fixed token pairs (computed from `tokens.css`) | `contrast.test.mjs` | live (#49) |
 | Showcase renders full ARIA (nav `aria-current`, tab/tabpanel roles + `aria-selected`, label `for`) | showcase | live (#91) |
@@ -993,7 +1028,7 @@ identity paragraph and the README table.
 | Dialog backdrop blurs via `var(--rb-blur)` | `contract.test.mjs` | live, 12 of 14 comply; concrete pair permanently exempt (`0px` by design) (#65) |
 | `Field` / `Spinner` named props types | `index.ts` exports | live (#30) |
 | Existing docs conform to the section 11 template; SKILL.md carries adoption guidance matching section 15 | doc sweep | live (#56) |
-| Extras only in labelled showcase sections | review | still out of contract (wordmark/eyebrow, and the studio pair's `rb-btn__arrow`/`rb-card__tag`, render outside the sole "Theme extras" section) -- no tracking issue open, needs one filed |
+| Extras only in labelled showcase sections | `site/showcase-extras.test.mjs` | live (#168) |
 | `:indeterminate <progress>` styled in every theme | `contract.test.mjs` | live (#86 -- #156, #160) |
 | `.rb-stepper--upcoming` allowlisted with one wildcard row, not per-theme | `contract.test.mjs` | live (#97 -- #159) |
 | Release: one range walk, one tag list, one-regex changelog classifier | `release.test.mjs` | live (#88 PR-A -- #161) |
