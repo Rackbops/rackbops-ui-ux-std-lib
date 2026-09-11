@@ -14,8 +14,9 @@ export interface DataTableColumn<T> {
    * instead of each auto-sizing from its own content (kenzen#70). Columns without a width share
    * the remaining space. An empty string is treated as no width, not a zero-width column.
    * Combined with `sticky`, `table-layout: fixed` also stops the table from growing past its
-   * scroll wrapper, so content that needs horizontal scrolling under `sticky` alone will instead
-   * wrap or clip once a width is declared -- pick column widths wide enough for their content. */
+   * scroll wrapper, so content that needed horizontal scrolling under `sticky` alone will instead
+   * wrap once a width is declared (no theme sets `white-space: nowrap` or hides overflow on a
+   * cell, so it never clips) -- pick column widths wide enough for their content. */
   width?: string;
   /** Omit to make the column unsortable. Returning a number sorts numerically; a string sorts
    * lexicographically (case-insensitive). */

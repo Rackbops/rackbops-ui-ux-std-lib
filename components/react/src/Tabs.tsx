@@ -58,12 +58,13 @@ export const Tabs = forwardRef<HTMLDivElement, TabsProps>(function Tabs(
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
   const onKeyDown = (e: KeyboardEvent<HTMLButtonElement>) => {
-    // Index from the tab that received the event -- which already has DOM focus, since a
-    // previous keypress moves focus imperatively below regardless of selection -- rather than
-    // from `activeId`. A controlled parent that commits the new activeId asynchronously (a
-    // router transition, a debounce) would otherwise leave `activeId` unchanged between
-    // keystrokes, so every consecutive press would recompute the same "next" tab from the same
-    // stale index instead of advancing (#169 review round 1, MAJOR finding).
+    // Index from the tab that received the event, not from `activeId`: a keydown is delivered
+    // to document.activeElement, and this handler is bound to the <button> itself, so
+    // e.currentTarget IS the focused tab on every press, the first included -- regardless of
+    // whether selection and focus currently agree. A controlled parent that commits the new
+    // activeId asynchronously (a router transition, a debounce) would otherwise leave `activeId`
+    // unchanged between keystrokes, so every consecutive press would recompute the same "next"
+    // tab from the same stale index instead of advancing (#169 review round 1, MAJOR finding).
     const i = tabRefs.current.indexOf(e.currentTarget);
     let next = i;
     if (e.key === "ArrowRight" || e.key === "ArrowDown") next = (i + 1) % items.length;
