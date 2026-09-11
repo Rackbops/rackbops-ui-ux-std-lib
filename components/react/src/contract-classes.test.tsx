@@ -48,7 +48,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readdirSync, readFileSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { basename, dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { ReactElement } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
@@ -272,9 +272,38 @@ function scanSources() {
   const literals = new Set<string>();
   const templates: Record<string, string> = {};
   for (const f of SOURCE_FILES) {
-    const src = readFileSync(join(SRC, f), "utf-8");
+    // Strip /* */ block comments (JSDoc included) before scanning, so a
+    // documentary mention of an rb-* class -- a real pattern already used
+    // elsewhere in this package, e.g. DataTable.tsx's file-header comment --
+    // can't manufacture a false "must be rendered" requirement (round-1
+    // review finding on #118). Single-line `//` comments are left alone: a
+    // naive strip risks truncating a real string that happens to contain
+    // `//` (a URL) on the same line as live code, which would be a silent
+    // MISS -- worse than this scan's remaining, noisier false-positive risk.
+    const src = readFileSync(join(SRC, f), "utf-8").replace(/\/\*[\s\S]*?\*\//g, "");
     for (const m of src.matchAll(/(["'`])(rb-[\w-]+)\1/g)) literals.add(m[2]);
-    for (const m of src.matchAll(/`(rb-[\w-]+)\$\{([^}]+)\}`/g)) templates[m[1]] = m[2].trim();
+    // Every backtick literal that mentions an rb-* class next to an
+    // interpolation must match the STRICT single-interpolation-at-the-end
+    // shape exactly -- checked against the whole literal, not found via a
+    // regex that simply skips anything else. A trailing literal after the
+    // interpolation (`` `rb-card--${tone}-tint` ``) used to be invisible to
+    // both this scan and the static-literal one above -- a fully orphaned,
+    // unstyled class shipping with neither test noticing (round-1 review
+    // finding on #118, the same shape #118 itself exists to close). Failing
+    // loudly here, rather than silently skipping, is deliberate: a shape the
+    // scan can't enumerate must block until it is rewritten or the scan is
+    // extended for it -- mirroring the original compiler-API design's
+    // rejection of a non-string-literal-union interpolation.
+    for (const m of src.matchAll(/`([^`]*)`/g)) {
+      const content = m[1];
+      if (!/rb-[\w-]*\$\{/.test(content)) continue;
+      const strict = content.match(/^(rb-[\w-]+)\$\{([^}]+)\}$/);
+      assert.ok(
+        strict,
+        `${basename(f)}: dynamic template \`${content}\` uses an rb-* class in a shape this scan can't enumerate (only a plain "rb-<prefix>\${expr}" template, nothing before or after, is supported) -- rewrite it to that shape or extend scanSources()`,
+      );
+      templates[strict[1]] = strict[2].trim();
+    }
   }
   return { literals, templates };
 }

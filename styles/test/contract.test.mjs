@@ -112,14 +112,27 @@ function stripGuard(sel) {
  * `:where(html[data-rb-style="t"]) body`, which scope the canvas element
  * itself. A bare attribute guard (`[data-rb-style="x"] .rb-btn`, specificity
  * 0,2,0) contains the same substring and used to pass -- #42's overflow,
- * fixed in #115. */
+ * fixed in #115. The root tier checks EXACT equality against the two admitted
+ * forms, never a substring: an early substring check accepted
+ * `:where(:not([data-rb-style="x"]))`, which means "every element NOT themed
+ * x" -- the opposite of a guard -- because the attribute text still appears
+ * inside it (round-1 review finding on #115). */
 function whereGuardDescendant(theme) {
   return `:where([data-rb-style="${theme}"], [data-rb-style="${theme}"] *)`;
 }
 function assertWhereGuarded(sel, theme, label, { rootScope = false } = {}) {
   const descendant = sel.startsWith(whereGuardDescendant(theme));
-  const leading = sel.match(/^:where\(([^)]*)\)/);
-  const rootForm = rootScope && leading !== null && leading[1].includes(`[data-rb-style="${theme}"]`);
+  // Root tier: the LEADING :where(...) content and whatever follows its closing
+  // paren must EXACTLY equal one of the two admitted root forms -- never a
+  // substring check. `leading[1].includes(...)` used to accept
+  // `:where(:not([data-rb-style="x"]))`, whose actual meaning is "every
+  // element NOT themed x", the exact opposite of a scope guard (#115 review).
+  const leading = sel.match(/^:where\(([^)]*)\)(.*)$/);
+  const rootAttr = `[data-rb-style="${theme}"]`;
+  const rootForm =
+    rootScope &&
+    leading !== null &&
+    (leading[1] === rootAttr || (leading[1] === `html${rootAttr}` && leading[2] === " body"));
   assert.ok(
     descendant || rootForm,
     `${label}: selector is not guarded by the zero-specificity :where() form${rootScope ? "" : " (component files use the exact descendant form)"}: ${sel}`,

@@ -141,7 +141,9 @@ Epic #179. PR B closes #115 (two `contract.test.mjs` guards that accept what the
    - **Root-scope files (`rootScope: true`, applied at site `:290` when the file is `tokens.css` or `base.css`):** the selector must either satisfy the tier above or begin with a `:where(...)` group that contains `[data-rb-style="<theme>"]` -- which admits the two root forms and nothing bare.
    A bare-attribute guard (`[data-rb-style="x"] .rb-btn`, specificity 0,2,0) fails both tiers; `:where([data-rb-style="x"]) .rb-btn` fails the component tier (it never matches the canvas element itself and is not the repo's form). `stripGuard` (`:98-101`) stays as the helper the nesting check uses; its `^:where\([^)]*\)` regex is the same "leading `:where`" notion.
 2. **#115 import order: a canonical order, not just a set.** Verified across all fourteen `index.css` today: three different orderings (arcane/kenzen pairs and the studio pair start with `button`; the three ports and the four originals start with `card link nav-rail button`; mono-field is alphabetical). Cross-file class references among component sheets (amended 2026-09-11 -- the orchestrator's first scan named only one): there are **four**, each a file referencing a block another file owns per `contract.json`'s `components` -- `nav-rail.css` -> `.rb-link` (owned by `link`), `table.css` -> `.rb-table` (owned by `data-table`, which lists `rb-table` and its `__group-row`/`__sort`/`__sort-icon`/`-scroll` elements; `table` owns only `rb-table--interactive`), `log.css` -> `.rb-pre` (owned by `pre`), `tabstrip.css` -> `.rb-tabs` (owned by `tabs`). Every one of the fourteen current orders already imports the owner before the referrer in all four cases, and the canonical order below does too (`link` < `nav-rail`, `data-table` < `table`, `pre` < `log`, `tabs` < `tabstrip`), so no relative order that could matter flips. Whether any of the four depends on cascade order *at all* is not decidable from source (equal `:where()` specificity plus overlapping targets is what would make it matter); that is exactly what the zero-diff `pnpm visual` run settles -- it is the proof, not a formality. `card.css`'s apparent `.rb-btn` hits were its own `.rb-card` selectors. The canonical order is: `../_shared/structure.css`, `./tokens.css`, `./base.css`, then the shared component files in **`contract.json`'s `components` key order**, then that theme's extras files in any order. To make "utilities last" true, `stepper` moves before `muted` in `contract.json` (a surgical cut-and-paste of its five-line block from after `log` to after `progress`); the SKILL.md table regenerates and STANDARD.md 5.1's `stepper.css` row (`:415`) moves above `muted.css` (`:412`) to match. Result: every theme's shared-component import order becomes `button card link nav-rail form badge alert dialog tabs tabstrip data-table table progress stepper muted pre log`.
-3. **#118: a compiler-backed source scan, not a hand-maintained list.** A new test in `contract-classes.test.tsx` loads the package's real `tsconfig.json` through the TypeScript API (already a devDependency), walks every non-test source file, and collects (a) every string literal or no-substitution template matching `^rb-[\w-]+$`, and (b) for every template expression whose head matches `^rb-[\w-]+$` and whose single interpolated expression's *checked type* is a union of string literals, `head + literal` for each member. Every collected class must be in `EMITTED`. This is the issue's option 2, cheaper than it sounds because `checker.getTypeAtLocation` on the interpolated identifier returns the *narrowed* type -- `Button.tsx:30`'s `variant !== "default" && \`rb-btn--${variant}\`` yields `primary|accent|danger|ghost` (no phantom `rb-btn--default`), and `Stepper.tsx:53`'s local `state` yields its three literals with no prop involved. A template whose expression is not a literal union fails the test by name, so a future `rb-${anything}` cannot slip past as "unscannable".
+3. **#118: a source-literal scan plus type-level exhaustiveness -- no compiler API.** (Amended 2026-09-11 after Subordinate #2 hit the plan's own stop condition: `typescript@7.0.2`, which the lockfile pins and CI installs, no longer ships the classic compiler API -- `import ts from "typescript"` resolves to a version stub, and the monolithic `lib/typescript.js` is gone; the real API lives only under `unstable/*` subpaths with a different, class-based shape. Building the guard on an unstable API, or pinning a second TypeScript just for one test, are both worse than the design below, which needs neither.) Two mechanisms, both in `contract-classes.test.tsx`:
+   - **(a) Static literals, by regex.** Every complete `rb-*` string or template literal in the non-test sources (`"rb-…"`, `'rb-…'`, `` `rb-…` `` with no `${`) must be in `EMITTED`. This catches the confirmed #48 counterexample (`rb-btn--lg` behind a `size` value the matrix never renders) and any forgotten static class. Alongside it, the set of **dynamic templates** in the sources (`` `rb-<prefix>${<expr>}` ``) must deep-equal a registry in the test -- today `rb-btn--`/`variant`, `rb-badge--`/`variant`, `rb-alert--`/`variant`, `rb-stepper--`/`state` -- so a new dynamic template fails the test until it is registered *with* a mechanism from (b).
+   - **(b) Exported unions, by the type checker `tsc --noEmit` already runs** (the package's `test` script compiles the test files first, so a type error IS a test failure). For each registered template whose expression is an exported prop union, the matrix's value list is declared `as const satisfies readonly <Union>[]` **and** an `Exclude<<Union>, (typeof LIST)[number]>` is asserted `never` -- so widening `ButtonProps["variant"]` with `"outline"` fails compilation until `"outline"` is added to the list, and adding it makes the matrix render it, at which point the existing reconciliation test rejects `rb-btn--outline` as emitted-but-not-in-contract. `SemanticVariant` (Badge, Alert) gets the same treatment. `Stepper`'s `state` is a local, non-exported union derived from index arithmetic (`Stepper.tsx:53`) -- the one residual the type route cannot reach; the test pins that the Stepper matrix entry renders all three states (`0 < current < steps.length - 1`) and STANDARD.md names this residual honestly instead of over-claiming.
 4. **No theme CSS rule changes, no `contract.json` class changes, no visual change.** The only `styles/` edits are the fourteen `index.css` reorders and the `contract.json` key move. `pnpm visual` must be byte-clean.
 
 ## Build order (one commit per step, Conventional Commits)
@@ -191,64 +193,79 @@ Unit-level pins, in the same file, as one test `guard form: component tier accep
 - Find the STANDARD.md sentence that describes what `index.css` imports (grep `index.css` in STANDARD.md; it is in section 6 or the 5.1 preamble) and state the canonical order there with a `[tested: contract.test.mjs, #115]` marker.
 - `scripts/new-theme.mjs` copies `index.css` from the `--from` theme, so a new theme inherits the order; no change there. Run `node --test scripts/new-theme.test.mjs` to confirm.
 
-### 4. #118 source scan -- `test(react): scan component sources for every rb-* literal and literal-union template, and require the matrix to emit them`
+### 4. #118 -- `test(react): close the matrix gap with a source-literal scan and type-level exhaustiveness for class-bearing prop unions`
 
-In `components/react/src/contract-classes.test.tsx`, after the `EMITTED` derivation (`:223-226`):
+(Amended 2026-09-11; the original compiler-API version is unimplementable on `typescript@7.0.2`, see decision 3.) In `components/react/src/contract-classes.test.tsx`:
+
+**(a) The matrix's value lists become typed and exhaustive.** Replace the four hard-coded Button variant entries (`:69-72`) and the `SEMANTIC` constant (`:64`) with:
 
 ```tsx
-import ts from "typescript";
-import { basename, dirname, join } from "node:path";
+import type { ButtonProps, SemanticVariant } from "./index.js";
 
-// #118: close the matrix gap. Every rb-* class a component can emit is either a
-// literal in its source or `rb-<block>--${x}` where x is a string-literal union;
-// collect both from the real TypeScript program and require the matrix to have
-// emitted each one. A class that exists only in source -- the #48 counterexample,
-// `rb-btn--lg` behind a size the matrix never renders -- fails here, before it
-// can reach a consumer unstyled.
-function sourceClassSet(): Set<string> {
-  const srcDir = dirname(fileURLToPath(import.meta.url));
-  const configPath = join(srcDir, "..", "tsconfig.json");
-  const cfg = ts.readConfigFile(configPath, ts.sys.readFile);
-  const parsed = ts.parseJsonConfigFileContent(cfg.config, ts.sys, dirname(configPath));
-  const sources = parsed.fileNames.filter(
-    (f) => !/\.test\.tsx?$/.test(f) && basename(f) !== "test-dom.ts",
-  );
-  const program = ts.createProgram(sources, parsed.options);
-  const checker = program.getTypeChecker();
-  const out = new Set<string>();
-  for (const sf of program.getSourceFiles()) {
-    if (!sources.includes(sf.fileName)) continue;
-    const visit = (node: ts.Node): void => {
-      if ((ts.isStringLiteral(node) || ts.isNoSubstitutionTemplateLiteral(node)) && /^rb-[\w-]+$/.test(node.text)) {
-        out.add(node.text);
-      } else if (ts.isTemplateExpression(node) && /^rb-[\w-]+$/.test(node.head.text)) {
-        assert.equal(node.templateSpans.length, 1, `${basename(sf.fileName)}: rb-* template with more than one interpolation`);
-        const span = node.templateSpans[0];
-        assert.equal(span.literal.text, "", `${basename(sf.fileName)}: rb-* template with a trailing literal`);
-        const type = checker.getTypeAtLocation(span.expression);
-        const members = type.isUnion() ? type.types : [type];
-        assert.ok(
-          members.length > 0 && members.every((m) => m.isStringLiteral()),
-          `${basename(sf.fileName)}: ${node.head.text}\${...} interpolates ${checker.typeToString(type)}, not a string-literal union -- the scan cannot enumerate it`,
-        );
-        for (const m of members) if (m.isStringLiteral()) out.add(node.head.text + m.value);
-      }
-      ts.forEachChild(node, visit);
-    };
-    visit(sf);
+/** Compile-time exhaustiveness: `Missing` must be `never`, i.e. every member of the
+ * union appears in the list. Widening the union without extending the list fails
+ * `tsc --noEmit`, which the package test script runs before any test (#118). */
+type AssertNever<T extends never> = T;
+
+type ButtonVariant = Exclude<NonNullable<ButtonProps["variant"]>, "default">;
+const BUTTON_VARIANTS = ["primary", "accent", "danger", "ghost"] as const satisfies readonly ButtonVariant[];
+type _ButtonVariantsExhaustive = AssertNever<Exclude<ButtonVariant, (typeof BUTTON_VARIANTS)[number]>>;
+
+const SEMANTIC = ["info", "success", "warning", "danger"] as const satisfies readonly SemanticVariant[];
+type _SemanticExhaustive = AssertNever<Exclude<SemanticVariant, (typeof SEMANTIC)[number]>>;
+```
+
+and `...BUTTON_VARIANTS.map((v) => ({ component: "Button", el: <UI.Button variant={v}>Go</UI.Button> }))` in `RENDERS`. (If the `satisfies`/`AssertNever` pair needs a different spelling under TS 7's checker, keep the *property* -- a widened union must fail compilation -- and say what changed.)
+
+**(b) The source scan, plain `node:fs` + regex, after the `EMITTED` derivation (`:223-226`):**
+
+```tsx
+import { readdirSync, readFileSync } from "node:fs";
+import { dirname, join } from "node:path";
+
+// #118: every static rb-* class in the component sources must be exercised by the
+// matrix (the #48 counterexample -- `rb-btn--lg` behind a size value RENDERS never
+// renders -- fails here), and every dynamic `rb-…${x}` template must be registered
+// with the mechanism that keeps its union exhaustive (see the typed lists above).
+const SRC = dirname(fileURLToPath(import.meta.url));
+const SOURCE_FILES = readdirSync(SRC).filter((f) => /\.tsx?$/.test(f) && !/\.test\.tsx?$/.test(f) && f !== "test-dom.ts");
+const DYNAMIC_TEMPLATES: Record<string, string> = {
+  "rb-btn--": "variant",     // Button: exported union, exhaustive via BUTTON_VARIANTS
+  "rb-badge--": "variant",   // Badge: SemanticVariant, exhaustive via SEMANTIC
+  "rb-alert--": "variant",   // Alert: same
+  "rb-stepper--": "state",   // Stepper: local union derived from index arithmetic -- the residual; all three states rendered, asserted below
+};
+
+function scanSources() {
+  const literals = new Set<string>();
+  const templates: Record<string, string> = {};
+  for (const f of SOURCE_FILES) {
+    const src = readFileSync(join(SRC, f), "utf-8");
+    for (const m of src.matchAll(/(["'`])(rb-[\w-]+)\1/g)) literals.add(m[2]);
+    for (const m of src.matchAll(/`(rb-[\w-]+)\$\{([^}]+)\}`/g)) templates[m[1]] = m[2].trim();
   }
-  return out;
+  return { literals, templates };
 }
 
-test("every rb-* class reachable from the component sources is emitted by the render matrix (#118)", () => {
-  const unexercised = [...sourceClassSet()].filter((c) => !EMITTED.has(c)).sort();
+test("every static rb-* class literal in the component sources is emitted by the render matrix (#118)", () => {
+  const { literals } = scanSources();
+  const unexercised = [...literals].filter((c) => !EMITTED.has(c)).sort();
   assert.deepEqual(unexercised, [], `in source but never rendered by RENDERS: ${unexercised.join(", ")} -- add the prop value to the matrix`);
+});
+
+test("every dynamic rb-* template in the sources is registered with an exhaustiveness mechanism (#118)", () => {
+  const { templates } = scanSources();
+  assert.deepEqual(templates, DYNAMIC_TEMPLATES, "a new `rb-…${x}` template must be registered here together with a typed, exhaustive value list for its union");
+});
+
+test("the Stepper matrix entry renders all three derived states (#118 residual)", () => {
+  for (const s of ["complete", "current", "upcoming"]) assert.ok(EMITTED.has(`rb-stepper--${s}`), `rb-stepper--${s} not emitted`);
 });
 ```
 
-Then rewrite the file header (`:21-27`) and STANDARD.md 5.2 (`:430-434`): the residual gap is closed by the scan; the closed-world check remains the downstream guard for CSS. Update the status row for #48 (`:958`) or add a row for #118 beside it. Expected on a clean tree: the test passes with no matrix change (every literal and union member today is already rendered -- if one is not, that is a finding: report it, then add the matrix entry).
+Check the regexes against the real sources before trusting them: `Button.tsx:30` is `` `rb-btn--${variant}` `` (registered), `:31` `"rb-btn--sm"` (literal), `feedback.tsx:36/:62`, `Stepper.tsx:57`; `DataTable.tsx:153/:164/:205`, `Dialog.tsx:64-72`, `Tabs.tsx:72`, `Tabstrip.tsx:87/:91`, `NavLink.tsx:19`, `Card.tsx:21` are all literals. Expected on a clean tree: both scans pass with no matrix change; if a literal is unexercised, that is a finding -- report it, then add the matrix entry.
 
-Note `tsx` runs the test file; `import ts from "typescript"` is the CJS default import and works under it. The program load costs a couple of seconds; keep it inside the one test, not at module top level, so the other tests' timing is unchanged.
+Then rewrite the file header (`:21-27`) and STANDARD.md 5.2 (`:430-434`): the matrix gap is closed for static literals (scan) and for exported class-bearing unions (compile-time exhaustiveness); the one residual is a template over a local, non-exported union (today only `Stepper`'s three derived states, all rendered) -- named, not hidden. Update the status row for #48 (`:958`) or add a row for #118 beside it.
 
 ## Mutation guards (each must turn the suite red; paste one failing assertion per row)
 
@@ -261,9 +278,11 @@ Note `tsx` runs the test file; `import ts from "typescript"` is the CJS default 
 | #115 order | swap `card` and `button` in one theme's `index.css` | that theme's `index.css imports ... in contract order` |
 | #115 order, prefix | move `base` above `tokens` in one `index.css` | same test (`names[1] === "base"` clause) |
 | #115 stepper key | put `stepper` back after `log` in `contract.json` | fourteen order failures **and** `generate-skill-table --check` |
-| #118 static literal | in `Button.tsx`, widen `size` to `"sm" \| "md" \| "lg"` and add `size === "lg" && "rb-btn--lg"` | `every rb-* class reachable ... (#118)` names `rb-btn--lg` (the #48 counterexample, reproduced) |
-| #118 union member | add `"outline"` to `ButtonProps.variant` with no `RENDERS` entry | same test names `rb-btn--outline` |
-| #118 non-enumerable template | change `rb-stepper--${state}` to `rb-stepper--${String(state)}` | same test fails with the "not a string-literal union" message |
+| #118 static literal | in `Button.tsx`, widen `size` to `"sm" \| "md" \| "lg"` and add `size === "lg" && "rb-btn--lg"` | `every static rb-* class literal ... (#118)` names `rb-btn--lg` (the #48 counterexample, reproduced) |
+| #118 widened union | add `"outline"` to `ButtonProps.variant` and change nothing else | `pnpm --filter @rackbops/ui-react test` fails at `tsc --noEmit` on `_ButtonVariantsExhaustive` (paste the TS error) |
+| #118 widened union, list extended | additionally add `"outline"` to `BUTTON_VARIANTS` | the matrix now renders it and the existing `React emits no rb-* class outside contract.json's React-backed set` names `rb-btn--outline` |
+| #118 new dynamic template | in `Card.tsx`, add `` tone && `rb-card--${tone}` `` with a `tone?: "a" \| "b"` prop | `every dynamic rb-* template ... is registered` (deepEqual shows the unregistered `rb-card--`) |
+| #118 residual pinned | change the Stepper matrix entry to `current={0}` | `the Stepper matrix entry renders all three derived states` (`rb-stepper--complete` missing) |
 
 ## Acceptance to execute and paste
 
@@ -271,7 +290,7 @@ Note `tsx` runs the test file; `import ts from "typescript"` is the CJS default 
 2. `node -e "console.log(Object.keys(require('./styles/contract.json').components).join(' '))"` -> `... progress stepper muted pre log`; `node scripts/generate-skill-table.mjs --check` clean; paste the SKILL.md rows around `stepper`.
 3. `git diff --stat main -- styles/*/index.css` shows exactly fourteen files; `git diff main -- styles/*/components styles/*/tokens.css styles/*/base.css` is **empty**.
 4. `pnpm visual` green with **zero** baseline changes (no `[gen-baselines]` commit, no `update-visual-baselines` dispatch) -- paste the CI job link. A diff here is a finding (a cross-file cascade the analysis missed), not something to regenerate over.
-5. `pnpm --filter @rackbops/ui-react test` green with the #118 test visible; paste its runtime.
+5. `pnpm --filter @rackbops/ui-react test` green with the three #118 tests visible; paste `grep -n 'satisfies readonly\|AssertNever' components/react/src/contract-classes.test.tsx` to show the typed lists are in place.
 6. `grep -n 'residual' components/react/src/contract-classes.test.tsx STANDARD.md` -> no remaining claim that the gap is open; paste the rewritten STANDARD.md 5.2 sentence.
 7. The mutation table, one pasted failure per row.
 8. `pnpm test` (root) and `pnpm build` green.
@@ -284,6 +303,6 @@ On `main`: a `[data-rb-style="x"] .rb-btn` descendant guard fails the contract t
 
 - Read #115, #118 and #179 in full, including comments, before touching anything.
 - Own worktree from `origin/main` (fetch first); never `git stash`; `git -C`, never `cd && git`; no force-push.
-- Stop conditions -- message the orchestrator, do not resolve yourself: any theme's selector that is NOT already in the exact `:where(...)` form once the helper lands (means the analysis missed a form); any `pnpm visual` diff after the reorder; the #118 scan reporting a class on a clean tree; `typescript` failing to load the package tsconfig under `tsx`.
+- Stop conditions -- message the orchestrator, do not resolve yourself: any theme's selector that is NOT already in the exact `:where(...)` form once the helper lands (means the analysis missed a form); any `pnpm visual` diff after the reorder; the #118 scan reporting a class on a clean tree; the `satisfies` + `AssertNever` pair not producing a compile error when a union is widened (then the exhaustiveness property is unmet -- stop, do not ship a guard that cannot fail). (The original "typescript failing to load under tsx" condition was hit on 2026-09-11 and resolved by redesigning step 4 to need no compiler API.) `pnpm visual` run locally on Windows is NOT valid evidence for acceptance bullet 4 (a clean `origin/main` also shows every tile regressed there -- different rendering environment); the branch's CI `visual` job is the proof, as the bullet already says.
 - Run the review gate yourself (two read-only adversarial agents, different lenses: correctness/failure modes on the AST scan and the guard regex vs. claims-vs-code walking the acceptance list and the STANDARD.md sentences), up to four rounds, then report the round count and findings rather than starting a fifth.
 - Report deviations as they arise; do not merge.
