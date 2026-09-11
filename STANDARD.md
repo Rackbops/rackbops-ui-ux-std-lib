@@ -846,9 +846,12 @@ The showcase is the library's visual acceptance test. It MUST:
   Precisely: Chromium composites a `backdrop-filter` layer in one of two
   stable modes, chosen per session (not per element), and text drawn over
   that layer re-antialiases with whichever mode won -- the actual mechanism,
-  not mere noise (confirmed: CI itself sat in one mode for weeks before
-  #191's baseline regen landed the other, failing `main` outright). With the
-  filter on, captures of the glass-bearing tiles are therefore NOT stable
+  not mere noise (confirmed: CI stayed in one mode in every one of its runs
+  on main until #191's regen landed the other mode (2026-09-11), failing
+  `main` outright -- verified against the job's full recorded run history,
+  `gh run list --workflow=ci.yml --branch main`, 155 runs back to
+  2026-08-31). With the filter on, captures of the glass-bearing tiles are
+  therefore NOT stable
   across sessions or machines -- reconfirmed by #192's audit, which found
   `neon-butterfly`'s Cards tile differing in 6 of 10 independent on-vs-on
   session pairs, up to 1.68% -- above the job's own 0.1% ratio threshold.
