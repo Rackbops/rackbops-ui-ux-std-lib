@@ -401,7 +401,7 @@ extras), so an undocumented class fails too]`. The React column is the
 | `link.css` | `.rb-link`, `--active` | `NavLink` | SHOULD also match `[aria-current="page"]`; checked by `contract.test.mjs` against `contract.json`'s `ariaPairs`, all fourteen comply `[tested]` |
 | `nav-rail.css` | `.rb-nav-rail` | `NavRail` | Composes `.rb-link`; owns no active convention |
 | `form.css` | `.rb-field`, `.rb-label`, `.rb-input`, `.rb-textarea`, `.rb-select`, `.rb-choice`, `.rb-checkbox`, `.rb-radio`, `.rb-switch` | `Field`, `Label`, `Input`, `Textarea`, `Select`, `Checkbox`, `Radio`, `Switch` | Choice controls SHOULD use `accent-color` (seven themes do; the concrete pair draws checked states as a flat accent fill by design, `styles/concrete-signal/design.md:123-124`; the ports hand-style them) |
-| `badge.css` | `.rb-badge`, `--info`, `--success`, `--warning`, `--danger` | `Badge` | Status text is never colour-only: the label carries the meaning |
+| `badge.css` | `.rb-badge`, `--md`, `--info`, `--success`, `--warning`, `--danger` | `Badge` | Status text is never colour-only: the label carries the meaning. `--md` (the `size="md"` prop) lifts the chip to `--rb-text-sm` with real pill padding for a table row; the default `sm` chip is unchanged (#206) |
 | `alert.css` | `.rb-alert`, `__title`, `--info`, `--success`, `--warning`, `--danger` | `Alert` | |
 | `dialog.css` | `.rb-dialog`, `__title`, `__actions`; `__body` | `Dialog` | `__body` is a no-op in four themes that pad `.rb-dialog` instead -- sanctioned by #42's verdict, allowlisted in `contract.json` (section 5.3) `[tested]` |
 | `tabs.css` | `.rb-tabs`, `.rb-tab`, `.rb-tab--active`, `.rb-tabpanel` | `Tabs` | SHOULD pair `--active` with `[aria-selected="true"]`; checked by `contract.test.mjs` against `contract.json`'s `ariaPairs`, all fourteen comply `[tested]` |
@@ -541,7 +541,8 @@ and shown in the showcase only under a labelled extras section (#168)
   this rule and is in a contract test; it stays, but new modifiers follow
   `--<mod>`.
 - Semantic modifiers use exactly the four semantic names. Size modifiers use
-  `--sm`. State modifiers are `--active`, `--interactive`, `--raised`,
+  `--sm` (Button: a compact chip) and `--md` (Badge: a row-text-sized pill).
+  State modifiers are `--active`, `--interactive`, `--raised`,
   `--complete` / `--current` / `--upcoming`.
 - Where an ARIA state expresses the same thing, the CSS SHOULD match both
   (`.rb-tab--active, .rb-tab[aria-selected="true"]`), so markup that is

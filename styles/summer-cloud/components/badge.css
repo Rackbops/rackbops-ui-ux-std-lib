@@ -15,6 +15,10 @@
   letter-spacing: var(--rb-label-tracking);
   box-shadow: 0 1px 2px rgba(93, 43, 255, 0.06);
 }
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-badge--md {
+  font-size: var(--rb-text-sm);
+  padding: var(--rb-space-1) var(--rb-space-3);
+}
 :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-badge--primary { background: var(--rb-accent);  border-color: transparent; color: var(--rb-accent-fg); }
 :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-badge--info    { background: var(--rb-info);     border-color: transparent; color: #004261; }
 :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-badge--success { background: var(--rb-success);  border-color: transparent; color: #0a2e0a; }

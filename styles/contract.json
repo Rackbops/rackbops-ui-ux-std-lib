@@ -41,8 +41,8 @@
     },
     "badge": {
       "react": "Badge",
-      "classes": ["rb-badge", "rb-badge--info", "rb-badge--success", "rb-badge--warning", "rb-badge--danger"],
-      "notes": "semantic variants"
+      "classes": ["rb-badge", "rb-badge--md", "rb-badge--info", "rb-badge--success", "rb-badge--warning", "rb-badge--danger"],
+      "notes": "semantic variants; --md is a row-text-sized pill (Badge size prop, #206)"
     },
     "alert": {
       "react": "Alert",

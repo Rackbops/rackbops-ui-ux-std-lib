@@ -17,6 +17,10 @@
 /* Semantic variants: a tint fill + tinted border carry the hue, while the label
  * uses --rb-text so it clears WCAG AA against the tint (raw semantic colours as
  * small text fall short of AA). */
+:where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-badge--md {
+  font-size: var(--rb-text-sm);
+  padding: var(--rb-space-1) var(--rb-space-3);
+}
 :where([data-rb-style="rackbops-noir"], [data-rb-style="rackbops-noir"] *).rb-badge--info {
   background: color-mix(in srgb, var(--rb-info) 14%, var(--rb-surface));
   border-color: color-mix(in srgb, var(--rb-info) 45%, var(--rb-border));

@@ -10,6 +10,10 @@
   font-weight: var(--rb-font-weight-bold);
   letter-spacing: var(--rb-label-tracking);
 }
+:where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-badge--md {
+  font-size: var(--rb-text-sm);
+  padding: var(--rb-space-1) var(--rb-space-3);
+}
 :where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-badge--primary { border-color: var(--rb-accent-border); color: var(--rb-accent); }
 :where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-badge--info    { border-color: var(--rb-info);    color: var(--rb-info); }
 :where([data-rb-style="neon-butterfly"], [data-rb-style="neon-butterfly"] *).rb-badge--success { border-color: var(--rb-success); color: var(--rb-success); }

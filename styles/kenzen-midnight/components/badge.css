@@ -15,6 +15,10 @@
   background: var(--rb-accent-wash);
   color: var(--rb-accent);
 }
+:where([data-rb-style="kenzen-midnight"], [data-rb-style="kenzen-midnight"] *).rb-badge--md {
+  font-size: var(--rb-text-sm);
+  padding: var(--rb-space-1) var(--rb-space-3);
+}
 :where([data-rb-style="kenzen-midnight"], [data-rb-style="kenzen-midnight"] *).rb-badge--info {
   background: color-mix(in srgb, var(--rb-info) 16%, transparent);
   color: var(--rb-info);

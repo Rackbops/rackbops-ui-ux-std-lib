@@ -12,6 +12,10 @@
   font-weight: var(--rb-font-weight-medium);
   letter-spacing: var(--rb-label-tracking);
 }
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-badge--md {
+  font-size: var(--rb-text-sm);
+  padding: var(--rb-space-1) var(--rb-space-3);
+}
 :where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-badge--primary { background: rgba(198, 165, 255, 0.15); color: var(--rb-accent); }
 :where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-badge--info    { background: rgba(131, 183, 255, 0.15); color: var(--rb-info); }
 :where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-badge--success { background: rgba(71, 227, 78, 0.15);   color: var(--rb-success); }

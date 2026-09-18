@@ -139,6 +139,7 @@ const RENDERS: Array<{ component: string; el: ReactElement }> = [
   { component: "Switch", el: <UI.Switch label="On" /> },
   // Badge + Alert, per semantic variant (Alert also with a title).
   { component: "Badge", el: <UI.Badge>b</UI.Badge> },
+  { component: "Badge", el: <UI.Badge size="md">b</UI.Badge> },
   ...SEMANTIC.map((v) => ({ component: "Badge", el: <UI.Badge variant={v}>b</UI.Badge> })),
   { component: "Alert", el: <UI.Alert>a</UI.Alert> },
   ...SEMANTIC.map((v) => ({
