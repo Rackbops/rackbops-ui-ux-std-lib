@@ -107,7 +107,7 @@ This table is generated from `styles/contract.json` — edit that file, then run
 | `NavLink` | `.rb-link` | active prop; also matches [aria-current="page"] in every theme |
 | `NavRail` | `.rb-nav-rail` | composes .rb-link; owns no active convention; per-item onClick/target/rel/aria-*/data-*/className forward to that item's NavLink (#84) |
 | `Field`/`Label`/`Input`/`Textarea`/`Select`/`Checkbox`/`Radio`/`Switch` | `.rb-field` | pair with Field/Label; choice controls wrap in .rb-choice; className/rest still target the control itself -- use wrapperClassName/wrapperStyle to style the .rb-choice row (#84) |
-| `Badge` | `.rb-badge` | semantic variants |
+| `Badge` | `.rb-badge` | semantic variants; --md is a row-text-sized pill (Badge size prop, #206) |
 | `Alert` | `.rb-alert` | variant + optional title (renders as a heading, replacing the native title tooltip attribute) |
 | `Dialog` | `.rb-dialog` | native <dialog>; required open + onClose (onClose keeps the parent in sync after a native Escape close, so it must set open=false to reopen); optional actions; __body is a documented no-op in four themes (section 5.3) |
 | `Tabs` | `.rb-tabs` | items: {id, label, content}[]; --active also matches [aria-selected="true"] in every theme; className/rest forward onto the tablist element -- ref targets the outer structural wrapper spanning tabs+panels (#84); optional controlled activeId/onChange pair mirroring NavRail, uncontrolled via defaultId when activeId is omitted (#169) |

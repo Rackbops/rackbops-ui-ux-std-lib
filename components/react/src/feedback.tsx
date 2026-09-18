@@ -25,15 +25,26 @@ export interface BadgeProps
   extends HTMLAttributes<HTMLSpanElement>,
     RefAttributes<HTMLSpanElement> {
   variant?: SemanticVariant;
+  /**
+   * Size. "md" maps to .rb-badge--md for a row-text-sized pill (inside a
+   * .rb-table row, next to 13px cell text); "sm" is the default and the
+   * compact chip every existing consumer already renders.
+   */
+  size?: "sm" | "md";
 }
 export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(function Badge(
-  { variant, className, ...rest },
+  { variant, size = "sm", className, ...rest },
   ref,
 ) {
   return (
     <span
       ref={ref}
-      className={cx("rb-badge", variant && `rb-badge--${variant}`, className)}
+      className={cx(
+        "rb-badge",
+        variant && `rb-badge--${variant}`,
+        size === "md" && "rb-badge--md",
+        className,
+      )}
       {...rest}
     />
   );

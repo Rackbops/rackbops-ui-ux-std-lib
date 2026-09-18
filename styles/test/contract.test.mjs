@@ -518,6 +518,33 @@ for (const { file, class: cls } of REQUIRED_CLASSES) {
   });
 }
 
+// The REQUIRED_CLASSES loop above only proves a `.rb-badge--md` SELECTOR
+// exists per theme -- never what it declares, so a rule mutated to
+// `font-size: 2px; padding: 0` (or `display: none`) would satisfy it while
+// silently killing the fix in every theme (the #206 review-gate finding).
+// The whole point of the Badge `size="md"` prop is "row-text size with a real
+// pill", so assert that invariant on the rule body: the row-text token
+// (`--rb-text-sm`, which STANDARD.md 4.1's token table lists as the control
+// size for badges) and a padding built from the space scale (never zero). A theme wanting a
+// genuinely different `--md` treatment changes this test on purpose, the same
+// way the `:disabled` dim-rule body check above is a deliberate contract.
+test("every theme's badge.css gives .rb-badge--md a row-text-sized, real-pill body (#206)", () => {
+  for (const theme of themeDirs) {
+    const body = ruleBodyFor(stripComments(cssOf(join(ROOT, theme, "components", "badge.css"))), ".rb-badge--md");
+    assert.ok(body, `${theme}: no .rb-badge--md rule body found`);
+    assert.match(
+      body,
+      /font-size\s*:\s*var\(\s*--rb-text-sm\s*\)/,
+      `${theme}: .rb-badge--md must set font-size: var(--rb-text-sm) (row-text size -- the whole point of size="md")`,
+    );
+    assert.match(
+      body,
+      /padding\s*:\s*[^;]*var\(\s*--rb-space-\d/,
+      `${theme}: .rb-badge--md must set a real-pill padding from the --rb-space scale (not 0)`,
+    );
+  }
+});
+
 /**
  * Evaluate an ARIA modifier/attribute pairing over a file's rule groups.
  * `allPaired` — EVERY rule group bearing the modifier class also carries the

@@ -16,6 +16,10 @@
   font-size: 11px;
   letter-spacing: var(--rb-label-tracking);
 }
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-badge--md {
+  font-size: var(--rb-text-sm);
+  padding: var(--rb-space-1) var(--rb-space-3);
+}
 :where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-badge--info {
   border-color: var(--rb-info);
   background: color-mix(in srgb, var(--rb-info) 16%, transparent);
