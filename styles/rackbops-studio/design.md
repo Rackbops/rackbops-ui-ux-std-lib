@@ -147,6 +147,7 @@ Class prefix `rb-`; shared token/class contract with the other themes.
   focus is a vermillion border + wash ring.
 - **Badge** `.rb-badge` — bordered mono pill; semantic modifiers tint the border
   and text.
+- **Toast** `.rb-toast` — a floating transient notice: the alert card, elevated and stacked in a fixed `.rb-toast-region`, with an optional `.rb-toast__close` dismiss. The live-region role is set in React (info/success announce politely, warning/danger assertively).
 - **Alert** `.rb-alert` — white surface card, soft shadow, 4px semantic left bar.
 - **Dialog** `.rb-dialog` — native `<dialog>`, white pane, deep lift shadow,
   blurred navy backdrop, heavy title.

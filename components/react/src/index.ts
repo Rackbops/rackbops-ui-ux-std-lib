@@ -31,6 +31,7 @@ export {
   type SemanticVariant,
 } from "./feedback.js";
 export { Dialog, type DialogProps } from "./Dialog.js";
+export { Toast, ToastRegion, type ToastProps, type ToastRegionProps } from "./Toast.js";
 export { Tabs, type TabsProps, type TabItem } from "./Tabs.js";
 export { Stepper, type StepperProps, type StepperStep } from "./Stepper.js";
 export { DataTable, type DataTableProps, type DataTableColumn } from "./DataTable.js";

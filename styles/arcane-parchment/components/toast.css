@@ -1,0 +1,77 @@
+/* arcane-parchment — toast
+ * A floating transient notice, stacked in a fixed .rb-toast-region. Give-back
+ * (#211): a themed shared surface replacing each console's hand-rolled toast.
+ * The card echoes this theme's alert; the role (status/alert) is set in React. */
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-toast-region {
+  position: fixed;
+  top: var(--rb-space-4);
+  right: var(--rb-space-4);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: var(--rb-space-2);
+  width: fit-content;
+  max-width: min(28rem, calc(100vw - 2 * var(--rb-space-4)));
+  /* the gaps between toasts never block the page behind them; each toast opts back in */
+  pointer-events: none;
+}
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--rb-space-3);
+  padding: var(--rb-space-3) var(--rb-space-4);
+  background: var(--rb-surface);
+  border: 1px solid var(--rb-border);
+  border-left: 3px solid var(--rb-accent);
+  border-radius: var(--rb-radius);
+  box-shadow: var(--rb-shadow-lg);
+  color: var(--rb-text);
+  transition:
+    opacity var(--rb-transition) var(--rb-ease),
+    transform var(--rb-transition) var(--rb-ease);
+}
+/* Entrance from-state (cleared by the component one frame after mount, so the
+ * transition plays). Under prefers-reduced-motion, --rb-transition collapses to
+ * 0s and the toast simply appears -- it loses only its transition. */
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-toast[data-rb-enter] {
+  opacity: 0;
+  transform: translateY(calc(-1 * var(--rb-space-2)));
+}
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-toast--info {
+  border-left-color: var(--rb-info);
+}
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-toast--success {
+  border-left-color: var(--rb-success);
+}
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-toast--warning {
+  border-left-color: var(--rb-warning);
+}
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-toast--danger {
+  border-left-color: var(--rb-danger);
+}
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-toast__close {
+  flex: none;
+  margin-inline-start: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  padding: 0;
+  border: none;
+  border-radius: var(--rb-radius);
+  background: none;
+  color: var(--rb-text-soft);
+  font-size: 1.125rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: color var(--rb-transition) var(--rb-ease);
+}
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-toast__close:hover {
+  color: var(--rb-text);
+}
+:where([data-rb-style="arcane-parchment"], [data-rb-style="arcane-parchment"] *).rb-toast__close:focus-visible {
+  outline: var(--rb-focus-ring);
+  outline-offset: 2px;
+}

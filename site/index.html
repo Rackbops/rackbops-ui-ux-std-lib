@@ -33,6 +33,11 @@
       .row { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; }
       .stack { display: flex; flex-direction: column; gap: 0.75rem; max-width: 30rem; }
       .grid3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+      /* .rb-toast-region is position: fixed; in the showcase, flow it inline so the
+         section captures it (a real app mounts one such overlay at the app root).
+         Only position is overridden -- the region keeps its real fit-content width
+         and 28rem cap, so the demo shows the true toast width and close placement. */
+      .sc-toast-demo .rb-toast-region { position: static; }
       /* Snap (don't animate) during a theme flip: var()-driven transitions can
          otherwise stick at the old theme's values mid-switch. Real apps set the
          theme once on load and never hit this. */
@@ -229,6 +234,18 @@ ok 12 - keyframe names are rb-prefixed and unique across all themes</pre>
           <div class="rb-alert rb-alert--success"><div class="rb-alert__title">Deployed</div>The build is live.</div>
           <div class="rb-alert rb-alert--warning"><div class="rb-alert__title">Review</div>Two checks are still pending.</div>
           <div class="rb-alert rb-alert--danger"><div class="rb-alert__title">Failed</div>Something broke.</div>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="sc-title">Toasts</h2>
+        <div class="sc-toast-demo">
+          <div class="rb-toast-region">
+            <div class="rb-toast rb-toast--info" role="status">A background job started.<button type="button" class="rb-toast__close" aria-label="Dismiss">&times;</button></div>
+            <div class="rb-toast rb-toast--success" role="status">Saved.<button type="button" class="rb-toast__close" aria-label="Dismiss">&times;</button></div>
+            <div class="rb-toast rb-toast--warning" role="alert">Two checks are still pending.<button type="button" class="rb-toast__close" aria-label="Dismiss">&times;</button></div>
+            <div class="rb-toast rb-toast--danger" role="alert">Couldn't save.<button type="button" class="rb-toast__close" aria-label="Dismiss">&times;</button></div>
+          </div>
         </div>
       </section>
 

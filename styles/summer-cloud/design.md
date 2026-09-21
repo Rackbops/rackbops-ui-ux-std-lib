@@ -151,6 +151,7 @@ theme-agnostic). Variants use BEM-ish modifiers (`rb-btn--primary`).
   literals chosen to read AA on that specific fill — a separate decision from
   the fill's semantic token, so they don't track `--rb-success`/`--rb-danger`/
   etc. (a permitted literal, STANDARD.md §4.2; allowlisted in `contract.json`).
+- **Toast** `.rb-toast` — a floating transient notice: the alert card, elevated and stacked in a fixed `.rb-toast-region`, with an optional `.rb-toast__close` dismiss. The live-region role is set in React (info/success announce politely, warning/danger assertively).
 - **Alert** `.rb-alert` — glass card with a 4px semantic left rule.
 - **Dialog** `.rb-dialog` — native `<dialog>`, opaque white, blurred backdrop.
   `.rb-dialog__body` is a deliberate no-op here: the dialog pads `.rb-dialog`

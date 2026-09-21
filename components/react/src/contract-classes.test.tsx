@@ -162,6 +162,20 @@ const RENDERS: Array<{ component: string; el: ReactElement }> = [
       </UI.Dialog>
     ),
   },
+  // Toast: base (polite status), every semantic variant (exhaustive via SEMANTIC),
+  // and one dismissible -> emits rb-toast__close. ToastRegion is the fixed stack;
+  // rendering it wrapping a toast is how a consumer gets it.
+  { component: "Toast", el: <UI.Toast>Saved</UI.Toast> },
+  ...SEMANTIC.map((v) => ({ component: "Toast", el: <UI.Toast variant={v}>m</UI.Toast> })),
+  { component: "Toast", el: <UI.Toast onDismiss={() => {}}>m</UI.Toast> },
+  {
+    component: "ToastRegion",
+    el: (
+      <UI.ToastRegion>
+        <UI.Toast variant="success">Saved</UI.Toast>
+      </UI.ToastRegion>
+    ),
+  },
   // Tabs: the first tab is active by default -> emits --active and the panel.
   {
     component: "Tabs",
@@ -297,6 +311,7 @@ const DYNAMIC_TEMPLATES: Record<string, string> = {
   "rb-btn--": "variant", // Button: exported union, exhaustive via BUTTON_VARIANTS
   "rb-badge--": "variant", // Badge: SemanticVariant, exhaustive via SEMANTIC
   "rb-alert--": "variant", // Alert: same
+  "rb-toast--": "variant", // Toast: same shared SemanticVariant
   "rb-stepper--": "state", // Stepper: local union derived from index arithmetic -- the residual; all three states rendered, asserted below
 };
 

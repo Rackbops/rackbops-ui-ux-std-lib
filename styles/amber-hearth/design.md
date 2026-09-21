@@ -111,6 +111,7 @@ Class prefix `rb-`; shared token/class contract with the other themes. No
 - **Badge** `.rb-badge` — true pill: a 16% tint of its hue behind
   full-strength text (semantic modifiers `--info/--success/--warning/--danger`);
   normal-case, weight 600.
+- **Toast** `.rb-toast` — a floating transient notice: the alert card, elevated and stacked in a fixed `.rb-toast-region`, with an optional `.rb-toast__close` dismiss. The live-region role is set in React (info/success announce politely, warning/danger assertively).
 - **Alert** `.rb-alert` — surface panel, 3px left bar carries the semantic
   colour.
 - **Dialog** `.rb-dialog` — native `<dialog>`, generously rounded panel,

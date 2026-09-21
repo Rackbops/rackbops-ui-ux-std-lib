@@ -119,6 +119,7 @@ extras.
 - **Badge** `.rb-badge` — pill, normal case (unusual for a badge, but matches
   this theme's no-shouting rule), weight 500, a 12%-alpha tint of its hue
   behind full-strength (but desaturated) text.
+- **Toast** `.rb-toast` — a floating transient notice: the alert card, elevated and stacked in a fixed `.rb-toast-region`, with an optional `.rb-toast__close` dismiss. The live-region role is set in React (info/success announce politely, warning/danger assertively).
 - **Alert** `.rb-alert` — surface-2 panel, a rare use of the theme's one
   non-white surface so a flagged message reads as such; a thin 2px semantic
   left bar (not a bold 3-6px bar).

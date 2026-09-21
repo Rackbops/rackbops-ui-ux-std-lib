@@ -130,6 +130,7 @@ extras.
 - **Badge** `.rb-badge` — uppercase weight 700, near-square (`radius-pill`);
   a 16%-tint fill of its hue behind full-strength text, plus a 1px solid
   border of that same hue — badges carry a border here, unlike softer themes.
+- **Toast** `.rb-toast` — a floating transient notice: the alert card, elevated and stacked in a fixed `.rb-toast-region`, with an optional `.rb-toast__close` dismiss. The live-region role is set in React (info/success announce politely, warning/danger assertively).
 - **Alert** `.rb-alert` — surface panel with a 6px solid left bar (thicker
   than the library norm) in the semantic colour, square corners.
 - **Dialog** `.rb-dialog` — native `<dialog>`, surface bg, a 2px
