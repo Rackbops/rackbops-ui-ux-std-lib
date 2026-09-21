@@ -34,6 +34,8 @@ const {
   Switch,
   Tabs,
   Textarea,
+  Toast,
+  ToastRegion,
 } = await import("./index.js");
 
 /** Mounts `el` with a real client render (a real commit, unlike SSR) and
@@ -197,6 +199,20 @@ test("EmptyState forwards ref to the Card <div>", () => {
 test("LinksIndex forwards ref to the <div>", () => {
   const ref = createRef<HTMLDivElement>();
   const cleanup = mount(<LinksIndex ref={ref} categories={[]} links={[]} />);
+  assert.ok(ref.current instanceof HTMLDivElement);
+  cleanup();
+});
+
+test("Toast forwards ref to the <div>", () => {
+  const ref = createRef<HTMLDivElement>();
+  const cleanup = mount(<Toast ref={ref}>Saved</Toast>);
+  assert.ok(ref.current instanceof HTMLDivElement);
+  cleanup();
+});
+
+test("ToastRegion forwards ref to the <div>", () => {
+  const ref = createRef<HTMLDivElement>();
+  const cleanup = mount(<ToastRegion ref={ref} />);
   assert.ok(ref.current instanceof HTMLDivElement);
   cleanup();
 });

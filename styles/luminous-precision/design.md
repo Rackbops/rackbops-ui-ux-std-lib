@@ -117,6 +117,7 @@ Class prefix `rb-` (shared token/class contract with the other themes).
   inline SVG can't reference a custom property.
 - **Badge** `.rb-badge` — pill chip: 15% tint of its hue behind
   full-saturation text (+ semantic modifiers).
+- **Toast** `.rb-toast` — a floating transient notice: the alert card, elevated and stacked in a fixed `.rb-toast-region`, with an optional `.rb-toast__close` dismiss. The live-region role is set in React (info/success announce politely, warning/danger assertively).
 - **Alert** `.rb-alert` — glass, 3px left bar carries the semantic color.
 - **Dialog** `.rb-dialog` — native `<dialog>`, indigo pane with orchid glow,
   Sora title, blurred obsidian backdrop. `.rb-dialog__body` is a deliberate

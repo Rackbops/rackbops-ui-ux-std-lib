@@ -67,7 +67,7 @@ Class prefix `rb-`; the full amber-hearth inventory, styled identically from
 tokens: `.rb-btn` (+ `--primary/--accent/--danger/--ghost`, `--sm` compact size, `.rb-icon-btn` icon-only square), `.rb-card` (+
 `--raised`), `.rb-link` (+ `--active`), `.rb-nav-rail`, the form set (`.rb-input` /
 `.rb-textarea` / `.rb-select` / `.rb-label` / `.rb-field` / `.rb-choice` /
-`.rb-checkbox` / `.rb-radio` / `.rb-switch`), `.rb-badge`, `.rb-alert`,
+`.rb-checkbox` / `.rb-radio` / `.rb-switch`), `.rb-badge`, `.rb-alert`, `.rb-toast`,
 `.rb-dialog`, `.rb-tabs` / `.rb-tab` / `.rb-tabpanel`, `.rb-tabstrip` (+
 `__tab`, `--active`, `__badge`), `.rb-wordmark` (+ `__spark`; solid
 `--rb-text` at `1rem` in the serif display voice, weight 600 — the gradient

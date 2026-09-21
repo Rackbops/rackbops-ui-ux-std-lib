@@ -85,7 +85,7 @@ Every fixed token pair `styles/test/contrast.test.mjs` computes (the list is `st
 
 Class prefix `rb-`; the full arcane-obsidian inventory, styled identically from
 tokens: `.rb-btn` (+ `--primary/--accent/--danger/--ghost`, `--sm` compact size, `.rb-icon-btn` icon-only square),
-`.rb-card` (+ `--raised`), `.rb-link`, `.rb-nav-rail`, the form set, `.rb-badge`, `.rb-alert`,
+`.rb-card` (+ `--raised`), `.rb-link`, `.rb-nav-rail`, the form set, `.rb-badge`, `.rb-alert`, `.rb-toast`,
 `.rb-dialog`, `.rb-tabs`, `.rb-tabstrip` (+ `__tab`, `--active`, `__badge`), `.rb-wordmark` (+ `__spark`; the mono h1 at `15px` with the rationed gradient clipped into the text, solid-accent spark), `.rb-table` (+ `.rb-num`, `--interactive`, `__group-row`, `__sort`, `.rb-table-scroll`),
 `.rb-progress` / `.rb-spinner`, `.rb-muted`, `.rb-pre` (+ `.rb-log`), `.rb-stepper`. See
 arcane-obsidian's `design.md` for the per-component notes — the behaviour is

@@ -213,7 +213,7 @@ hand.
 Class prefix `rb-`; the full kenzen-midnight inventory, styled identically
 from tokens: `.rb-btn` (+ `--primary/--accent/--danger/--ghost`, `--sm`
 compact size, `.rb-icon-btn` icon-only square), `.rb-card` (+ `--raised`),
-`.rb-link`, `.rb-nav-rail`, the form set, `.rb-badge`, `.rb-alert`,
+`.rb-link`, `.rb-nav-rail`, the form set, `.rb-badge`, `.rb-alert`, `.rb-toast`,
 `.rb-dialog`, `.rb-tabs`, `.rb-tabstrip` (+ `__tab`, `--active`, `__badge`),
 `.rb-wordmark` (+ `__spark`; the Sora h1 at `15px` with the rationed brand
 gradient clipped into the text, solid-accent spark),

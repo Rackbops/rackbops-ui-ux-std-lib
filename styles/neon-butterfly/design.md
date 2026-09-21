@@ -103,6 +103,7 @@ Class prefix `rb-`. Variants use BEM-ish modifiers (`rb-btn--accent`).
   (`#958da1`, matching `--rb-text-faint`) — an inline SVG can't reference a
   custom property.
 - **Badge** `.rb-badge` + semantic modifiers.
+- **Toast** `.rb-toast` — a floating transient notice: the alert card, elevated and stacked in a fixed `.rb-toast-region`, with an optional `.rb-toast__close` dismiss. The live-region role is set in React (info/success announce politely, warning/danger assertively).
 - **Alert** `.rb-alert` — left accent bar carries the semantic color.
 - **Dialog** `.rb-dialog` — native `<dialog>`, lilac border + glow, blurred backdrop.
   `.rb-dialog__body` is a deliberate no-op here: the dialog pads `.rb-dialog`

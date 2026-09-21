@@ -169,6 +169,7 @@ STANDARD.md section 5.1.
   version of the same file uses ink (`--rb-text`) as those variants' text
   colour instead, because the exact hexes are far below AA there (see
   kenzen-cyberhealth's own design.md, #171, for the ratios).
+- **Toast** `.rb-toast` — a floating transient notice: the alert card, elevated and stacked in a fixed `.rb-toast-region`, with an optional `.rb-toast__close` dismiss. The live-region role is set in React (info/success announce politely, warning/danger assertively).
 - **Alert** `.rb-alert` — surface panel, 3px left bar carries the semantic colour.
 - **Dialog** `.rb-dialog` — native `<dialog>`, navy pane, blurred backdrop,
   Sora title.

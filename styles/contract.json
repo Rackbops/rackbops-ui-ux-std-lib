@@ -49,6 +49,11 @@
       "classes": ["rb-alert", "rb-alert__title", "rb-alert--info", "rb-alert--success", "rb-alert--warning", "rb-alert--danger"],
       "notes": "variant + optional title (renders as a heading, replacing the native title tooltip attribute)"
     },
+    "toast": {
+      "react": ["Toast", "ToastRegion"],
+      "classes": ["rb-toast", "rb-toast--info", "rb-toast--success", "rb-toast--warning", "rb-toast--danger", "rb-toast__close", "rb-toast-region"],
+      "notes": "floating transient notice, a give-back from the consoles that each built their own (#211); role chosen by semantic (info/success = status/polite, warning/danger = alert/assertive); ToastRegion is the fixed stack and is deliberately not itself a live region; optional __close dismiss button via onDismiss"
+    },
     "dialog": {
       "react": "Dialog",
       "classes": ["rb-dialog", "rb-dialog__title", "rb-dialog__actions", "rb-dialog__body"],
