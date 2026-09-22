@@ -210,7 +210,40 @@ scratch worktree, one mutant at a time. At most four rounds, then stop and tell 
   still safe to allowlist (the glyph's *presence*, not its colour, carries the signal; the control's
   own `required` attribute carries the programmatic state) — the allowlist entries themselves and
   their measured ratios are unchanged, only the prose justifying them.
-- Screenshot evidence, the mutation-testing table, and the acceptance command output are appended
-  here once those steps run (this file is written mid-implementation, ahead of Steps' remaining
-  acceptance/mutation/PR work, so it can be committed alongside the code it documents rather than
-  reconstructed after the fact).
+- **Illustrative screenshots for the PR body came from computed-style inspection, not the Browser
+  pane's screenshot capture**, which returned a blank image (`tabs_context` confirmed the pane starts
+  hidden in this environment) — the same known limitation #209 hit. Verified instead via
+  `getComputedStyle` on the real rendered elements for one theme per family (`arcane-obsidian`,
+  `concrete-signal`, `summer-cloud`) against the local dev server (`site/serve.mjs`), fronting the
+  tab first. One real timing wrinkle surfaced and was resolved during this: reading
+  `getComputedStyle` immediately (or after a short `setTimeout`) right after a programmatic
+  `data-rb-style` switch returned the *previous* theme's border-color for the invalid input one step
+  stale, while the `--rb-danger` custom property and every other element's colour updated
+  immediately — a background/backgrounded-tab paint/transition-settling artifact of this automated
+  environment, not a real bug (confirmed by re-reading after fronting the tab and issuing the
+  measurement as its own, later tool call, at which point border-color, the `--rb-danger` variable,
+  and every other value agreed exactly for all three themes). Final, settled numbers: `arcane-obsidian`
+  border/`--rb-danger` `#f0616d`, error ink `#eceff4` on a matching bar, help `#a6b0c0`; `concrete-signal`
+  `#ea463c` (border-width confirmed **1px**, the kept existing rule, not a fresh 2px hard border — see
+  the deviation above), error ink `#f2f2f0`, help `#b8b8b4`; `summer-cloud` `#ff4d4d`, error ink
+  `#171c1f`, help `#2f2b3a` — all three read `aria-invalid="true"` correctly and render exactly one
+  `aria-hidden="true"` `*` in the theme's own danger colour.
+- **Mutation testing** ran in a detached scratch worktree (`R:/repos/Scratch/mutation-210`, at the
+  branch head `286105f`), one mutant at a time, reverted with `git checkout --` between each — never
+  in a tree anything else could observe mid-mutation. All six confirmed failing as predicted:
+  dropping `.rb-field__error` from one theme's `form.css` fails `styles` package tests (669→668);
+  recolouring `.rb-field__error` to `var(--rb-danger)` fails `form-validation.test.mjs`'s ink-not-danger
+  assertion; dropping the required-marker `<span>` from React's `Label` fails
+  `form.test.tsx`'s exact-one-marker assertion; giving `FieldError` `role="alert"` fails its
+  no-ARIA-role assertion; dropping `.rb-select` from one theme's `[aria-invalid="true"]` chain fails
+  the new `contract.test.mjs` `ariaStates` check (the mechanism this PR adds, exercised on its own
+  guard); and a hand-edit to `SKILL.md`'s generated table text fails
+  `generate-skill-table.test.mjs`'s drift check. The worktree was removed afterward with no changes
+  left behind (`git status` clean before removal).
+- **A second, unrelated local worktree for a branch named `codex/210-form-validation`** was found
+  checked out at `C:/Users/roshn/.codex/worktrees/form-validation-210/rackbops-ui-ux-std-lib`
+  (detached at `771fa8a`, pre-dating this PR's own base commit) while setting up the mutation
+  worktree — apparently a separate, local-only Codex CLI session also pointed at this same issue. No
+  matching remote branch or PR exists (`git ls-remote`/`gh pr list` both empty for that name), so
+  there is no conflict yet, but it means a second independent implementation of #210 may be in
+  flight; flagged to the orchestrator so the duplicate work isn't both merged.
