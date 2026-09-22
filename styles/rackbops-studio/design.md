@@ -144,7 +144,9 @@ Class prefix `rb-`; shared token/class contract with the other themes.
   for items; introduces no active-state convention of its own.
 - **Form** `.rb-input` / `.rb-textarea` / `.rb-select` / `.rb-label` / `.rb-field`
   / `.rb-choice` / `.rb-checkbox` / `.rb-radio` / `.rb-switch` — white fields;
-  focus is a vermillion border + wash ring.
+  focus is a vermillion border + wash ring. Checkbox/radio use `accent-color`;
+  the switch is a track-and-thumb pill (#209) — sunken track, soft thumb
+  sliding to an accent-filled track with an accent-fg thumb when checked.
 - **Badge** `.rb-badge` — bordered mono pill; semantic modifiers tint the border
   and text.
 - **Toast** `.rb-toast` — a floating transient notice: the alert card, elevated and stacked in a fixed `.rb-toast-region`, with an optional `.rb-toast__close` dismiss. The live-region role is set in React (info/success announce politely, warning/danger assertively).

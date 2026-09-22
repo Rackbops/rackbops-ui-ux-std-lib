@@ -124,3 +124,7 @@
   background: var(--rb-accent-2);
   box-shadow: 0 0 6px var(--rb-accent-2-glow);
 }
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-switch:disabled {
+  cursor: not-allowed;
+  opacity: .5;
+}

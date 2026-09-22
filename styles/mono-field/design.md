@@ -115,7 +115,9 @@ extras.
   sunken fields; focus swaps to the accent border plus a barely-there wash
   ring; labels are normal case, weight 500. The `.rb-select` arrow's data-URI
   SVG hardcodes its stroke (`#5a5a5a`, matching `--rb-text-soft`), since an
-  inline SVG can't take a custom property.
+  inline SVG can't take a custom property. Checkbox/radio use `accent-color`;
+  the switch is a track-and-thumb pill (#209) — sunken track, soft thumb
+  sliding to an accent-filled track with an accent-fg thumb when checked.
 - **Badge** `.rb-badge` — pill, normal case (unusual for a badge, but matches
   this theme's no-shouting rule), weight 500, a 12%-alpha tint of its hue
   behind full-strength (but desaturated) text.

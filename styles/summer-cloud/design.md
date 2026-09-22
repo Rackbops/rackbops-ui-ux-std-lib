@@ -142,7 +142,8 @@ theme-agnostic). Variants use BEM-ish modifiers (`rb-btn--primary`).
 - **Form** `.rb-input`, `.rb-textarea`, `.rb-select`, `.rb-label`, `.rb-field`,
   `.rb-checkbox`, `.rb-radio`, `.rb-switch`, `.rb-choice` — sunken fields, no
   resting border, sky-blue ring on focus. The switch is the oversized
-  "cloud-toggle": squishy, and green when live. The `.rb-select` arrow is an
+  "cloud-toggle": squishy, and green when live; a disabled switch dims to 50%
+  opacity with `cursor: not-allowed` (#209). The `.rb-select` arrow is an
   inline data-URI SVG, so its stroke is a literal (`#484457`, matching
   `--rb-text-faint`); an inline SVG can't reference a custom property.
 - **Badge** `.rb-badge` + semantic modifiers — solid pills, mono uppercase. The

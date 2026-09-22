@@ -116,16 +116,47 @@ for (const theme of themeDirs) {
   test(`${theme}: fixed token pairs meet their contrast targets (STANDARD.md 9, #49)`, (t) => {
     const tok = readTokens(theme);
     for (const pair of contract.contrast.pairs) {
-      const fgRaw = tok[`--rb-${pair.fg}`];
-      const bgRaw = tok[`--rb-${pair.bg}`];
-      assert.ok(fgRaw && bgRaw, `${theme}: missing --rb-${pair.fg} or --rb-${pair.bg}`);
+      // A per-theme override (contract.json's `overrides`): the CSS itself keys
+      // this pair's role off a DIFFERENT baseline token for this one theme (a
+      // real rule difference in components/*.css, e.g. kenzen-cyberhealth's
+      // switch border -- #171/#209), so measure what's actually drawn instead
+      // of the generic pair. Not an allowlist entry: nothing is exempted, a
+      // different real value is checked.
+      const override = pair.overrides?.[theme];
+      const fgKey = override?.fg ?? pair.fg;
+      const bgKey = override?.bg ?? pair.bg;
+      const fgRaw = tok[`--rb-${fgKey}`];
+      const bgRaw = tok[`--rb-${bgKey}`];
+      assert.ok(fgRaw && bgRaw, `${theme}: missing --rb-${fgKey} or --rb-${bgKey}`);
       const fg = parseColor(fgRaw);
       const bg = parseColor(bgRaw);
       assert.ok(
         fg && bg,
-        `${theme}: ${pair.fg}/${pair.bg} is not a parseable colour literal (${fgRaw} / ${bgRaw})`,
+        `${theme}: ${fgKey}/${bgKey} is not a parseable colour literal (${fgRaw} / ${bgRaw})`,
       );
       const ratio = contrastRatio(composite(fg, bg), bg);
+      if (override) {
+        const label = `${fgKey} on ${bgKey} (${theme}'s override for ${pair.fg}/${pair.bg}: ${override.reason})`;
+        assert.ok(
+          ratio >= pair.min,
+          `${theme}: ${label} = ${ratio.toFixed(2)} is still below the ${pair.min}:1 target -- the override token doesn't clear it either`,
+        );
+        t.diagnostic(`${theme}: ${label} = ${ratio.toFixed(2)}`);
+        // Staleness guard, the override's own version: if the UNOVERRIDDEN pair
+        // now also clears the floor (a token retuned since), the CSS override
+        // and this entry may no longer be needed -- surfaced, not auto-dropped,
+        // since removing it is a CSS + design.md edit, not just data.
+        const origFg = parseColor(tok[`--rb-${pair.fg}`]);
+        const origBg = parseColor(tok[`--rb-${pair.bg}`]);
+        if (origFg && origBg) {
+          const origRatio = contrastRatio(composite(origFg, origBg), origBg);
+          assert.ok(
+            origRatio < pair.min,
+            `${theme}: ${pair.fg} on ${pair.bg} (unoverridden) now clears ${pair.min}:1 (${origRatio.toFixed(2)}) -- the ${fgKey}/${bgKey} override in contract.json and the matching CSS rule may no longer be needed`,
+          );
+        }
+        continue;
+      }
       const label = `${pair.fg} on ${pair.bg}`;
       const allowed = contract.contrast.allowlist.find(
         (a) => a.theme === theme && a.fg === pair.fg && a.bg === pair.bg,

@@ -107,7 +107,9 @@ Class prefix `rb-`; shared token/class contract with the other themes. No
 - **Form** `.rb-input` / `.rb-textarea` / `.rb-select` / `.rb-label` /
   `.rb-field` / `.rb-choice` / `.rb-checkbox` / `.rb-radio` / `.rb-switch` —
   sunken fields; focus swaps to the accent border + soft wash ring; labels
-  normal-case, weight 600, sans.
+  normal-case, weight 600, sans. Checkbox/radio use `accent-color`; the switch
+  is a track-and-thumb pill (#209) — sunken track, soft thumb sliding to an
+  accent-filled track with an accent-fg thumb when checked.
 - **Badge** `.rb-badge` — true pill: a 16% tint of its hue behind
   full-strength text (semantic modifiers `--info/--success/--warning/--danger`);
   normal-case, weight 600.

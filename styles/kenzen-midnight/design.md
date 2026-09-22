@@ -158,8 +158,13 @@ STANDARD.md section 5.1.
   for items; introduces no active-state convention of its own.
 - **Form** `.rb-input` / `.rb-textarea` / `.rb-select` / `.rb-label` / `.rb-field`
   / `.rb-choice` / `.rb-checkbox` / `.rb-radio` / `.rb-switch` — sunken fields
-  on the navy ground; focus swaps to the accent border + wash ring; controls
-  use `accent-color`.
+  on the navy ground; focus swaps to the accent border + wash ring;
+  checkbox/radio use `accent-color`. The switch is a track-and-thumb pill
+  (#209) — sunken track, soft thumb sliding to an accent-filled track with an
+  accent-fg thumb when checked. **Pair divergence, documented per STANDARD.md
+  5.2:** `components/form.css`'s checked switch keeps its `--rb-accent`
+  border here; kenzen-cyberhealth's light counterpart overrides it to
+  `--rb-text` (see its own design.md's Accessibility section for why).
 - **Badge** `.rb-badge` — mono uppercase pill: a 16% tint of its hue behind
   full-strength text (semantic modifiers `--info/--success/--warning/--danger`
   — see Accessibility above for the one deviation). **Pair divergence,

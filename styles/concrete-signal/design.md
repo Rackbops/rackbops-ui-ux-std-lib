@@ -121,7 +121,8 @@ extras.
   sunken square fields; focus swaps the border from 1px to 2px solid accent
   (the switch keeps its border constant and uses the base `--rb-focus-ring`
   outline instead, to avoid shifting its thumb); checked checkbox/radio/switch
-  states are a flat accent fill, not a tint ring; labels are uppercase,
+  states are a flat accent fill, not a tint ring; a disabled switch dims to
+  50% opacity with `cursor: not-allowed` (#209); labels are uppercase,
   tracked, weight 600. Pair divergence:
   `components/form.css`'s select-arrow SVG data-URI hardcodes its stroke
   colour (`#8f8f8a`, matching this theme's `--rb-text-faint`) since an inline

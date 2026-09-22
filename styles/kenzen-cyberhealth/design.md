@@ -115,6 +115,21 @@ stale) clears its required 3:1/4.5:1 floor on this theme **except one**:
   brand palette by owner decision (kenzen#88)" — the ratio is still computed
   by the test every run (a stale-entry guard fails if it ever climbs back
   above 3:1), it just no longer blocks the suite.
+- **The checked switch's border keys off `--rb-text`, not `--rb-accent` (#209).** The
+  same exact teal that is 2.21:1 as non-text on `--rb-bg` above is **2.04:1**
+  as the `.rb-switch:checked` border against `--rb-surface` — again below the
+  3:1 non-text floor. Rather than allowlist it, `components/form.css` adds one
+  theme-specific rule after the shared shape,
+  `.rb-switch:checked { border-color: var(--rb-text); }` — the same fix as the
+  focus-ring exemption above (#171), a different baseline token for the part
+  that fails, not an exception. `--rb-text` on `--rb-surface` is **15.18:1**,
+  comfortably clear. The fill and the thumb are untouched — still
+  `--rb-accent`/`--rb-accent-fg`, the existing 4.5:1 pair. Pinned in
+  `contract.json`'s `contrast.pairs` as a per-theme `overrides` entry on the
+  `accent`/`surface` pair (`styles/test/contrast.test.mjs` measures the real
+  `text`/`surface` value for this theme, with a staleness guard of its own:
+  if the brand teal is ever retuned above 3:1, the unoverridden check would
+  start failing loudly instead of silently going unused).
 - **Accent-fg on accent still passes, comfortably.** `--rb-accent-fg` reverts
   to navy `#0a2038` rather than staying white: navy on `#18c0d0` is **7.43:1**
   (`accent-fg`/`accent`'s 4.5:1 floor, cleared with room to spare), while
