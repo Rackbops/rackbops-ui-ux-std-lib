@@ -17,7 +17,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { test } from "node:test";
-import { ROOT, themeDirs, stripComments, cssOf } from "./css.mjs";
+import { ROOT, themeDirs, stripComments, cssOf, splitSelectors } from "./css.mjs";
 
 const contract = JSON.parse(readFileSync(join(ROOT, "contract.json"), "utf-8"));
 
@@ -184,4 +184,28 @@ for (const theme of themeDirs) {
       }
     }
   });
+}
+
+// A contrast `overrides` entry is a claim about what components/*.css actually
+// draws (measure the real thing, never recalled) -- worthless if nothing ties
+// it to the CSS. For the one override this repo has (kenzen-cyberhealth's
+// switch border, #209/#171), confirm the rule it names really declares the
+// claimed token: dropping the CSS override (while leaving this data entry in
+// place) must fail here, not silently keep reporting the old, safe ratio.
+for (const pair of contract.contrast.pairs) {
+  if (!pair.overrides) continue;
+  for (const [theme, override] of Object.entries(pair.overrides)) {
+    test(`${theme}: the ${pair.fg}/${pair.bg} contrast override (${override.fg}) is really drawn by .rb-switch:checked, not just claimed`, () => {
+      const css = stripComments(cssOf(join(ROOT, theme, "components", "form.css")));
+      const bodies = [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)]
+        .filter((m) => splitSelectors(m[1].trim()).some((s) => s.replace(/^:where\([^)]*\)/, "").trim() === ".rb-switch:checked"))
+        .map((m) => m[2]);
+      assert.ok(bodies.length > 0, `${theme}: no .rb-switch:checked rule found in components/form.css`);
+      const drawn = bodies.some((b) => new RegExp(`border-color:\\s*var\\(--rb-${override.fg}\\)`).test(b));
+      assert.ok(
+        drawn,
+        `${theme}: contract.json's ${pair.fg}/${pair.bg} override claims .rb-switch:checked draws its border from --rb-${override.fg}, but no such declaration exists in components/form.css -- the override entry (and its design.md note) no longer match the CSS`,
+      );
+    });
+  }
 }
