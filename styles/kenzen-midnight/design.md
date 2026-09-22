@@ -113,15 +113,19 @@ badge-tint figures remain documentation only):
   the exception: 3.08:1 on `--rb-bg` and 2.72:1 on `--rb-surface`** —
   crimson and navy sit close in luminance on this theme, so `--rb-danger`
   clears the 3:1 non-text floor (a border, an icon) but not the 4.5:1
-  STANDARD.md 9 sets for a control label, which is exactly what
-  `.rb-btn--danger` uses it for (`color: var(--rb-danger)` on the ghost
-  button's label, `components/button.css:64`). Since #163 the fixed-pair
-  test holds `--rb-danger` to that bar on both surfaces, and this theme is
-  allowlisted in `contract.json`'s `contrast` block for both `danger` pairs:
-  the crimson is the brand's exact hex (kenzen#88, #171), and the ghost
-  button's text label and danger-tinted border (`color-mix(in srgb,
+  STANDARD.md 9 sets for a control label -- `.rb-btn--danger` uses it for
+  exactly that (`color: var(--rb-danger)` on the ghost button's label,
+  `components/button.css:64`), and so does `.rb-label__required` (#210): a
+  single `aria-hidden` `*` glyph, supplementary reinforcement only -- the
+  control's own `required` attribute carries the programmatic state, and the
+  glyph's presence, not its colour, is what a sighted user reads. Since #163
+  the fixed-pair test holds `--rb-danger` to that bar on both surfaces, and
+  this theme is allowlisted in `contract.json`'s `contrast` block for both
+  `danger` pairs: the crimson is the brand's exact hex (kenzen#88, #171), and
+  the ghost button's text label and danger-tinted border (`color-mix(in srgb,
   var(--rb-danger) 40%, var(--rb-border))`, `components/button.css:63`)
-  carry the meaning, never the colour alone.
+  carry the meaning, never the colour alone; the required marker carries its
+  own meaning through the native `required` attribute the same way.
 - **Status as small badge text on its own 16% tint fill** (`badge.css`'s
   `color-mix(in srgb, var(--rb-x) 16%, transparent)`, composited over
   `--rb-bg`): success 7.91:1, warning 6.36:1, info 5.17:1, **danger 2.89:1
@@ -164,7 +168,11 @@ STANDARD.md section 5.1.
   accent-fg thumb when checked. **Pair divergence, documented per STANDARD.md
   5.2:** `components/form.css`'s checked switch keeps its `--rb-accent`
   border here; kenzen-cyberhealth's light counterpart overrides it to
-  `--rb-text` (see its own design.md's Accessibility section for why).
+  `--rb-text` (see its own design.md's Accessibility section for why). Invalid
+  is `[aria-invalid="true"]` (never a class): the border turns danger, same
+  selector chain as focus. Help text is `--rb-text-soft`; the error message is
+  ink with a `--rb-danger` left bar, never coloured text; the required marker
+  is an `aria-hidden` `*` after the label text, danger-coloured (#210).
 - **Badge** `.rb-badge` — mono uppercase pill: a 16% tint of its hue behind
   full-strength text (semantic modifiers `--info/--success/--warning/--danger`
   — see Accessibility above for the one deviation). **Pair divergence,

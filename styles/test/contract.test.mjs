@@ -621,6 +621,67 @@ for (const pair of contract.ariaPairs) {
   });
 }
 
+/** Whether EVERY name in `baseSelectors` has at least one rule group pairing
+ * it with `attribute` in the same compound selector -- e.g. `.rb-input` paired
+ * with `[aria-invalid="true"]` as `.rb-input[aria-invalid="true"]`, not merely
+ * co-occurring in an unrelated rule. Distinct from `evalAriaPairing` above:
+ * that function anchors on a MODIFIER CLASS that must co-occur with the
+ * attribute (`.rb-tab--active` paired with `[aria-selected="true"]`); an
+ * `ariaStates` entry (#210) has no modifier class at all -- the attribute
+ * alone, on one or more base elements, IS the state (STANDARD.md 5.5: "Where
+ * an ARIA state expresses the same thing, the CSS SHOULD match both"). */
+export function evalAriaState(ruleGroups, baseSelectors, attribute) {
+  const missing = baseSelectors.filter((base) => {
+    const baseRe = new RegExp(`\\.${reEscape(base)}(?![\\w-])`);
+    return !ruleGroups.some((g) => g.some((s) => s.includes(attribute) && baseRe.test(s)));
+  });
+  return { allPresent: missing.length === 0, missing };
+}
+
+test("evalAriaState: every base selector must itself pair with the attribute -- one paired sibling does not cover an unpaired one (#210)", () => {
+  const attr = '[aria-invalid="true"]';
+  const bases = ["rb-input", "rb-select", "rb-textarea"];
+  // input and textarea paired, select missing entirely.
+  const partial = [['.rb-input[aria-invalid="true"]', '.rb-textarea[aria-invalid="true"]']];
+  const r = evalAriaState(partial, bases, attr);
+  assert.equal(r.allPresent, false, "a missing base selector must fail");
+  assert.deepEqual(r.missing, ["rb-select"]);
+  // All three paired -> passes.
+  assert.equal(
+    evalAriaState([['.rb-input[aria-invalid="true"]', '.rb-select[aria-invalid="true"]', '.rb-textarea[aria-invalid="true"]']], bases, attr)
+      .allPresent,
+    true,
+  );
+  // Co-occurring in the same rule GROUP as an unrelated selector, but never actually
+  // paired in one compound selector, must not count (mirrors evalAriaPairing's own guard).
+  assert.equal(
+    evalAriaState([[".rb-input:hover", '.rb-select[aria-invalid="true"]', '.rb-textarea[aria-invalid="true"]']], bases, attr).allPresent,
+    false,
+  );
+});
+
+for (const state of contract.ariaStates ?? []) {
+  const file = `${state.component}.css`;
+  test(`ARIA state: ${state.attribute} in ${file} is selected for every one of ${state.baseSelectors.join(", ")} (or is exempt, see #65)`, () => {
+    for (const theme of themeDirs) {
+      const exempt = state.exempt?.find((e) => e.theme === theme);
+      const cssFile = join(ROOT, theme, "components", file);
+      const { ruleGroups } = parseCss(cssOf(cssFile));
+      const { allPresent, missing } = evalAriaState(ruleGroups, state.baseSelectors, state.attribute);
+      if (exempt) {
+        // Staleness guard: if the theme now covers every base selector, the
+        // exempt entry is stale.
+        assert.ok(!allPresent, `${theme}: ${state.attribute} is now selected for every base selector -- remove the stale exempt entry ("${exempt.reason}")`);
+        continue;
+      }
+      assert.ok(
+        allPresent,
+        `${theme}: ${state.attribute} in ${file} is not selected for: ${missing.join(", ")}`,
+      );
+    }
+  });
+}
+
 for (const theme of themeDirs) {
   test(`${theme}: component rules don't nest a block into its own element without a state (STANDARD.md 4.1, #94)`, () => {
     for (const file of themeCssFiles(theme)) {

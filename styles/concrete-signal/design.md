@@ -123,7 +123,13 @@ extras.
   outline instead, to avoid shifting its thumb); checked checkbox/radio/switch
   states are a flat accent fill, not a tint ring; a disabled switch dims to
   50% opacity with `cursor: not-allowed` (#209); labels are uppercase,
-  tracked, weight 600. Pair divergence:
+  tracked, weight 600. Invalid is `[aria-invalid="true"]` on input/select/
+  textarea: `border-color: var(--rb-danger)`, the theme's existing rule kept
+  as-is (1px, not the 2px hard-border focus treatment) and simply extended to
+  cover `.rb-select` too. Help text is `--rb-text-soft`; the error message is
+  ink with a `--rb-danger` left bar, never coloured text; the required marker
+  is an `aria-hidden` `*` after the label text, danger-coloured (#210). Pair
+  divergence:
   `components/form.css`'s select-arrow SVG data-URI hardcodes its stroke
   colour (`#8f8f8a`, matching this theme's `--rb-text-faint`) since an inline
   SVG can't reference a CSS custom property; concrete-signal-light's icon

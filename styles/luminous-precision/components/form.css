@@ -35,7 +35,8 @@
   box-shadow: 0 0 8px var(--rb-accent-2-glow);
 }
 :where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-input[aria-invalid="true"],
-:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-textarea[aria-invalid="true"] {
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-textarea[aria-invalid="true"],
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-select[aria-invalid="true"] {
   border-color: var(--rb-danger);
 }
 
@@ -47,6 +48,24 @@
   font-size: 12px;
   font-weight: var(--rb-font-weight-medium);
   letter-spacing: var(--rb-label-tracking);
+}
+/* required marker, help text, error text (#210) -- text-only cues, never colour-only; identical
+   tokens in every theme (STANDARD.md 9: help/error tokens are already-held 4.5:1 contract pairs). */
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-label__required {
+  color: var(--rb-danger);
+  margin-left: var(--rb-space-1);
+}
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-field__help {
+  color: var(--rb-text-soft);
+  font-size: var(--rb-text-sm);
+  margin-top: var(--rb-space-1);
+}
+:where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-field__error {
+  color: var(--rb-text);
+  font-size: var(--rb-text-sm);
+  padding-left: var(--rb-space-2);
+  border-left: 3px solid var(--rb-danger);
+  margin-top: var(--rb-space-1);
 }
 
 :where([data-rb-style="luminous-precision"], [data-rb-style="luminous-precision"] *).rb-field {

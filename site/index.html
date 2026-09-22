@@ -192,8 +192,9 @@ ok 12 - keyframe names are rb-prefixed and unique across all themes</pre>
         <h2 class="sc-title">Form</h2>
         <div class="stack">
           <div class="rb-field">
-            <label class="rb-label" for="sc-project">Project name</label>
-            <input class="rb-input" id="sc-project" placeholder="artifact-console" />
+            <label class="rb-label" for="sc-project">Project name <span class="rb-label__required" aria-hidden="true">*</span></label>
+            <input class="rb-input" id="sc-project" placeholder="artifact-console" required aria-describedby="sc-project-help" />
+            <p class="rb-field__help" id="sc-project-help">Use the repository name.</p>
           </div>
           <div class="rb-field">
             <label class="rb-label" for="sc-notes">Notes</label>
@@ -202,6 +203,11 @@ ok 12 - keyframe names are rb-prefixed and unique across all themes</pre>
           <div class="rb-field">
             <label class="rb-label" for="sc-tier">Tier</label>
             <select class="rb-select" id="sc-tier"><option>Service</option><option>User app</option></select>
+          </div>
+          <div class="rb-field">
+            <label class="rb-label" for="sc-email">Email</label>
+            <input class="rb-input" id="sc-email" type="email" value="not-an-email" aria-invalid="true" aria-describedby="sc-email-error" />
+            <p class="rb-field__error" id="sc-email-error">Enter a valid email address.</p>
           </div>
           <label class="rb-choice"><input type="checkbox" class="rb-checkbox" checked /> Ship it</label>
           <label class="rb-choice"><input type="radio" class="rb-radio" name="r" checked /> Option A</label>

@@ -21,6 +21,8 @@ const {
   Dialog,
   EmptyState,
   Field,
+  FieldError,
+  FieldHelp,
   Input,
   Label,
   LinksIndex,
@@ -111,6 +113,20 @@ test("Field forwards ref to the <div>", () => {
   const ref = createRef<HTMLDivElement>();
   const cleanup = mount(<Field ref={ref} />);
   assert.ok(ref.current instanceof HTMLDivElement);
+  cleanup();
+});
+
+test("FieldHelp forwards ref to the <p>", () => {
+  const ref = createRef<HTMLParagraphElement>();
+  const cleanup = mount(<FieldHelp ref={ref} />);
+  assert.ok(ref.current instanceof HTMLParagraphElement);
+  cleanup();
+});
+
+test("FieldError forwards ref to the <p>", () => {
+  const ref = createRef<HTMLParagraphElement>();
+  const cleanup = mount(<FieldError ref={ref} />);
+  assert.ok(ref.current instanceof HTMLParagraphElement);
   cleanup();
 });
 

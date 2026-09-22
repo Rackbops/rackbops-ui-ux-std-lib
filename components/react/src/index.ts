@@ -12,12 +12,16 @@ export {
   Checkbox,
   Radio,
   Switch,
+  FieldHelp,
+  FieldError,
   type InputProps,
   type TextareaProps,
   type SelectProps,
   type LabelProps,
   type FieldProps,
   type ChoiceProps,
+  type FieldHelpProps,
+  type FieldErrorProps,
 } from "./form.js";
 export {
   Badge,

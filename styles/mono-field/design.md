@@ -118,6 +118,11 @@ extras.
   inline SVG can't take a custom property. Checkbox/radio use `accent-color`;
   the switch is a track-and-thumb pill (#209) — sunken track, soft thumb
   sliding to an accent-filled track with an accent-fg thumb when checked.
+  Invalid is `[aria-invalid="true"]` (never a class): the border turns danger,
+  same selector chain as focus. Help text is `--rb-text-soft`; the error
+  message is ink with a `--rb-danger` left bar, never coloured text; the
+  required marker is an `aria-hidden` `*` after the label text,
+  danger-coloured (#210).
 - **Badge** `.rb-badge` — pill, normal case (unusual for a badge, but matches
   this theme's no-shouting rule), weight 500, a 12%-alpha tint of its hue
   behind full-strength (but desaturated) text.
