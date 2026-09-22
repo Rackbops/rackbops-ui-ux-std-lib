@@ -138,3 +138,7 @@
 :where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-switch:checked::after {
   transform: translateX(1.25rem);
 }
+:where([data-rb-style="summer-cloud"], [data-rb-style="summer-cloud"] *).rb-switch:disabled {
+  cursor: not-allowed;
+  opacity: .5;
+}

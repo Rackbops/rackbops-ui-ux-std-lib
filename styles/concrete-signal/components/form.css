@@ -117,6 +117,10 @@
   transform: translateX(1.1rem);
   background: var(--rb-accent);
 }
+:where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-switch:disabled {
+  cursor: not-allowed;
+  opacity: .5;
+}
 
 :where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-checkbox:focus-visible,
 :where([data-rb-style="concrete-signal"], [data-rb-style="concrete-signal"] *).rb-radio:focus-visible {

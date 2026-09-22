@@ -188,8 +188,18 @@
       { "fg": "text", "bg": "surface-2", "min": 4.5 },
       { "fg": "text-soft", "bg": "bg", "min": 4.5 },
       { "fg": "text-soft", "bg": "surface", "min": 4.5 },
+      { "fg": "text-soft", "bg": "surface-sunken", "min": 3.0 },
       { "fg": "accent-fg", "bg": "accent", "min": 4.5 },
       { "fg": "accent", "bg": "bg", "min": 3.0 },
+      {
+        "fg": "accent", "bg": "surface", "min": 3.0,
+        "overrides": {
+          "kenzen-cyberhealth": {
+            "fg": "text",
+            "reason": "the .rb-switch:checked border keys off --rb-text here, not --rb-accent (same fix as the #171 focus-ring exemption) -- the exact brand teal is 2.04:1 as a border on --rb-surface, below the 3:1 floor; the fill and thumb are unaffected (still accent/accent-fg, clears 4.5:1)"
+          }
+        }
+      },
       { "fg": "text-faint", "bg": "surface", "min": 3.0, "warnBelow": 4.5 },
       { "fg": "text-faint", "bg": "bg", "min": 3.0, "warnBelow": 4.5 },
       { "fg": "text-faint", "bg": "surface-2", "min": 3.0, "warnBelow": 4.5 },

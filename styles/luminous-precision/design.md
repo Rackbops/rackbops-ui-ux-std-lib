@@ -112,7 +112,8 @@ Class prefix `rb-` (shared token/class contract with the other themes).
   of its own.
 - **Form** `.rb-input`, `.rb-textarea`, `.rb-select`, `.rb-label`,
   `.rb-field`, `.rb-checkbox`, `.rb-radio`, `.rb-switch`, `.rb-choice` —
-  checked/focus states glow teal. The `.rb-select` arrow is an inline data-URI
+  checked/focus states glow teal; a disabled switch dims to 50% opacity with
+  `cursor: not-allowed` (#209). The `.rb-select` arrow is an inline data-URI
   SVG, so its stroke is a literal (`#958e9b`, matching `--rb-text-faint`) — an
   inline SVG can't reference a custom property.
 - **Badge** `.rb-badge` — pill chip: 15% tint of its hue behind

@@ -98,7 +98,8 @@ Class prefix `rb-`. Variants use BEM-ish modifiers (`rb-btn--accent`).
   Composes with `.rb-link` for items; introduces no active-state convention
   of its own.
 - **Form** `.rb-input`, `.rb-textarea`, `.rb-select`, `.rb-label`, `.rb-field`,
-  `.rb-checkbox`, `.rb-radio`, `.rb-switch`, `.rb-choice` — checked states glow lime.
+  `.rb-checkbox`, `.rb-radio`, `.rb-switch`, `.rb-choice` — checked states glow lime;
+  a disabled switch dims to 50% opacity with `cursor: not-allowed` (#209).
   The `.rb-select` arrow is an inline data-URI SVG whose stroke is a literal
   (`#958da1`, matching `--rb-text-faint`) — an inline SVG can't reference a
   custom property.
