@@ -198,18 +198,37 @@ scratch worktree, one mutant at a time. At most four rounds, then stop and tell 
   brutalist "2px hard border" treatment (which the plan describes for themes drawing the rule fresh)
   was not retrofitted onto an already-correct, deliberately restrained drawing. Recorded in
   `concrete-signal/design.md`'s Form bullet.
-- **Two pre-existing `contract.json` danger-token allowlist reasons (`summer-cloud`,
-  `kenzen-midnight`) went factually stale once `.rb-label__required` shipped everywhere, and were
-  fixed as part of this PR even though the plan didn't name them** — per this repo's and the personal
-  `CLAUDE.md`'s "a false factual claim is MAJOR" rule, not a scope expansion. `summer-cloud`'s danger
-  allowlist reason said "no component renders it as a label"; `kenzen-midnight`'s said the
-  danger/on-danger pairing was "exactly what `.rb-btn--danger` uses it for" (an exclusivity claim).
-  `.rb-label__required` now also renders `--rb-danger` as a (supplementary, `aria-hidden`) label
-  glyph in every theme, including both of these, which directly contradicted both sentences. Both
-  `design.md`'s Accessibility sections were rewritten to name the new exception and explain why it's
-  still safe to allowlist (the glyph's *presence*, not its colour, carries the signal; the control's
-  own `required` attribute carries the programmatic state) — the allowlist entries themselves and
-  their measured ratios are unchanged, only the prose justifying them.
+- **Two pre-existing danger-token allowlist reasons (`summer-cloud`, `kenzen-midnight`) went
+  factually stale once `.rb-label__required` shipped everywhere, even though the plan didn't name
+  them** — per this repo's and the personal `CLAUDE.md`'s "a false factual claim is MAJOR" rule, not
+  a scope expansion. `summer-cloud`'s danger allowlist reason said "no component renders it as a
+  label"; `kenzen-midnight`'s said the danger/on-danger pairing was "exactly what `.rb-btn--danger`
+  uses it for" (an exclusivity claim). `.rb-label__required` now also renders `--rb-danger` as a
+  (supplementary, `aria-hidden`) label glyph in every theme, including both of these, which directly
+  contradicted both sentences. Both themes' `design.md` Accessibility sections were rewritten first
+  to name the new exception and explain why it's still safe to allowlist (the glyph's *presence*, not
+  its colour, carries the signal; the control's own `required` attribute carries the programmatic
+  state). **Round-1 review (Reviewer A) caught that this first pass left `styles/contract.json`'s own
+  `reason` fields for both allowlist entries untouched, still reading the now-false "never rendered as
+  a label" verbatim** — a reader of `contract.json` alone, without also opening `design.md`, was told
+  something the codebase directly contradicts (the exact "four ignore patterns... nearly deleted"
+  failure mode the review-gate rule names). Fixed: both `summer-cloud` reason strings now say "no
+  *essential* component renders it as a label... the one deliberate exception is `rb-label__required`
+  (#210)..."; both `kenzen-midnight` reason strings gained a matching clause (lower severity there,
+  since its original wording never claimed exclusivity, just incompleteness). The allowlist entries
+  themselves and their measured ratios are unchanged, only the `reason` prose.
+- **Round-1 review (Reviewer A) also caught two theme `design.md` files with a stale literal
+  class-enumeration list**, distinct from the "behaviour is the same, see the primary theme" deferral
+  pattern (which is still correct): `concrete-signal-light` and `amber-ember`'s own `## Components`
+  sections spell out the form-set's classes by name (`.rb-input`/`.rb-textarea`/.../`.rb-switch`),
+  and neither list was extended with the three new classes even though both themes' own `form.css`
+  carries them (confirmed both received the full #210 CSS treatment via `git diff`). Fixed: both
+  enumerations now include `.rb-field__help`/`.rb-field__error`/`.rb-label__required`, each with a
+  one-line pointer to its primary theme's `design.md` for the full #210 behaviour note (matching the
+  pattern the sibling bullet already establishes elsewhere in the same file). The other three deferred
+  themes (`arcane-parchment`, `rackbops-noir`, `kenzen-cyberhealth`) only ever say "the form set" with
+  no literal enumeration, so they were not affected and needed no edit — checked directly, not
+  assumed.
 - **Illustrative screenshots for the PR body came from computed-style inspection, not the Browser
   pane's screenshot capture**, which returned a blank image (`tabs_context` confirmed the pane starts
   hidden in this environment) — the same known limitation #209 hit. Verified instead via
