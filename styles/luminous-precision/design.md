@@ -115,7 +115,12 @@ Class prefix `rb-` (shared token/class contract with the other themes).
   checked/focus states glow teal; a disabled switch dims to 50% opacity with
   `cursor: not-allowed` (#209). The `.rb-select` arrow is an inline data-URI
   SVG, so its stroke is a literal (`#958e9b`, matching `--rb-text-faint`) — an
-  inline SVG can't reference a custom property.
+  inline SVG can't reference a custom property. Invalid is
+  `[aria-invalid="true"]` (never a class): the border turns danger, same
+  selector chain as focus. Help text is `--rb-text-soft`; the error message
+  is ink with a `--rb-danger` left bar, never coloured text; the required
+  marker is an `aria-hidden` `*` after the label text, danger-coloured
+  (#210).
 - **Badge** `.rb-badge` — pill chip: 15% tint of its hue behind
   full-saturation text (+ semantic modifiers).
 - **Toast** `.rb-toast` — a floating transient notice: the alert card, elevated and stacked in a fixed `.rb-toast-region`, with an optional `.rb-toast__close` dismiss. The live-region role is set in React (info/success announce politely, warning/danger assertively).

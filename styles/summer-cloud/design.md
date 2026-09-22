@@ -120,7 +120,7 @@ family.
 
 Every fixed token pair `styles/test/contrast.test.mjs` computes (the list is `styles/contract.json`'s `contrast.pairs`, not restated here so it cannot go stale) clears its WCAG target on this theme (4.5:1 text, 3:1 non-text; faint clears AA here too), except the two `danger` pairs, allowlisted:
 
-- **`--rb-danger` (`#ff4d4d`) as text is 3.12:1 on `--rb-bg` and 3.27:1 on `--rb-surface`**, below the 4.5:1 control-label bar -- but no component renders it as a label: `.rb-btn--danger` is a solid `--rb-danger-deep` (`#cc1f1f`) fill with white `--rb-accent-fg` text (5.55:1), and the badge puts dark text on the red (see "Deviations from the Stitch source"). Allowlisted for both `danger` pairs so the fixed-pair test does not flag a pairing nothing uses.
+- **`--rb-danger` (`#ff4d4d`) as text is 3.12:1 on `--rb-bg` and 3.27:1 on `--rb-surface`**, below the 4.5:1 control-label bar -- no *essential* component renders it as a label: `.rb-btn--danger` is a solid `--rb-danger-deep` (`#cc1f1f`) fill with white `--rb-accent-fg` text (5.55:1), and the badge puts dark text on the red (see "Deviations from the Stitch source"). The one deliberate exception is `.rb-label__required` (#210): a single `aria-hidden` `*` glyph, supplementary reinforcement only -- the control's own `required` attribute carries the programmatic state for assistive tech, and the glyph's *presence* (not its colour) is what a sighted, non-colour-blind user reads; the dim red is legible, just not AA. Allowlisted for both `danger` pairs so the fixed-pair test does not flag a pairing nothing essential uses.
 
 ## Components
 
@@ -146,6 +146,11 @@ theme-agnostic). Variants use BEM-ish modifiers (`rb-btn--primary`).
   opacity with `cursor: not-allowed` (#209). The `.rb-select` arrow is an
   inline data-URI SVG, so its stroke is a literal (`#484457`, matching
   `--rb-text-faint`); an inline SVG can't reference a custom property.
+  Invalid is `[aria-invalid="true"]` (never a class): the border turns
+  danger, same selector chain as focus. Help text is `--rb-text-soft`; the
+  error message is ink with a `--rb-danger` left bar, never coloured text;
+  the required marker is an `aria-hidden` `*` after the label text,
+  danger-coloured (#210).
 - **Badge** `.rb-badge` + semantic modifiers — solid pills, mono uppercase. The
   dark ink on each semantic fill (`#004261`/`#0a2e0a`/`#241a00`/`#4a0000`), and
   the alert titles (`#1a7a1a`/`#594400`/`#93000a`), are hand-tuned per-theme

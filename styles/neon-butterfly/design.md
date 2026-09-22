@@ -102,7 +102,11 @@ Class prefix `rb-`. Variants use BEM-ish modifiers (`rb-btn--accent`).
   a disabled switch dims to 50% opacity with `cursor: not-allowed` (#209).
   The `.rb-select` arrow is an inline data-URI SVG whose stroke is a literal
   (`#958da1`, matching `--rb-text-faint`) — an inline SVG can't reference a
-  custom property.
+  custom property. Invalid is `[aria-invalid="true"]` (never a class): the
+  border turns danger, same selector chain as focus. Help text is
+  `--rb-text-soft`; the error message is ink with a `--rb-danger` left bar,
+  never coloured text; the required marker is an `aria-hidden` `*` after the
+  label text, danger-coloured (#210).
 - **Badge** `.rb-badge` + semantic modifiers.
 - **Toast** `.rb-toast` — a floating transient notice: the alert card, elevated and stacked in a fixed `.rb-toast-region`, with an optional `.rb-toast__close` dismiss. The live-region role is set in React (info/success announce politely, warning/danger assertively).
 - **Alert** `.rb-alert` — left accent bar carries the semantic color.

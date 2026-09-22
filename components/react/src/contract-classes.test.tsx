@@ -131,7 +131,10 @@ const RENDERS: Array<{ component: string; el: ReactElement }> = [
   { component: "Textarea", el: <UI.Textarea /> },
   { component: "Select", el: <UI.Select /> },
   { component: "Label", el: <UI.Label>l</UI.Label> },
+  { component: "Label", el: <UI.Label required>l</UI.Label> },
   { component: "Field", el: <UI.Field>f</UI.Field> },
+  { component: "FieldHelp", el: <UI.FieldHelp id="h">help</UI.FieldHelp> },
+  { component: "FieldError", el: <UI.FieldError id="e">error</UI.FieldError> },
   // Choice controls: with a label they wrap in .rb-choice, without they don't.
   { component: "Checkbox", el: <UI.Checkbox /> },
   { component: "Checkbox", el: <UI.Checkbox label="Agree" /> },

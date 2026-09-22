@@ -147,6 +147,11 @@ Class prefix `rb-`; shared token/class contract with the other themes.
   focus is a vermillion border + wash ring. Checkbox/radio use `accent-color`;
   the switch is a track-and-thumb pill (#209) — sunken track, soft thumb
   sliding to an accent-filled track with an accent-fg thumb when checked.
+  Invalid is `[aria-invalid="true"]` (never a class): the border turns danger,
+  same selector chain as focus. Help text is `--rb-text-soft`; the error
+  message is ink with a `--rb-danger` left bar, never coloured text; the
+  required marker is an `aria-hidden` `*` after the label text,
+  danger-coloured (#210).
 - **Badge** `.rb-badge` — bordered mono pill; semantic modifiers tint the border
   and text.
 - **Toast** `.rb-toast` — a floating transient notice: the alert card, elevated and stacked in a fixed `.rb-toast-region`, with an optional `.rb-toast__close` dismiss. The live-region role is set in React (info/success announce politely, warning/danger assertively).

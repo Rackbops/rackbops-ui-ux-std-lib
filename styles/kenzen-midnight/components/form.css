@@ -11,6 +11,24 @@
   font-weight: var(--rb-font-weight-medium);
   color: var(--rb-text-soft);
 }
+/* required marker, help text, error text (#210) -- text-only cues, never colour-only; identical
+   tokens in every theme (STANDARD.md 9: help/error tokens are already-held 4.5:1 contract pairs). */
+:where([data-rb-style="kenzen-midnight"], [data-rb-style="kenzen-midnight"] *).rb-label__required {
+  color: var(--rb-danger);
+  margin-left: var(--rb-space-1);
+}
+:where([data-rb-style="kenzen-midnight"], [data-rb-style="kenzen-midnight"] *).rb-field__help {
+  color: var(--rb-text-soft);
+  font-size: var(--rb-text-sm);
+  margin-top: var(--rb-space-1);
+}
+:where([data-rb-style="kenzen-midnight"], [data-rb-style="kenzen-midnight"] *).rb-field__error {
+  color: var(--rb-text);
+  font-size: var(--rb-text-sm);
+  padding-left: var(--rb-space-2);
+  border-left: 3px solid var(--rb-danger);
+  margin-top: var(--rb-space-1);
+}
 :where([data-rb-style="kenzen-midnight"], [data-rb-style="kenzen-midnight"] *).rb-input,
 :where([data-rb-style="kenzen-midnight"], [data-rb-style="kenzen-midnight"] *).rb-textarea,
 :where([data-rb-style="kenzen-midnight"], [data-rb-style="kenzen-midnight"] *).rb-select {
@@ -36,6 +54,15 @@
   outline: none;
   border-color: var(--rb-accent);
   box-shadow: 0 0 0 3px var(--rb-accent-wash);
+}
+/* invalid state (#210): the ARIA attribute is the state, never a class -- correct markup is
+   correctly styled. A later same-specificity rule than :focus-visible above, so a focused AND
+   invalid control keeps its accent focus ring (box-shadow, untouched here) while the border still
+   reads danger. */
+:where([data-rb-style="kenzen-midnight"], [data-rb-style="kenzen-midnight"] *).rb-input[aria-invalid="true"],
+:where([data-rb-style="kenzen-midnight"], [data-rb-style="kenzen-midnight"] *).rb-textarea[aria-invalid="true"],
+:where([data-rb-style="kenzen-midnight"], [data-rb-style="kenzen-midnight"] *).rb-select[aria-invalid="true"] {
+  border-color: var(--rb-danger);
 }
 :where([data-rb-style="kenzen-midnight"], [data-rb-style="kenzen-midnight"] *).rb-input::placeholder,
 :where([data-rb-style="kenzen-midnight"], [data-rb-style="kenzen-midnight"] *).rb-textarea::placeholder {

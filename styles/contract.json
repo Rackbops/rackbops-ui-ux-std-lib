@@ -35,9 +35,9 @@
       "notes": "composes .rb-link; owns no active convention; per-item onClick/target/rel/aria-*/data-*/className forward to that item's NavLink (#84)"
     },
     "form": {
-      "react": ["Field", "Label", "Input", "Textarea", "Select", "Checkbox", "Radio", "Switch"],
-      "classes": ["rb-field", "rb-label", "rb-input", "rb-textarea", "rb-select", "rb-choice", "rb-checkbox", "rb-radio", "rb-switch"],
-      "notes": "pair with Field/Label; choice controls wrap in .rb-choice; className/rest still target the control itself -- use wrapperClassName/wrapperStyle to style the .rb-choice row (#84)"
+      "react": ["Field", "Label", "Input", "Textarea", "Select", "Checkbox", "Radio", "Switch", "FieldHelp", "FieldError"],
+      "classes": ["rb-field", "rb-label", "rb-input", "rb-textarea", "rb-select", "rb-choice", "rb-checkbox", "rb-radio", "rb-switch", "rb-field__help", "rb-field__error", "rb-label__required"],
+      "notes": "pair with Field/Label; choice controls wrap in .rb-choice; className/rest still target the control itself -- use wrapperClassName/wrapperStyle to style the .rb-choice row (#84). Invalid is the aria-invalid=\"true\" attribute on the control (Input/Select/Textarea), styled in every theme, never a class (#210). FieldHelp/FieldError are plain styled <p>s with no live-region role -- the consumer wires aria-describedby/aria-invalid on the control. rb-label__required is rendered by Label's own required prop, an aria-hidden glyph; the control's own required attribute carries the programmatic state for assistive tech."
     },
     "badge": {
       "react": "Badge",
@@ -156,6 +156,15 @@
       "class": "rb-stepper--current",
       "attribute": "[aria-current=\"step\"]",
       "baseSelector": "rb-stepper__step",
+      "exempt": []
+    }
+  ],
+  "ariaStates": [
+    {
+      "//": "Distinct from ariaPairs above: no modifier class co-occurs with this attribute -- the attribute alone, on all three base elements, IS the state (#210, STANDARD.md 5.5).",
+      "component": "form",
+      "baseSelectors": ["rb-input", "rb-select", "rb-textarea"],
+      "attribute": "[aria-invalid=\"true\"]",
       "exempt": []
     }
   ],

@@ -111,7 +111,11 @@ Class prefix `rb-`; shared token/class contract with the other themes.
   / `.rb-choice` / `.rb-checkbox` / `.rb-radio` / `.rb-switch` — sunken fields;
   focus swaps to the accent border + wash ring; checkbox/radio use `accent-color`.
   The switch is a track-and-thumb pill (#209): a sunken track, a soft thumb that
-  slides and turns accent-filled with an accent-fg thumb when checked.
+  slides and turns accent-filled with an accent-fg thumb when checked. Invalid
+  is `[aria-invalid="true"]` (never a class): the border turns danger, same
+  selector chain as focus. Help text is `--rb-text-soft`; the error message is
+  ink with a `--rb-danger` left bar, never coloured text; the required marker
+  is an `aria-hidden` `*` after the label text, danger-coloured (#210).
 - **Badge** `.rb-badge` — mono uppercase pill: a 16% tint of its hue behind
   full-strength text (semantic modifiers `--info/--success/--warning/--danger`).
 - **Toast** `.rb-toast` — a floating transient notice: the alert card, elevated and stacked in a fixed `.rb-toast-region`, with an optional `.rb-toast__close` dismiss. The live-region role is set in React (info/success announce politely, warning/danger assertively).

@@ -109,7 +109,11 @@ Class prefix `rb-`; shared token/class contract with the other themes. No
   sunken fields; focus swaps to the accent border + soft wash ring; labels
   normal-case, weight 600, sans. Checkbox/radio use `accent-color`; the switch
   is a track-and-thumb pill (#209) — sunken track, soft thumb sliding to an
-  accent-filled track with an accent-fg thumb when checked.
+  accent-filled track with an accent-fg thumb when checked. Invalid is
+  `[aria-invalid="true"]` (never a class): the border turns danger, same
+  selector chain as focus. Help text is `--rb-text-soft`; the error message is
+  ink with a `--rb-danger` left bar, never coloured text; the required marker
+  is an `aria-hidden` `*` after the label text, danger-coloured (#210).
 - **Badge** `.rb-badge` — true pill: a 16% tint of its hue behind
   full-strength text (semantic modifiers `--info/--success/--warning/--danger`);
   normal-case, weight 600.
