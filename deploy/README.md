@@ -34,6 +34,12 @@ Sources this was adapted from:
 - `Rackbops/Tooling`'s `docs/per-app-cloudflare-access-tunnel.md` -- the per-app token-sidecar
   pattern (why a new tunnel instead of the shared one, the Cloudflare API call shapes).
 
+**Who can deploy.** This site auto-deploys: nucbox's `rackbops-ui-ux-std-lib-deploy.timer` pulls
+this repository within five minutes. `main` is what gets pulled, so anyone with write access to
+this repository can put code on the box. That is the accepted trust boundary
+([Rackbops/Tooling#765](https://github.com/Rackbops/Tooling/issues/765), 2026-09-27): keep
+collaborators to the minimum and review write access before adding one.
+
 ## Updating
 
 - **Site content** (anything under `site/`, `components/`, `styles/`) -- reaches the box on the next
