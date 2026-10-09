@@ -28,7 +28,13 @@ services:
     # floor is "nothing published" rather than "published to loopback only".
 
   cloudflared:
-    image: cloudflare/cloudflared:latest
+    # Pinned to a cloudflared release, never :latest (Rackbops/Tooling#902): `:latest` is one tag
+    # shared by every stack on the box, so once another stack pulls a newer one, this sidecar keeps
+    # running the old image under a tag that names the new one (`docker ps` shows a bare image ID),
+    # and Renovate can't bump a tag that isn't a version. Renovate's docker-compose manager raises
+    # the bump PR for this line; the box runs the new tag after its next pull plus
+    # `docker compose up -d` (deploy/README.md, Updating). scripts/compose-pins.test.mjs pins it.
+    image: cloudflare/cloudflared:2026.9.3
     container_name: rackbops-ui-ux-std-lib-cloudflared
     command: tunnel --no-autoupdate run
     environment:
