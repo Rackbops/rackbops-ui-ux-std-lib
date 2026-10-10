@@ -45,10 +45,11 @@ The test runner is **`node --test` (node:test) everywhere** -- no vitest/jest. R
 - **`pnpm --filter @rackbops/ui-react test`** -- `tsc --noEmit`, then the component render tests
   (`node --import tsx --test "src/**/*.test.tsx"`, react-dom/server + jsdom).
 - **`pnpm --filter @rackbops/ui-react build`** -- strict `tsc`; the React package must typecheck + build.
-- **`node --test site/serve.test.mjs site/showcase-extras.test.mjs scripts/generate-skill-table.test.mjs scripts/copy-license.test.mjs scripts/new-theme.test.mjs scripts/visual-control.test.mjs scripts/visual-diff-probe.test.mjs`**
+- **`node --test site/serve.test.mjs site/showcase-extras.test.mjs scripts/generate-skill-table.test.mjs scripts/copy-license.test.mjs scripts/new-theme.test.mjs scripts/visual-control.test.mjs scripts/visual-diff-probe.test.mjs scripts/compose-pins.test.mjs`**
   -- the showcase-server containment tests, the theme-extras placement tests, the three
-  generator/scaffold tests, and the pure parts (shift arithmetic, output parsing, env wiring) of the
-  two visual-job diagnostics below.
+  generator/scaffold tests, the pure parts (shift arithmetic, output parsing, env wiring) of the
+  two visual-job diagnostics below, and the deploy's image pin (`compose.yaml` runs no `:latest`
+  and no untagged image, Rackbops/Tooling#902).
 
 `pnpm test` chains `pnpm -r test` with those root tests; `pnpm build` = `pnpm -r build`. **The contract
 test is the definition-of-done gate** -- see `CLAUDE.md`.
