@@ -1,7 +1,7 @@
 {
   "name": "rackbops-ui-ux-std-lib",
   "private": true,
-  "packageManager": "pnpm@12.8.1",
+  "packageManager": "pnpm@12.14.0",
   "description": "UX/design-standards library for roshne's apps: CSS themes + React components, one --rb-* contract with swappable themes.",
   "scripts": {
     "build": "pnpm -r build",
