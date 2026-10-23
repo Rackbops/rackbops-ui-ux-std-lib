@@ -34,7 +34,7 @@ services:
     # and Renovate can't bump a tag that isn't a version. Renovate's docker-compose manager raises
     # the bump PR for this line; the box runs the new tag after its next pull plus
     # `docker compose up -d` (deploy/README.md, Updating). scripts/compose-pins.test.mjs pins it.
-    image: cloudflare/cloudflared:2026.10.1
+    image: cloudflare/cloudflared:2026.10.3
     container_name: rackbops-ui-ux-std-lib-cloudflared
     command: tunnel --no-autoupdate run
     environment:
