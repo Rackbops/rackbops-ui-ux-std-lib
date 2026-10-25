@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v6
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
       - uses: actions/setup-node@v7
         with:
           node-version: 24
@@ -40,7 +40,7 @@ jobs:
       image: mcr.microsoft.com/playwright:v1.63.0-jammy
     steps:
       - uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v6
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
       - run: pnpm install --frozen-lockfile
       - run: pnpm visual
       - if: failure()
@@ -64,6 +64,6 @@ jobs:
       image: mcr.microsoft.com/playwright:v1.63.0-jammy
     steps:
       - uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v6
+      - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
       - run: pnpm install --frozen-lockfile
       - run: pnpm visual:reduced
