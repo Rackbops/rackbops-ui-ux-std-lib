@@ -31,7 +31,7 @@ component styles in an app that has adopted a theme — consume the system.
 5. **Pick the app's theme by kind, not by taste.** A console or internal tool
    defaults to `arcane-obsidian`, with `arcane-parchment` as its light mode. A
    public-facing or marketing surface defaults to `rackbops-studio`, with
-   `rackbops-noir` as its dark mode. The other eight themes are opt-in for
+   `rackbops-noir` as its dark mode. The other themes are opt-in for
    variety and experiments -- if the app picks one, say why in its own
    `README.md` or `CLAUDE.md`.
 6. **Offer a mode toggle only on a pair.** Toggling is one attribute write with
