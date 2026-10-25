@@ -181,6 +181,9 @@ importers:
 
   components/react:
     devDependencies:
+      '@rackbops/styles':
+        specifier: workspace:^
+        version: link:../../styles
       '@types/jsdom':
         specifier: ^30.0.0
         version: 30.0.0

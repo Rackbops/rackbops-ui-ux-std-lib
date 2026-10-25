@@ -11,3 +11,12 @@ test('package.json: main and types mirror exports["."] so exports-blind resolver
   assert.match(pkg.main, /^\.\/dist\//);
   assert.match(pkg.types, /^\.\/dist\/.*\.d\.ts$/);
 });
+
+test("package.json: sideEffects is false so bundlers can drop unused components (#226)", () => {
+  assert.equal(pkg.sideEffects, false);
+});
+
+test("package.json: peer-depends on a matching @rackbops/styles (#227)", () => {
+  assert.equal(pkg.peerDependencies["@rackbops/styles"], "workspace:^");
+  assert.equal(pkg.devDependencies["@rackbops/styles"], "workspace:^");
+});

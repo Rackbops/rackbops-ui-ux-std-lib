@@ -1,5 +1,4 @@
 import {
-  createElement,
   forwardRef,
   type CSSProperties,
   type HTMLAttributes,
@@ -11,13 +10,7 @@ import {
   type TextareaHTMLAttributes,
 } from "react";
 import { cx } from "./cx.js";
-
-/** A forwardRef DOM wrapper that only adds a base rb-* class -- Input, Textarea, Select, Label, Field. */
-function styled<E extends HTMLElement, P extends { className?: string }>(tag: string, cls: string) {
-  return forwardRef<E, P>(function Styled({ className, ...rest }, ref) {
-    return createElement(tag, { ref, className: cx(cls, className), ...rest });
-  });
-}
+import { styled } from "./feedback.js";
 
 export interface InputProps
   extends InputHTMLAttributes<HTMLInputElement>,

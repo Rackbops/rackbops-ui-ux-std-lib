@@ -221,3 +221,18 @@ test("an unrelated key (Tab, Enter) does not call onChange", () => {
   assert.deepEqual(calls, []);
   cleanup();
 });
+
+test("an item id containing a space still links tab and panel by a single id", () => {
+  const html = renderToStaticMarkup(
+    <Tabs items={[{ id: "billing history", label: "Billing", content: "x" }]} />,
+  );
+  const tab = html.match(/<button[^>]*>/)?.[0] ?? "";
+  const panel = html.match(/<div[^>]*role="tabpanel"[^>]*>/)?.[0] ?? "";
+  const controls = attr(tab, "aria-controls");
+  const labelledby = attr(panel, "aria-labelledby");
+  assert.ok(controls && labelledby);
+  assert.doesNotMatch(controls, /\s/);
+  assert.doesNotMatch(labelledby, /\s/);
+  assert.equal(controls, attr(panel, "id"), "aria-controls names the panel's id");
+  assert.equal(labelledby, attr(tab, "id"), "aria-labelledby names the tab's id");
+});

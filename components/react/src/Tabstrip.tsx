@@ -1,4 +1,4 @@
-import type { KeyboardEvent, ReactNode } from "react";
+import { useRef, type KeyboardEvent, type ReactNode } from "react";
 import { cx } from "./cx.js";
 
 export interface TabstripTab {
@@ -35,8 +35,16 @@ export interface TabstripProps {
  * relationship that does not exist would mislead a screen-reader user.
  */
 export function Tabstrip({ tabs, selected, onSelect, label }: TabstripProps) {
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
   function onKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-    const index = tabs.findIndex((t) => t.id === selected);
+    // Index from the tab that received the key when there is one: a controlled parent that
+    // commits `selected` late (a router transition, a debounce) would otherwise leave `selected`
+    // stale between presses, and focus (which has already moved) and the next "from" index
+    // would disagree. Fall back to `selected` when the event came from the strip itself.
+    const focused = (event.target as HTMLElement).closest?.('[role="tab"]');
+    const focusedIndex = focused ? tabRefs.current.indexOf(focused as HTMLButtonElement) : -1;
+    const index = focusedIndex !== -1 ? focusedIndex : tabs.findIndex((t) => t.id === selected);
     if (index === -1) {
       return;
     }
@@ -61,6 +69,8 @@ export function Tabstrip({ tabs, selected, onSelect, label }: TabstripProps) {
     if (target) {
       event.preventDefault();
       onSelect(target.id);
+      // Roving tabindex: focus follows the selection, so Enter/Space acts on the new tab.
+      tabRefs.current[next]?.focus();
     }
   }
 
@@ -78,6 +88,9 @@ export function Tabstrip({ tabs, selected, onSelect, label }: TabstripProps) {
         return (
           <button
             key={tab.id}
+            ref={(el) => {
+              tabRefs.current[index] = el;
+            }}
             type="button"
             role="tab"
             aria-selected={isSelected}
