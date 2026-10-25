@@ -18,7 +18,7 @@ definition-of-done gate and authoring conventions on top of it;
 
 Each theme is a self-contained design language -- four reverse-documented from
 roshne's own apps (artifact-console, rackbops.com), three ported (and credited)
-from `nazuraki/ui-std-lib` (MIT; see `NOTICE`), and five original designs built
+from `nazuraki/ui-std-lib` (MIT; see `NOTICE`), and the rest original designs built
 directly for this library. Every theme must satisfy `styles/test/contract.test.mjs`:
 
 - every selector guarded by `:where([data-rb-style="<theme>"], … *)` (zero
@@ -52,7 +52,7 @@ real app's UI (artifact-console / rackbops.com) for the reverse-documented
 themes, or nazuraki's upstream theme for the ported ones. A palette value or a
 stated rule that is untrue of that source is a MAJOR defect, not doc polish --
 verify colour values and aesthetic claims against the source (the app's own CSS,
-or nazuraki's upstream CSS) before writing them. The five original themes have
+or nazuraki's upstream CSS) before writing them. The original themes have
 no external source to verify against -- their `design.md` need only stay
 self-consistent with their own `tokens.css`.
 
@@ -63,7 +63,7 @@ self-consistent with their own `tokens.css`.
   is `rb`. Don't conflate them.
 - **Fonts: system stacks by default.** Themes reverse-documented from roshne's
   apps use `system-ui` + `ui-monospace` stacks and carry an empty `manifest.json`
-  fonts array. A ported theme that needs webfonts (e.g. `luminous-precision`:
+  fonts array. A theme that needs webfonts (e.g. `luminous-precision`:
   Sora + JetBrains Mono) declares its stylesheet URL(s) in that theme's manifest
   `fonts` array (the contract test requires https URLs there), and consumers
   inject those `<link>`s -- the `site/` showcase does this on theme switch. Don't

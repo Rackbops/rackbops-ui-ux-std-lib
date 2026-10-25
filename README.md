@@ -91,8 +91,9 @@ the flattened **bundle**, which inlines every `@import` into one request (vs
 `https://cdn.jsdelivr.net/npm/@rackbops/styles/luminous-precision/bundle.css`
 — or `.../all.bundle.css` for every theme in one file. Both are generated when
 the package is published; `index.css` still resolves too, as its own `@import`
-tree. The bundle carries CSS only: a webfont theme (luminous-precision,
-neon-butterfly, summer-cloud) still needs its font `<link>` from the manifest,
+tree. The bundle carries CSS only: a webfont theme (any theme whose manifest `fonts` list is not empty:
+luminous-precision, neon-butterfly, summer-cloud, kenzen-midnight,
+kenzen-cyberhealth) still needs its font `<link>` from the manifest,
 exactly as `index.css` does.
 
 ### React components

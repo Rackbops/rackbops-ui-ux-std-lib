@@ -9,7 +9,7 @@ already ship; one that departs from it needs the reason written in the PR.
 
 How it relates to the other governing files:
 
-- `CLAUDE.md` says *how work ships* here -- the contract-test gate, the
+- `AGENTS.md` says *how work ships* here -- the contract-test gate, the
   fidelity rule, the every-surface rule. This document says *what the
   contract is*.
 - `skills/design-system/SKILL.md` is the consumer quick reference for apps
@@ -23,7 +23,7 @@ one is not done. SHOULD is the default; departing from it needs a stated
 reason in the theme's `design.md`. MAY is optional.
 
 **Enforcement tags.** `[tested]` -- a test fails when the rule is broken.
-`[reviewed]` -- enforced only by the review gate in `CLAUDE.md`.
+`[reviewed]` -- enforced only by the review gate in `AGENTS.md`.
 `[pending #N]` -- the rule is normative now; the mechanical check, or the fix
 that brings every theme into line, lands with issue #N. Appendix B tabulates
 current status so this document stays true of HEAD while describing the
@@ -56,7 +56,7 @@ library. Every rule below descends from one of these.
    fill.
 6. **Three type roles, system stacks by default.** Display, body, mono. The
    app themes and the originals use system stacks (`system-ui`,
-   `ui-monospace`, or a system serif) and load nothing; a ported theme that
+   `ui-monospace`, or a system serif) and load nothing; a theme that
    needs webfonts declares them in the manifest and still falls back to a
    system family.
 7. **Quiet, optional motion.** One transition duration per theme, named
@@ -64,7 +64,7 @@ library. Every rule below descends from one of these.
    `prefers-reduced-motion` override.
 8. **Documented with numbers.** A `design.md` states real values, real
    contrast ratios, and a real source. A claim untrue of the shipped CSS is a
-   MAJOR defect (`CLAUDE.md`, "Fidelity is a hard rule").
+   MAJOR defect (`AGENTS.md`, "Fidelity is a hard rule").
 9. **A semantic change reaches every surface.** Changing what a token or
    class *means* is not done until every theme, the React layer, every
    `design.md`, the showcase, README, SKILL.md, and this document agree
@@ -85,7 +85,7 @@ A theme is a directory `styles/<theme-id>/` with exactly this layout:
 
 | File | Contents | Rule |
 | --- | --- | --- |
-| `tokens.css` | One `:where([data-rb-style="<id>"]) { ... }` block: `color-scheme` plus every `--rb-*` token | MUST declare all 38 baseline tokens (section 4.1) and a `color-scheme` that matches the manifest `[tested]` |
+| `tokens.css` | One `:where([data-rb-style="<id>"]) { ... }` block: `color-scheme` plus every `--rb-*` token | MUST declare every baseline token (section 4.1) and a `color-scheme` that matches the manifest `[tested]` |
 | `base.css` | Canvas rule, page-only body canvas, bare-element typography, links, focus, selection (the box-sizing reset and body `margin`/`min-height` moved to `_shared/structure.css`) | MUST carry the bare-element property set (section 6) `[tested]` |
 | `_shared/structure.css` | The box-sizing reset and the page body reset (`margin`/`min-height`), guarded by the bare `[data-rb-style]` and imported by every `index.css` | Theme-agnostic; the one place the bare-attribute guard is allowed (#52) `[tested]` |
 | `components/<name>.css` | One file per component: the shared set (section 5.1) plus any extras | MUST exist for every shared component `[tested]`; every selector guarded `[tested]` |
@@ -676,9 +676,9 @@ Transitions and animations:
   data-dense theme.
 - **Sizes.** `--rb-text-sm` is the control size. Body size is set in
   `base.css` per theme (the studio runs 17 px / 1.6).
-- **Webfonts.** Only a ported theme lists `fonts` in the manifest; every
-  stack still ends in a system family. A system-stack theme MUST NOT add
-  webfonts (`CLAUDE.md`, Conventions). Consumers inject the manifest URLs;
+- **Webfonts.** Only a theme that needs webfonts lists `fonts` in the manifest (ported
+  and original themes alike); every stack still ends in a system family. A system-stack theme MUST NOT add
+  webfonts (`AGENTS.md`, Conventions). Consumers inject the manifest URLs;
   the showcase shows how.
 
 ---
@@ -735,7 +735,7 @@ Transitions and animations:
   | Warm diffused shadow | amber pair |
   | Glow and glass | luminous-precision, neon-butterfly, summer-cloud |
 
-  `--rb-blur` is for overlay surfaces: twelve themes blur the dialog
+  `--rb-blur` is for overlay surfaces: every theme except the concrete pair blurs the dialog
   backdrop, all of them through the token (the concrete pair sets `0px` and
   never applies `backdrop-filter`, `styles/concrete-signal/design.md:67-69`;
   #42 closed the ports' hard-coded `blur(4px)`, so no theme hard-codes it
@@ -795,7 +795,7 @@ Sections in this order. Required unless marked.
 14. `## Scoping` -- the standard two-sentence boilerplate.
 
 Every value in the document is copied from `tokens.css` or measured, never
-recalled. `CLAUDE.md`'s fidelity rule applies: a wrong value or a stale
+recalled. `AGENTS.md`'s fidelity rule applies: a wrong value or a stale
 claim is MAJOR.
 
 ---
@@ -811,7 +811,7 @@ props to modifiers, and never branches on the theme.
 | Each prop that adds a class says so in JSDoc: "Maps to `.rb-btn--{variant}`" | `Button.tsx:5-13` |
 | The base class first, modifiers next, consumer `className` last, via `cx` | `Button.tsx:29-35`; tested in `Button.test.tsx:68-77` |
 | `...rest` spreads onto the root element so `id`, `data-*`, `aria-*`, handlers all reach it | every wrapper, since #31 (`Dialog`) and #84 (`Tabs`, onto its `role="tablist"` child -- the outer ref target is a structural wrapper spanning tabs+panels); a labelled `Checkbox`/`Radio`/`Switch` still puts `className`/rest on the inner `<input>`, with `wrapperClassName`/`wrapperStyle` for the `.rb-choice` row (`form.tsx:90-101`, the shared `choiceControl` factory, #84/#93) |
-| `forwardRef`, with `RefAttributes<T>` on the props type | every wrapper, since #30 (`Dialog` exposes its own internal show/close node to the forwarded ref via `useImperativeHandle`, #83) |
+| `forwardRef`, with `RefAttributes<T>` on the props type | every wrapper except `DataTable` and `Tabstrip`, since #30 (`Dialog` exposes its own internal show/close node to the forwarded ref via `useImperativeHandle`, #83) |
 | Native semantics by default: `type="button"`, `aria-current="page"` on an active link, `role="alert"`, `role="status"` + `aria-label` on the spinner, native `<dialog>` with `aria-labelledby`, ARIA tablist with roving tabindex | `Button.tsx:19`, `NavLink.tsx:18`, `feedback.tsx:61` (`role="alert"`) and `:82-85` (`role="status"`/`aria-label` passed into the shared `styled` factory, #93), `Dialog.tsx:61`, `Tabs.tsx:60-81` (the roving-tabindex key handler) and `:90-113` (the tablist), `EmptyState.tsx:50` (`role="status"`, before `...rest` so a consumer can override it, #173), `Toast.tsx:62` (`role="status"`/`"alert"` chosen by the semantic variant) and `Toast.tsx:97` (`ToastRegion` deliberately not a live region, so each toast announces once, #211) |
 | Controlled by the caller, no hidden state: `NavRail activeId`, `Dialog open` | `NavRail.tsx:25` (`activeId` prop), `:36` (destructured), `:42` (drives each `NavLink`'s `active`); `Dialog` reconciles `open` when it changes (`[open]` dependency on the sync effect) and REQUIRES `onClose`, so the parent is always told of a native close and keeps `open` in sync -- `open` is the single source of truth (#83, completing #31); `Tabs` takes an optional controlled `activeId`/`onChange` pair (`Tabs.tsx:30-40`, derived at `:49-53`, #169) and stays uncontrolled when `activeId` is omitted |
 | No theme-specific class, no extra, no `style` that a theme would own. Structural layout a theme has no opinion on (a grid) MAY be inline, and says why in a comment | `LinksIndex.tsx:47-53` (`gridStyle` + its why-comment, used at `:112`); `DataTable.tsx:145-149` (`hasWidths` puts the table in `table-layout: fixed` + its why-comment, #150) |
@@ -936,7 +936,7 @@ real changes).
    the new theme, and generate its screenshot baselines via the
    `update-visual-baselines` workflow -- never commit locally-shot ones, which
    fail CI on antialiasing alone -- reviewing the image diff in the PR (#50).
-8. Run the review gate (`CLAUDE.md`).
+8. Run the review gate (`AGENTS.md`).
 
 ### 14.2 Adding or changing a shared component
 
@@ -968,14 +968,14 @@ A semantic change is complete only when all of these agree: the fourteen
 `tokens.css` / `base.css` / `components/*.css`; `components/react/src`;
 the fourteen `design.md`; `site/index.html`; `README.md` (themes table and
 consuming section); `skills/design-system/SKILL.md`; `styles/contract.json`
-(#47); `CLAUDE.md` where it names the rule; and this document.
+(#47); `AGENTS.md` where it names the rule; and this document.
 
 ### 14.5 Shipping
 
 Docs-only changes that assert facts about the code (a `design.md`, this
 document, SKILL.md) take the single claims-vs-code audit lane; changes with
 a behaviour surface take the full review gate. Both are defined in the
-personal `CLAUDE.md`; the repo `CLAUDE.md` names the tests that must be
+personal `CLAUDE.md`; the repo `AGENTS.md` names the tests that must be
 green before staging.
 
 ---
@@ -988,7 +988,7 @@ theme:
 - **Picks by kind, not by taste.** A console or internal tool defaults to
   `arcane-obsidian`, with `arcane-parchment` as its light mode. A
   public-facing or marketing surface defaults to `rackbops-studio`, with
-  `rackbops-noir` as its dark mode. The other eight themes are opt-in for
+  `rackbops-noir` as its dark mode. The other themes are opt-in for
   variety and experiments; an app that picks one says why in its own
   `README.md` or `CLAUDE.md`.
 - **Offers a mode toggle only on a pair.** Toggling is one attribute write
@@ -1035,7 +1035,7 @@ identity paragraph and the README table.
 | Rule | Mechanism | Status |
 | --- | --- | --- |
 | Every selector guarded | `contract.test.mjs` | live |
-| 38 baseline tokens + `color-scheme` per theme | `contract.test.mjs` | live |
+| Every baseline token + `color-scheme` per theme | `contract.test.mjs` | live |
 | `color-scheme` matches manifest | `contract.test.mjs` | live |
 | manifest / package.json / dirs / all.css agree | `contract.test.mjs` | live |
 | `index.css` imports every component file, no rules, in the canonical order (structure, tokens, base, then shared components in `contract.json` key order, then extras) | `contract.test.mjs` | live (#115) |
@@ -1066,7 +1066,7 @@ identity paragraph and the README table.
 | `Dialog` spreads rest, reconciles `open`, requires `onClose` | `Dialog.test.tsx` | live (#31, #83) |
 | `Tabs` spreads rest onto its tablist | `Tabs.test.tsx` | live (#84) |
 | `Tabs` controlled `activeId`/`onChange` to match `NavRail` | React fix | live (#169) |
-| `forwardRef` on every wrapper | `refs.test.tsx` | live (#30) |
+| `forwardRef` on every wrapper except `DataTable` and `Tabstrip` | `refs.test.tsx` | live (#30) |
 | SKILL.md matches the shipped contract | doc fix | live (#47, #39) -- inventory table generated + tested, extras paragraph and eyebrow classification accurate, roster paragraph correctly states 14 themes, manifest-fonts guidance and the add-theme recipe steps all accurate |
 | `design.md` counterpart and count claims true | doc fix | live (#47, #40 -- counterpart-shipped and stale-count claims fixed repo-wide) |
 | `## Accessibility` section in every `design.md`, citing the contrast test, with every contrast allowlist `doc` range inside it | `accessibility-docs.test.mjs` | live, 14 of 14 (#49, kenzen pair added #158, tested #64) |
