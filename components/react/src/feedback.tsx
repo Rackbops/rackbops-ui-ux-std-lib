@@ -9,7 +9,7 @@ import {
 import { cx } from "./cx.js";
 
 /** A forwardRef DOM wrapper that adds a base rb-* class and any fixed static attributes. */
-function styled<E extends HTMLElement, P extends { className?: string }>(
+export function styled<E extends HTMLElement, P extends { className?: string }>(
   tag: string,
   cls: string,
   attrs: Record<string, unknown> = {},

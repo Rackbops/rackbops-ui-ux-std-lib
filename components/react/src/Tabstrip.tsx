@@ -1,4 +1,4 @@
-import type { KeyboardEvent, ReactNode } from "react";
+import { useRef, type KeyboardEvent, type ReactNode } from "react";
 import { cx } from "./cx.js";
 
 export interface TabstripTab {
@@ -35,6 +35,8 @@ export interface TabstripProps {
  * relationship that does not exist would mislead a screen-reader user.
  */
 export function Tabstrip({ tabs, selected, onSelect, label }: TabstripProps) {
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
   function onKeyDown(event: KeyboardEvent<HTMLDivElement>) {
     const index = tabs.findIndex((t) => t.id === selected);
     if (index === -1) {
@@ -61,6 +63,8 @@ export function Tabstrip({ tabs, selected, onSelect, label }: TabstripProps) {
     if (target) {
       event.preventDefault();
       onSelect(target.id);
+      // Roving tabindex: focus follows the selection, so Enter/Space acts on the new tab.
+      tabRefs.current[next]?.focus();
     }
   }
 
@@ -78,6 +82,9 @@ export function Tabstrip({ tabs, selected, onSelect, label }: TabstripProps) {
         return (
           <button
             key={tab.id}
+            ref={(el) => {
+              tabRefs.current[index] = el;
+            }}
             type="button"
             role="tab"
             aria-selected={isSelected}

@@ -12,6 +12,7 @@
     "access": "public"
   },
   "type": "module",
+  "sideEffects": false,
   "files": [
     "dist",
     "LICENSE",
@@ -31,9 +32,11 @@
     "test": "tsc -p tsconfig.json --noEmit && node --import tsx --test \"src/**/*.test.tsx\""
   },
   "peerDependencies": {
+    "@rackbops/styles": "workspace:^",
     "react": ">=18"
   },
   "devDependencies": {
+    "@rackbops/styles": "workspace:^",
     "@types/jsdom": "^30.0.0",
     "@types/node": "^26.6.3",
     "@types/react": "^19.0.0",

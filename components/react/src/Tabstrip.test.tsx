@@ -206,3 +206,28 @@ test("a selected id not present in tabs leaves the keyboard handler inert", () =
   assert.equal(calls, 0);
   cleanup();
 });
+
+test("arrow keys, Home and End move keyboard focus with the selection", () => {
+  const { container, cleanup } = mount(<Harness />);
+  const focusedName = () => document.activeElement?.textContent ?? "";
+  tabNamed(container, "Alpha").focus();
+
+  const press = (key: string) =>
+    flushSync(() => {
+      document.activeElement?.dispatchEvent(
+        new KeyboardEvent("keydown", { key, bubbles: true, cancelable: true }),
+      );
+    });
+
+  press("ArrowRight");
+  assert.equal(focusedName(), "Beta");
+  press("End");
+  assert.equal(focusedName(), "Gamma");
+  press("ArrowRight");
+  assert.equal(focusedName(), "Alpha", "wraps forwards");
+  press("ArrowLeft");
+  assert.equal(focusedName(), "Gamma", "wraps backwards");
+  press("Home");
+  assert.equal(focusedName(), "Alpha");
+  cleanup();
+});

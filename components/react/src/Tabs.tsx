@@ -99,9 +99,9 @@ export const Tabs = forwardRef<HTMLDivElement, TabsProps>(function Tabs(
               }}
               type="button"
               role="tab"
-              id={`${base}-tab-${t.id}`}
+              id={`${base}-tab-${idx}`}
               aria-selected={selected}
-              aria-controls={`${base}-panel-${t.id}`}
+              aria-controls={`${base}-panel-${idx}`}
               tabIndex={selected ? 0 : -1}
               className={cx("rb-tab", selected && "rb-tab--active")}
               onClick={() => select(t.id)}
@@ -114,15 +114,15 @@ export const Tabs = forwardRef<HTMLDivElement, TabsProps>(function Tabs(
       </div>
       {/* Render every panel (hiding inactive) so each tab's aria-controls points
           at a real element and content is preserved across tab switches. */}
-      {items.map((t) => {
+      {items.map((t, idx) => {
         const selected = t.id === activeId;
         return (
           <div
             key={t.id}
             className="rb-tabpanel"
             role="tabpanel"
-            id={`${base}-panel-${t.id}`}
-            aria-labelledby={`${base}-tab-${t.id}`}
+            id={`${base}-panel-${idx}`}
+            aria-labelledby={`${base}-tab-${idx}`}
             hidden={!selected}
             tabIndex={0}
           >
