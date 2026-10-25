@@ -4,8 +4,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { execSync } from "node:child_process";
-import { readFileSync, rmSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { existsSync, readFileSync, rmSync } from "node:fs";
+import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { flatten, themeIds, canonicalize } from "../../scripts/bundle-css.mjs";
 
@@ -114,4 +114,27 @@ test("npm pack ships every bundle -- the prepack actually generates them (#52)",
     assert.ok(paths.has(`${id}/bundle.css`), `npm pack misses ${id}/bundle.css (prepack wired? files ok?)`);
   }
   assert.ok(paths.has("all.bundle.css"), "npm pack misses all.bundle.css (missing from files[]?)");
+});
+
+// A relative url() is resolved against the folder of the file it is written in, so
+// flatten() must re-point it when the rule moves into a bundle (#220). Check every
+// bundle that npm pack ships: each non-data url() must exist next to that bundle.
+test("every relative url() in a bundle resolves from the bundle's own folder (#220)", () => {
+  const entries = [
+    ...themeIds().map((id) => join(STYLES, id, "index.css")),
+    join(STYLES, "all.css"),
+  ];
+  let checked = 0;
+  for (const entry of entries) {
+    for (const m of flatten(entry).matchAll(/url\(\s*(["']?)([^)"']+)\1\s*\)/g)) {
+      const target = m[2];
+      if (/^([a-z][a-z0-9+.-]*:|\/|#)/i.test(target)) continue;
+      assert.ok(
+        existsSync(join(dirname(entry), target)),
+        `${entry}: url(${target}) does not exist relative to the bundle's folder`,
+      );
+      checked++;
+    }
+  }
+  assert.ok(checked > 0, "found no relative url() to check -- is the neon-butterfly backdrop still referenced?");
 });

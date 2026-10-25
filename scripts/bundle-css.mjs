@@ -11,7 +11,7 @@
 // contract test regenerates them in-memory to verify parity with index.css.
 import { bundle, transform } from "lightningcss";
 import { readFileSync, writeFileSync } from "node:fs";
-import { join, resolve } from "node:path";
+import { dirname, join, relative, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = resolve(fileURLToPath(import.meta.url), "../..");
@@ -20,9 +20,26 @@ const STYLES = join(ROOT, "styles");
 /** The flattened, self-contained CSS for one entry point, as a string. Pure --
  * callers decide whether to write it (prepack) or assert on it (the test).
  * `minify: false` keeps it readable; lightningcss still canonicalises values
- * and the four legacy pseudo-elements, all render-identical to the source. */
+ * and the four legacy pseudo-elements, all render-identical to the source.
+ *
+ * A relative `url()` is relative to the file it sits in, and bundling moves the
+ * rule into the bundle, which is written beside the entry point (<theme>/bundle.css,
+ * styles/all.bundle.css). So each such url is re-pointed from its source file's
+ * folder to the entry's folder (#220); data:, absolute and fragment urls pass through. */
 export function flatten(entryAbsPath) {
-  return bundle({ filename: entryAbsPath, minify: false }).code.toString();
+  const { code, dependencies } = bundle({ filename: entryAbsPath, minify: false, analyzeDependencies: true });
+  let css = code.toString();
+  const outDir = dirname(entryAbsPath);
+  for (const dep of dependencies ?? []) {
+    if (dep.type !== "url") continue;
+    let target = dep.url;
+    if (!/^([a-z][a-z0-9+.-]*:|\/|#)/i.test(dep.url)) {
+      const rel = relative(outDir, resolve(dirname(dep.loc.filePath), dep.url)).split(sep).join("/");
+      target = rel.startsWith(".") ? rel : `./${rel}`;
+    }
+    css = css.split(dep.placeholder).join(target);
+  }
+  return css;
 }
 
 /** Canonicalise a CSS string through lightningcss exactly as `flatten` does
