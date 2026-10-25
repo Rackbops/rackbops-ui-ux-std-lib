@@ -5,6 +5,9 @@
 // fails when a name has gone missing -- unless an unreleased commit in release-lib.sh's PATHSPEC
 // carries a breaking marker (next-version.sh decides, so the two grammars cannot drift).
 //
+// The marker is read from the PR's own commits, but a squash merge releases from the PR title:
+// put the `!` in the title as well as the commit, or the release goes out as a patch.
+//
 // CI must check out tags and history (`fetch-depth: 0`); with CI set and no release tag the
 // test fails instead of skipping, so a shallow checkout cannot silently disable the guard.
 import { test } from "node:test";
@@ -19,10 +22,12 @@ const SCRIPTS = join(ROOT, ".github", "scripts");
 
 const git = (...args) => execFileSync("git", args, { cwd: ROOT, encoding: "utf-8", maxBuffer: 64 * 1024 * 1024 });
 
-/** Names exported from a React package index.ts (`export { A, type B } from "..."`), types included. */
+/** Names exported from a React package index.ts (`export { A, type B } from "..."` and
+ * `export type { C }`), types included. Only brace-list exports are read -- `export *` and
+ * `export const/function` are not, so keep index.ts to the brace form (it is today). */
 export function reactNames(src) {
   const names = new Set();
-  for (const m of src.matchAll(/export\s*\{([^}]*)\}/g)) {
+  for (const m of src.matchAll(/export\s+(?:type\s*)?\{([^}]*)\}/g)) {
     for (const part of m[1].split(",")) {
       const name = part.replace(/^\s*type\s+/, "").trim().split(/\s+as\s+/).pop();
       if (name) names.add(name);
@@ -88,6 +93,10 @@ test("the same removal passes when an unreleased commit carries a breaking marke
   assert.equal(verdict({ removed: ["contract class rb-badge--md"], breaking: true }), true);
 });
 
+test("reactNames reads `export type { X }` lists too", () => {
+  assert.deepEqual([...reactNames('export type { Foo, Bar as Baz } from "./x.js";')].sort(), ["Baz", "Foo"]);
+});
+
 test("additions and an unchanged surface are not removals", () => {
   const prev = surfaceOf(SYNTH);
   const cur = surfaceOf({ ...SYNTH, reactIndex: SYNTH.reactIndex + '\nexport { Extra } from "./Extra.js";' });
@@ -125,17 +134,22 @@ test("HEAD still carries everything the last release tag shipped, unless a break
   const removed = removedNames(prev, cur);
   if (removed.length === 0) return;
 
-  const pathspec = execFileSync(
-    "bash",
-    ["-c", `source "${join(SCRIPTS, "release-lib.sh")}"; printf '%s\\0' "\${PATHSPEC[@]}"`],
-    { cwd: ROOT, encoding: "utf-8" },
-  )
+  // Script text goes to bash as a -c string, never by path: on Windows `bash` can resolve to the
+  // WSL stub, which cannot open a native path (see bump.test.mjs, issue #35).
+  const libSrc = readFileSync(join(SCRIPTS, "release-lib.sh"), "utf-8");
+  const pathspec = execFileSync("bash", ["-c", `${libSrc}\nprintf '%s\\0' "\${PATHSPEC[@]}"`], {
+    cwd: ROOT,
+    encoding: "utf-8",
+  })
     .split("\0")
     .filter(Boolean);
   const bodies = git("log", `${tag}..HEAD`, "--pretty=format:%B", "--", ...pathspec);
   const version = tag.slice(1);
   const [maj, min, pat] = version.split(".").map(Number);
-  const next = execFileSync("bash", [join(SCRIPTS, "next-version.sh"), version], { input: bodies, encoding: "utf-8" }).trim();
+  const next = execFileSync("bash", ["-c", readFileSync(join(SCRIPTS, "next-version.sh"), "utf-8"), "next-version.sh", version], {
+    input: bodies,
+    encoding: "utf-8",
+  }).trim();
   const breaking = next !== `${maj}.${min}.${pat + 1}`;
   assert.ok(
     verdict({ removed, breaking }),
