@@ -63,3 +63,9 @@ test("rejects malformed versions", () => {
     }
   );
 });
+
+test("a breaking marker behind a squash-body list bullet counts", () => {
+  assert.equal(next("0.2.42", "fix: x (#1)\n\n* feat(x)!: y\n* chore: z"), "0.3.0");
+  assert.equal(next("0.2.42", "- fix!: y"), "0.3.0");
+  assert.equal(next("0.2.42", "* fix: y\n* chore: z"), "0.2.43");
+});
