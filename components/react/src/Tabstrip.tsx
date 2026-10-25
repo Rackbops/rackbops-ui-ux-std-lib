@@ -38,7 +38,13 @@ export function Tabstrip({ tabs, selected, onSelect, label }: TabstripProps) {
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
   function onKeyDown(event: KeyboardEvent<HTMLDivElement>) {
-    const index = tabs.findIndex((t) => t.id === selected);
+    // Index from the tab that received the key when there is one: a controlled parent that
+    // commits `selected` late (a router transition, a debounce) would otherwise leave `selected`
+    // stale between presses, and focus (which has already moved) and the next "from" index
+    // would disagree. Fall back to `selected` when the event came from the strip itself.
+    const focused = (event.target as HTMLElement).closest?.('[role="tab"]');
+    const focusedIndex = focused ? tabRefs.current.indexOf(focused as HTMLButtonElement) : -1;
+    const index = focusedIndex !== -1 ? focusedIndex : tabs.findIndex((t) => t.id === selected);
     if (index === -1) {
       return;
     }

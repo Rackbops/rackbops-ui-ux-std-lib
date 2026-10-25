@@ -231,3 +231,22 @@ test("arrow keys, Home and End move keyboard focus with the selection", () => {
   assert.equal(focusedName(), "Alpha");
   cleanup();
 });
+
+test("keys advance from the focused tab even when the parent has not committed `selected`", () => {
+  // A controlled parent that applies the selection late leaves `selected` stale between presses.
+  const { container, cleanup } = mount(
+    <Tabstrip tabs={TABS} selected="a" onSelect={() => {}} label="Example" />,
+  );
+  tabNamed(container, "Alpha").focus();
+  const press = () =>
+    flushSync(() => {
+      document.activeElement?.dispatchEvent(
+        new KeyboardEvent("keydown", { key: "ArrowRight", bubbles: true, cancelable: true }),
+      );
+    });
+  press();
+  assert.equal(document.activeElement?.textContent, "Beta");
+  press();
+  assert.equal(document.activeElement?.textContent, "Gamma", "advances from Beta, not from stale Alpha");
+  cleanup();
+});
