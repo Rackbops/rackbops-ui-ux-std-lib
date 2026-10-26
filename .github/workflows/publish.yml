@@ -141,6 +141,9 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
+      # A published npm version cannot be replaced, and ci.yml runs on the same push
+      # without anything waiting on it, so run the suite here before anything is published (#223).
+      - run: pnpm test
 
       # Enumerated once from the workspace (pnpm-workspace.yaml: styles,
       # components/*) rather than hard-coded, so a future components/svelte
