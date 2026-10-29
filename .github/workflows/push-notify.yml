@@ -37,6 +37,6 @@ on:
 
 jobs:
   notify:
-    uses: roshne/addon-ci/.github/workflows/push-notify.yml@v1
+    uses: roshne/addon-ci/.github/workflows/push-notify.yml@060b6d65ebceda1e44d0a3fe5b39fea15ede0f48 # v1
     secrets:
       DISCORD_PUSH_WEBHOOK: ${{ secrets.DISCORD_PUSH_WEBHOOK }}
