@@ -53,7 +53,7 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           # release-notes.sh needs the prior release tag too, to scope the
           # changelog range -- both need full history and every tag, not
@@ -63,7 +63,7 @@ jobs:
       - uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
       # No registry-url / scope here -- see the header comment: setting
       # registry-url writes an empty _authToken into .npmrc and breaks OIDC.
-      - uses: actions/setup-node@v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           node-version: 24
       # No npm-upgrade step here: trusted publishing is pnpm's own OIDC
